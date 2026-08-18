@@ -1,0 +1,19 @@
+{
+  "name": "zetagrow",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:website": "npm --prefix website run dev",
+    "dev:admin": "npm --prefix admin run dev",
+    "build:website": "npm --prefix website run build",
+    "build:admin": "npm --prefix admin run build",
+    "build": "npm --prefix website run build && npm --prefix admin run build",
+    "clean": "npm --prefix website run clean && npm --prefix admin run clean",
+    "convex:dev": "npx convex dev",
+    "convex:deploy": "npx convex deploy"
+  },
+  "devDependencies": {
+    "convex": "^1.17.4",
+    "typescript": "^5.7.2"
+  }
+}

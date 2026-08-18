@@ -1,0 +1,11 @@
+﻿node.exe : Γûî Showing logs of deployment:
+At C:\Program Files\nodejs\npx.ps1:30 char:3
++   & $NODE_EXE $NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Γûî Showing logs of deployment::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+Γûî [Production] ankit-kumar-f5f56:zetagrow:production (prod) (dashboard: 
+https://dashboard.convex.dev/t/ankit-kumar-f5f56/zetagrow/terrific-dove-836)
+Γûî ΓööΓöÇ https://terrific-dove-836.convex.cloud
+Watching logs for dev deployment terrific-dove-836...
