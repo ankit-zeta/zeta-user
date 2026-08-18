@@ -119,7 +119,7 @@ export const seedDatabase = mutation({
     const adminSalt = "salt_admin_zetagrow_2026";
     const adminHash = await hashPassword("AdminPassword123!", adminSalt);
     const adminId = await ctx.db.insert("users", {
-      name: "ZetaGrow Administrator",
+      name: "Admin",
       email: "admin@zetagrow.com",
       passwordHash: adminHash,
       salt: adminSalt,
