@@ -70,7 +70,8 @@ export default function SupportCenterPage() {
           body: file,
         });
         if (!resp.ok) throw new Error("Upload failed");
-        const storageId = (await resp.text()).trim();
+        const parsed = JSON.parse(await resp.text());
+        const storageId = parsed.storageId;
         setImages((arr) => [...arr, { url: storageId, name: file.name }]);
       }
     } catch (err: any) {
