@@ -50,13 +50,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/programs/advanced-pro-specialist" className="hover:text-white transition-colors">
-                  Advanced Pro (₹8,000)
+                <Link href="/programs/digital-business-execution" className="hover:text-white transition-colors">
+                  Digital Business Execution (₹8,000)
                 </Link>
               </li>
               <li>
-                <Link href="/programs/premium-master-program" className="hover:text-white transition-colors">
-                  Master Program (₹14,000)
+                <Link href="/programs/digital-business-pro" className="hover:text-white transition-colors">
+                  Digital Business Pro (₹14,000)
                 </Link>
               </li>
             </ul>
@@ -88,9 +88,14 @@ export default function Footer() {
                   Frequently Asked Questions
                 </Link>
               </li>
-              <li>
+<li>
                 <Link href="/contact" className="hover:text-white transition-colors">
-                  Support & Contact
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/support/track" className="hover:text-white transition-colors">
+                  Track Support Ticket
                 </Link>
               </li>
             </ul>

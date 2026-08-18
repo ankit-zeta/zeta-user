@@ -9,6 +9,7 @@ import {
   Briefcase, 
   BookOpen, 
   HelpCircle, 
+  LifeBuoy,
   User, 
   Menu, 
   X, 
@@ -30,6 +31,7 @@ export default function Navbar() {
     { name: "FAQ", href: "/faq", icon: HelpCircle },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
+    { name: "Track Ticket", href: "/support/track", icon: LifeBuoy },
   ];
 
   const isActive = (path: string) => {

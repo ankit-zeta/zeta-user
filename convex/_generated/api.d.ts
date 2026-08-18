@@ -39,6 +39,7 @@ import type * as settings from "../settings.js";
 import type * as starterCurriculum from "../starterCurriculum.js";
 import type * as starterCurriculumAction from "../starterCurriculumAction.js";
 import type * as starterSetup from "../starterSetup.js";
+import type * as supportTickets from "../supportTickets.js";
 import type * as users from "../users.js";
 import type * as wallets from "../wallets.js";
 import type * as withdrawals from "../withdrawals.js";
@@ -81,6 +82,7 @@ declare const fullApi: ApiFromModules<{
   starterCurriculum: typeof starterCurriculum;
   starterCurriculumAction: typeof starterCurriculumAction;
   starterSetup: typeof starterSetup;
+  supportTickets: typeof supportTickets;
   users: typeof users;
   wallets: typeof wallets;
   withdrawals: typeof withdrawals;

@@ -397,4 +397,47 @@ export default defineSchema({
     status: v.string(), // "new" | "in_progress" | "resolved"
     createdAt: v.number(),
   }).index("by_status", ["status"]),
+
+  // Support Tickets
+  supportTickets: defineTable({
+    trackingId: v.string(), // "ZT-XXXXXX"
+    userId: v.id("users"),
+    userName: v.string(),
+    userEmail: v.string(),
+    category: v.string(), // "courses" | "duration" | "payments" | "withdrawals" | "jobs" | "affiliate" | "account" | "other"
+    title: v.string(),
+    message: v.string(),
+    status: v.string(), // "open" | "in_progress" | "resolved" | "closed"
+    attachments: v.optional(
+      v.array(
+        v.object({
+          type: v.string(), // "image" | "link"
+          url: v.string(),
+          name: v.optional(v.string()),
+        })
+      )
+    ),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_userId", ["userId"])
+    .index("by_status", ["status"])
+    .index("by_trackingId", ["trackingId"]),
+
+  ticketMessages: defineTable({
+    ticketId: v.id("supportTickets"),
+    sender: v.string(), // "user" | "admin"
+    senderName: v.string(),
+    message: v.string(),
+    attachments: v.optional(
+      v.array(
+        v.object({
+          type: v.string(), // "image" | "link"
+          url: v.string(),
+          name: v.optional(v.string()),
+        })
+      )
+    ),
+    createdAt: v.number(),
+  }).index("by_ticketId", ["ticketId"]),
 });

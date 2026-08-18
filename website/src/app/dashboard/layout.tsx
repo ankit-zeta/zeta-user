@@ -24,7 +24,8 @@ import {
   Menu, 
   X,
   CreditCard,
-  CheckCircle2
+  CheckCircle2,
+  LifeBuoy
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -102,6 +103,7 @@ export default function DashboardLayout({
         },
         { name: "Profile", href: "/dashboard/profile", icon: User },
         { name: "Settings", href: "/dashboard/settings", icon: Settings },
+        { name: "Support", href: "/dashboard/support", icon: LifeBuoy },
       ],
     },
   ];
