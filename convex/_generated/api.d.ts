@@ -20,6 +20,7 @@ import type * as businessResources from "../businessResources.js";
 import type * as businessSetup from "../businessSetup.js";
 import type * as certificates from "../certificates.js";
 import type * as contact from "../contact.js";
+import type * as cvProfiles from "../cvProfiles.js";
 import type * as growthCurriculum from "../growthCurriculum.js";
 import type * as growthCurriculumAction from "../growthCurriculumAction.js";
 import type * as growthResources from "../growthResources.js";
@@ -64,6 +65,7 @@ declare const fullApi: ApiFromModules<{
   businessSetup: typeof businessSetup;
   certificates: typeof certificates;
   contact: typeof contact;
+  cvProfiles: typeof cvProfiles;
   growthCurriculum: typeof growthCurriculum;
   growthCurriculumAction: typeof growthCurriculumAction;
   growthResources: typeof growthResources;

@@ -42,6 +42,24 @@ export const submitApplication = mutation({
     const user = await ctx.db.get(session.userId);
     const isRegularUser = user?.role === "user";
 
+    // CV completeness gate (structured profile — not file uploads)
+    if (isRegularUser) {
+      const cv = await ctx.db
+        .query("cvProfiles")
+        .withIndex("by_userId", (q: any) => q.eq("userId", session.userId))
+        .first();
+      const overviewOk = Boolean(cv?.overview && cv.overview.trim().length >= 50);
+      const experienceOk = (cv?.experience || []).length >= 1;
+      const educationOk = (cv?.education || []).length >= 1;
+      const skillsOk =
+        (cv?.technicalSkills || []).length + (cv?.softSkills || []).length >= 3;
+      if (!overviewOk || !experienceOk || !educationOk || !skillsOk) {
+        throw new Error(
+          "Complete your CV profile (overview, experience, education and at least 3 skills) before applying for work"
+        );
+      }
+    }
+
     // Check existing
     const existing = await ctx.db
       .query("jobApplications")
@@ -77,12 +95,27 @@ export const submitApplication = mutation({
     }
 
     const now = Date.now();
+    // Auto-attach portfolio link from CV profile when not provided
+    let portfolioUrl = args.portfolioUrl?.trim() || undefined;
+    if (!portfolioUrl) {
+      const cv = await ctx.db
+        .query("cvProfiles")
+        .withIndex("by_userId", (q: any) => q.eq("userId", session.userId))
+        .first();
+      if (cv?.portfolioUrl) {
+        portfolioUrl = cv.portfolioUrl;
+      }
+    }
+    if (portfolioUrl && !/^https?:\/\//i.test(portfolioUrl)) {
+      throw new Error("Portfolio must be a valid http(s) link");
+    }
+
     const appId = await ctx.db.insert("jobApplications", {
       jobId: args.jobId,
       userId: session.userId,
       answers: args.answers,
       coverNote: args.coverNote.trim(),
-      portfolioUrl: args.portfolioUrl?.trim(),
+      portfolioUrl,
       resumeUrl: args.resumeUrl?.trim(),
       status: "submitted",
       paymentStatus: "unpaid",
@@ -194,8 +227,34 @@ export const getAllApplicationsAdmin = query({
       apps.map(async (a) => {
         const user = await ctx.db.get(a.userId);
         const job = await ctx.db.get(a.jobId);
+        const cv = user
+          ? await ctx.db
+              .query("cvProfiles")
+              .withIndex("by_userId", (q: any) => q.eq("userId", user._id))
+              .first()
+          : null;
+        const overviewOk = Boolean(cv?.overview && cv.overview.trim().length >= 50);
+        const experienceOk = (cv?.experience || []).length >= 1;
+        const educationOk = (cv?.education || []).length >= 1;
+        const skillsOk =
+          (cv?.technicalSkills || []).length + (cv?.softSkills || []).length >= 3;
+        const percent = Math.round(
+          ([overviewOk, experienceOk, educationOk, skillsOk].filter(Boolean).length / 4) * 100
+        );
         return {
           ...a,
+          cvProfile: cv
+            ? {
+                overview: cv.overview || "",
+                experience: cv.experience || [],
+                education: cv.education || [],
+                technicalSkills: cv.technicalSkills || [],
+                softSkills: cv.softSkills || [],
+                portfolioUrl: cv.portfolioUrl || "",
+                completenessPercent: percent,
+                complete: percent === 100,
+              }
+            : null,
           user: user
             ? {
                 _id: user._id,
@@ -324,14 +383,66 @@ export const updateApplicationStatus = mutation({
       }
     }
 
-    // Send notification to user
-    await ctx.db.insert("notifications", {
-      userId: app.userId,
-      type: "application",
+    // Send tailored notification to user
+    const statusMessages: Record<string, { title: string; message: string }> = {
+      accepted: {
+        title: "Congratulations! You've been selected",
+        message: `You have been selected for "${job?.title || "the role"}". The admin will guide you on the next steps.`,
+      },
+      in_progress: {
+        title: "Work Started",
+        message: `You are now working on "${job?.title || "the project"}". Submit your deliverable when done.`,
+      },
+      revision_required: {
+        title: "Revision Needed",
+        message: `Your deliverable for "${job?.title || "the project"}" needs revision. ${
+          args.adminNotes ? `Note: ${args.adminNotes}` : ""
+        }`,
+      },
+      completed: {
+        title: "Deliverable Approved",
+        message: `Your work on "${job?.title || "the project"}" was approved${
+          args.payoutAmount && args.payoutAmount > 0
+            ? ` and ₹${args.payoutAmount} was added to your wallet`
+            : ""
+        }. Thank you!`,
+      },
+      rejected: {
+        title: "Application Not Selected",
+        message: `Your application for "${job?.title || "the role"}" was not selected. ${
+          args.adminNotes ? `Reason: ${args.adminNotes}` : ""
+        }`,
+      },
+      cancelled: {
+        title: "Application Cancelled",
+        message: `Your application for "${job?.title || "the role"}" was cancelled. ${
+          args.adminNotes ? `Reason: ${args.adminNotes}` : ""
+        }`,
+      },
+      shortlisted: {
+        title: "You've been shortlisted!",
+        message: `Great news — you are shortlisted for "${job?.title || "the role"}"!`,
+      },
+      under_review: {
+        title: "Application Under Review",
+        message: `Your application for "${job?.title || "the role"}" is under review.`,
+      },
+      submitted: {
+        title: "Application Reopened",
+        message: `Your application for "${job?.title || "the role"}" is back to submitted.`,
+      },
+    };
+    const notification = statusMessages[args.status] || {
       title: `Application Update: ${job?.title || "Job"}`,
       message: `Your application status has been updated to "${args.status.toUpperCase()}". ${
         args.adminNotes ? `Note: ${args.adminNotes}` : ""
       }`,
+    };
+    await ctx.db.insert("notifications", {
+      userId: app.userId,
+      type: "application",
+      title: notification.title,
+      message: notification.message,
       read: false,
       actionUrl: "/dashboard/applications",
       createdAt: now,

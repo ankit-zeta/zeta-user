@@ -358,6 +358,79 @@ export default function AdminWorkPage() {
               </div>
             </div>
 
+            {/* Full structured CV */}
+            {selectedApp.cvProfile && (
+              <div className="space-y-3 text-xs border-t border-borderSubtle pt-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-textMain">Applicant CV (structured)</span>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                    selectedApp.cvProfile.complete ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"
+                  }`}>
+                    {selectedApp.cvProfile.completenessPercent}% complete
+                  </span>
+                </div>
+                {selectedApp.cvProfile.overview && (
+                  <div className="bg-neutral-50 p-3 rounded-lg border border-borderSubtle">
+                    <span className="font-bold text-textMuted block mb-1">Overview:</span>
+                    <p className="text-textMain whitespace-pre-wrap">{selectedApp.cvProfile.overview}</p>
+                  </div>
+                )}
+                {selectedApp.cvProfile.experience?.length > 0 && (
+                  <div className="space-y-1.5">
+                    <span className="font-bold text-textMuted block">Experience:</span>
+                    {selectedApp.cvProfile.experience.map((exp: any, i: number) => (
+                      <div key={i} className="bg-neutral-50 p-2.5 rounded-lg border border-borderSubtle">
+                        <p className="font-semibold text-textMain">
+                          {exp.role} — {exp.company}
+                        </p>
+                        <p className="text-[10px] text-textMuted">
+                          {exp.startDate} — {exp.current ? "Present" : exp.endDate || "—"}
+                        </p>
+                        {exp.description && <p className="text-[11px] text-textMuted mt-0.5">{exp.description}</p>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {selectedApp.cvProfile.education?.length > 0 && (
+                  <div className="space-y-1.5">
+                    <span className="font-bold text-textMuted block">Education:</span>
+                    {selectedApp.cvProfile.education.map((edu: any, i: number) => (
+                      <div key={i} className="bg-neutral-50 p-2.5 rounded-lg border border-borderSubtle">
+                        <p className="font-semibold text-textMain">
+                          {edu.degree}{edu.field ? ` (${edu.field})` : ""} — {edu.institution}
+                        </p>
+                        <p className="text-[10px] text-textMuted capitalize">
+                          {edu.status}
+                          {edu.startYear || edu.endYear ? ` • ${edu.startYear || ""}—${edu.endYear || ""}` : ""}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {(selectedApp.cvProfile.technicalSkills?.length > 0 || selectedApp.cvProfile.softSkills?.length > 0) && (
+                  <div className="space-y-1.5">
+                    <span className="font-bold text-textMuted block">Skills:</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {selectedApp.cvProfile.technicalSkills.map((s: string) => (
+                        <span key={s} className="text-[10px] font-semibold bg-brand-50 text-brand-800 border border-brand-200 px-1.5 py-0.5 rounded-full">{s}</span>
+                      ))}
+                      {selectedApp.cvProfile.softSkills.map((s: string) => (
+                        <span key={s} className="text-[10px] font-semibold bg-purple-50 text-purple-800 border border-purple-200 px-1.5 py-0.5 rounded-full">{s}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {selectedApp.cvProfile.portfolioUrl && (
+                  <p>
+                    <span className="font-semibold text-textMuted">Portfolio: </span>
+                    <a href={selectedApp.cvProfile.portfolioUrl} target="_blank" rel="noreferrer" className="text-brand-700 underline">
+                      {selectedApp.cvProfile.portfolioUrl}
+                    </a>
+                  </p>
+                )}
+              </div>
+            )}
+
             <form onSubmit={handleStatusUpdate} className="space-y-3 text-xs">
               <div className="space-y-1">
                 <label className="font-semibold text-textMain">Update Application Status *</label>

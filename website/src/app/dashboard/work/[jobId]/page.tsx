@@ -27,6 +27,11 @@ export default function JobApplicationDetailPage() {
   const job = jobs?.find((j) => j._id.toString() === jobId?.toString());
 
   const submitApp = useMutation(api.applications.submitApplication);
+  const cvProfile = useQuery(
+    api.cvProfiles.getMyCvProfile,
+    token ? { token } : "skip"
+  );
+  const cvComplete = cvProfile?.completeness?.complete === true;
 
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [coverNote, setCoverNote] = useState("");
@@ -59,6 +64,11 @@ export default function JobApplicationDetailPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
+
+    if (!cvComplete) {
+      setError("Please complete your CV profile before applying. Go to Profile & CV to add your overview, experience, education and skills.");
+      return;
+    }
 
     setIsSubmitting(true);
     setError("");
@@ -97,6 +107,20 @@ export default function JobApplicationDetailPage() {
         <ArrowLeft className="w-4 h-4" />
         <span>Back to Opportunities</span>
       </Link>
+
+      {cvProfile && !cvComplete && (
+        <div className="p-4 rounded-lg border border-amber-200 bg-amber-50 text-xs text-amber-800 space-y-1">
+          <p className="font-bold flex items-center gap-1.5">
+            <Lock className="w-4 h-4" /> Your CV profile is {cvProfile.completeness.percent}% complete
+          </p>
+          <p className="text-[11px] opacity-80">
+            Add your professional overview, experience, education and at least 3 skills to apply for work.
+          </p>
+          <Link href="/dashboard/profile" className="inline-flex items-center gap-1 mt-1 font-bold text-brand-700 hover:underline">
+            Complete my CV profile →
+          </Link>
+        </div>
+      )}
 
       {/* Job Details Card */}
       <div className="card-surface p-6 sm:p-8 space-y-6">

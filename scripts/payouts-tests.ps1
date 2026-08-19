@@ -45,6 +45,17 @@ $script:var.freshTok = $su.value.token
 $freshUser = C "query" "auth:getSessionUser" @{ token = $script:var.freshTok }
 $script:var.freshId = $freshUser.value._id
 
+# Complete CV required by the apply gate
+$cv = C "mutation" "cvProfiles:upsertCvProfile" @{
+  token = $script:var.freshTok
+  overview = "Payout suite test professional with relevant skills and experience to apply."
+  experience = @(@{ role = "QA Engineer"; company = "TestCo"; startDate = "2022-01"; endDate = "2023-01"; current = $false; description = "Tested things" })
+  education = @(@{ institution = "Test Univ"; degree = "B.Tech"; field = "CS"; status = "graduated"; startYear = "2017"; endYear = "2021" })
+  technicalSkills = @("QA", "Automation", "Testing")
+  softSkills = @("Attention to detail")
+}
+if ($cv.status -ne "success") { throw "payout cv upsert failed: $($cv.status) $($cv.errorMessage)" }
+
 $programs = C "query" "programs:getAllProgramsAdmin" @{ token = $script:var.adminTok }
 $script:var.programId = $programs.value[0]._id
 

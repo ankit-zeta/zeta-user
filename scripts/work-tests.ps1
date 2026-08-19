@@ -126,6 +126,15 @@ try {
     if ($signup.status -ne "success") { throw "signup failed" }
     $script:var.certTok = $signup.value.token
     $script:var.certId = $signup.value.user.id
+    $cv = C "mutation" "cvProfiles:upsertCvProfile" @{
+        token = $script:var.certTok
+        overview = "Test professional with relevant skills and experience for the work suite."
+        experience = @(@{ role = "Freelancer"; company = "TestCo"; startDate = "2022-01"; endDate = "2023-01"; current = $false; description = "Did work" })
+        education = @(@{ institution = "Test Univ"; degree = "B.A."; field = "Design"; status = "graduated"; startYear = "2018"; endYear = "2021" })
+        technicalSkills = @("Design", "Research", "Writing")
+        softSkills = @("Communication")
+    }
+    if ($cv.status -ne "success") { throw "cv upsert failed: $($cv.status) $($cv.errorMessage)" }
     $g = C "mutation" "users:grantProgramAccess" @{ token = $script:var.adminTok; userId = $script:var.certId; programId = $script:var.starterId; reason = "Work test suite" }
     if ($g.status -ne "success") { throw "program grant failed" }
     $state = C "query" "learning:getCoursePlayerState" @{ token = $script:var.certTok; programId = $script:var.starterId }

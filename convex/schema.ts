@@ -40,6 +40,36 @@ export default defineSchema({
     .index("by_token", ["token"])
     .index("by_userId", ["userId"]),
 
+  // Structured CV Profiles (no file uploads — form data only)
+  cvProfiles: defineTable({
+    userId: v.id("users"),
+    overview: v.optional(v.string()),
+    experience: v.array(
+      v.object({
+        role: v.string(),
+        company: v.string(),
+        startDate: v.string(),
+        endDate: v.optional(v.string()),
+        current: v.optional(v.boolean()),
+        description: v.optional(v.string()),
+      })
+    ),
+    education: v.array(
+      v.object({
+        institution: v.string(),
+        degree: v.string(),
+        field: v.optional(v.string()),
+        status: v.string(), // "pursuing" | "graduated" | "completed"
+        startYear: v.optional(v.string()),
+        endYear: v.optional(v.string()),
+      })
+    ),
+    technicalSkills: v.array(v.string()),
+    softSkills: v.array(v.string()),
+    portfolioUrl: v.optional(v.string()),
+    updatedAt: v.number(),
+  }).index("by_userId", ["userId"]),
+
   // Programs / Courses
   programs: defineTable({
     slug: v.string(),
