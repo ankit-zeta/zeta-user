@@ -266,6 +266,13 @@ try {
 } catch { $script:var.lastException = $_.Exception.Message }
 Check "E3" "demo login shows real enrollments" $true
 
+$script:var.lastException = $null
+try {
+    $r = C "query" "auth:getSessionUser" @{ token = $null }
+    if ($r.status -ne "success" -or $r.value -ne $null) { throw "explicit null token should return success+null, got $($r.status)" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "E4" "getSessionUser explicit null token -> success + null (regression)" $true
+
 Write-Host ""
 $fail = @($results | Where-Object { $_ -like "FAIL*" })
 Write-Host "=== SUMMARY ==="

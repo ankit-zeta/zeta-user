@@ -40,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const user = useQuery(api.auth.getSessionUser, token ? { token } : "skip");
+  const userQueryFailed = user === undefined && isInitialized;
   const logoutMutation = useMutation(api.auth.logout);
 
   const handleLogin = (newToken: string) => {
@@ -60,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = "/login";
   };
 
-  const isLoading = !isInitialized || (token !== null && user === undefined);
+  const isLoading = !isInitialized || (token !== null && user === undefined && !userQueryFailed);
 
   return (
     <AuthContext.Provider

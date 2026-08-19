@@ -38,6 +38,7 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const adminUser = useQuery(api.auth.getSessionUser, token ? { token } : "skip");
+  const adminUserError = adminUser === undefined && isInitialized;
   const logoutMutation = useMutation(api.auth.logout);
 
   const handleLogin = (newToken: string) => {
@@ -59,7 +60,10 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   };
 
   const isAdminRole = adminUser && ["super_admin", "admin", "content_admin", "finance_admin", "work_admin"].includes(adminUser.role);
-  const isLoading = !isInitialized || (token !== null && adminUser === undefined);
+
+  // Loading only while we genuinely don't know the session yet.
+  // A query error (adminUser stuck undefined after init) must NOT hang the app.
+  const isLoading = !isInitialized || (token !== null && adminUser === undefined && !adminUserError);
 
   return (
     <AdminAuthContext.Provider

@@ -217,7 +217,7 @@ export const login = mutation({
 });
 
 export const getSessionUser = query({
-  args: { token: v.optional(v.string()) },
+  args: { token: v.optional(v.union(v.null(), v.string())) },
   handler: async (ctx, args) => {
     if (!args.token) return null;
 
