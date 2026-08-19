@@ -82,9 +82,11 @@ export const getResourcesForUser = query({
         }
 
         let programName = undefined;
+        let programSlug = undefined;
         if (r.programId) {
           const prog = await ctx.db.get(r.programId);
           programName = prog?.name;
+          programSlug = prog?.slug;
         }
 
         return {
@@ -97,7 +99,9 @@ export const getResourcesForUser = query({
           accessType: r.accessType,
           hasAccess,
           lockReason,
+          programId: r.programId,
           programName,
+          programSlug,
           downloadCount: r.downloadCount,
         };
       })
