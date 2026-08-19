@@ -51,6 +51,7 @@ export default function AdminFinancePage() {
   const [withdrawalNote, setWithdrawalNote] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [msg, setMsg] = useState("");
+  const [qrView, setQrView] = useState<any | null>(null);
 
   const [adjustmentModalOpen, setAdjustmentModalOpen] = useState(false);
   const [adjustUserId, setAdjustUserId] = useState("");
@@ -60,6 +61,10 @@ export default function AdminFinancePage() {
 
   const handleWithdrawalAction = async (withdrawalId: any, status: string) => {
     if (!token) return;
+    const actionLabel = status === "processing" ? "approve" : status === "completed" ? "mark as PAID" : "reject";
+    if (!window.confirm(`Are you sure you want to ${actionLabel} this withdrawal? This affects the member's wallet.`)) {
+      return;
+    }
     setIsProcessing(true);
     setMsg("");
 
@@ -123,19 +128,26 @@ export default function AdminFinancePage() {
     }
     if (w.payoutMethod === "upi_qr") {
       return (
-        <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setQrView(w)}
+          className="flex items-center gap-2 group"
+          title="Click to open QR image"
+        >
           {w.qrImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={w.qrImageUrl}
               alt="UPI QR"
-              className="w-10 h-10 object-contain border border-borderSubtle rounded bg-white"
+              className="w-10 h-10 object-contain border border-borderSubtle rounded bg-white group-hover:ring-2 group-hover:ring-brand-300 transition-shadow cursor-pointer"
             />
           ) : (
             <QrCode className="w-4 h-4 text-neutral-400" />
           )}
-          <span className="text-[10px] text-textMuted">UPI QR Image</span>
-        </div>
+          <span className="text-[10px] text-brand-700 font-semibold group-hover:underline">
+            View QR
+          </span>
+        </button>
       );
     }
     if (w.payoutMethod === "paypal") {
@@ -459,6 +471,73 @@ export default function AdminFinancePage() {
               </div>
             </>
           )}
+        </div>
+      )}
+
+      {/* QR Preview Lightbox */}
+      {qrView && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          onClick={() => setQrView(null)}
+        >
+          <div
+            className="card-surface p-6 max-w-sm w-full space-y-4 bg-white shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-bold text-textMain">UPI QR — Payout</h3>
+              <button
+                onClick={() => setQrView(null)}
+                className="text-textMuted hover:text-textMain"
+                aria-label="Close"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+            {qrView.qrImageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={qrView.qrImageUrl}
+                alt="UPI QR"
+                className="w-full max-h-[60vh] object-contain border border-borderSubtle rounded bg-white"
+              />
+            ) : (
+              <div className="p-8 text-center text-xs text-textMuted">
+                No QR image available.
+              </div>
+            )}
+            <div className="space-y-1 text-xs text-textMuted">
+              <p>
+                <span className="font-semibold text-textMain">Amount:</span> ₹{qrView.amount.toLocaleString("en-IN")}{" "}
+                (Net: ₹{qrView.netAmount.toLocaleString("en-IN")})
+              </p>
+              <p>
+                <span className="font-semibold text-textMain">Holder:</span>{" "}
+                {qrView.payoutDetails?.accountHolderName || qrView.user?.name || "—"}
+              </p>
+              <p>
+                <span className="font-semibold text-textMain">Status:</span> {qrView.status}
+              </p>
+            </div>
+            <div className="flex justify-end gap-2 pt-1">
+              {qrView.qrImageUrl && (
+                <a
+                  href={qrView.qrImageUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-primary py-1.5 px-4"
+                >
+                  Open Full Size
+                </a>
+              )}
+              <button
+                onClick={() => setQrView(null)}
+                className="btn-secondary py-1.5 px-4"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
