@@ -203,6 +203,8 @@ export const getAllApplicationsAdmin = query({
                 email: user.email,
                 referralCode: user.referralCode,
                 avatarUrl: user.avatarUrl,
+                cvStatus: user.cvStatus || "pending",
+                cvRemarks: user.cvRemarks,
               }
             : null,
           job,
@@ -230,14 +232,63 @@ export const updateApplicationStatus = mutation({
     const job = await ctx.db.get(app.jobId);
     const now = Date.now();
 
+    const validStatuses = [
+      "submitted",
+      "under_review",
+      "shortlisted",
+      "accepted",
+      "in_progress",
+      "revision_required",
+      "completed",
+      "rejected",
+      "cancelled",
+    ];
+    if (!validStatuses.includes(args.status)) {
+      throw new Error("Invalid application status");
+    }
+
+    const finalStates = ["completed", "rejected", "cancelled"];
+    if (finalStates.includes(app.status)) {
+      throw new Error(`Cannot change a ${app.status} application`);
+    }
+
+    if (args.status === "accepted") {
+      const user = await ctx.db.get(app.userId);
+      if (!user) throw new Error("Applicant no longer exists");
+      if ((user.cvStatus || "pending") !== "verified") {
+        throw new Error(
+          "Applicant CV must be verified before they can be selected for work"
+        );
+      }
+    }
+
+    // Payout handling (only on completed, only once, capped at job payment)
+    let payoutCredited = false;
+    if (args.status === "completed") {
+      const payout = args.payoutAmount && args.payoutAmount > 0 ? args.payoutAmount : 0;
+      if (payout > 0) {
+        if (app.paymentStatus === "paid") {
+          throw new Error("Payout already released for this application");
+        }
+        if (job && payout > job.payment) {
+          throw new Error(`Payout cannot exceed the job payment of ₹${job.payment}`);
+        }
+      }
+      if (payout === 0) {
+        // Mark completed without payout; stays unpaid
+      }
+      payoutCredited = payout > 0;
+    }
+
     await ctx.db.patch(args.applicationId, {
       status: args.status,
       adminNotes: args.adminNotes,
+      paymentStatus: args.status === "completed" ? "unpaid" : app.paymentStatus,
       updatedAt: now,
     });
 
     // If marked completed and payout is provided
-    if (args.status === "completed" && args.payoutAmount && args.payoutAmount > 0) {
+    if (args.status === "completed" && payoutCredited && args.payoutAmount && args.payoutAmount > 0) {
       // Credit user's wallet
       const wallet = await ctx.db
         .query("wallets")
@@ -259,7 +310,7 @@ export const updateApplicationStatus = mutation({
           type: "WORK_PAYOUT",
           amount: args.payoutAmount,
           balanceAfter: newBal,
-          referenceId: args.applicationId,
+          referenceId: String(args.applicationId),
           description: `Work completion payout for: ${job?.title || "Contract Task"}`,
           status: "completed",
           createdAt: now,
@@ -268,6 +319,8 @@ export const updateApplicationStatus = mutation({
         await ctx.db.patch(args.applicationId, {
           paymentStatus: "paid",
         });
+      } else {
+        throw new Error("Applicant wallet not found; payout not released");
       }
     }
 

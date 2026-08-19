@@ -17,6 +17,10 @@ export default defineSchema({
     phone: v.optional(v.string()),
     skills: v.optional(v.array(v.string())),
     positionId: v.optional(v.id("positions")),
+    cvStatus: v.optional(v.string()), // "pending" | "verified" | "rejected"
+    cvRemarks: v.optional(v.string()),
+    cvReviewedAt: v.optional(v.number()),
+    cvVerifiedBy: v.optional(v.string()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
@@ -282,7 +286,7 @@ export default defineSchema({
     amount: v.number(),
     fee: v.number(),
     netAmount: v.number(),
-    payoutMethod: v.string(), // "bank_transfer" | "upi" | "paypal"
+    payoutMethod: v.string(), // "bank_transfer" | "upi" | "paypal" | "upi_qr"
     payoutDetails: v.object({
       accountNumber: v.optional(v.string()),
       ifscCode: v.optional(v.string()),
@@ -290,6 +294,7 @@ export default defineSchema({
       accountHolderName: v.optional(v.string()),
       upiId: v.optional(v.string()),
       paypalEmail: v.optional(v.string()),
+      qrImageUrl: v.optional(v.string()),
     }),
     status: v.string(), // "requested" | "under_review" | "approved" | "processing" | "completed" | "rejected" | "cancelled"
     adminNote: v.optional(v.string()),

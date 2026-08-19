@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useAuth } from "@/lib/convex";
 import { useMutation } from "convex/react";
 import { api } from "@/lib/convex";
-import { User, Mail, Phone, Award, Shield, Save, CheckCircle2 } from "lucide-react";
+import { User, Mail, Phone, Award, Shield, Save, CheckCircle2, XCircle, Clock } from "lucide-react";
 
 export default function ProfilePage() {
   const { user, token } = useAuth();
@@ -61,6 +61,42 @@ export default function ProfilePage() {
         <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-xs text-green-800 flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-green-600" />
           <span>{msg}</span>
+        </div>
+      )}
+
+      {(user?.cvStatus || "pending") !== "verified" && (
+        <div className={`p-4 rounded-lg border text-xs space-y-1 ${
+          user?.cvStatus === "rejected"
+            ? "bg-red-50 border-red-200 text-red-800"
+            : "bg-amber-50 border-amber-200 text-amber-800"
+        }`}>
+          <p className="font-bold flex items-center gap-1.5">
+            {user?.cvStatus === "rejected" ? (
+              <>
+                <XCircle className="w-4 h-4" /> Your CV was not verified
+              </>
+            ) : (
+              <>
+                <Clock className="w-4 h-4" /> CV verification pending
+              </>
+            )}
+          </p>
+          <p className="text-[11px] opacity-80">
+            {user?.cvStatus === "rejected"
+              ? `Remark: ${user.cvRemarks || "Please contact support for details."}`
+              : "Submit a CV/resume with your work applications. Once an admin verifies it, you become eligible to be selected for work opportunities and paid for completed projects."}
+          </p>
+        </div>
+      )}
+
+      {user?.cvStatus === "verified" && (
+        <div className="p-4 rounded-lg border text-xs bg-green-50 border-green-200 text-green-800 space-y-1">
+          <p className="font-bold flex items-center gap-1.5">
+            <CheckCircle2 className="w-4 h-4" /> CV verified — you are eligible for work selection
+          </p>
+          {user.cvReviewedAt && (
+            <p className="text-[11px] opacity-80">Reviewed on {new Date(user.cvReviewedAt).toLocaleDateString("en-IN")}</p>
+          )}
         </div>
       )}
 

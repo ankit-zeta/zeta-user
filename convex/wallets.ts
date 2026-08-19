@@ -53,6 +53,101 @@ export const getUserWallet = query({
   },
 });
 
+export const getAllWalletsAdmin = query({
+  args: { token: v.string() },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx, args.token);
+
+    const wallets = await ctx.db.query("wallets").collect();
+    const detailed = await Promise.all(
+      wallets.map(async (w) => {
+        const user = await ctx.db.get(w.userId);
+        const txs = await ctx.db
+          .query("walletTransactions")
+          .withIndex("by_userId", (q: any) => q.eq("userId", w.userId))
+          .collect();
+        return {
+          ...w,
+          user: user
+            ? {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                status: user.status,
+                referralCode: user.referralCode,
+                cvStatus: user.cvStatus || "pending",
+              }
+            : null,
+          transactionCount: txs.length,
+          pendingWithdrawal: txs.some(
+            (t) => t.type === "WITHDRAWAL" && t.status === "pending"
+          ),
+        };
+      })
+    );
+
+    detailed.sort((a, b) => b.totalEarned - a.totalEarned);
+    return detailed;
+  },
+});
+
+export const getPayoutReport = query({
+  args: { token: v.string() },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx, args.token);
+
+    const jobs = await ctx.db.query("jobs").collect();
+    const apps = await ctx.db.query("jobApplications").collect();
+    const txs = await ctx.db.query("walletTransactions").collect();
+
+    const report = await Promise.all(
+      jobs.map(async (job) => {
+        const jobApps = apps.filter((a) => a.jobId === job._id);
+
+        const applicationIds = new Set(jobApps.map((a) => String(a._id)));
+        const jobPayoutTxs = txs.filter(
+          (t) => t.type === "WORK_PAYOUT" && applicationIds.has(String(t.referenceId))
+        );
+
+        const uniquePaidUsers = new Set(
+          jobPayoutTxs.filter((t) => t.status === "completed").map((t) => String(t.userId))
+        );
+
+        return {
+          jobId: job._id,
+          title: job.title,
+          category: job.category,
+          payment: job.payment,
+          applicationCount: jobApps.length,
+          doingWorkCount: jobApps.filter((a) =>
+            ["accepted", "in_progress", "under_review", "revision_required"].includes(a.status)
+          ).length,
+          completedCount: jobApps.filter((a) => a.status === "completed").length,
+          paidCount: jobApps.filter((a) => a.paymentStatus === "paid").length,
+          paidUsers: uniquePaidUsers.size,
+          totalPaid: jobPayoutTxs
+            .filter((t) => t.status === "completed")
+            .reduce((s: number, t: any) => s + t.amount, 0),
+        };
+      })
+    );
+
+    report.sort((a, b) => b.totalPaid - a.totalPaid);
+
+    const totals = {
+      jobs: report.length,
+      applications: report.reduce((s, r) => s + r.applicationCount, 0),
+      doingWork: report.reduce((s, r) => s + r.doingWorkCount, 0),
+      completed: report.reduce((s, r) => s + r.completedCount, 0),
+      paid: report.reduce((s, r) => s + r.paidCount, 0),
+      totalPaid: report.reduce((s, r) => s + r.totalPaid, 0),
+    };
+
+    return { report, totals };
+  },
+});
+
 export const adminAdjustWallet = mutation({
   args: {
     token: v.string(),

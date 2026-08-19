@@ -14,7 +14,10 @@ import {
   XCircle, 
   ExternalLink,
   ChevronRight,
-  UploadCloud
+  UploadCloud,
+  ShieldCheck,
+  ShieldX,
+  BadgeCheck
 } from "lucide-react";
 
 export default function AdminWorkPage() {
@@ -29,6 +32,7 @@ export default function AdminWorkPage() {
   );
 
   const updateAppStatusMutation = useMutation(api.applications.updateApplicationStatus);
+  const updateCvStatusMutation = useMutation(api.users.updateUserCvStatus);
 
   const [selectedApp, setSelectedApp] = useState<any | null>(null);
   const [newStatus, setNewStatus] = useState("under_review");
@@ -36,6 +40,30 @@ export default function AdminWorkPage() {
   const [payoutAmount, setPayoutAmount] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [msg, setMsg] = useState("");
+  const [cvUserId, setCvUserId] = useState<string | null>(null);
+  const [cvAction, setCvAction] = useState<"verified" | "rejected">("verified");
+  const [cvRemarks, setCvRemarks] = useState("");
+
+  const handleCvAction = async () => {
+    if (!token || !cvUserId) return;
+    setIsProcessing(true);
+    setMsg("");
+    try {
+      await updateCvStatusMutation({
+        token,
+        userId: cvUserId as any,
+        cvStatus: cvAction,
+        remarks: cvRemarks || undefined,
+      });
+      setMsg(`CV marked as ${cvAction.toUpperCase()} — applicant notified.`);
+      setCvUserId(null);
+      setCvRemarks("");
+    } catch (err: any) {
+      setMsg(err.message || "Failed to update CV status.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const handleStatusUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -169,6 +197,15 @@ export default function AdminWorkPage() {
                     <td className="py-3 px-3">
                       <span className="font-bold text-textMain block">{app.user?.name || "Applicant"}</span>
                       <span className="text-[11px] text-textMuted">{app.user?.email}</span>
+                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase mt-1 inline-block ${
+                        app.user?.cvStatus === "verified"
+                          ? "bg-green-100 text-green-800"
+                          : app.user?.cvStatus === "rejected"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-amber-100 text-amber-800"
+                      }`}>
+                        CV: {app.user?.cvStatus || "pending"}
+                      </span>
                     </td>
                     <td className="py-3 px-3 font-medium text-textMain">
                       {app.job?.title || "Job"}
@@ -200,6 +237,11 @@ export default function AdminWorkPage() {
                       }`}>
                         {app.status}
                       </span>
+                      {app.paymentStatus === "paid" && (
+                        <span className="ml-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase bg-emerald-100 text-emerald-800">
+                          ₹ Paid
+                        </span>
+                      )}
                     </td>
                     <td className="py-3 px-3 text-textMuted">
                       {new Date(app.submittedAt).toLocaleDateString("en-IN")}
@@ -262,6 +304,58 @@ export default function AdminWorkPage() {
                   </a>
                 </p>
               )}
+              {selectedApp.resumeUrl && (
+                <p className="pt-1">
+                  <span className="font-semibold text-textMuted">CV / Resume: </span>
+                  <a href={selectedApp.resumeUrl} target="_blank" rel="noreferrer" className="text-brand-700 underline">
+                    View CV
+                  </a>
+                </p>
+              )}
+            </div>
+
+            {/* CV verification */}
+            <div className={`p-3 rounded-lg border text-xs space-y-2 ${
+              selectedApp.user?.cvStatus === "verified"
+                ? "bg-green-50 border-green-200"
+                : selectedApp.user?.cvStatus === "rejected"
+                ? "bg-red-50 border-red-200"
+                : "bg-amber-50 border-amber-200"
+            }`}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-bold text-textMain flex items-center gap-1.5">
+                    {selectedApp.user?.cvStatus === "verified" ? (
+                      <><BadgeCheck className="w-4 h-4 text-green-600" /> CV Verified</>
+                    ) : selectedApp.user?.cvStatus === "rejected" ? (
+                      <><ShieldX className="w-4 h-4 text-red-600" /> CV Rejected</>
+                    ) : (
+                      <><ShieldCheck className="w-4 h-4 text-amber-600" /> CV Pending Verification</>
+                    )}
+                  </p>
+                  <p className="text-[10px] text-textMuted mt-0.5">
+                    {selectedApp.user?.cvStatus === "verified"
+                      ? "Eligible for work selection."
+                      : "CV must be verified before this applicant can be accepted for work."}
+                  </p>
+                  {selectedApp.user?.cvRemarks && (
+                    <p className="text-[10px] text-textMuted italic mt-1">Last remark: {selectedApp.user.cvRemarks}</p>
+                  )}
+                </div>
+                {selectedApp.user?.cvStatus !== "verified" && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCvUserId(selectedApp.user?._id);
+                      setCvAction("verified");
+                      setCvRemarks("");
+                    }}
+                    className="px-2.5 py-1.5 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700"
+                  >
+                    Verify CV
+                  </button>
+                )}
+              </div>
             </div>
 
             <form onSubmit={handleStatusUpdate} className="space-y-3 text-xs">
@@ -329,6 +423,51 @@ export default function AdminWorkPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* CV Verify / Reject Modal */}
+      {cvUserId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="card-surface p-6 max-w-md w-full space-y-4 bg-white shadow-2xl">
+            <h3 className="text-base font-bold text-textMain">
+              {cvAction === "verified" ? "Verify Applicant CV" : "Reject Applicant CV"}
+            </h3>
+            <p className="text-xs text-textMuted">
+              {cvAction === "verified"
+                ? "The applicant becomes eligible to be selected for work opportunities. Their wallet and profile stay intact."
+                : "The applicant is notified and cannot be accepted for work until re-verified."}
+            </p>
+
+            <div className="space-y-1">
+              <label className="font-semibold text-textMain">Remarks (optional)</label>
+              <textarea
+                rows={3}
+                value={cvRemarks}
+                onChange={(e) => setCvRemarks(e.target.value)}
+                placeholder={cvAction === "rejected" ? "Required for rejected CVs — e.g. missing document, unclear image..." : "Optional note"}
+                className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white text-xs"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setCvUserId(null)}
+                className="btn-secondary py-1.5 px-3"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleCvAction}
+                disabled={isProcessing}
+                className={cvAction === "verified" ? "btn-primary py-1.5 px-4" : "py-1.5 px-4 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700"}
+              >
+                {isProcessing ? "Saving..." : cvAction === "verified" ? "Verify CV" : "Reject CV"}
+              </button>
+            </div>
           </div>
         </div>
       )}

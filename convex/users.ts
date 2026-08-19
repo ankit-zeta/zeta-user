@@ -98,6 +98,8 @@ export const getAllUsers = query({
           phone: u.phone,
           avatarUrl: u.avatarUrl,
           createdAt: u.createdAt,
+          cvStatus: u.cvStatus || "pending",
+          cvRemarks: u.cvRemarks,
           totalEarned: wallet?.totalEarned || 0,
           availableBalance: wallet?.availableBalance || 0,
           enrolledCount: purchases.filter((p) => p.status === "completed").length,
@@ -304,6 +306,10 @@ export const getUserDetails = query({
         bio: user.bio,
         phone: user.phone,
         skills: user.skills || [],
+        positionId: user.positionId,
+        cvStatus: user.cvStatus || "pending",
+        cvRemarks: user.cvRemarks,
+        cvReviewedAt: user.cvReviewedAt,
         createdAt: user.createdAt,
       },
       wallet,
@@ -538,6 +544,113 @@ export const grantProgramAccess = mutation({
       previousValue: "none",
       newValue: program.name,
       reason: args.reason,
+      timestamp: now,
+    });
+
+    return { success: true };
+  },
+});
+
+export const getCvReviewQueue = query({
+  args: { token: v.string() },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx, args.token);
+
+    const users = await ctx.db.query("users").collect();
+    const cvUsers = users.filter(
+      (u) => (u.cvStatus || "pending") === "pending" || (u.cvStatus || "pending") === "rejected"
+    );
+
+    const detailed = await Promise.all(
+      cvUsers.map(async (u) => {
+        const apps = await ctx.db
+          .query("jobApplications")
+          .withIndex("by_userId", (q) => q.eq("userId", u._id))
+          .collect();
+        const wallet = await ctx.db
+          .query("wallets")
+          .withIndex("by_userId", (q) => q.eq("userId", u._id))
+          .first();
+        return {
+          _id: u._id,
+          name: u.name,
+          email: u.email,
+          phone: u.phone,
+          skills: u.skills || [],
+          positionId: u.positionId,
+          cvStatus: u.cvStatus || "pending",
+          cvRemarks: u.cvRemarks,
+          cvReviewedAt: u.cvReviewedAt,
+          applicationCount: apps.length,
+          applicationResumes: apps
+            .filter((a) => a.resumeUrl)
+            .map((a) => a.resumeUrl),
+          latestApplication: apps.length
+            ? apps
+                .slice()
+                .sort((a, b) => b.submittedAt - a.submittedAt)[0]
+            : null,
+          walletBalance: wallet?.availableBalance || 0,
+          totalEarned: wallet?.totalEarned || 0,
+          createdAt: u.createdAt,
+        };
+      })
+    );
+
+    detailed.sort((a, b) => b.createdAt - a.createdAt);
+    return detailed;
+  },
+});
+
+export const updateUserCvStatus = mutation({
+  args: {
+    token: v.string(),
+    userId: v.id("users"),
+    cvStatus: v.string(), // "verified" | "rejected"
+    remarks: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx, args.token);
+    if (!["verified", "rejected"].includes(args.cvStatus)) {
+      throw new Error("Invalid CV status");
+    }
+
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
+
+    const previous = user.cvStatus || "pending";
+    const now = Date.now();
+
+    await ctx.db.patch(args.userId, {
+      cvStatus: args.cvStatus,
+      cvRemarks: args.remarks?.trim() || undefined,
+      cvReviewedAt: now,
+      cvVerifiedBy: admin.email,
+      updatedAt: now,
+    });
+
+    await ctx.db.insert("notifications", {
+      userId: args.userId,
+      type: "cv",
+      title: args.cvStatus === "verified" ? "CV Verified" : "CV Not Verified",
+      message:
+        args.cvStatus === "verified"
+          ? "Your profile CV has been verified. You are now eligible to be selected for work opportunities."
+          : `Your CV could not be verified. Remark: ${args.remarks || "Please contact support"}`,
+      read: false,
+      actionUrl: "/dashboard/profile",
+      createdAt: now,
+    });
+
+    await ctx.db.insert("auditLogs", {
+      adminUserId: admin._id,
+      adminEmail: admin.email,
+      action: "UPDATE_CV_STATUS",
+      entityType: "users",
+      entityId: args.userId,
+      previousValue: previous,
+      newValue: args.cvStatus,
+      reason: args.remarks || "CV review",
       timestamp: now,
     });
 
