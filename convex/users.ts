@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { hashPassword, generateSalt } from "./auth";
 
 // Helper to authenticate admin
 async function requireAdmin(ctx: any, token: string) {
@@ -339,6 +340,111 @@ export const getUserDetails = query({
       })),
       notificationsCount,
     };
+  },
+});
+
+export const updateUserRole = mutation({
+  args: {
+    token: v.string(),
+    userId: v.id("users"),
+    role: v.string(), // "user" | "content_admin" | "finance_admin" | "work_admin"
+    reason: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx, args.token);
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
+    if (user._id === admin._id) throw new Error("You cannot change your own role");
+    if (!["user", "content_admin", "finance_admin", "work_admin"].includes(args.role)) {
+      throw new Error("Invalid role");
+    }
+    if (user.role === args.role) throw new Error("User already has this role");
+
+    const now = Date.now();
+    await ctx.db.patch(args.userId, { role: args.role, updatedAt: now });
+
+    await ctx.db.insert("notifications", {
+      userId: args.userId,
+      type: "account",
+      title: "Account Role Updated",
+      message: `Your account role has been changed to ${args.role.replace(/_/g, " ")}. Reason: ${args.reason}`,
+      read: false,
+      actionUrl: "/dashboard",
+      createdAt: now,
+    });
+
+    await ctx.db.insert("auditLogs", {
+      adminUserId: admin._id,
+      adminEmail: admin.email,
+      action: "UPDATE_USER_ROLE",
+      entityType: "users",
+      entityId: args.userId,
+      previousValue: user.role,
+      newValue: args.role,
+      reason: args.reason,
+      timestamp: now,
+    });
+
+    return { success: true };
+  },
+});
+
+export const adminResetPassword = mutation({
+  args: {
+    token: v.string(),
+    userId: v.id("users"),
+    newPassword: v.string(),
+    reason: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx, args.token);
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
+    if (args.newPassword.length < 8) {
+      throw new Error("Password must be at least 8 characters");
+    }
+
+    const salt = generateSalt();
+    const hash = await hashPassword(args.newPassword, salt);
+    const now = Date.now();
+
+    await ctx.db.patch(args.userId, {
+      passwordHash: hash,
+      salt,
+      updatedAt: now,
+    });
+
+    const sessions = await ctx.db
+      .query("sessions")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .collect();
+    for (const s of sessions) {
+      await ctx.db.delete(s._id);
+    }
+
+    await ctx.db.insert("notifications", {
+      userId: args.userId,
+      type: "security",
+      title: "Password Reset by Admin",
+      message: `Your password was reset by an administrator. Reason: ${args.reason}. Please log in again.`,
+      read: false,
+      actionUrl: "/login",
+      createdAt: now,
+    });
+
+    await ctx.db.insert("auditLogs", {
+      adminUserId: admin._id,
+      adminEmail: admin.email,
+      action: "ADMIN_PASSWORD_RESET",
+      entityType: "users",
+      entityId: args.userId,
+      previousValue: "password_hash",
+      newValue: "rotated",
+      reason: args.reason,
+      timestamp: now,
+    });
+
+    return { success: true };
   },
 });
 

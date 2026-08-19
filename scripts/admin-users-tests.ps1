@@ -217,6 +217,110 @@ try {
 Check "G3" "non-admin cannot grant" $true
 
 Write-Host ""
+Write-Host "=== WALLET ADJUSTMENT ==="
+$script:var.lastException = $null
+try {
+    $r = C "mutation" "wallets:adminAdjustWallet" @{ token = $script:var.adminTok; userId = $script:var.probeId; amount = 500; type = "CREDIT"; reason = "Test suite credit" }
+    if ($r.status -ne "success" -or $r.value.newBalance -ne 500) { throw "credit failed: $($r.status) bal=$($r.value.newBalance)" }
+    $det = C "query" "users:getUserDetails" @{ token = $script:var.adminTok; userId = $script:var.probeId }
+    $txn = @($det.value.walletTransactions | Where-Object { $_.type -eq "ADMIN_ADJUSTMENT" -and $_.description -match "Test suite credit" })
+    if ($txn.Count -ne 1) { throw "ledger transaction missing" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "W1" "wallet credit -> balance + ledger entry" $true
+
+$script:var.lastException = $null
+try {
+    $r = C "mutation" "wallets:adminAdjustWallet" @{ token = $script:var.adminTok; userId = $script:var.probeId; amount = 999999; type = "DEBIT"; reason = "overdraw test" }
+    if ($r.status -ne "error") { throw "overdraw should be rejected" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "W2" "debit beyond balance rejected" $true
+
+$script:var.lastException = $null
+try {
+    $r = C "mutation" "wallets:adminAdjustWallet" @{ token = $script:var.adminTok; userId = $script:var.probeId; amount = 200; type = "DEBIT"; reason = "Test suite debit" }
+    if ($r.status -ne "success" -or $r.value.newBalance -ne 300) { throw "debit failed: $($r.status) bal=$($r.value.newBalance)" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "W3" "wallet debit works" $true
+
+$script:var.lastException = $null
+try {
+    $r = C "mutation" "wallets:adminAdjustWallet" @{ token = $script:var.demoTok; userId = $script:var.probeId; amount = 100; type = "CREDIT"; reason = "hack" }
+    if ($r.status -ne "error") { throw "user token should be blocked" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "W4" "non-admin cannot adjust wallet" $true
+
+Write-Host ""
+Write-Host "=== ROLE MANAGEMENT ==="
+$script:var.lastException = $null
+try {
+    $r = C "mutation" "users:updateUserRole" @{ token = $script:var.adminTok; userId = $script:var.probeId; role = "content_admin"; reason = "Test suite promote" }
+    if ($r.status -ne "success") { throw "promote failed: $($r.status)" }
+    $det = C "query" "users:getUserDetails" @{ token = $script:var.adminTok; userId = $script:var.probeId }
+    if ($det.value.user.role -ne "content_admin") { throw "role not applied" }
+    $log = @($det.value.auditLogs | Where-Object { $_.action -eq "UPDATE_USER_ROLE" -and $_.previousValue -eq "user" -and $_.newValue -eq "content_admin" })
+    if ($log.Count -ne 1) { throw "role audit log missing" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "R1" "role change applied + audit logged" $true
+
+$script:var.lastException = $null
+try {
+    $r = C "mutation" "users:updateUserRole" @{ token = $script:var.adminTok; userId = $script:var.probeId; role = "super_admin"; reason = "hack" }
+    if ($r.status -ne "error") { throw "super_admin promotion should be rejected" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "R2" "cannot promote to super_admin" $true
+
+$script:var.lastException = $null
+try {
+    $adminUser = C "query" "auth:getSessionUser" @{ token = $script:var.adminTok }
+    $r = C "mutation" "users:updateUserRole" @{ token = $script:var.adminTok; userId = $adminUser.value.id; role = "user"; reason = "self-demote test" }
+    if ($r.status -ne "error") { throw "self role change should be rejected" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "R3" "admin cannot change own role" $true
+
+$script:var.lastException = $null
+try {
+    $r = C "mutation" "users:updateUserRole" @{ token = $script:var.demoTok; userId = $script:var.probeId; role = "finance_admin"; reason = "hack" }
+    if ($r.status -ne "error") { throw "user token should be blocked" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "R4" "non-admin cannot change roles" $true
+
+Write-Host ""
+Write-Host "=== PASSWORD RESET ==="
+$script:var.lastException = $null
+try {
+    $newUser = C "mutation" "auth:signup" @{ name = "Reset Target"; email = "resettarget.$ts@zetagrow.com"; password = "OldPass123!" }
+    if ($newUser.status -ne "success") { throw "signup failed" }
+    $uid = $newUser.value.user.id
+    $oldTok = $newUser.value.token
+    $r = C "mutation" "users:adminResetPassword" @{ token = $script:var.adminTok; userId = $uid; newPassword = "NewPass456!"; reason = "Test suite reset" }
+    if ($r.status -ne "success") { throw "reset failed: $($r.status)" }
+    $me = C "query" "auth:getSessionUser" @{ token = $oldTok }
+    if ($me.value -ne $null) { throw "old session still valid" }
+    $oldLogin = C "mutation" "auth:login" @{ email = "resettarget.$ts@zetagrow.com"; password = "OldPass123!" }
+    if ($oldLogin.status -ne "error") { throw "old password still works" }
+    $newLogin = C "mutation" "auth:login" @{ email = "resettarget.$ts@zetagrow.com"; password = "NewPass456!" }
+    if ($newLogin.status -ne "success") { throw "new password rejected" }
+    $det = C "query" "users:getUserDetails" @{ token = $script:var.adminTok; userId = $uid }
+    $log = @($det.value.auditLogs | Where-Object { $_.action -eq "ADMIN_PASSWORD_RESET" })
+    if ($log.Count -ne 1) { throw "reset audit log missing" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "P1" "reset -> sessions killed, old pw dead, new pw works, audit logged" $true
+
+$script:var.lastException = $null
+try {
+    $r = C "mutation" "users:adminResetPassword" @{ token = $script:var.adminTok; userId = $script:var.probeId; newPassword = "short"; reason = "test" }
+    if ($r.status -ne "error") { throw "short password should be rejected" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "P2" "password shorter than 8 chars rejected" $true
+
+$script:var.lastException = $null
+try {
+    $r = C "mutation" "users:adminResetPassword" @{ token = $script:var.demoTok; userId = $script:var.probeId; newPassword = "Whatever123!"; reason = "hack" }
+    if ($r.status -ne "error") { throw "user token should be blocked" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "P3" "non-admin cannot reset password" $true
+
+Write-Host ""
 $fail = @($results | Where-Object { $_ -like "FAIL*" })
 Write-Host "=== SUMMARY ==="
 Write-Host "TOTAL: $($results.Count)  PASSED: $($results.Count - $fail.Count)  FAILED: $($fail.Count)"

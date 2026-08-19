@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 // Helper function to hash password with salt using Web Crypto API
-async function hashPassword(password: string, salt: string): Promise<string> {
+export async function hashPassword(password: string, salt: string): Promise<string> {
   const enc = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
@@ -34,7 +34,7 @@ function generateToken(): string {
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-function generateSalt(): string {
+export function generateSalt(): string {
   const array = new Uint8Array(16);
   crypto.getRandomValues(array);
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");

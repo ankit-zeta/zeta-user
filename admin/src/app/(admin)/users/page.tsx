@@ -20,6 +20,12 @@ import {
   CreditCard,
   History,
   ArrowDownToLine,
+  Download,
+  KeyRound,
+  CircleDollarSign,
+  ChevronLeft,
+  ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 
 type TabKey = "overview" | "programs" | "affiliate" | "earnings" | "activity";
@@ -113,6 +119,9 @@ export default function AdminUsersPage() {
 
   const updateUserStatusMutation = useMutation(api.users.updateUserStatus);
   const grantProgramMutation = useMutation(api.users.grantProgramAccess);
+  const adjustWalletMutation = useMutation(api.wallets.adminAdjustWallet);
+  const updateRoleMutation = useMutation(api.users.updateUserRole);
+  const resetPasswordMutation = useMutation(api.users.adminResetPassword);
 
   const [selectedUserId, setSelectedUserId] = useState<any | null>(null);
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
@@ -121,11 +130,78 @@ export default function AdminUsersPage() {
     token && selectedUserId ? { token, userId: selectedUserId } : "skip"
   );
 
+  const [sortKey, setSortKey] = useState<"joined" | "earned" | "enrolled">("joined");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 25;
+
+  const sortedUsers = React.useMemo(() => {
+    const list = [...(users || [])];
+    list.sort((a: any, b: any) => {
+      let av: number = 0;
+      let bv: number = 0;
+      if (sortKey === "earned") {
+        av = a.totalEarned || 0;
+        bv = b.totalEarned || 0;
+      } else if (sortKey === "enrolled") {
+        av = a.enrolledCount || 0;
+        bv = b.enrolledCount || 0;
+      } else {
+        av = a.createdAt || 0;
+        bv = b.createdAt || 0;
+      }
+      return sortDir === "desc" ? bv - av : av - bv;
+    });
+    return list;
+  }, [users, sortKey, sortDir]);
+
+  const pagedUsers = sortedUsers.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const totalPages = Math.max(1, Math.ceil((sortedUsers?.length || 0) / PAGE_SIZE));
+
+  React.useEffect(() => {
+    setPage(1);
+  }, [search, roleFilter, statusFilter, users?.length]);
+
+  const exportCsv = () => {
+    const header = "Name,Email,Role,Status,Referral Code,Phone,Enrolled,Total Earned,Available,Joined";
+    const rows = (sortedUsers || []).map((u: any) =>
+      [
+        `"${(u.name || "").replace(/"/g, '""')}"`,
+        `"${(u.email || "").replace(/"/g, '""')}"`,
+        u.role,
+        u.status,
+        u.referralCode,
+        `"${(u.phone || "").replace(/"/g, '""')}"`,
+        u.enrolledCount,
+        u.totalEarned,
+        u.availableBalance,
+        new Date(u.createdAt).toISOString().slice(0, 10),
+      ].join(",")
+    );
+    const blob = new Blob([[header, ...rows].join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `zetagrow-users-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const [grantModalOpen, setGrantModalOpen] = useState(false);
   const [grantProgId, setGrantProgId] = useState("");
   const [grantReason, setGrantReason] = useState("");
   const [suspendModalOpen, setSuspendModalOpen] = useState(false);
   const [suspendReason, setSuspendReason] = useState("");
+  const [adjustModalOpen, setAdjustModalOpen] = useState(false);
+  const [adjustAmount, setAdjustAmount] = useState("");
+  const [adjustType, setAdjustType] = useState<"CREDIT" | "DEBIT">("CREDIT");
+  const [adjustReason, setAdjustReason] = useState("");
+  const [roleModalOpen, setRoleModalOpen] = useState(false);
+  const [roleValue, setRoleValue] = useState("user");
+  const [roleReason, setRoleReason] = useState("");
+  const [resetModalOpen, setResetModalOpen] = useState(false);
+  const [resetPass, setResetPass] = useState("");
+  const [resetReason, setResetReason] = useState("");
   const [actionMsg, setActionMsg] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -147,6 +223,67 @@ export default function AdminUsersPage() {
       setSuspendReason("");
     } catch (err: any) {
       setActionMsg(err.message || "Failed to update status.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleAdjustWallet = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token || !selectedUserId || !adjustAmount || !adjustReason) return;
+    setIsProcessing(true);
+    setActionMsg("");
+    try {
+      const amt = parseFloat(adjustAmount);
+      if (!isFinite(amt) || amt <= 0) throw new Error("Enter a valid positive amount");
+      const res = await adjustWalletMutation({
+        token,
+        userId: selectedUserId,
+        amount: amt,
+        type: adjustType,
+        reason: adjustReason,
+      });
+      setActionMsg(`Wallet adjusted. New balance: ₹${res.newBalance.toLocaleString("en-IN")}`);
+      setAdjustModalOpen(false);
+      setAdjustAmount("");
+      setAdjustReason("");
+    } catch (err: any) {
+      setActionMsg(err.message || "Failed to adjust wallet.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleChangeRole = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token || !selectedUserId || !roleReason) return;
+    setIsProcessing(true);
+    setActionMsg("");
+    try {
+      await updateRoleMutation({ token, userId: selectedUserId, role: roleValue, reason: roleReason });
+      setActionMsg(`Role updated to ${roleValue.replace(/_/g, " ")}.`);
+      setRoleModalOpen(false);
+      setRoleReason("");
+    } catch (err: any) {
+      setActionMsg(err.message || "Failed to update role.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token || !selectedUserId || !resetPass || !resetReason) return;
+    setIsProcessing(true);
+    setActionMsg("");
+    try {
+      await resetPasswordMutation({ token, userId: selectedUserId, newPassword: resetPass, reason: resetReason });
+      setActionMsg("Password reset. All user sessions were invalidated.");
+      setResetModalOpen(false);
+      setResetPass("");
+      setResetReason("");
+    } catch (err: any) {
+      setActionMsg(err.message || "Failed to reset password.");
     } finally {
       setIsProcessing(false);
     }
@@ -238,9 +375,33 @@ export default function AdminUsersPage() {
           </select>
         </div>
 
-        <span className="text-xs text-textMuted shrink-0">
-          Showing {users?.length || 0} accounts
-        </span>
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <select
+            value={sortKey}
+            onChange={(e) => setSortKey(e.target.value as any)}
+            className="px-3 py-1.5 rounded-lg border border-borderSubtle text-xs bg-white text-textMuted"
+          >
+            <option value="joined">Sort: Joined</option>
+            <option value="earned">Sort: Total Earned</option>
+            <option value="enrolled">Sort: Enrolled</option>
+          </select>
+          <button
+            onClick={() => setSortDir(sortDir === "desc" ? "asc" : "desc")}
+            className="btn-secondary text-[11px] py-1.5 px-2.5"
+          >
+            {sortDir === "desc" ? "Desc ↓" : "Asc ↑"}
+          </button>
+          <button
+            onClick={exportCsv}
+            className="btn-secondary text-[11px] py-1.5 px-2.5 flex items-center gap-1"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Export CSV
+          </button>
+          <span className="text-xs text-textMuted">
+            {sortedUsers.length} accounts · page {page}/{totalPages}
+          </span>
+        </div>
       </div>
 
       {/* Users Table */}
@@ -263,12 +424,13 @@ export default function AdminUsersPage() {
                   <th className="py-3 px-4 font-semibold">Referral Code</th>
                   <th className="py-3 px-4 font-semibold">Enrolled</th>
                   <th className="py-3 px-4 font-semibold">Total Earned</th>
+                  <th className="py-3 px-4 font-semibold">Joined</th>
                   <th className="py-3 px-4 font-semibold">Status</th>
                   <th className="py-3 px-4 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-borderSubtle">
-                {users.map((u) => (
+                {pagedUsers.map((u) => (
                   <tr key={u._id} className="hover:bg-neutral-50/60 transition-colors">
                     <td className="py-3 px-4">
                       <div>
@@ -290,6 +452,9 @@ export default function AdminUsersPage() {
                     <td className="py-3 px-4 font-bold text-brand-700">
                       {fmtINR(u.totalEarned)}
                     </td>
+                    <td className="py-3 px-4 text-textMuted text-[11px]">
+                      {fmtDate(u.createdAt)}
+                    </td>
                     <td className="py-3 px-4">
                       <StatusBadge value={u.status} />
                     </td>
@@ -308,6 +473,34 @@ export default function AdminUsersPage() {
           </div>
         )}
       </div>
+
+      {/* Pagination footer */}
+      {users && users.length > PAGE_SIZE && (
+        <div className="flex items-center justify-between card-surface p-3">
+          <span className="text-xs text-textMuted">
+            Showing {(page - 1) * PAGE_SIZE + 1}–
+            {Math.min(page * PAGE_SIZE, sortedUsers.length)} of {sortedUsers.length}
+          </span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="btn-secondary text-[11px] py-1.5 px-2.5 disabled:opacity-40 flex items-center gap-1"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              Prev
+            </button>
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="btn-secondary text-[11px] py-1.5 px-2.5 disabled:opacity-40 flex items-center gap-1"
+            >
+              Next
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* User Details Drawer */}
       {selectedUserId && userDetails && (
@@ -332,6 +525,25 @@ export default function AdminUsersPage() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setResetModalOpen(true)}
+                  className="btn-secondary text-[11px] py-1.5 px-3 flex items-center gap-1"
+                >
+                  <KeyRound className="w-3.5 h-3.5" />
+                  Reset Password
+                </button>
+                <button
+                  onClick={() => {
+                    setRoleValue(
+                      userDetails.user.role === "user" ? "content_admin" : "user"
+                    );
+                    setRoleModalOpen(true);
+                  }}
+                  className="btn-secondary text-[11px] py-1.5 px-3 flex items-center gap-1"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  Change Role
+                </button>
                 <button
                   onClick={() => setSuspendModalOpen(true)}
                   className={`btn-secondary text-[11px] py-1.5 px-3 ${
@@ -643,6 +855,16 @@ export default function AdminUsersPage() {
                     value={fmtINR(userDetails.wallet?.totalWithdrawn)}
                     accent="text-red-700"
                   />
+                </div>
+
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => setAdjustModalOpen(true)}
+                    className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5"
+                  >
+                    <CircleDollarSign className="w-3.5 h-3.5" />
+                    Adjust Balance
+                  </button>
                 </div>
 
                 <div className="space-y-1.5">
@@ -978,6 +1200,201 @@ export default function AdminUsersPage() {
                 {isProcessing ? "Processing..." : "Confirm Action"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Wallet Adjustment Modal */}
+      {adjustModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="card-surface p-6 max-w-md w-full space-y-4 bg-white shadow-2xl">
+            <h3 className="text-base font-bold text-textMain">Adjust Wallet Balance</h3>
+            <p className="text-xs text-textMuted">
+              Current available balance:{" "}
+              <strong className="text-textMain">
+                {fmtINR(userDetails?.wallet?.availableBalance)}
+              </strong>
+            </p>
+            <form onSubmit={handleAdjustWallet} className="space-y-3">
+              <div className="space-y-1 text-xs">
+                <label className="font-semibold text-textMain">Type *</label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setAdjustType("CREDIT")}
+                    className={`flex-1 py-2 rounded-lg border text-xs font-bold ${
+                      adjustType === "CREDIT"
+                        ? "bg-green-600 text-white border-green-600"
+                        : "border-borderSubtle text-textMuted"
+                    }`}
+                  >
+                    + Credit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAdjustType("DEBIT")}
+                    className={`flex-1 py-2 rounded-lg border text-xs font-bold ${
+                      adjustType === "DEBIT"
+                        ? "bg-red-600 text-white border-red-600"
+                        : "border-borderSubtle text-textMuted"
+                    }`}
+                  >
+                    − Debit
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-1 text-xs">
+                <label className="font-semibold text-textMain">Amount (₹) *</label>
+                <input
+                  type="number"
+                  required
+                  min="1"
+                  step="1"
+                  value={adjustAmount}
+                  onChange={(e) => setAdjustAmount(e.target.value)}
+                  placeholder="e.g. 500"
+                  className="w-full px-3 py-2 rounded-lg border border-borderSubtle"
+                />
+              </div>
+              <div className="space-y-1 text-xs">
+                <label className="font-semibold text-textMain">Reason *</label>
+                <input
+                  type="text"
+                  required
+                  value={adjustReason}
+                  onChange={(e) => setAdjustReason(e.target.value)}
+                  placeholder="e.g. Refund for duplicate payment"
+                  className="w-full px-3 py-2 rounded-lg border border-borderSubtle"
+                />
+              </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setAdjustModalOpen(false)}
+                  className="btn-secondary text-xs py-1.5 px-3"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isProcessing}
+                  className="btn-primary text-xs py-1.5 px-3"
+                >
+                  {isProcessing ? "Adjusting..." : "Apply Adjustment"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Change Role Modal */}
+      {roleModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="card-surface p-6 max-w-md w-full space-y-4 bg-white shadow-2xl">
+            <h3 className="text-base font-bold text-textMain">
+              Change Role — {userDetails?.user.name}
+            </h3>
+            <p className="text-xs text-textMuted">
+              Current role: <strong className="text-textMain">{userDetails?.user.role}</strong>
+            </p>
+            <form onSubmit={handleChangeRole} className="space-y-3">
+              <div className="space-y-1 text-xs">
+                <label className="font-semibold text-textMain">New Role *</label>
+                <select
+                  value={roleValue}
+                  onChange={(e) => setRoleValue(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white"
+                >
+                  <option value="user">User</option>
+                  <option value="content_admin">Content Admin</option>
+                  <option value="finance_admin">Finance Admin</option>
+                  <option value="work_admin">Work Admin</option>
+                </select>
+              </div>
+              <div className="space-y-1 text-xs">
+                <label className="font-semibold text-textMain">Reason *</label>
+                <input
+                  type="text"
+                  required
+                  value={roleReason}
+                  onChange={(e) => setRoleReason(e.target.value)}
+                  placeholder="e.g. Promoted to manage work listings"
+                  className="w-full px-3 py-2 rounded-lg border border-borderSubtle"
+                />
+              </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setRoleModalOpen(false)}
+                  className="btn-secondary text-xs py-1.5 px-3"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isProcessing}
+                  className="btn-primary text-xs py-1.5 px-3"
+                >
+                  {isProcessing ? "Updating..." : "Confirm Role"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Reset Password Modal */}
+      {resetModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="card-surface p-6 max-w-md w-full space-y-4 bg-white shadow-2xl">
+            <h3 className="text-base font-bold text-textMain">
+              Reset Password — {userDetails?.user.name}
+            </h3>
+            <p className="text-xs text-textMuted">
+              The user will be signed out of all devices and must log in with the new password.
+            </p>
+            <form onSubmit={handleResetPassword} className="space-y-3">
+              <div className="space-y-1 text-xs">
+                <label className="font-semibold text-textMain">New Password * (min 8 chars)</label>
+                <input
+                  type="password"
+                  required
+                  minLength={8}
+                  value={resetPass}
+                  onChange={(e) => setResetPass(e.target.value)}
+                  placeholder="New temporary password"
+                  className="w-full px-3 py-2 rounded-lg border border-borderSubtle"
+                />
+              </div>
+              <div className="space-y-1 text-xs">
+                <label className="font-semibold text-textMain">Reason *</label>
+                <input
+                  type="text"
+                  required
+                  value={resetReason}
+                  onChange={(e) => setResetReason(e.target.value)}
+                  placeholder="e.g. User forgot password"
+                  className="w-full px-3 py-2 rounded-lg border border-borderSubtle"
+                />
+              </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setResetModalOpen(false)}
+                  className="btn-secondary text-xs py-1.5 px-3"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isProcessing}
+                  className="btn-primary text-xs py-1.5 px-3"
+                >
+                  {isProcessing ? "Resetting..." : "Confirm Reset"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
