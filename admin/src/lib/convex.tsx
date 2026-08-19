@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { ConvexProvider, ConvexReactClient, useQuery, useMutation } from "convex/react";
+import { ConvexProvider, ConvexReactClient, useQuery_experimental, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 
 export { api };
@@ -37,8 +37,11 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     setIsInitialized(true);
   }, []);
 
-  const adminUser = useQuery(api.auth.getSessionUser, token ? { token } : "skip");
-  const adminUserError = adminUser === undefined && isInitialized;
+  const sessionState = useQuery_experimental({
+    query: api.auth.getSessionUser,
+    args: token ? { token } : "skip",
+  });
+  const adminUser = sessionState.status === "success" ? sessionState.data : null;
   const logoutMutation = useMutation(api.auth.logout);
 
   const handleLogin = (newToken: string) => {
@@ -62,8 +65,8 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const isAdminRole = adminUser && ["super_admin", "admin", "content_admin", "finance_admin", "work_admin"].includes(adminUser.role);
 
   // Loading only while we genuinely don't know the session yet.
-  // A query error (adminUser stuck undefined after init) must NOT hang the app.
-  const isLoading = !isInitialized || (token !== null && adminUser === undefined && !adminUserError);
+  // A query error (status "error") must NOT hang the app — it resolves to null and the layout redirects to /login.
+  const isLoading = !isInitialized || (token !== null && sessionState.status === "pending");
 
   return (
     <AdminAuthContext.Provider

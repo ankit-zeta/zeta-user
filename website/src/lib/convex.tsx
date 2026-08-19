@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { ConvexProvider, ConvexReactClient, useQuery, useMutation } from "convex/react";
+import { ConvexProvider, ConvexReactClient, useQuery_experimental, useMutation } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 
 export { api };
@@ -39,8 +39,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsInitialized(true);
   }, []);
 
-  const user = useQuery(api.auth.getSessionUser, token ? { token } : "skip");
-  const userQueryFailed = user === undefined && isInitialized;
+  const userState = useQuery_experimental({
+    query: api.auth.getSessionUser,
+    args: token ? { token } : "skip",
+  });
+  const user = userState.status === "success" ? userState.data : null;
   const logoutMutation = useMutation(api.auth.logout);
 
   const handleLogin = (newToken: string) => {
@@ -61,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = "/login";
   };
 
-  const isLoading = !isInitialized || (token !== null && user === undefined && !userQueryFailed);
+  const isLoading = !isInitialized || (token !== null && userState.status === "pending");
 
   return (
     <AuthContext.Provider

@@ -273,6 +273,23 @@ try {
 } catch { $script:var.lastException = $_.Exception.Message }
 Check "E4" "getSessionUser explicit null token -> success + null (regression)" $true
 
+$script:var.lastException = $null
+try {
+    $login = C "mutation" "auth:login" @{ email = "admin@zetagrow.com"; password = "AdminPassword123!" }
+    if ($login.status -ne "success") { throw "admin login failed" }
+    $me = C "query" "auth:getSessionUser" @{ token = $login.value.token }
+    if ($me.status -ne "success" -or $me.value.role -ne "super_admin") { throw "fresh session did not resolve admin user" }
+    if ($me.value.email -ne "admin@zetagrow.com") { throw "wrong user resolved" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "E5" "fresh admin login resolves session user (login flow path)" $true
+
+$script:var.lastException = $null
+try {
+    $me = C "query" "auth:getSessionUser" @{ token = "expired-token-zzz" }
+    if ($me.status -ne "success" -or $me.value -ne $null) { throw "stale token must resolve to null (redirect to login)" }
+} catch { $script:var.lastException = $_.Exception.Message }
+Check "E6" "stale token resolves null -> clean login redirect" $true
+
 Write-Host ""
 $fail = @($results | Where-Object { $_ -like "FAIL*" })
 Write-Host "=== SUMMARY ==="
