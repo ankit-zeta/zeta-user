@@ -187,6 +187,8 @@ export default defineSchema({
     status: v.string(), // "published" | "draft" | "closed" | "archived"
     applicationQuestions: v.array(v.string()),
     attachments: v.optional(v.array(v.string())),
+    company: v.optional(v.string()),
+    coverImageStorageId: v.optional(v.string()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })

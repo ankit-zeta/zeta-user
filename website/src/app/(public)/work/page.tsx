@@ -114,6 +114,13 @@ export default function PublicWorkPage() {
               }`}
             >
               <div className="space-y-4">
+                {job.coverImageUrl && (
+                  <img
+                    src={job.coverImageUrl}
+                    alt={job.title}
+                    className="w-full h-36 object-cover rounded-lg border border-borderSubtle"
+                  />
+                )}
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <span className="text-xs font-semibold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded border border-brand-200">
@@ -122,6 +129,11 @@ export default function PublicWorkPage() {
                     <h3 className="text-lg font-bold text-textMain mt-2">
                       {job.title}
                     </h3>
+                    {job.company && (
+                      <p className="text-[11px] font-semibold text-textMain mt-0.5">
+                        {job.company}
+                      </p>
+                    )}
                   </div>
                   <div className="text-right shrink-0">
                     <span className="text-xl font-extrabold text-textMain block">
@@ -160,6 +172,7 @@ export default function PublicWorkPage() {
                       )}
                       <span className="truncate">
                         Requirement: <strong className="text-textMain">{job.requiredProgramName}</strong>
+                        {job.isEligible ? " ✓ Completed" : " — must complete first"}
                       </span>
                     </div>
                   )}

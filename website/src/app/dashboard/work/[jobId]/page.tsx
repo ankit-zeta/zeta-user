@@ -100,6 +100,13 @@ export default function JobApplicationDetailPage() {
 
       {/* Job Details Card */}
       <div className="card-surface p-6 sm:p-8 space-y-6">
+        {job.coverImageUrl && (
+          <img
+            src={job.coverImageUrl}
+            alt={job.title}
+            className="w-full h-48 sm:h-64 object-cover rounded-xl border border-borderSubtle"
+          />
+        )}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-borderSubtle pb-6">
           <div className="space-y-1">
             <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded border border-brand-200">
@@ -107,6 +114,11 @@ export default function JobApplicationDetailPage() {
             </span>
             <h1 className="text-xl sm:text-2xl font-bold text-textMain mt-1">{job.title}</h1>
             <p className="text-xs text-textMuted">{job.shortDescription}</p>
+            {job.company && (
+              <p className="text-[11px] font-semibold text-textMain">
+                Client: {job.company}
+              </p>
+            )}
           </div>
 
           <div className="text-right shrink-0">
@@ -154,7 +166,7 @@ export default function JobApplicationDetailPage() {
               <span>Program Requirement Not Met</span>
             </div>
             <p className="text-xs text-amber-700 leading-relaxed">
-              This client assignment requires prior enrollment in <strong>{job.requiredProgramName}</strong>. Enroll and complete the matching lessons to unlock this opportunity.
+              This client assignment requires <strong>completing {job.requiredProgramName}</strong>. Finish all lessons of the program to unlock this opportunity.
             </p>
             <Link href="/dashboard/programs" className="btn-primary text-xs inline-flex">
               View Required Program

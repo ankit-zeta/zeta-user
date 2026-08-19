@@ -39,6 +39,9 @@ export const submitApplication = mutation({
       throw new Error("This opportunity is no longer open for applications");
     }
 
+    const user = await ctx.db.get(session.userId);
+    const isRegularUser = user?.role === "user";
+
     // Check existing
     const existing = await ctx.db
       .query("jobApplications")
@@ -50,20 +53,15 @@ export const submitApplication = mutation({
       throw new Error("You have already submitted an application for this opportunity");
     }
 
-    // Server-side eligibility check
+    // Server-side eligibility check: program requirement = PROGRAM COMPLETED (certificate issued)
     if (job.requiredProgramId) {
-      const purchase = await ctx.db
-        .query("purchases")
+      const cert = await ctx.db
+        .query("certificates")
         .withIndex("by_userId", (q) => q.eq("userId", session.userId))
-        .filter((q) =>
-          q.and(
-            q.eq(q.field("programId"), job.requiredProgramId),
-            q.eq(q.field("status"), "completed")
-          )
-        )
+        .filter((q) => q.eq(q.field("programId"), job.requiredProgramId))
         .first();
-      if (!purchase && session.role === "user") {
-        throw new Error("You do not meet the program requirement for this opportunity");
+      if (!cert && isRegularUser) {
+        throw new Error("You must complete the required program before applying for this opportunity");
       }
     }
 
@@ -73,7 +71,7 @@ export const submitApplication = mutation({
         .withIndex("by_userId", (q) => q.eq("userId", session.userId))
         .filter((q) => q.eq(q.field("achievementId"), job.requiredAchievementId))
         .first();
-      if (!ach && session.role === "user") {
+      if (!ach && isRegularUser) {
         throw new Error("You do not meet the achievement requirement for this opportunity");
       }
     }

@@ -104,6 +104,13 @@ export default function DashboardWorkPage() {
               }`}
             >
               <div className="space-y-4">
+                {job.coverImageUrl && (
+                  <img
+                    src={job.coverImageUrl}
+                    alt={job.title}
+                    className="w-full h-32 object-cover rounded-lg border border-borderSubtle"
+                  />
+                )}
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <span className="text-[10px] font-semibold text-brand-700 bg-brand-50 px-2 py-0.5 rounded border border-brand-200">
@@ -112,6 +119,11 @@ export default function DashboardWorkPage() {
                     <h3 className="text-base font-bold text-textMain mt-1.5">
                       {job.title}
                     </h3>
+                    {job.company && (
+                      <p className="text-[11px] font-semibold text-textMain mt-0.5">
+                        {job.company}
+                      </p>
+                    )}
                   </div>
                   <div className="text-right shrink-0">
                     <span className="text-lg font-bold text-textMain block">
@@ -147,6 +159,7 @@ export default function DashboardWorkPage() {
                     )}
                     <span className="truncate">
                       Requires: <strong className="text-textMain">{job.requiredProgramName}</strong>
+                      {job.isEligible ? " ✓ Completed" : " — must complete first"}
                     </span>
                   </div>
                 )}

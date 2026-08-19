@@ -106,6 +106,13 @@ export default function AdminWorkPage() {
           ) : (
             jobs.map((job) => (
               <div key={job._id} className="card-surface p-6 flex flex-col justify-between space-y-4">
+                {job.coverImageUrl && (
+                  <img
+                    src={job.coverImageUrl}
+                    alt={job.title}
+                    className="w-full h-28 object-cover rounded-lg border border-borderSubtle"
+                  />
+                )}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded border border-brand-200">

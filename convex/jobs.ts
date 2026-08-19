@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, action } from "./_generated/server";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -16,6 +16,31 @@ async function requireAdmin(ctx: any, token: string) {
   return user;
 }
 
+async function resolveCover(ctx: any, storageId?: string): Promise<string | null> {
+  if (!storageId) return null;
+  try {
+    return await ctx.storage.getUrl(storageId);
+  } catch {
+    return null;
+  }
+}
+
+async function hasCompletedProgram(ctx: any, userId: any, programId: any): Promise<boolean> {
+  const cert = await ctx.db
+    .query("certificates")
+    .withIndex("by_userId", (q: any) => q.eq("userId", userId))
+    .filter((q: any) => q.eq(q.field("programId"), programId))
+    .first();
+  return !!cert;
+}
+
+export const generateJobCoverUploadUrl = action({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
 export const getPublicJobs = query({
   args: {},
   handler: async (ctx) => {
@@ -24,7 +49,12 @@ export const getPublicJobs = query({
       .withIndex("by_status", (q) => q.eq("status", "published"))
       .collect();
 
-    return jobs;
+    return Promise.all(
+      jobs.map(async (job) => ({
+        ...job,
+        coverImageUrl: await resolveCover(ctx, job.coverImageStorageId),
+      }))
+    );
   },
 });
 
@@ -79,9 +109,9 @@ export const getJobsWithEligibility = query({
         if (job.requiredProgramId) {
           const reqProg = await ctx.db.get(job.requiredProgramId);
           requiredProgramName = reqProg?.name;
-          if (!enrolledProgramIds.has(job.requiredProgramId.toString())) {
+          if (user && !(await hasCompletedProgram(ctx, user._id, job.requiredProgramId))) {
             isEligible = false;
-            missingRequirements.push(`Requires enrollment in ${reqProg?.name || "Required Program"}`);
+            missingRequirements.push(`Requires completing ${reqProg?.name || "Required Program"}`);
           }
         }
 
@@ -89,7 +119,7 @@ export const getJobsWithEligibility = query({
         if (job.requiredAchievementId) {
           const reqAch = await ctx.db.get(job.requiredAchievementId);
           requiredAchievementName = reqAch?.name;
-          if (!unlockedAchievementIds.has(job.requiredAchievementId.toString())) {
+          if (user && !unlockedAchievementIds.has(job.requiredAchievementId.toString())) {
             isEligible = false;
             missingRequirements.push(`Requires unlocking ${reqAch?.name || "Required Achievement"}`);
           }
@@ -99,6 +129,7 @@ export const getJobsWithEligibility = query({
 
         return {
           ...job,
+          coverImageUrl: await resolveCover(ctx, job.coverImageStorageId),
           isEligible: user ? isEligible : true, // guests see jobs
           missingRequirements,
           requiredProgramName,
@@ -156,9 +187,9 @@ export const getJobBySlug = query({
           .collect();
         const unlockedAchievementIds = new Set(userAch.map((a) => a.achievementId.toString()));
 
-        if (job.requiredProgramId && !enrolledProgramIds.has(job.requiredProgramId.toString())) {
+        if (job.requiredProgramId && !(await hasCompletedProgram(ctx, session.userId, job.requiredProgramId))) {
           isEligible = false;
-          missingRequirements.push(`Requires enrollment in ${requiredProgram?.name || "Program"}`);
+          missingRequirements.push(`Requires completing ${requiredProgram?.name || "Program"}`);
         }
 
         if (job.requiredAchievementId && !unlockedAchievementIds.has(job.requiredAchievementId.toString())) {
@@ -176,6 +207,7 @@ export const getJobBySlug = query({
 
     return {
       ...job,
+      coverImageUrl: await resolveCover(ctx, job.coverImageStorageId),
       requiredProgram,
       requiredAchievement,
       isEligible,
@@ -201,6 +233,7 @@ export const getAllJobsAdmin = query({
 
         return {
           ...j,
+          coverImageUrl: await resolveCover(ctx, j.coverImageStorageId),
           applicantCount: applications.length,
           acceptedCount: applications.filter((a) => ["accepted", "in_progress", "completed"].includes(a.status)).length,
         };
@@ -233,6 +266,8 @@ export const createJob = mutation({
     status: v.string(),
     applicationQuestions: v.array(v.string()),
     attachments: v.optional(v.array(v.string())),
+    company: v.optional(v.string()),
+    coverImageStorageId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const admin = await requireAdmin(ctx, args.token);
@@ -258,6 +293,8 @@ export const createJob = mutation({
       status: args.status,
       applicationQuestions: args.applicationQuestions,
       attachments: args.attachments,
+      company: args.company,
+      coverImageStorageId: args.coverImageStorageId,
       createdAt: now,
       updatedAt: now,
     });
@@ -299,6 +336,8 @@ export const updateJob = mutation({
     openings: v.number(),
     status: v.string(),
     applicationQuestions: v.array(v.string()),
+    company: v.optional(v.string()),
+    coverImageStorageId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const admin = await requireAdmin(ctx, args.token);
@@ -325,6 +364,11 @@ export const updateJob = mutation({
       openings: args.openings,
       status: args.status,
       applicationQuestions: args.applicationQuestions,
+      company: args.company !== undefined ? args.company : prev.company,
+      coverImageStorageId:
+        args.coverImageStorageId !== undefined
+          ? args.coverImageStorageId
+          : prev.coverImageStorageId,
       updatedAt: now,
     });
 
@@ -339,6 +383,35 @@ export const updateJob = mutation({
       reason: "Admin job modification",
       timestamp: now,
     });
+
+    return { success: true };
+  },
+});
+
+export const deleteJob = mutation({
+  args: {
+    token: v.string(),
+    jobId: v.id("jobs"),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx, args.token);
+    const job = await ctx.db.get(args.jobId);
+    if (!job) throw new Error("Job not found");
+
+    const now = Date.now();
+
+    await ctx.db.insert("auditLogs", {
+      adminUserId: admin._id,
+      adminEmail: admin.email,
+      action: "DELETE_JOB",
+      entityType: "jobs",
+      entityId: args.jobId,
+      previousValue: job.title,
+      reason: "Admin job deletion",
+      timestamp: now,
+    });
+
+    await ctx.db.delete(args.jobId);
 
     return { success: true };
   },

@@ -41,7 +41,8 @@ export const getCoursePlayerState = query({
       .filter((q) => q.eq(q.field("programId"), args.programId))
       .first();
 
-    const isEnrolled = purchase?.status === "completed" || session.role !== "user";
+    const sessionUser = await ctx.db.get(session.userId);
+    const isEnrolled = purchase?.status === "completed" || (sessionUser && sessionUser.role !== "user");
 
     // Get modules and lessons
     const modules = await ctx.db

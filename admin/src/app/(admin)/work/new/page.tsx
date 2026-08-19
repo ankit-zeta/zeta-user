@@ -4,14 +4,15 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAdminAuth } from "@/lib/convex";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/lib/convex";
-import { ArrowLeft, Save, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Save, Plus, Trash2, ImagePlus, X } from "lucide-react";
 
 export default function NewJobPage() {
   const router = useRouter();
   const { token } = useAdminAuth();
   const createJobMutation = useMutation(api.jobs.createJob);
+  const generateUploadUrl = useAction(api.jobs.generateJobCoverUploadUrl);
 
   const programs = useQuery(api.programs.getPublicPrograms);
   const achievements = useQuery(
@@ -46,6 +47,32 @@ export default function NewJobPage() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [company, setCompany] = useState("");
+  const [coverImageStorageId, setCoverImageStorageId] = useState<string | undefined>(undefined);
+  const [coverPreview, setCoverPreview] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleCoverUpload = async (file: File) => {
+    if (!token || !file) return;
+    setIsUploading(true);
+    setError("");
+    try {
+      const url = await generateUploadUrl();
+      const uploadResp = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      if (!uploadResp.ok) throw new Error("Upload failed");
+      const storageId = JSON.parse(await uploadResp.text()).storageId;
+      setCoverImageStorageId(storageId);
+      setCoverPreview(URL.createObjectURL(file));
+    } catch (err: any) {
+      setError(err.message || "Image upload failed");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const handleTitleChange = (val: string) => {
     setTitle(val);
@@ -80,6 +107,8 @@ export default function NewJobPage() {
         openings: Number(openings),
         status: "published",
         applicationQuestions: questions.filter(Boolean),
+        company: company || undefined,
+        coverImageStorageId,
       });
 
       router.push("/work");
@@ -126,6 +155,16 @@ export default function NewJobPage() {
                 value={title}
                 onChange={(e) => handleTitleChange(e.target.value)}
                 placeholder="e.g. Senior Copywriter & Asset Creator"
+                className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="font-semibold text-textMain">Company / Client (Optional)</label>
+              <input
+                type="text"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder="e.g. ZetaGrow Studios"
                 className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white"
               />
             </div>
@@ -214,6 +253,56 @@ export default function NewJobPage() {
                   ))}
                 </select>
               </div>
+            </div>
+          </div>
+
+          {/* Cover Image Upload */}
+          <div className="space-y-1">
+            <label className="font-semibold text-textMain">Cover Image (Optional)</label>
+            <div className="flex items-center gap-4">
+              {coverPreview ? (
+                <div className="relative">
+                  <img
+                    src={coverPreview}
+                    alt="Cover preview"
+                    className="w-40 h-24 object-cover rounded-lg border border-borderSubtle"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCoverPreview("");
+                      setCoverImageStorageId(undefined);
+                    }}
+                    className="absolute -top-2 -right-2 p-1 bg-red-600 text-white rounded-full"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ) : (
+                <label className="w-40 h-24 flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-borderSubtle cursor-pointer hover:border-brand-400 bg-neutral-50">
+                  {isUploading ? (
+                    <span className="text-[11px] text-textMuted">Uploading...</span>
+                  ) : (
+                    <>
+                      <ImagePlus className="w-5 h-5 text-textMuted" />
+                      <span className="text-[11px] text-textMuted mt-1">Choose image</span>
+                    </>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={isUploading}
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      if (f) handleCoverUpload(f);
+                    }}
+                  />
+                </label>
+              )}
+              <p className="text-[11px] text-textMuted">
+                Shown on the work listing cards and the detailed opportunity page.
+              </p>
             </div>
           </div>
 
