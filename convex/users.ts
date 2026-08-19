@@ -161,6 +161,135 @@ export const getUserDetails = query({
       .withIndex("by_userId", (q) => q.eq("userId", user._id))
       .collect();
 
+    const achievements = await Promise.all(
+      userAch.map(async (ua) => {
+        const def = ua.achievementId
+          ? await ctx.db.get(ua.achievementId)
+          : null;
+        return {
+          unlockedAt: ua.unlockedAt,
+          achievement: def
+            ? { name: def.name, description: def.description, icon: def.icon }
+            : null,
+        };
+      })
+    );
+
+    const referrals = await ctx.db
+      .query("referrals")
+      .withIndex("by_referrerUserId", (q) => q.eq("referrerUserId", user._id))
+      .order("desc")
+      .take(100);
+
+    const referralDetails = await Promise.all(
+      referrals.map(async (r) => {
+        const referredUser = await ctx.db.get(r.referredUserId);
+        const buyerPurchase = await ctx.db
+          .query("purchases")
+          .withIndex("by_userId", (q) => q.eq("userId", r.referredUserId))
+          .filter((q) => q.eq(q.field("status"), "completed"))
+          .first();
+        let purchasedProgram: string | null = null;
+        if (buyerPurchase) {
+          const prog = await ctx.db.get(buyerPurchase.programId);
+          purchasedProgram = prog?.name || null;
+        }
+        return {
+          referredUserId: r.referredUserId,
+          name: referredUser?.name || "Deleted user",
+          email: referredUser?.email || "",
+          status: r.status,
+          createdAt: r.createdAt,
+          hasPurchase: !!buyerPurchase,
+          purchasedProgram,
+        };
+      })
+    );
+
+    const affiliateSales = await ctx.db
+      .query("affiliateSales")
+      .withIndex("by_referrerUserId", (q) => q.eq("referrerUserId", user._id))
+      .order("desc")
+      .take(100);
+
+    const salesWithNames = await Promise.all(
+      affiliateSales.map(async (s) => {
+        const buyer = await ctx.db.get(s.buyerUserId);
+        const prog = await ctx.db.get(s.programId);
+        return {
+          saleAmount: s.saleAmount,
+          commissionAmount: s.commissionAmount,
+          status: s.status,
+          ruleUsed: s.ruleUsed,
+          createdAt: s.createdAt,
+          buyerName: buyer?.name || "Deleted user",
+          programName: prog?.name || "Deleted program",
+        };
+      })
+    );
+
+    const earnedStatuses = ["approved", "available", "paid"];
+    const commissionEarned = affiliateSales
+      .filter((s) => earnedStatuses.includes(s.status))
+      .reduce((sum, s) => sum + s.commissionAmount, 0);
+    const pendingCommission = affiliateSales
+      .filter((s) => s.status === "pending")
+      .reduce((sum, s) => sum + s.commissionAmount, 0);
+
+    const convertedCount = referralDetails.filter((r) => r.hasPurchase).length;
+    const conversionRate = referralDetails.length
+      ? Math.round((convertedCount / referralDetails.length) * 100)
+      : 0;
+
+    const walletTxns = await ctx.db
+      .query("walletTransactions")
+      .withIndex("by_userId", (q) => q.eq("userId", user._id))
+      .order("desc")
+      .take(25);
+
+    const withdrawals = await ctx.db
+      .query("withdrawals")
+      .withIndex("by_userId", (q) => q.eq("userId", user._id))
+      .order("desc")
+      .take(50);
+
+    const jobApps = await ctx.db
+      .query("jobApplications")
+      .withIndex("by_userId", (q) => q.eq("userId", user._id))
+      .order("desc")
+      .take(50);
+
+    const applicationsWithJobs = await Promise.all(
+      jobApps.map(async (a) => {
+        const job = await ctx.db.get(a.jobId);
+        return {
+          jobId: a.jobId,
+          jobTitle: job?.title || "Deleted job",
+          status: a.status,
+          submittedAt: a.submittedAt,
+        };
+      })
+    );
+
+    const tickets = await ctx.db
+      .query("supportTickets")
+      .withIndex("by_userId", (q) => q.eq("userId", user._id))
+      .order("desc")
+      .take(10);
+
+    const auditLogs = await ctx.db
+      .query("auditLogs")
+      .filter((q) => q.eq(q.field("entityId"), args.userId))
+      .order("desc")
+      .take(20);
+
+    const notificationsCount = (
+      await ctx.db
+        .query("notifications")
+        .withIndex("by_userId", (q) => q.eq("userId", user._id))
+        .collect()
+    ).length;
+
     return {
       user: {
         _id: user._id,
@@ -178,10 +307,37 @@ export const getUserDetails = query({
       },
       wallet,
       enrolledPrograms,
-      referralsCount,
-      applicationsCount: applications.length,
+      referralsCount: referralDetails.length,
+      referralDetails,
+      affiliateStats: {
+        totalReferrals: referralDetails.length,
+        convertedReferrals: convertedCount,
+        conversionRate,
+        commissionEarned,
+        pendingCommission,
+      },
+      affiliateSales: salesWithNames,
+      walletTransactions: walletTxns,
+      withdrawals,
+      applications: applicationsWithJobs,
       certificates,
+      achievements,
       achievementsCount: userAch.length,
+      supportTickets: tickets.map((t) => ({
+        ticketId: t.trackingId,
+        subject: t.title,
+        status: t.status,
+        createdAt: t.createdAt,
+      })),
+      auditLogs: auditLogs.map((l) => ({
+        adminEmail: l.adminEmail,
+        action: l.action,
+        reason: l.reason,
+        previousValue: l.previousValue,
+        newValue: l.newValue,
+        timestamp: l.timestamp,
+      })),
+      notificationsCount,
     };
   },
 });

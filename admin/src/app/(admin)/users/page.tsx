@@ -4,19 +4,92 @@ import React, { useState } from "react";
 import { useAdminAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
-import { 
-  Users, 
-  Search, 
-  Filter, 
-  Shield, 
-  ShieldAlert, 
-  CheckCircle2, 
-  X, 
-  BookOpen, 
-  Wallet, 
-  MoreVertical,
-  Plus
+import {
+  Users,
+  Search,
+  Shield,
+  CheckCircle2,
+  X,
+  BookOpen,
+  Wallet,
+  Plus,
+  UserRound,
+  TrendingUp,
+  Activity,
+  Award,
+  CreditCard,
+  History,
+  ArrowDownToLine,
 } from "lucide-react";
+
+type TabKey = "overview" | "programs" | "affiliate" | "earnings" | "activity";
+
+const TABS: { key: TabKey; label: string; icon: React.ElementType }[] = [
+  { key: "overview", label: "Overview", icon: UserRound },
+  { key: "programs", label: "Programs", icon: BookOpen },
+  { key: "affiliate", label: "Affiliate", icon: TrendingUp },
+  { key: "earnings", label: "Earnings", icon: Wallet },
+  { key: "activity", label: "Activity", icon: Activity },
+];
+
+function fmtINR(n?: number) {
+  return `₹${(n || 0).toLocaleString("en-IN")}`;
+}
+
+function fmtDate(ts?: number) {
+  if (!ts) return "—";
+  return new Date(ts).toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function StatusBadge({ value }: { value: string }) {
+  const tone = {
+    active: "bg-green-100 text-green-800",
+    suspended: "bg-red-100 text-red-800",
+    completed: "bg-green-100 text-green-800",
+    paid: "bg-green-100 text-green-800",
+    approved: "bg-green-100 text-green-800",
+    available: "bg-blue-100 text-blue-800",
+    pending: "bg-amber-100 text-amber-800",
+    qualifying: "bg-blue-100 text-blue-800",
+    requested: "bg-amber-100 text-amber-800",
+    under_review: "bg-amber-100 text-amber-800",
+    processing: "bg-blue-100 text-blue-800",
+    rejected: "bg-red-100 text-red-800",
+    cancelled: "bg-neutral-200 text-neutral-700",
+  };
+  return (
+    <span
+      className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+        (tone as any)[value] || "bg-neutral-100 text-neutral-600"
+      }`}
+    >
+      {value.replace(/_/g, " ")}
+    </span>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: string;
+  accent?: string;
+}) {
+  return (
+    <div className="p-3 bg-neutral-50 rounded-lg border border-borderSubtle">
+      <span className="text-textMuted block text-[11px]">{label}</span>
+      <strong className={`text-sm font-extrabold ${accent || "text-textMain"}`}>
+        {value}
+      </strong>
+    </div>
+  );
+}
 
 export default function AdminUsersPage() {
   const { token } = useAdminAuth();
@@ -42,6 +115,7 @@ export default function AdminUsersPage() {
   const grantProgramMutation = useMutation(api.users.grantProgramAccess);
 
   const [selectedUserId, setSelectedUserId] = useState<any | null>(null);
+  const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const userDetails = useQuery(
     api.users.getUserDetails,
     token && selectedUserId ? { token, userId: selectedUserId } : "skip"
@@ -102,6 +176,11 @@ export default function AdminUsersPage() {
     }
   };
 
+  const closeDrawer = () => {
+    setSelectedUserId(null);
+    setActiveTab("overview");
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -110,7 +189,8 @@ export default function AdminUsersPage() {
           Users & Account Management
         </h1>
         <p className="text-xs text-textMuted">
-          Search registered accounts, inspect enrolled programs, adjust status, and audit actions.
+          Search registered accounts, inspect full user history (programs, affiliate, earnings,
+          activity), adjust status, and audit actions.
         </p>
       </div>
 
@@ -208,14 +288,10 @@ export default function AdminUsersPage() {
                       {u.enrolledCount} Programs
                     </td>
                     <td className="py-3 px-4 font-bold text-brand-700">
-                      ₹{u.totalEarned.toLocaleString("en-IN")}
+                      {fmtINR(u.totalEarned)}
                     </td>
                     <td className="py-3 px-4">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
-                        u.status === "active" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                      }`}>
-                        {u.status}
-                      </span>
+                      <StatusBadge value={u.status} />
                     </td>
                     <td className="py-3 px-4 text-right">
                       <button
@@ -233,91 +309,577 @@ export default function AdminUsersPage() {
         )}
       </div>
 
-      {/* User Details Drawer / Modal */}
+      {/* User Details Drawer */}
       {selectedUserId && userDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-sm">
-          <div className="bg-white w-full max-w-lg h-full overflow-y-auto p-6 sm:p-8 space-y-6 shadow-2xl flex flex-col justify-between">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-borderSubtle pb-4">
-                <div className="space-y-0.5">
-                  <h3 className="text-lg font-bold text-textMain">{userDetails.user.name}</h3>
-                  <p className="text-xs text-textMuted">{userDetails.user.email}</p>
+          <div className="bg-white w-full max-w-3xl h-full overflow-y-auto p-6 sm:p-8 space-y-5 shadow-2xl">
+            {/* Header */}
+            <div className="flex items-start justify-between border-b border-borderSubtle pb-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-textMain">
+                    {userDetails.user.name}
+                  </h3>
+                  <StatusBadge value={userDetails.user.status} />
+                  <span className="text-[10px] font-mono bg-neutral-100 px-2 py-0.5 rounded text-neutral-700 uppercase">
+                    {userDetails.user.role.replace(/_/g, " ")}
+                  </span>
                 </div>
+                <p className="text-xs text-textMuted">{userDetails.user.email}</p>
+                <p className="text-[11px] text-textMuted">
+                  Joined {fmtDate(userDetails.user.createdAt)}
+                  {userDetails.user.phone ? ` · ${userDetails.user.phone}` : ""}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setSelectedUserId(null)}
+                  onClick={() => setSuspendModalOpen(true)}
+                  className={`btn-secondary text-[11px] py-1.5 px-3 ${
+                    userDetails.user.status === "active"
+                      ? "text-red-600 hover:bg-red-50"
+                      : "text-green-600 hover:bg-green-50"
+                  }`}
+                >
+                  {userDetails.user.status === "active" ? "Suspend" : "Activate"}
+                </button>
+                <button
+                  onClick={closeDrawer}
                   className="p-1 rounded-lg text-textMuted hover:bg-neutral-100"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
+            </div>
 
-              {/* User Overview Stats */}
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 bg-neutral-50 rounded-lg border border-borderSubtle">
-                  <span className="text-textMuted block">Wallet Balance</span>
-                  <strong className="text-sm font-extrabold text-brand-700">
-                    ₹{(userDetails.wallet?.availableBalance || 0).toLocaleString("en-IN")}
-                  </strong>
-                </div>
-                <div className="p-3 bg-neutral-50 rounded-lg border border-borderSubtle">
-                  <span className="text-textMuted block">Direct Referrals</span>
-                  <strong className="text-sm font-extrabold text-textMain">
-                    {userDetails.referralsCount} Users
-                  </strong>
-                </div>
-              </div>
+            {/* Tabs */}
+            <div className="flex gap-1 border-b border-borderSubtle pb-2 overflow-x-auto">
+              {TABS.map((t) => (
+                <button
+                  key={t.key}
+                  onClick={() => setActiveTab(t.key)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                    activeTab === t.key
+                      ? "bg-brand-600 text-white"
+                      : "text-textMuted hover:bg-neutral-100"
+                  }`}
+                >
+                  <t.icon className="w-3.5 h-3.5" />
+                  {t.label}
+                </button>
+              ))}
+            </div>
 
-              {/* Enrolled Programs */}
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <h4 className="font-bold text-textMain">Enrolled Programs</h4>
+            {/* OVERVIEW */}
+            {activeTab === "overview" && (
+              <div className="space-y-5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <StatCard
+                    label="Wallet Balance"
+                    value={fmtINR(userDetails.wallet?.availableBalance)}
+                    accent="text-brand-700"
+                  />
+                  <StatCard
+                    label="Total Earned"
+                    value={fmtINR(userDetails.wallet?.totalEarned)}
+                    accent="text-brand-700"
+                  />
+                  <StatCard
+                    label="Direct Referrals"
+                    value={`${userDetails.referralsCount} Users`}
+                  />
+                  <StatCard
+                    label="Referral Conversion"
+                    value={`${userDetails.affiliateStats?.conversionRate || 0}%`}
+                  />
+                  <StatCard
+                    label="Enrolled Programs"
+                    value={`${userDetails.enrolledPrograms.length}`}
+                  />
+                  <StatCard
+                    label="Affiliate Commission"
+                    value={fmtINR(userDetails.affiliateStats?.commissionEarned)}
+                    accent="text-brand-700"
+                  />
+                  <StatCard
+                    label="Achievements"
+                    value={`${userDetails.achievementsCount}`}
+                  />
+                  <StatCard
+                    label="Support Tickets"
+                    value={`${userDetails.supportTickets?.length || 0}`}
+                  />
+                </div>
+
+                {userDetails.user.skills?.length > 0 && (
+                  <div className="space-y-1.5">
+                    <h4 className="font-bold text-xs text-textMain">Skills</h4>
+                    <div className="flex flex-wrap gap-1.5">
+                      {userDetails.user.skills.map((s: string, i: number) => (
+                        <span
+                          key={i}
+                          className="text-[10px] bg-brand-50 text-brand-700 border border-brand-200 px-2 py-0.5 rounded-full font-semibold"
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {userDetails.user.bio && (
+                  <div className="space-y-1">
+                    <h4 className="font-bold text-xs text-textMain">Bio</h4>
+                    <p className="text-xs text-textMuted">{userDetails.user.bio}</p>
+                  </div>
+                )}
+
+                <div className="p-3 bg-neutral-50 rounded-lg border border-borderSubtle space-y-1">
+                  <p className="text-xs">
+                    <span className="text-textMuted">Referral Code: </span>
+                    <span className="font-mono font-bold text-brand-700">
+                      {userDetails.user.referralCode}
+                    </span>
+                  </p>
+                  <p className="text-xs">
+                    <span className="text-textMuted">Notifications: </span>
+                    <strong>{userDetails.notificationsCount || 0}</strong>
+                  </p>
+                  <p className="text-xs">
+                    <span className="text-textMuted">Audit Events: </span>
+                    <strong>{userDetails.auditLogs?.length || 0}</strong>
+                  </p>
+                </div>
+
+                <div className="flex gap-2 pt-2">
                   <button
                     onClick={() => setGrantModalOpen(true)}
-                    className="text-brand-700 hover:underline font-semibold flex items-center gap-1"
+                    className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5"
                   >
                     <Plus className="w-3.5 h-3.5" />
-                    <span>Grant Program</span>
+                    Grant Program Access
                   </button>
+                </div>
+              </div>
+            )}
+
+            {/* PROGRAMS */}
+            {activeTab === "programs" && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-xs text-textMain">
+                    Purchases ({userDetails.enrolledPrograms.length})
+                  </h4>
+                  <button
+                    onClick={() => setGrantModalOpen(true)}
+                    className="text-brand-700 hover:underline font-semibold text-xs flex items-center gap-1"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    Grant Program
+                  </button>
+                </div>
+                {userDetails.enrolledPrograms.length === 0 ? (
+                  <p className="text-textMuted text-xs py-2">No program purchases.</p>
+                ) : (
+                  <div className="space-y-1.5">
+                    {userDetails.enrolledPrograms.map((ep: any, idx: number) => (
+                      <div
+                        key={idx}
+                        className="p-3 bg-brand-50/50 rounded-lg border border-brand-200 flex items-center justify-between gap-3"
+                      >
+                        <div className="min-w-0">
+                          <p className="font-semibold text-textMain text-xs truncate">
+                            {ep.program?.name || "Program"}
+                          </p>
+                          <p className="text-[10px] text-textMuted">
+                            {fmtDate(ep.purchase.createdAt)} ·{" "}
+                            {ep.purchase.paymentMethod === "manual_grant"
+                              ? "Manual Grant"
+                              : ep.purchase.paymentMethod || "—"}{" "}
+                            · {ep.purchase.paymentId || ""}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="font-bold text-brand-700 text-xs">
+                            {fmtINR(ep.purchase.amount)}
+                          </span>
+                          <StatusBadge value={ep.purchase.status} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* AFFILIATE */}
+            {activeTab === "affiliate" && (
+              <div className="space-y-5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <StatCard
+                    label="Total Referrals"
+                    value={`${userDetails.affiliateStats?.totalReferrals || 0}`}
+                  />
+                  <StatCard
+                    label="Converted (Bought)"
+                    value={`${userDetails.affiliateStats?.convertedReferrals || 0}`}
+                  />
+                  <StatCard
+                    label="Conversion Rate"
+                    value={`${userDetails.affiliateStats?.conversionRate || 0}%`}
+                  />
+                  <StatCard
+                    label="Commission Earned"
+                    value={fmtINR(userDetails.affiliateStats?.commissionEarned)}
+                    accent="text-brand-700"
+                  />
+                </div>
+                <div className="p-3 bg-neutral-50 rounded-lg border border-borderSubtle flex items-center justify-between">
+                  <span className="text-xs text-textMuted">Pending Commission (holding)</span>
+                  <strong className="text-xs text-amber-700">
+                    {fmtINR(userDetails.affiliateStats?.pendingCommission)}
+                  </strong>
                 </div>
 
                 <div className="space-y-1.5">
-                  {userDetails.enrolledPrograms.length === 0 ? (
-                    <p className="text-textMuted py-2">No active program purchases.</p>
+                  <h4 className="font-bold text-xs text-textMain">
+                    Referred Users ({userDetails.referralDetails?.length || 0})
+                  </h4>
+                  {userDetails.referralDetails?.length === 0 ? (
+                    <p className="text-textMuted text-xs py-2">No referrals yet.</p>
                   ) : (
-                    userDetails.enrolledPrograms.map((ep, idx) => (
-                      <div key={idx} className="p-2.5 bg-brand-50/50 rounded-lg border border-brand-200 flex items-center justify-between">
-                        <span className="font-medium text-textMain">{ep.program?.name || "Program"}</span>
-                        <span className="text-[10px] text-textMuted">₹{ep.purchase.amount}</span>
-                      </div>
-                    ))
+                    <div className="space-y-1.5">
+                      {userDetails.referralDetails.map((r: any, i: number) => (
+                        <div
+                          key={i}
+                          className="p-2.5 bg-neutral-50 rounded-lg border border-borderSubtle flex items-center justify-between gap-3"
+                        >
+                          <div className="min-w-0">
+                            <p className="font-semibold text-textMain text-xs truncate">
+                              {r.name}
+                              <span className="text-textMuted font-normal"> · {r.email}</span>
+                            </p>
+                            <p className="text-[10px] text-textMuted">
+                              Joined {fmtDate(r.createdAt)}
+                              {r.purchasedProgram
+                                ? ` · Bought: ${r.purchasedProgram}`
+                                : " · No purchase yet"}
+                            </p>
+                          </div>
+                          <StatusBadge value={r.status} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <h4 className="font-bold text-xs text-textMain">
+                    Affiliate Sales ({userDetails.affiliateSales?.length || 0})
+                  </h4>
+                  {userDetails.affiliateSales?.length === 0 ? (
+                    <p className="text-textMuted text-xs py-2">No affiliate sales recorded.</p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {userDetails.affiliateSales.map((s: any, i: number) => (
+                        <div
+                          key={i}
+                          className="p-2.5 bg-neutral-50 rounded-lg border border-borderSubtle flex items-center justify-between gap-3"
+                        >
+                          <div className="min-w-0">
+                            <p className="font-semibold text-textMain text-xs truncate">
+                              {s.programName}
+                            </p>
+                            <p className="text-[10px] text-textMuted">
+                              Buyer: {s.buyerName} · {fmtDate(s.createdAt)} · {s.ruleUsed}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-[11px] text-textMuted">
+                              Sale {fmtINR(s.saleAmount)}
+                            </span>
+                            <span className="font-bold text-brand-700 text-xs">
+                              +{fmtINR(s.commissionAmount)}
+                            </span>
+                            <StatusBadge value={s.status} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>
+            )}
 
-              {/* Administrative Actions */}
-              <div className="space-y-3 pt-4 border-t border-borderSubtle">
-                <h4 className="font-bold text-xs text-textMain">Administrative Operations</h4>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setSuspendModalOpen(true)}
-                    className={`btn-secondary text-xs py-2 px-3 ${
-                      userDetails.user.status === "active" ? "text-red-600 hover:bg-red-50" : "text-green-600 hover:bg-green-50"
-                    }`}
-                  >
-                    {userDetails.user.status === "active" ? "Suspend Account" : "Activate Account"}
-                  </button>
+            {/* EARNINGS */}
+            {activeTab === "earnings" && (
+              <div className="space-y-5">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <StatCard
+                    label="Available"
+                    value={fmtINR(userDetails.wallet?.availableBalance)}
+                    accent="text-green-700"
+                  />
+                  <StatCard
+                    label="Pending"
+                    value={fmtINR(userDetails.wallet?.pendingBalance)}
+                    accent="text-amber-700"
+                  />
+                  <StatCard
+                    label="Work Earnings"
+                    value={fmtINR(userDetails.wallet?.workEarnings)}
+                  />
+                  <StatCard
+                    label="Affiliate Earnings"
+                    value={fmtINR(userDetails.wallet?.affiliateEarnings)}
+                    accent="text-brand-700"
+                  />
+                  <StatCard
+                    label="Total Earned"
+                    value={fmtINR(userDetails.wallet?.totalEarned)}
+                    accent="text-brand-700"
+                  />
+                  <StatCard
+                    label="Total Withdrawn"
+                    value={fmtINR(userDetails.wallet?.totalWithdrawn)}
+                    accent="text-red-700"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <h4 className="font-bold text-xs text-textMain">
+                    Wallet Transactions ({userDetails.walletTransactions?.length || 0})
+                  </h4>
+                  {userDetails.walletTransactions?.length === 0 ? (
+                    <p className="text-textMuted text-xs py-2">No transactions recorded.</p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {userDetails.walletTransactions.map((t: any, i: number) => (
+                        <div
+                          key={i}
+                          className="p-2.5 bg-neutral-50 rounded-lg border border-borderSubtle flex items-center justify-between gap-3"
+                        >
+                          <div className="min-w-0">
+                            <p className="font-semibold text-textMain text-xs truncate">
+                              {t.description || t.type.replace(/_/g, " ")}
+                            </p>
+                            <p className="text-[10px] text-textMuted">
+                              {fmtDate(t.createdAt)} · {t.type.replace(/_/g, " ")}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span
+                              className={`font-bold text-xs ${
+                                t.amount < 0 ? "text-red-600" : "text-green-700"
+                              }`}
+                            >
+                              {t.amount < 0 ? "−" : "+"}
+                              {fmtINR(Math.abs(t.amount))}
+                            </span>
+                            <StatusBadge value={t.status} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <h4 className="font-bold text-xs text-textMain">
+                    Withdrawals ({userDetails.withdrawals?.length || 0})
+                  </h4>
+                  {userDetails.withdrawals?.length === 0 ? (
+                    <p className="text-textMuted text-xs py-2">No withdrawal requests.</p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {userDetails.withdrawals.map((w: any, i: number) => (
+                        <div
+                          key={i}
+                          className="p-2.5 bg-neutral-50 rounded-lg border border-borderSubtle flex items-center justify-between gap-3"
+                        >
+                          <div className="min-w-0">
+                            <p className="font-semibold text-textMain text-xs truncate">
+                              {w.payoutMethod.toUpperCase().replace(/_/g, " ")} ·{" "}
+                              {w.payoutDetails?.upiId ||
+                                w.payoutDetails?.paypalEmail ||
+                                w.payoutDetails?.accountNumber ||
+                                "—"}
+                            </p>
+                            <p className="text-[10px] text-textMuted">
+                              Requested {fmtDate(w.requestedAt)}
+                              {w.adminNote ? ` · ${w.adminNote}` : ""}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="font-bold text-textMain text-xs">
+                              {fmtINR(w.netAmount)}
+                              <span className="text-[10px] text-textMuted font-normal">
+                                {" "}
+                                +{fmtINR(w.fee)} fee
+                              </span>
+                            </span>
+                            <StatusBadge value={w.status} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
+            )}
 
-            <div className="pt-4 border-t border-borderSubtle">
-              <button
-                onClick={() => setSelectedUserId(null)}
-                className="btn-secondary w-full justify-center text-xs py-2"
-              >
-                Close Drawer
-              </button>
-            </div>
+            {/* ACTIVITY */}
+            {activeTab === "activity" && (
+              <div className="space-y-5">
+                <div className="space-y-1.5">
+                  <h4 className="font-bold text-xs text-textMain">
+                    Job Applications ({userDetails.applications?.length || 0})
+                  </h4>
+                  {userDetails.applications?.length === 0 ? (
+                    <p className="text-textMuted text-xs py-2">No job applications.</p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {userDetails.applications.map((a: any, i: number) => (
+                        <div
+                          key={i}
+                          className="p-2.5 bg-neutral-50 rounded-lg border border-borderSubtle flex items-center justify-between gap-3"
+                        >
+                          <div className="min-w-0">
+                            <p className="font-semibold text-textMain text-xs truncate">
+                              {a.jobTitle}
+                            </p>
+                            <p className="text-[10px] text-textMuted">
+                              Applied {fmtDate(a.submittedAt)}
+                            </p>
+                          </div>
+                          <StatusBadge value={a.status} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <h4 className="font-bold text-xs text-textMain">
+                    Certificates ({userDetails.certificates?.length || 0})
+                  </h4>
+                  {userDetails.certificates?.length === 0 ? (
+                    <p className="text-textMuted text-xs py-2">No certificates issued.</p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {userDetails.certificates.map((c: any, i: number) => (
+                        <div
+                          key={i}
+                          className="p-2.5 bg-neutral-50 rounded-lg border border-borderSubtle flex items-center justify-between gap-3"
+                        >
+                          <div className="min-w-0">
+                            <p className="font-semibold text-textMain text-xs truncate">
+                              {c.programName}
+                            </p>
+                            <p className="text-[10px] text-textMuted font-mono">
+                              {c.certificateId} · Issued {fmtDate(c.issueDate)}
+                            </p>
+                          </div>
+                          <span className="text-[10px] font-bold bg-green-100 text-green-800 px-2 py-0.5 rounded uppercase">
+                            Verified
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <h4 className="font-bold text-xs text-textMain">
+                    Achievements ({userDetails.achievements?.length || 0})
+                  </h4>
+                  {userDetails.achievements?.length === 0 ? (
+                    <p className="text-textMuted text-xs py-2">No achievements unlocked.</p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {userDetails.achievements.map((a: any, i: number) => (
+                        <div
+                          key={i}
+                          className="p-2.5 bg-neutral-50 rounded-lg border border-borderSubtle flex items-center justify-between gap-3"
+                        >
+                          <div className="min-w-0">
+                            <p className="font-semibold text-textMain text-xs truncate">
+                              {a.achievement?.name || "Achievement"}
+                            </p>
+                            <p className="text-[10px] text-textMuted">
+                              {a.achievement?.description || ""}
+                            </p>
+                          </div>
+                          <span className="text-[10px] text-textMuted shrink-0">
+                            {fmtDate(a.unlockedAt)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <h4 className="font-bold text-xs text-textMain">
+                    Support Tickets ({userDetails.supportTickets?.length || 0})
+                  </h4>
+                  {userDetails.supportTickets?.length === 0 ? (
+                    <p className="text-textMuted text-xs py-2">No support tickets.</p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {userDetails.supportTickets.map((t: any, i: number) => (
+                        <div
+                          key={i}
+                          className="p-2.5 bg-neutral-50 rounded-lg border border-borderSubtle flex items-center justify-between gap-3"
+                        >
+                          <div className="min-w-0">
+                            <p className="font-semibold text-textMain text-xs truncate">
+                              {t.subject}
+                            </p>
+                            <p className="text-[10px] text-textMuted font-mono">
+                              {t.ticketId} · {fmtDate(t.createdAt)}
+                            </p>
+                          </div>
+                          <StatusBadge value={t.status} />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <h4 className="font-bold text-xs text-textMain">
+                    Admin Audit Trail ({userDetails.auditLogs?.length || 0})
+                  </h4>
+                  {userDetails.auditLogs?.length === 0 ? (
+                    <p className="text-textMuted text-xs py-2">No admin actions on this account.</p>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {userDetails.auditLogs.map((l: any, i: number) => (
+                        <div
+                          key={i}
+                          className="p-2.5 bg-neutral-50 rounded-lg border border-borderSubtle flex items-center justify-between gap-3"
+                        >
+                          <div className="min-w-0">
+                            <p className="font-semibold text-textMain text-xs truncate">
+                              {l.action.replace(/_/g, " ")}
+                              {l.reason ? ` — ${l.reason}` : ""}
+                            </p>
+                            <p className="text-[10px] text-textMuted">
+                              by {l.adminEmail} · {fmtDate(l.timestamp)}
+                            </p>
+                          </div>
+                          {l.previousValue !== undefined && (
+                            <span className="text-[10px] text-textMuted shrink-0">
+                              {l.previousValue} → {l.newValue}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
