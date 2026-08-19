@@ -274,6 +274,13 @@ export const updateCommissionStatus = mutation({
     const previousStatus = sale.status;
     const now = Date.now();
 
+    if (previousStatus !== "pending") {
+      throw new Error("This commission has already been processed");
+    }
+    if (!["approved", "available", "rejected", "reversed"].includes(args.status)) {
+      throw new Error("Invalid commission status");
+    }
+
     await ctx.db.patch(args.saleId, {
       status: args.status,
       updatedAt: now,

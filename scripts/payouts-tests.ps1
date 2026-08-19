@@ -113,7 +113,7 @@ $proc = C "mutation" "affiliates:processPurchaseWithAffiliate" @{
   paymentMethod = "upi"
 }
 $sales = C "query" "affiliates:getAllAffiliateSalesAdmin" @{ token = $script:var.adminTok }
-$sale = @($sales.value | Where-Object { $_.buyerEmail -eq "buyer.$ts@zetagrow.com" } | Select-Object -First 1)[0]
+$sale = @($sales.value | Where-Object { $_.buyer.email -eq "buyer.$ts@zetagrow.com" } | Select-Object -First 1)[0]
 if ($sale -and $sale.status -ne "approved") {
   C "mutation" "affiliates:updateCommissionStatus" @{
     token = $script:var.adminTok

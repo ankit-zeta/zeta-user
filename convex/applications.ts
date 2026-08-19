@@ -391,7 +391,9 @@ export const updateApplicationStatus = mutation({
       },
       in_progress: {
         title: "Work Started",
-        message: `You are now working on "${job?.title || "the project"}". Submit your deliverable when done.`,
+        message: `You are now working on "${job?.title || "the project"}". Submit your deliverable when done.${
+          args.adminNotes ? ` Instructions: ${args.adminNotes}` : ""
+        }`,
       },
       revision_required: {
         title: "Revision Needed",

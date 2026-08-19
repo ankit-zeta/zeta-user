@@ -90,6 +90,8 @@ export const requestWithdrawal = mutation({
 
     if (!wallet) throw new Error("Wallet not found");
 
+    const now = Date.now();
+
     // Fetch withdrawal settings
     const settingsRecord = await ctx.db
       .query("adminSettings")
@@ -114,6 +116,38 @@ export const requestWithdrawal = mutation({
       throw new Error("Requested amount exceeds your available balance");
     }
 
+    // Enforce configured allowed payout methods
+    const allowedMethods =
+      withdrawalSettings.allowedMethods && withdrawalSettings.allowedMethods.length > 0
+        ? withdrawalSettings.allowedMethods
+        : ["upi", "bank_transfer", "upi_qr", "paypal"];
+    if (!allowedMethods.includes(args.payoutMethod)) {
+      throw new Error("This payout method is not currently supported");
+    }
+
+    // Enforce daily and monthly withdrawal limits from settings
+    const windowStart = (windowMs: number) => now - windowMs;
+    const recentWithdrawals = await ctx.db
+      .query("withdrawals")
+      .withIndex("by_userId", (q) => q.eq("userId", session.userId))
+      .filter((q) => q.and(q.gte(q.field("requestedAt"), windowStart(30 * 24 * 60 * 60 * 1000)), q.neq(q.field("status"), "rejected")))
+      .collect();
+
+    const dailyWindowMs = 24 * 60 * 60 * 1000;
+    const dayTotal =
+      recentWithdrawals
+        .filter((w) => w.requestedAt >= windowStart(dailyWindowMs))
+        .reduce((sum, w) => sum + w.amount, 0) + args.amount;
+    if (withdrawalSettings.dailyLimit && dayTotal > withdrawalSettings.dailyLimit) {
+      throw new Error(`Daily withdrawal limit of ₹${withdrawalSettings.dailyLimit} exceeded`);
+    }
+
+    const monthTotal =
+      recentWithdrawals.reduce((sum, w) => sum + w.amount, 0) + args.amount;
+    if (withdrawalSettings.monthlyLimit && monthTotal > withdrawalSettings.monthlyLimit) {
+      throw new Error(`Monthly withdrawal limit of ₹${withdrawalSettings.monthlyLimit} exceeded`);
+    }
+
     // Check pending withdrawals
     const pendingWithdrawals = await ctx.db
       .query("withdrawals")
@@ -129,8 +163,6 @@ export const requestWithdrawal = mutation({
     const feePercentage = withdrawalSettings.feePercentage || 0;
     const fee = Math.round((args.amount * feePercentage) / 100) + (withdrawalSettings.fixedFee || 0);
     const netAmount = Math.max(0, args.amount - fee);
-
-    const now = Date.now();
 
     // Deduct available balance immediately into pending withdrawal
     const newAvailable = wallet.availableBalance - args.amount;

@@ -67,6 +67,7 @@ export default function WithdrawalsPage() {
 
   const requestWithdrawalMutation = useMutation(api.withdrawals.requestWithdrawal);
   const getQrUploadUrl = useAction(api.withdrawals.generateWithdrawalQrUploadUrl);
+  const withdrawalSettings = useQuery(api.settings.getSetting, { key: "withdrawals" });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [amount, setAmount] = useState<number>(1000);
@@ -86,9 +87,14 @@ export default function WithdrawalsPage() {
   const [success, setSuccess] = useState("");
 
   const available = walletData?.wallet?.availableBalance || 0;
-  const feePercent = 2; // default 2%
-  const calculatedFee = Math.round((amount * feePercent) / 100);
+  const feePercent = withdrawalSettings?.feePercentage ?? 2;
+  const fixedFee = withdrawalSettings?.fixedFee ?? 0;
+  const minWithdrawal = withdrawalSettings?.minimumWithdrawal ?? 1000;
+  const calculatedFee = Math.round((amount * feePercent) / 100) + fixedFee;
   const netPayout = Math.max(0, amount - calculatedFee);
+  const allowedMethods = (withdrawalSettings?.allowedMethods?.length
+    ? withdrawalSettings.allowedMethods
+    : ["upi", "bank_transfer", "upi_qr", "paypal"]) as string[];
 
   const handleQrFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -125,8 +131,8 @@ export default function WithdrawalsPage() {
     e.preventDefault();
     if (!token) return;
 
-    if (amount < 1000) {
-      setError("Minimum withdrawal amount is ₹1,000.");
+    if (amount < minWithdrawal) {
+      setError(`Minimum withdrawal amount is ₹${minWithdrawal.toLocaleString("en-IN")}.`);
       return;
     }
     if (amount > available) {
@@ -184,7 +190,7 @@ export default function WithdrawalsPage() {
 
         <button
           onClick={() => setModalOpen(true)}
-          disabled={available < 1000}
+          disabled={available < minWithdrawal}
           className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5 shadow-sm"
         >
           <Plus className="w-4 h-4" />
@@ -199,7 +205,7 @@ export default function WithdrawalsPage() {
           <p className="text-3xl font-extrabold text-brand-700">
             ₹{available.toLocaleString("en-IN")}
           </p>
-          <span className="text-[11px] text-textMuted block">Minimum threshold: ₹1,000</span>
+          <span className="text-[11px] text-textMuted block">Minimum threshold: ₹{minWithdrawal.toLocaleString("en-IN")}</span>
         </div>
 
         <div className="card-surface p-6 space-y-1">
@@ -275,57 +281,65 @@ export default function WithdrawalsPage() {
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-textMain">Payout Method</label>
                 <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPayoutMethod("upi")}
-                    className={`p-2.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-2 ${
-                      payoutMethod === "upi"
-                        ? "border-brand-600 bg-brand-50 text-brand-700 font-bold"
-                        : "border-borderSubtle bg-white text-textMuted"
-                    }`}
-                  >
-                    <Smartphone className="w-4 h-4" />
-                    <span>UPI ID</span>
-                  </button>
+                  {allowedMethods.includes("upi") && (
+                    <button
+                      type="button"
+                      onClick={() => setPayoutMethod("upi")}
+                      className={`p-2.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-2 ${
+                        payoutMethod === "upi"
+                          ? "border-brand-600 bg-brand-50 text-brand-700 font-bold"
+                          : "border-borderSubtle bg-white text-textMuted"
+                      }`}
+                    >
+                      <Smartphone className="w-4 h-4" />
+                      <span>UPI ID</span>
+                    </button>
+                  )}
 
-                  <button
-                    type="button"
-                    onClick={() => setPayoutMethod("upi_qr")}
-                    className={`p-2.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-2 ${
-                      payoutMethod === "upi_qr"
-                        ? "border-brand-600 bg-brand-50 text-brand-700 font-bold"
-                        : "border-borderSubtle bg-white text-textMuted"
-                    }`}
-                  >
-                    <QrCode className="w-4 h-4" />
-                    <span>UPI QR</span>
-                  </button>
+                  {allowedMethods.includes("upi_qr") && (
+                    <button
+                      type="button"
+                      onClick={() => setPayoutMethod("upi_qr")}
+                      className={`p-2.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-2 ${
+                        payoutMethod === "upi_qr"
+                          ? "border-brand-600 bg-brand-50 text-brand-700 font-bold"
+                          : "border-borderSubtle bg-white text-textMuted"
+                      }`}
+                    >
+                      <QrCode className="w-4 h-4" />
+                      <span>UPI QR</span>
+                    </button>
+                  )}
 
-                  <button
-                    type="button"
-                    onClick={() => setPayoutMethod("bank_transfer")}
-                    className={`p-2.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-2 ${
-                      payoutMethod === "bank_transfer"
-                        ? "border-brand-600 bg-brand-50 text-brand-700 font-bold"
-                        : "border-borderSubtle bg-white text-textMuted"
-                    }`}
-                  >
-                    <Building className="w-4 h-4" />
-                    <span>Bank Transfer</span>
-                  </button>
+                  {allowedMethods.includes("bank_transfer") && (
+                    <button
+                      type="button"
+                      onClick={() => setPayoutMethod("bank_transfer")}
+                      className={`p-2.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-2 ${
+                        payoutMethod === "bank_transfer"
+                          ? "border-brand-600 bg-brand-50 text-brand-700 font-bold"
+                          : "border-borderSubtle bg-white text-textMuted"
+                      }`}
+                    >
+                      <Building className="w-4 h-4" />
+                      <span>Bank Transfer</span>
+                    </button>
+                  )}
 
-                  <button
-                    type="button"
-                    onClick={() => setPayoutMethod("paypal")}
-                    className={`p-2.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-2 ${
-                      payoutMethod === "paypal"
-                        ? "border-brand-600 bg-brand-50 text-brand-700 font-bold"
-                        : "border-borderSubtle bg-white text-textMuted"
-                    }`}
-                  >
-                    <Mail className="w-4 h-4" />
-                    <span>PayPal</span>
-                  </button>
+                  {allowedMethods.includes("paypal") && (
+                    <button
+                      type="button"
+                      onClick={() => setPayoutMethod("paypal")}
+                      className={`p-2.5 rounded-lg border text-xs font-medium flex items-center justify-center gap-2 ${
+                        payoutMethod === "paypal"
+                          ? "border-brand-600 bg-brand-50 text-brand-700 font-bold"
+                          : "border-borderSubtle bg-white text-textMuted"
+                      }`}
+                    >
+                      <Mail className="w-4 h-4" />
+                      <span>PayPal</span>
+                    </button>
+                  )}
                 </div>
               </div>
 
