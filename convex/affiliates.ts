@@ -36,15 +36,20 @@ export const getUserAffiliateStats = query({
       .withIndex("by_referrerUserId", (q) => q.eq("referrerUserId", session.userId))
       .collect();
 
-    const sales = await ctx.db
+    const allSales = await ctx.db
       .query("affiliateSales")
       .withIndex("by_referrerUserId", (q) => q.eq("referrerUserId", session.userId))
       .collect();
+
+    const sales = allSales.filter((s) => !s.kind || s.kind === "direct");
+    const chainSales = allSales.filter((s) => s.kind === "chain");
 
     let totalCommissionGenerated = 0;
     let pendingCommissions = 0;
     let approvedCommissions = 0;
     let availableCommissions = 0;
+    let chainEarnings = 0;
+    let pendingChainCommissions = 0;
 
     const detailedSales = await Promise.all(
       sales.map(async (s) => {
@@ -64,7 +69,24 @@ export const getUserAffiliateStats = query({
       })
     );
 
+    const detailedChain = await Promise.all(
+      chainSales.map(async (s) => {
+        const buyer = await ctx.db.get(s.buyerUserId);
+        const program = await ctx.db.get(s.programId);
+
+        chainEarnings += s.commissionAmount;
+        if (s.status === "pending") pendingChainCommissions += s.commissionAmount;
+
+        return {
+          ...s,
+          buyerName: buyer?.name || "Direct Customer",
+          programName: program?.name || "Program",
+        };
+      })
+    );
+
     detailedSales.sort((a, b) => b.createdAt - a.createdAt);
+    detailedChain.sort((a, b) => b.createdAt - a.createdAt);
 
     return {
       referralCode: user.referralCode,
@@ -74,10 +96,28 @@ export const getUserAffiliateStats = query({
       pendingCommissions,
       approvedCommissions,
       availableCommissions,
+      chainEarnings,
+      pendingChainCommissions,
+      chainSales: detailedChain,
       sales: detailedSales,
     };
   },
 });
+
+async function getPositionMultiplier(
+  ctx: any,
+  userId: any,
+  positionMultipliers: Record<string, number> | undefined
+): Promise<number> {
+  if (!positionMultipliers) return 1;
+  const user = await ctx.db.get(userId);
+  if (!user?.positionId) return 1;
+  const pos = await ctx.db.get(user.positionId);
+  const m =
+    positionMultipliers[String(user.positionId)] ??
+    (pos ? positionMultipliers[pos.name] : undefined);
+  return m && m > 0 ? m : 1;
+}
 
 // Process Purchase with Configurable Affiliate Commission Engine
 export const processPurchaseWithAffiliate = mutation({
@@ -199,7 +239,7 @@ export const processPurchaseWithAffiliate = mutation({
           if (commissionAmount > 0) {
             const holdingPeriodEndsAt = now + (affiliateSettings.holdingPeriodDays || 7) * 24 * 60 * 60 * 1000;
 
-            await ctx.db.insert("affiliateSales", {
+            const directSaleId = await ctx.db.insert("affiliateSales", {
               purchaseId,
               buyerUserId: buyer._id,
               referrerUserId: referrer._id,
@@ -211,6 +251,7 @@ export const processPurchaseWithAffiliate = mutation({
               holdingPeriodEndsAt,
               createdAt: now,
               updatedAt: now,
+              kind: "direct",
             });
 
             // Update referrer pending balance
@@ -236,6 +277,77 @@ export const processPurchaseWithAffiliate = mutation({
               actionUrl: "/dashboard/affiliate",
               createdAt: now,
             });
+
+            // Chain / upline commission: the referrer's own referrer earns X% of this commission
+            if (affiliateSettings.chainEnabled && referrer.referredBy) {
+              const upline = await ctx.db.get(referrer.referredBy);
+              const chainPct =
+                upline?.positionId && affiliateSettings.chainLevels
+                  ? affiliateSettings.chainLevels[String(upline.positionId)] || 0
+                  : 0;
+
+              if (
+                upline &&
+                upline._id.toString() !== referrer._id.toString() &&
+                upline._id.toString() !== buyer._id.toString() &&
+                upline.status === "active" &&
+                chainPct > 0
+              ) {
+                let chainAmount = Math.round((commissionAmount * chainPct) / 100);
+
+                // Per-sale cap for the upline, scaled by their position
+                if (affiliateSettings.perSaleCap && affiliateSettings.perSaleCap > 0) {
+                  const chainPosMultiplier = await getPositionMultiplier(
+                    ctx,
+                    upline._id,
+                    affiliateSettings.positionMultipliers
+                  );
+                  const chainCap = Math.round(affiliateSettings.perSaleCap * chainPosMultiplier);
+                  if (chainAmount > chainCap) chainAmount = chainCap;
+                }
+
+                if (chainAmount > 0) {
+                  const chainSaleId = await ctx.db.insert("affiliateSales", {
+                    purchaseId,
+                    buyerUserId: buyer._id,
+                    referrerUserId: upline._id,
+                    programId: args.programId,
+                    saleAmount: program.price,
+                    commissionAmount: chainAmount,
+                    status: "pending",
+                    ruleUsed: `${chainPct}% of downline's ${commissionAmount} commission (Chain level 1)`,
+                    holdingPeriodEndsAt,
+                    createdAt: now,
+                    updatedAt: now,
+                    kind: "chain",
+                    parentSaleId: directSaleId,
+                    chainLevel: 1,
+                    baseCommissionAmount: commissionAmount,
+                  });
+
+                  const uplineWallet = await ctx.db
+                    .query("wallets")
+                    .withIndex("by_userId", (q) => q.eq("userId", upline._id))
+                    .first();
+                  if (uplineWallet) {
+                    await ctx.db.patch(uplineWallet._id, {
+                      pendingBalance: uplineWallet.pendingBalance + chainAmount,
+                      updatedAt: now,
+                    });
+                  }
+
+                  await ctx.db.insert("notifications", {
+                    userId: upline._id,
+                    type: "affiliate",
+                    title: "Chain Commission Earned!",
+                    message: `You earned ₹${chainAmount} from ${referrer.name}'s affiliate commission on ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
+                    read: false,
+                    actionUrl: "/dashboard/affiliate",
+                    createdAt: now,
+                  });
+                }
+              }
+            }
           }
         }
       }
@@ -302,29 +414,27 @@ export const updateCommissionStatus = mutation({
       updatedAt: now,
     });
 
+    const isCredit = args.status === "available" || args.status === "approved";
+    const isReject = args.status === "rejected" || args.status === "reversed";
+
     const wallet = await ctx.db
       .query("wallets")
       .withIndex("by_userId", (q) => q.eq("userId", sale.referrerUserId))
       .first();
 
     if (wallet) {
-      // If moving from pending to available:
-      if (previousStatus === "pending" && (args.status === "available" || args.status === "approved")) {
+      if (isCredit) {
         // Enforce daily/monthly commission caps from settings, scaled by referrer position
         const affiliateSettings = (await ctx.db
           .query("adminSettings")
           .withIndex("by_key", (q) => q.eq("key", "affiliate"))
           .first())?.value as any;
         if (affiliateSettings) {
-          const referrer = await ctx.db.get(sale.referrerUserId);
-          let posMultiplier = 1;
-          if (referrer?.positionId) {
-            const pos = await ctx.db.get(referrer.positionId);
-            const m =
-              affiliateSettings.positionMultipliers?.[String(referrer.positionId)] ??
-              (pos ? affiliateSettings.positionMultipliers?.[pos.name] : undefined);
-            posMultiplier = m && m > 0 ? m : 1;
-          }
+          const posMultiplier = await getPositionMultiplier(
+            ctx,
+            sale.referrerUserId,
+            affiliateSettings.positionMultipliers
+          );
           const scale = (cap: number | undefined) =>
             cap && cap > 0 ? Math.round(cap * posMultiplier) : 0;
 
@@ -333,7 +443,10 @@ export const updateCommissionStatus = mutation({
             .withIndex("by_userId", (q) => q.eq("userId", sale.referrerUserId))
             .filter((q) =>
               q.and(
-                q.eq(q.field("type"), "AFFILIATE_COMMISSION"),
+                q.or(
+                  q.eq(q.field("type"), "AFFILIATE_COMMISSION"),
+                  q.eq(q.field("type"), "CHAIN_COMMISSION")
+                ),
                 q.eq(q.field("status"), "completed"),
                 q.gte(q.field("createdAt"), now - 30 * 24 * 60 * 60 * 1000)
               )
@@ -376,21 +489,70 @@ export const updateCommissionStatus = mutation({
 
         await ctx.db.insert("walletTransactions", {
           userId: sale.referrerUserId,
-          type: "AFFILIATE_COMMISSION",
+          type: sale.kind === "chain" ? "CHAIN_COMMISSION" : "AFFILIATE_COMMISSION",
           amount: sale.commissionAmount,
           balanceAfter: newAvailable,
           referenceId: args.saleId,
-          description: `Affiliate commission approved: ₹${sale.commissionAmount}`,
+          description:
+            sale.kind === "chain"
+              ? `Chain commission approved (${sale.chainLevel ? `level ${sale.chainLevel}, ` : ""}${sale.baseCommissionAmount ? `${sale.baseCommissionAmount} base` : ""}): ₹${sale.commissionAmount}`
+              : `Affiliate commission approved: ₹${sale.commissionAmount}`,
           status: "completed",
           createdAt: now,
         });
-      } else if (previousStatus === "pending" && (args.status === "rejected" || args.status === "reversed")) {
+      } else if (isReject) {
         // Deduct from pending
         const newPending = Math.max(0, wallet.pendingBalance - sale.commissionAmount);
         await ctx.db.patch(wallet._id, {
           pendingBalance: newPending,
           updatedAt: now,
         });
+      }
+    }
+
+    // Cascade to chain commissions derived from a direct sale
+    if (sale.kind !== "chain" && (isCredit || isReject)) {
+      const children = await ctx.db
+        .query("affiliateSales")
+        .withIndex("by_parentSaleId", (q) => q.eq("parentSaleId", sale._id))
+        .filter((q) => q.eq(q.field("status"), "pending"))
+        .collect();
+      for (const child of children) {
+        await ctx.db.patch(child._id, {
+          status: args.status,
+          updatedAt: now,
+        });
+        const childWallet = await ctx.db
+          .query("wallets")
+          .withIndex("by_userId", (q) => q.eq("userId", child.referrerUserId))
+          .first();
+        if (!childWallet) continue;
+        if (isCredit) {
+          const newPending = Math.max(0, childWallet.pendingBalance - child.commissionAmount);
+          const newAvailable = childWallet.availableBalance + child.commissionAmount;
+          await ctx.db.patch(childWallet._id, {
+            pendingBalance: newPending,
+            availableBalance: newAvailable,
+            totalEarned: childWallet.totalEarned + child.commissionAmount,
+            affiliateEarnings: childWallet.affiliateEarnings + child.commissionAmount,
+            updatedAt: now,
+          });
+          await ctx.db.insert("walletTransactions", {
+            userId: child.referrerUserId,
+            type: "CHAIN_COMMISSION",
+            amount: child.commissionAmount,
+            balanceAfter: newAvailable,
+            referenceId: child._id,
+            description: `Chain commission approved (level ${child.chainLevel || 1}): ₹${child.commissionAmount}`,
+            status: "completed",
+            createdAt: now,
+          });
+        } else {
+          await ctx.db.patch(childWallet._id, {
+            pendingBalance: Math.max(0, childWallet.pendingBalance - child.commissionAmount),
+            updatedAt: now,
+          });
+        }
       }
     }
 

@@ -15,7 +15,8 @@ import {
   ShieldCheck, 
   Clock, 
   ArrowRight,
-  CreditCard 
+  CreditCard,
+  Network
 } from "lucide-react";
 
 export default function AffiliateCenterPage() {
@@ -119,6 +120,60 @@ export default function AffiliateCenterPage() {
           </Link>
         </div>
       </div>
+
+      {/* Chain / Upline Earnings */}
+      {(stats?.chainEarnings || 0) > 0 && (
+        <div className="card-surface p-6 bg-white border border-brand-200 space-y-2">
+          <div className="flex items-center gap-2 text-xs font-bold text-textMain">
+            <Network className="w-4 h-4 text-brand-600" />
+            <span>Chain / Upline Earnings</span>
+          </div>
+          <p className="text-[11px] text-textMuted leading-relaxed">
+            You earned <strong>₹{(stats?.chainEarnings || 0).toLocaleString("en-IN")}</strong> in total from your
+            downline&apos;s affiliate commissions (of which
+            <strong> ₹{(stats?.pendingChainCommissions || 0).toLocaleString("en-IN")}</strong> is pending holding
+            period). When someone you referred sells a program, you earn a percentage of their commission.
+          </p>
+          {stats?.chainSales && stats.chainSales.length > 0 && (
+            <div className="overflow-x-auto pt-2">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-borderSubtle text-textMuted">
+                    <th className="py-2 px-3 font-semibold">Downline Sale</th>
+                    <th className="py-2 px-3 font-semibold">Program</th>
+                    <th className="py-2 px-3 font-semibold">Downline Commission</th>
+                    <th className="py-2 px-3 font-semibold">Your Chain %</th>
+                    <th className="py-2 px-3 font-semibold">You Earned</th>
+                    <th className="py-2 px-3 font-semibold">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-borderSubtle">
+                  {stats.chainSales.slice(0, 5).map((cs: any) => (
+                    <tr key={cs._id}>
+                      <td className="py-3 px-3 font-medium text-textMain">{cs.buyerName}</td>
+                      <td className="py-3 px-3 text-textMuted">{cs.programName}</td>
+                      <td className="py-3 px-3 text-textMain font-semibold">₹{(cs.baseCommissionAmount || 0).toLocaleString("en-IN")}</td>
+                      <td className="py-3 px-3 text-textMuted">{cs.ruleUsed}</td>
+                      <td className="py-3 px-3 text-brand-700 font-bold">₹{cs.commissionAmount.toLocaleString("en-IN")}</td>
+                      <td className="py-3 px-3">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                          cs.status === "available" || cs.status === "approved"
+                            ? "bg-green-100 text-green-800"
+                            : cs.status === "pending"
+                            ? "bg-amber-100 text-amber-800"
+                            : "bg-neutral-100 text-neutral-700"
+                        }`}>
+                          {cs.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Commission Rule Explanation Card */}
       <div className="card-surface p-6 bg-neutral-50/70 space-y-3">

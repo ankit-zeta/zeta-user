@@ -48,6 +48,10 @@ export default function AdminSettingsPage() {
   const [affMonthlyCap, setAffMonthlyCap] = useState<number>(0);
   const [affMultipliers, setAffMultipliers] = useState<Record<string, number>>({});
 
+  // Chain / upline commission (% of downline's commission, per position level)
+  const [affChainEnabled, setAffChainEnabled] = useState(false);
+  const [affChainLevels, setAffChainLevels] = useState<Record<string, number>>({});
+
   // Dividends (future engine config)
   const [divEnabled, setDivEnabled] = useState(false);
   const [divRate, setDivRate] = useState<number>(0);
@@ -90,6 +94,8 @@ export default function AdminSettingsPage() {
         setAffDailyCap(allSettings.affiliate.dailyCommissionCap ?? 0);
         setAffMonthlyCap(allSettings.affiliate.monthlyCommissionCap ?? 0);
         setAffMultipliers(allSettings.affiliate.positionMultipliers || {});
+        setAffChainEnabled(!!allSettings.affiliate.chainEnabled);
+        setAffChainLevels(allSettings.affiliate.chainLevels || {});
       }
       if (allSettings.dividends) {
         setDivEnabled(!!allSettings.dividends.enabled);
@@ -168,6 +174,8 @@ export default function AdminSettingsPage() {
           dailyCommissionCap: Number(affDailyCap),
           monthlyCommissionCap: Number(affMonthlyCap),
           positionMultipliers: affMultipliers,
+          chainEnabled: affChainEnabled,
+          chainLevels: affChainLevels,
         },
         reason: "Admin affiliate commission limits update",
       });
@@ -366,6 +374,47 @@ export default function AdminSettingsPage() {
                       }
                       className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white font-bold"
                     />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Chain / Upline Commission */}
+          {positions && positions.length > 0 && (
+            <div className="space-y-3 pt-2 border-t border-borderSubtle">
+              <label className="flex items-center gap-2 font-bold text-textMain">
+                <input
+                  type="checkbox"
+                  checked={affChainEnabled}
+                  onChange={(e) => setAffChainEnabled(e.target.checked)}
+                  className="rounded border-borderSubtle text-brand-600"
+                />
+                Enable Chain / Upline Commission
+              </label>
+              <p className="text-[11px] text-textMuted leading-relaxed">
+                When your referral (downline) earns a commission on a sale, you earn a % of that commission.
+                Example: downline earns ₹1,000 (50% of a ₹2,000 sale) — at 20% chain you earn ₹200.
+                A user needs the corresponding position (unlocked via achievements) to be eligible. 0 = level disabled.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {positions.map((p) => (
+                  <div key={p._id} className="space-y-1">
+                    <label className="text-[10px] font-bold text-textMuted uppercase">{p.name}</label>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="number"
+                        step="1"
+                        min={0}
+                        max={100}
+                        value={affChainLevels[p._id] ?? 0}
+                        onChange={(e) =>
+                          setAffChainLevels((prev) => ({ ...prev, [p._id]: Number(e.target.value) }))
+                        }
+                        className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white font-bold"
+                      />
+                      <span className="text-[10px] font-bold text-textMuted">%</span>
+                    </div>
                   </div>
                 ))}
               </div>

@@ -266,7 +266,7 @@ export default defineSchema({
     .index("by_referrerUserId", ["referrerUserId"])
     .index("by_referredUserId", ["referredUserId"]),
 
-  // Affiliate Sales & Commissions
+  // Affiliate Sales & Commissions (kind "direct" = standard referral, "chain" = upline % of downline's commission)
   affiliateSales: defineTable({
     purchaseId: v.id("purchases"),
     buyerUserId: v.id("users"),
@@ -279,10 +279,15 @@ export default defineSchema({
     holdingPeriodEndsAt: v.number(),
     createdAt: v.number(),
     updatedAt: v.number(),
+    kind: v.optional(v.string()), // "direct" (default) | "chain"
+    parentSaleId: v.optional(v.id("affiliateSales")),
+    chainLevel: v.optional(v.number()), // 1 = upline of the direct referrer
+    baseCommissionAmount: v.optional(v.number()), // the direct commission the chain % was applied to
   })
     .index("by_referrerUserId", ["referrerUserId"])
     .index("by_buyerUserId", ["buyerUserId"])
-    .index("by_status", ["status"]),
+    .index("by_status", ["status"])
+    .index("by_parentSaleId", ["parentSaleId"]),
 
   // Wallets
   wallets: defineTable({
@@ -299,7 +304,7 @@ export default defineSchema({
   // Wallet Transactions Ledger
   walletTransactions: defineTable({
     userId: v.id("users"),
-    type: v.string(), // "PROGRAM_PURCHASE" | "AFFILIATE_COMMISSION" | "WORK_PAYOUT" | "WITHDRAWAL" | "ADMIN_ADJUSTMENT" | "REFUND"
+    type: v.string(), // "PROGRAM_PURCHASE" | "AFFILIATE_COMMISSION" | "CHAIN_COMMISSION" | "WORK_PAYOUT" | "WITHDRAWAL" | "ADMIN_ADJUSTMENT" | "REFUND"
     amount: v.number(),
     balanceAfter: v.number(),
     referenceId: v.optional(v.string()),
