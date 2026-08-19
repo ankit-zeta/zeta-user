@@ -27,6 +27,7 @@ import type * as growthSetup from "../growthSetup.js";
 import type * as jobs from "../jobs.js";
 import type * as learning from "../learning.js";
 import type * as notifications from "../notifications.js";
+import type * as positions from "../positions.js";
 import type * as proCurriculum from "../proCurriculum.js";
 import type * as proCurriculumAction from "../proCurriculumAction.js";
 import type * as proResources from "../proResources.js";
@@ -70,6 +71,7 @@ declare const fullApi: ApiFromModules<{
   jobs: typeof jobs;
   learning: typeof learning;
   notifications: typeof notifications;
+  positions: typeof positions;
   proCurriculum: typeof proCurriculum;
   proCurriculumAction: typeof proCurriculumAction;
   proResources: typeof proResources;

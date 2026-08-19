@@ -1,18 +1,23 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Link from "next/link";
 import { useAdminAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
-import { ArrowLeft, Save, Plus, Trash2, Zap } from "lucide-react";
+import { ArrowLeft, Save, Plus, Trash2, Zap, Award } from "lucide-react";
 
-export default function NewAchievementPage() {
+export default function EditAchievementPage() {
   const router = useRouter();
+  const params = useParams<{ id: string }>();
   const { token } = useAdminAuth();
-  const createAchievementMutation = useMutation(api.achievements.createAchievement);
+
+  const all = useQuery(api.achievements.getAllAchievementsAdmin, token ? { token } : "skip");
   const positions = useQuery(api.positions.getAllPositions, token ? { token } : "skip");
+  const updateMutation = useMutation(api.achievements.updateAchievement);
+
+  const ach = all?.find((a: any) => a._id === params.id);
 
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
@@ -21,30 +26,39 @@ export default function NewAchievementPage() {
   const [status, setStatus] = useState("active");
   const [sortOrder, setSortOrder] = useState(1);
   const [conditionMode, setConditionMode] = useState<string>("ALL");
-  const [unlockPositionId, setUnlockPositionId] = useState("");
+  const [unlockPositionId, setUnlockPositionId] = useState<string>("");
   const [unlockBadgeName, setUnlockBadgeName] = useState("");
   const [notificationText, setNotificationText] = useState("");
-
-  const [conditions, setConditions] = useState<
-    { metric: string; operator: string; value: number }[]
-  >([
-    { metric: "completed_programs", operator: ">=", value: 1 },
-  ]);
-
+  const [conditions, setConditions] = useState<{ metric: string; operator: string; value: number }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [loaded, setLoaded] = useState(false);
+
+  React.useEffect(() => {
+    if (ach && !loaded) {
+      setName(ach.name);
+      setSlug(ach.slug);
+      setDescription(ach.description || "");
+      setIcon(ach.icon || "zap");
+      setStatus(ach.status || "active");
+      setSortOrder(ach.sortOrder ?? 1);
+      setConditionMode(ach.conditionMode || "ALL");
+      setUnlockPositionId(ach.unlockPositionId || "");
+      setUnlockBadgeName(ach.unlockBadgeName || "");
+      setNotificationText(ach.notificationText || "");
+      setConditions(ach.conditions || []);
+      setLoaded(true);
+    }
+  }, [ach, loaded]);
 
   const handleNameChange = (val: string) => {
     setName(val);
     setSlug(val.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""));
-    setNotificationText(`Congratulations! You unlocked the ${val} achievement.`);
+    if (!notificationText) setNotificationText(`Congratulations! You unlocked the ${val} achievement.`);
   };
 
   const handleAddCondition = () => {
-    setConditions([
-      ...conditions,
-      { metric: "completed_jobs", operator: ">=", value: 1 },
-    ]);
+    setConditions([...conditions, { metric: "completed_jobs", operator: ">=", value: 1 }]);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,8 +69,9 @@ export default function NewAchievementPage() {
     setError("");
 
     try {
-      await createAchievementMutation({
+      await updateMutation({
         token,
+        achievementId: params.id as any,
         name,
         slug,
         description,
@@ -72,11 +87,27 @@ export default function NewAchievementPage() {
 
       router.push("/achievements");
     } catch (err: any) {
-      setError(err.message || "Failed to create achievement rule.");
+      setError(err.message || "Failed to update achievement rule.");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (all === undefined) {
+    return (
+      <div className="max-w-4xl mx-auto p-8 text-center text-xs text-textMuted animate-pulse">
+        Loading achievement rule...
+      </div>
+    );
+  }
+
+  if (!ach) {
+    return (
+      <div className="max-w-4xl mx-auto p-8 text-center text-xs text-textMuted">
+        Achievement rule not found.
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-16">
@@ -90,10 +121,10 @@ export default function NewAchievementPage() {
 
       <div className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight text-textMain">
-          Configure Achievement Rule
+          Edit Achievement Rule
         </h1>
         <p className="text-xs text-textMuted">
-          Define multi-metric thresholds (referral sales, job completions, earnings) and unlock actions.
+          Update criteria, unlock actions, and visibility. Changes apply instantly to all users.
         </p>
       </div>
 
@@ -113,7 +144,6 @@ export default function NewAchievementPage() {
                 required
                 value={name}
                 onChange={(e) => handleNameChange(e.target.value)}
-                placeholder="e.g. Master Contributor"
                 className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white"
               />
             </div>
@@ -124,7 +154,6 @@ export default function NewAchievementPage() {
                 required
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                placeholder="master-contributor"
                 className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white font-mono"
               />
             </div>
@@ -137,12 +166,49 @@ export default function NewAchievementPage() {
               required
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="What this milestone signifies..."
               className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white"
             />
           </div>
 
-          {/* Condition Builder */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <label className="font-semibold text-textMain">Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white font-medium"
+              >
+                <option value="active">Active (visible to users)</option>
+                <option value="draft">Draft (hidden)</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="font-semibold text-textMain">Sort Order</label>
+              <input
+                type="number"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(Number(e.target.value))}
+                className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="font-semibold text-textMain">Unlock Position (Title)</label>
+              <select
+                value={unlockPositionId}
+                onChange={(e) => setUnlockPositionId(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white font-medium"
+              >
+                <option value="">— No position —</option>
+                {(positions || []).map((p: any) => (
+                  <option key={p._id} value={p._id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           <div className="p-5 bg-neutral-50 rounded-xl border border-borderSubtle space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -236,45 +302,6 @@ export default function NewAchievementPage() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="space-y-1">
-              <label className="font-semibold text-textMain">Status</label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white font-medium"
-              >
-                <option value="active">Active (visible to users)</option>
-                <option value="draft">Draft (hidden)</option>
-                <option value="archived">Archived</option>
-              </select>
-            </div>
-            <div className="space-y-1">
-              <label className="font-semibold text-textMain">Sort Order</label>
-              <input
-                type="number"
-                value={sortOrder}
-                onChange={(e) => setSortOrder(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="font-semibold text-textMain">Unlock Position (Title)</label>
-              <select
-                value={unlockPositionId}
-                onChange={(e) => setUnlockPositionId(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white font-medium"
-              >
-                <option value="">— No position —</option>
-                {(positions || []).map((p: any) => (
-                  <option key={p._id} value={p._id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="font-semibold text-textMain">Unlock Badge Label</label>
@@ -307,7 +334,7 @@ export default function NewAchievementPage() {
               className="btn-primary py-2 px-5 flex items-center gap-1.5"
             >
               <Save className="w-3.5 h-3.5" />
-              <span>{isSubmitting ? "Saving..." : "Save Achievement Rule"}</span>
+              <span>{isSubmitting ? "Saving..." : "Save Changes"}</span>
             </button>
           </div>
         </form>

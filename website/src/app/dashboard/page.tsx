@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/convex";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
 import { 
   BookOpen, 
@@ -39,6 +39,16 @@ export default function DashboardOverviewPage() {
   );
 
   const publicPrograms = useQuery(api.programs.getPublicPrograms);
+
+  const evaluateAchievements = useMutation(api.achievements.evaluateUserAchievements);
+
+  // Auto-evaluate achievements so unlocks + progress stay live without a page visit to the achievements tab
+  useEffect(() => {
+    if (token) {
+      evaluateAchievements({ token }).catch(console.error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   const enrolledCount = user?.enrolledProgramIds?.length || 0;
   const referralLink = typeof window !== "undefined" 
@@ -284,6 +294,8 @@ export default function DashboardOverviewPage() {
                 className={`p-4 rounded-lg border text-xs space-y-2 ${
                   ach.isUnlocked
                     ? "bg-brand-50/50 border-brand-200"
+                    : ach.progress >= 70
+                    ? "border-brand-300 bg-gradient-to-b from-brand-50/60 to-white"
                     : "bg-neutral-50/50 border-borderSubtle opacity-80"
                 }`}
               >
@@ -295,11 +307,27 @@ export default function DashboardOverviewPage() {
                     </span>
                   ) : (
                     <span className="text-[10px] text-neutral-500 bg-neutral-200 px-2 py-0.5 rounded">
-                      In Progress
+                      {ach.progress >= 70 ? `${ach.progress}% — almost there!` : `${ach.progress}%`}
                     </span>
                   )}
                 </div>
                 <p className="text-textMuted text-[11px] leading-relaxed">{ach.description}</p>
+
+                <div className="h-1.5 bg-neutral-200 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${Math.max(4, ach.isUnlocked ? 100 : ach.progress)}%`,
+                      background: ach.isUnlocked ? "#16a34a" : "#176B4D",
+                    }}
+                  ></div>
+                </div>
+
+                {!ach.isUnlocked && ach.remaining > 0 && (
+                  <p className="text-[10px] font-bold text-brand-700">
+                    {ach.remaining} step{ach.remaining > 1 ? "s" : ""} to go
+                  </p>
+                )}
               </div>
             ))}
           </div>
