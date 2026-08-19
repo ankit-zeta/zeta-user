@@ -310,6 +310,24 @@ export default defineSchema({
     .index("by_userId", ["userId"])
     .index("by_type", ["type"]),
 
+  // Saved payout methods (bank / UPI / UPI-QR) for fast withdrawals
+  payoutMethods: defineTable({
+    userId: v.id("users"),
+    type: v.string(), // "bank_transfer" | "upi" | "upi_qr"
+    name: v.string(), // user label, e.g. "HDFC ••••1234"
+    details: v.object({
+      accountNumber: v.optional(v.string()),
+      ifscCode: v.optional(v.string()),
+      bankName: v.optional(v.string()),
+      accountHolderName: v.optional(v.string()),
+      upiId: v.optional(v.string()),
+      qrImageUrl: v.optional(v.string()), // storage id for upi_qr
+    }),
+    isDefault: v.boolean(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  }).index("by_userId", ["userId"]),
+
   // Withdrawals
   withdrawals: defineTable({
     userId: v.id("users"),

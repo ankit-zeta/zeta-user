@@ -37,6 +37,7 @@ export const requestWithdrawal = mutation({
       paypalEmail: v.optional(v.string()),
       qrImageUrl: v.optional(v.string()),
     }),
+    payoutMethodId: v.optional(v.id("payoutMethods")),
   },
   handler: async (ctx, args) => {
     const session = await ctx.db
@@ -45,6 +46,19 @@ export const requestWithdrawal = mutation({
       .first();
     if (!session || session.expiresAt < Date.now()) {
       throw new Error("Unauthorized");
+    }
+
+    // Resolve from a saved payout method if provided (details copied into the withdrawal record)
+    if (args.payoutMethodId) {
+      const saved = await ctx.db.get(args.payoutMethodId);
+      if (!saved || saved.userId.toString() !== session.userId.toString()) {
+        throw new Error("Payout method not found or unauthorized");
+      }
+      if (!["bank_transfer", "upi", "upi_qr"].includes(saved.type)) {
+        throw new Error("Invalid saved payout method type");
+      }
+      (args as any).payoutMethod = saved.type;
+      (args as any).payoutDetails = { ...saved.details } as any;
     }
 
     const validMethods = ["bank_transfer", "upi", "paypal", "upi_qr"];
