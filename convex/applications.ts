@@ -337,6 +337,77 @@ export const updateApplicationStatus = mutation({
         // Mark completed without payout; stays unpaid
       }
       payoutCredited = payout > 0;
+
+      // Enforce work payout limits from settings (0 = unlimited), scaled by user position/level
+      if (payoutCredited) {
+        const limitsRecord = await ctx.db
+          .query("adminSettings")
+          .withIndex("by_key", (q) => q.eq("key", "workLimits"))
+          .first();
+        const limits = limitsRecord?.value || {};
+        const worker = await ctx.db.get(app.userId);
+        let positionMultiplier = 1;
+        if (worker?.positionId) {
+          const pos = await ctx.db.get(worker.positionId);
+          const m =
+            limits.positionMultipliers?.[String(worker.positionId)] ??
+            (pos ? limits.positionMultipliers?.[pos.name] : undefined);
+          positionMultiplier = m && m > 0 ? m : 1;
+        }
+        const scale = (cap: number | undefined) =>
+          cap && cap > 0 ? Math.round(cap * positionMultiplier) : 0;
+
+        if (limits.maxPayoutPerJob && limits.maxPayoutPerJob > 0) {
+          const cap = scale(limits.maxPayoutPerJob);
+          if (cap > 0 && payout > cap) {
+            throw new Error(
+              `Payout exceeds the per-job cap of ₹${cap} for this user level`
+            );
+          }
+        }
+
+        if (limits.dailyPayoutCap && limits.dailyPayoutCap > 0) {
+          const cap = scale(limits.dailyPayoutCap);
+          const dayAgo = now - 24 * 60 * 60 * 1000;
+          const dayTxns = await ctx.db
+            .query("walletTransactions")
+            .withIndex("by_userId", (q) => q.eq("userId", app.userId))
+            .filter((q) =>
+              q.and(
+                q.eq(q.field("type"), "WORK_PAYOUT"),
+                q.gte(q.field("createdAt"), dayAgo)
+              )
+            )
+            .collect();
+          const dayTotal = dayTxns.reduce((s, t) => s + t.amount, 0) + payout;
+          if (cap > 0 && dayTotal > cap) {
+            throw new Error(
+              `Daily work payout limit of ₹${cap} exceeded for this user level`
+            );
+          }
+        }
+
+        if (limits.monthlyPayoutCap && limits.monthlyPayoutCap > 0) {
+          const cap = scale(limits.monthlyPayoutCap);
+          const monthAgo = now - 30 * 24 * 60 * 60 * 1000;
+          const monthTxns = await ctx.db
+            .query("walletTransactions")
+            .withIndex("by_userId", (q) => q.eq("userId", app.userId))
+            .filter((q) =>
+              q.and(
+                q.eq(q.field("type"), "WORK_PAYOUT"),
+                q.gte(q.field("createdAt"), monthAgo)
+              )
+            )
+            .collect();
+          const monthTotal = monthTxns.reduce((s, t) => s + t.amount, 0) + payout;
+          if (cap > 0 && monthTotal > cap) {
+            throw new Error(
+              `Monthly work payout limit of ₹${cap} exceeded for this user level`
+            );
+          }
+        }
+      }
     }
 
     await ctx.db.patch(args.applicationId, {

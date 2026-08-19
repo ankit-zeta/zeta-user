@@ -178,7 +178,23 @@ export const processPurchaseWithAffiliate = mutation({
           }
 
           const commissionPercentage = affiliateSettings.defaultPercentage || 50;
-          const commissionAmount = Math.round((commissionBasis * commissionPercentage) / 100);
+          let commissionAmount = Math.round((commissionBasis * commissionPercentage) / 100);
+
+          // Per-sale commission cap from settings, scaled by referrer position/level
+          if (commissionAmount > 0 && affiliateSettings.perSaleCap && affiliateSettings.perSaleCap > 0) {
+            let posMultiplier = 1;
+            if (referrer.positionId) {
+              const pos = await ctx.db.get(referrer.positionId);
+              const m =
+                affiliateSettings.positionMultipliers?.[String(referrer.positionId)] ??
+                (pos ? affiliateSettings.positionMultipliers?.[pos.name] : undefined);
+              posMultiplier = m && m > 0 ? m : 1;
+            }
+            const cap = Math.round(affiliateSettings.perSaleCap * posMultiplier);
+            if (commissionAmount > cap) {
+              commissionAmount = cap;
+            }
+          }
 
           if (commissionAmount > 0) {
             const holdingPeriodEndsAt = now + (affiliateSettings.holdingPeriodDays || 7) * 24 * 60 * 60 * 1000;
@@ -294,6 +310,57 @@ export const updateCommissionStatus = mutation({
     if (wallet) {
       // If moving from pending to available:
       if (previousStatus === "pending" && (args.status === "available" || args.status === "approved")) {
+        // Enforce daily/monthly commission caps from settings, scaled by referrer position
+        const affiliateSettings = (await ctx.db
+          .query("adminSettings")
+          .withIndex("by_key", (q) => q.eq("key", "affiliate"))
+          .first())?.value as any;
+        if (affiliateSettings) {
+          const referrer = await ctx.db.get(sale.referrerUserId);
+          let posMultiplier = 1;
+          if (referrer?.positionId) {
+            const pos = await ctx.db.get(referrer.positionId);
+            const m =
+              affiliateSettings.positionMultipliers?.[String(referrer.positionId)] ??
+              (pos ? affiliateSettings.positionMultipliers?.[pos.name] : undefined);
+            posMultiplier = m && m > 0 ? m : 1;
+          }
+          const scale = (cap: number | undefined) =>
+            cap && cap > 0 ? Math.round(cap * posMultiplier) : 0;
+
+          const recentComm = await ctx.db
+            .query("walletTransactions")
+            .withIndex("by_userId", (q) => q.eq("userId", sale.referrerUserId))
+            .filter((q) =>
+              q.and(
+                q.eq(q.field("type"), "AFFILIATE_COMMISSION"),
+                q.eq(q.field("status"), "completed"),
+                q.gte(q.field("createdAt"), now - 30 * 24 * 60 * 60 * 1000)
+              )
+            )
+            .collect();
+
+          const dayCap = scale(affiliateSettings.dailyCommissionCap);
+          const dayTotal =
+            recentComm
+              .filter((t) => t.createdAt >= now - 24 * 60 * 60 * 1000)
+              .reduce((s, t) => s + t.amount, 0) + sale.commissionAmount;
+          if (dayCap > 0 && dayTotal > dayCap) {
+            throw new Error(
+              `Daily affiliate commission limit of ₹${dayCap} exceeded for this user level`
+            );
+          }
+
+          const monthCap = scale(affiliateSettings.monthlyCommissionCap);
+          const monthTotal =
+            recentComm.reduce((s, t) => s + t.amount, 0) + sale.commissionAmount;
+          if (monthCap > 0 && monthTotal > monthCap) {
+            throw new Error(
+              `Monthly affiliate commission limit of ₹${monthCap} exceeded for this user level`
+            );
+          }
+        }
+
         const newPending = Math.max(0, wallet.pendingBalance - sale.commissionAmount);
         const newAvailable = wallet.availableBalance + sale.commissionAmount;
         const newTotal = wallet.totalEarned + sale.commissionAmount;

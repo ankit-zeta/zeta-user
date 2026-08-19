@@ -362,6 +362,119 @@ $refRecon = $refWallet3.value.wallet.availableBalance
 $refExpected = $refWallet3.value.wallet.workEarnings + $refWallet3.value.wallet.affiliateEarnings - $refWallet3.value.wallet.totalWithdrawn
 Check "W13 referrer ledger reconciliation exact" ($refRecon -eq $refExpected) "bal=$refRecon expected=$refExpected"
 
+# ---------- LIMITS & LEVEL CONTROLS (admin settings) ----------
+Write-Host "=== ADMIN CONTROLS: WORK / AFFILIATE / WITHDRAWAL LIMITS ==="
+$allSett = (C "query" "settings:getAllSettings" @{ token = $script:var.adminTok }).value
+$origWork = $allSett.workLimits
+$origAff = $allSett.affiliate
+$origWd = $allSett.withdrawals
+
+# Work daily payout cap
+$w3 = C "mutation" "auth:signup" @{ name = "Worker Three $ts"; email = "worker3.$ts@zetagrow.com"; password = "WorkerPass123!" }
+$script:var.w3Tok = $w3.value.token
+MakeCv $script:var.w3Tok | Out-Null
+$u3 = C "query" "auth:getSessionUser" @{ token = $script:var.w3Tok }
+C "mutation" "users:updateUserCvStatus" @{ token = $script:var.adminTok; userId = $u3.value._id; cvStatus = "verified"; remarks = "OK" } | Out-Null
+$app3 = C "mutation" "applications:submitApplication" @{ token = $script:var.w3Tok; jobId = $script:var.jobId; answers = @(@{ question = "Why you?"; answer = "me" }); coverNote = "ready" }
+$script:var.app3Id = $app3.value
+C "mutation" "applications:updateApplicationStatus" @{ token = $script:var.adminTok; applicationId = $script:var.app3Id; status = "accepted" } | Out-Null
+
+try {
+  C "mutation" "settings:updateSetting" @{
+    token = $script:var.adminTok
+    key = "workLimits"
+    value = @{ dailyPayoutCap = 3000; monthlyPayoutCap = 0; maxPayoutPerJob = 0; positionMultipliers = @{} }
+    reason = "wallet-flow test"
+  } | Out-Null
+  $capBlock = C "mutation" "applications:updateApplicationStatus" @{
+    token = $script:var.adminTok
+    applicationId = $script:var.app3Id
+    status = "completed"
+    payoutAmount = 4000
+  }
+  Check "M1 work daily payout cap blocks excess payout" ($capBlock.status -eq "error") "status=$($capBlock.status)"
+
+  $capOk = C "mutation" "applications:updateApplicationStatus" @{
+    token = $script:var.adminTok
+    applicationId = $script:var.app3Id
+    status = "completed"
+    payoutAmount = 2000
+  }
+  $w3W = GetWallet $script:var.w3Tok
+  Check "M2 payout within cap released to wallet" `
+    ($capOk.status -eq "success" -and $w3W.value.wallet.availableBalance -eq 2000) `
+    "status=$($capOk.status) bal=$($w3W.value.wallet.availableBalance)"
+} finally {
+  C "mutation" "settings:updateSetting" @{ token = $script:var.adminTok; key = "workLimits"; value = $origWork; reason = "restore after test" } | Out-Null
+}
+
+# Affiliate per-sale cap
+$ref2 = C "mutation" "auth:signup" @{ name = "Referrer Two $ts"; email = "referrer2.$ts@zetagrow.com"; password = "RefPass123!" }
+$ref2Code = $ref2.value.user.referralCode
+$buyer2 = C "mutation" "auth:signup" @{ name = "Buyer Two $ts"; email = "buyer2.$ts@zetagrow.com"; password = "BuyerPass123!"; referralCode = $ref2Code }
+try {
+  $affSettings = @{
+    enabled = $origAff.enabled
+    commissionMethod = $origAff.commissionMethod
+    defaultPercentage = $origAff.defaultPercentage
+    holdingPeriodDays = $origAff.holdingPeriodDays
+    minimumPurchaseAmount = $origAff.minimumPurchaseAmount
+    perSaleCap = 500
+    dailyCommissionCap = 0
+    monthlyCommissionCap = 0
+    positionMultipliers = @{}
+  }
+  C "mutation" "settings:updateSetting" @{ token = $script:var.adminTok; key = "affiliate"; value = $affSettings; reason = "wallet-flow test" } | Out-Null
+  C "mutation" "affiliates:processPurchaseWithAffiliate" @{ token = $buyer2.value.token; programId = $script:var.programId; paymentMethod = "upi" } | Out-Null
+  $sales2 = C "query" "affiliates:getAllAffiliateSalesAdmin" @{ token = $script:var.adminTok }
+  $sale2 = @($sales2.value | Where-Object { $_.buyer.email -eq "buyer2.$ts@zetagrow.com" } | Select-Object -First 1)[0]
+  Check "M3 affiliate per-sale cap applied at creation" ($sale2 -and $sale2.commissionAmount -eq 500) "comm=$($sale2.commissionAmount)"
+
+  $affSettings.dailyCommissionCap = 400
+  C "mutation" "settings:updateSetting" @{ token = $script:var.adminTok; key = "affiliate"; value = $affSettings; reason = "wallet-flow test" } | Out-Null
+  $capAppr = C "mutation" "affiliates:updateCommissionStatus" @{ token = $script:var.adminTok; saleId = $sale2._id; status = "approved"; reason = "test" }
+  Check "M4 affiliate daily commission cap blocks approval" ($capAppr.status -eq "error") "status=$($capAppr.status)"
+} finally {
+  C "mutation" "settings:updateSetting" @{ token = $script:var.adminTok; key = "affiliate"; value = $origAff; reason = "restore after test" } | Out-Null
+}
+
+# Monthly withdrawal limit (worker3 has 2000 available)
+try {
+  $wdTest = @{
+    minimumWithdrawal = $origWd.minimumWithdrawal
+    maximumWithdrawal = $origWd.maximumWithdrawal
+    dailyLimit = $origWd.dailyLimit
+    monthlyLimit = 1000
+    feePercentage = $origWd.feePercentage
+    fixedFee = $origWd.fixedFee
+    allowedMethods = $origWd.allowedMethods
+  }
+  C "mutation" "settings:updateSetting" @{ token = $script:var.adminTok; key = "withdrawals"; value = $wdTest; reason = "wallet-flow test" } | Out-Null
+  $mw1 = C "mutation" "withdrawals:requestWithdrawal" @{
+    token = $script:var.w3Tok
+    amount = 1000
+    payoutMethod = "upi"
+    payoutDetails = @{ upiId = "worker3@okhdfcbank" }
+  }
+  $mw2 = C "mutation" "withdrawals:requestWithdrawal" @{
+    token = $script:var.w3Tok
+    amount = 1000
+    payoutMethod = "upi"
+    payoutDetails = @{ upiId = "worker3@okhdfcbank" }
+  }
+  Check "M5 monthly withdrawal limit enforced" `
+    ($mw1.status -eq "success" -and $mw2.status -eq "error") `
+    "first=$($mw1.status) second=$($mw2.status)"
+} finally {
+  C "mutation" "settings:updateSetting" @{ token = $script:var.adminTok; key = "withdrawals"; value = $origWd; reason = "restore after test" } | Out-Null
+}
+
+# Settings persisted + audit logged
+$check = (C "query" "settings:getAllSettings" @{ token = $script:var.adminTok }).value
+Check "M6 limits restored to original values after tests" `
+  ($check.workLimits.dailyPayoutCap -eq $origWork.dailyPayoutCap -and $check.withdrawals.monthlyLimit -eq $origWd.monthlyLimit) `
+  "work=$($check.workLimits.dailyPayoutCap) wd=$($check.withdrawals.monthlyLimit)"
+
 # ---------- SUMMARY ----------
 Write-Host ""
 Write-Host "=== SUMMARY ==="
