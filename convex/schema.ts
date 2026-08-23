@@ -21,6 +21,8 @@ export default defineSchema({
     cvRemarks: v.optional(v.string()),
     cvReviewedAt: v.optional(v.number()),
     cvVerifiedBy: v.optional(v.string()),
+    failedLoginCount: v.optional(v.number()),
+    lockedUntil: v.optional(v.number()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
@@ -85,6 +87,8 @@ export default defineSchema({
     accessDuration: v.string(),
     certificateEnabled: v.boolean(),
     affiliateEnabled: v.boolean(),
+    format: v.optional(v.string()), // "text" (default) | "video" | "mixed"
+    category: v.optional(v.string()), // e.g. "Digital Skills", "Marketing", "Skilled Trades"
     sortOrder: v.number(),
     whatIncluded: v.array(v.string()),
     outcomes: v.array(v.string()),
@@ -172,10 +176,40 @@ export default defineSchema({
     .index("by_programId", ["programId"])
     .index("by_accessType", ["accessType"]),
 
+  // Plans / Bundles (group multiple course programs into one purchasable plan)
+  plans: defineTable({
+    name: v.string(),
+    slug: v.string(),
+    tagline: v.string(),
+    description: v.string(),
+    price: v.number(),
+    compareAtPrice: v.optional(v.number()),
+    status: v.string(), // "published" | "draft"
+    thumbnail: v.string(),
+    bannerImage: v.string(),
+    programIds: v.array(v.id("programs")),
+    highlights: v.array(v.string()),
+    resourceList: v.optional(
+      v.array(
+        v.object({
+          title: v.string(),
+          description: v.string(),
+          fileType: v.string(),
+        })
+      )
+    ),
+    sortOrder: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_status", ["status"]),
+
   // Purchases / Enrollments
   purchases: defineTable({
     userId: v.id("users"),
     programId: v.id("programs"),
+    planId: v.optional(v.id("plans")),
     amount: v.number(),
     status: v.string(), // "completed" | "refunded" | "cancelled"
     paymentId: v.string(),
@@ -280,6 +314,7 @@ export default defineSchema({
     createdAt: v.number(),
     updatedAt: v.number(),
     kind: v.optional(v.string()), // "direct" (default) | "chain"
+    awaitingConsumption: v.optional(v.boolean()), // true until buyer proves genuine course usage
     parentSaleId: v.optional(v.id("affiliateSales")),
     chainLevel: v.optional(v.number()), // 1 = upline of the direct referrer
     baseCommissionAmount: v.optional(v.number()), // the direct commission the chain % was applied to
@@ -483,6 +518,15 @@ export default defineSchema({
     .index("by_userId", ["userId"])
     .index("by_status", ["status"])
     .index("by_trackingId", ["trackingId"]),
+
+  // Rate Limits (for brute-force / spam protection)
+  rateLimits: defineTable({
+    key: v.string(), // e.g. "signup:email:foo@bar.com" | "signup:global" | "changeEmail:userId:xyz"
+    windowStart: v.number(),
+    count: v.number(),
+  })
+    .index("by_key", ["key"])
+    .index("by_windowStart", ["windowStart"]),
 
   ticketMessages: defineTable({
     ticketId: v.id("supportTickets"),

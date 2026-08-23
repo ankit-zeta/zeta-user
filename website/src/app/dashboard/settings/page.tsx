@@ -20,6 +20,7 @@ export default function SettingsPage() {
   const [pwErr, setPwErr] = useState("");
 
   const [newEmail, setNewEmail] = useState("");
+  const [emailPassword, setEmailPassword] = useState("");
   const [emailMsg, setEmailMsg] = useState("");
   const [emailErr, setEmailErr] = useState("");
 
@@ -56,10 +57,15 @@ export default function SettingsPage() {
     if (!token) return;
     setEmailMsg("");
     setEmailErr("");
+    if (!emailPassword) {
+      setEmailErr("Enter your current password to confirm the email change.");
+      return;
+    }
     try {
-      await changeEmailMutation({ token, newEmail });
+      await changeEmailMutation({ token, currentPassword: emailPassword, newEmail });
       setEmailMsg(`Email updated to ${newEmail.trim().toLowerCase()}.`);
       setNewEmail("");
+      setEmailPassword("");
     } catch (err: any) {
       setEmailErr(err.message || "Failed to change email.");
     }
@@ -172,6 +178,14 @@ export default function SettingsPage() {
             value={newEmail}
             onChange={(e) => setNewEmail(e.target.value)}
             placeholder="New email address"
+            className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white focus:outline-none focus:ring-1 focus:ring-brand-600"
+          />
+          <input
+            type="password"
+            required
+            value={emailPassword}
+            onChange={(e) => setEmailPassword(e.target.value)}
+            placeholder="Current password (required to confirm)"
             className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white focus:outline-none focus:ring-1 focus:ring-brand-600"
           />
           <button type="submit" className="btn-primary text-xs py-2 px-4">

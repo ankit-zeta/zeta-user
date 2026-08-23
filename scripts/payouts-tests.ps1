@@ -7,7 +7,7 @@ $script:var = @{}
 
 function C($kind, $path, $a) {
   $b = @{ path = $path; args = $a; format = "json" } | ConvertTo-Json -Depth 12
-  return Invoke-RestMethod -Uri "$base/$kind" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 60
+  return Invoke-RestMethod -Uri "$base/$(if ($path -eq 'auth:login') { 'action' } else { $kind })" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 60
 }
 
 function Check($name, $cond, $detail) {

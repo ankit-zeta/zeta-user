@@ -3,7 +3,7 @@
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMutation } from "convex/react";
+import { useMutation, useAction } from "convex/react";
 import { api } from "@/lib/convex";
 import { useAuth } from "@/lib/convex";
 import { Lock, Mail } from "lucide-react";
@@ -25,10 +25,15 @@ export default function LoginPage() {
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get("redirect") || "/dashboard";
+  // Open-redirect guard: only allow same-site relative paths
+  const rawRedirect = searchParams.get("redirect") || "/dashboard";
+  const redirectUrl =
+    rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") && !/^https?:\/\//i.test(rawRedirect)
+      ? rawRedirect
+      : "/dashboard";
 
   const { login } = useAuth();
-  const loginMutation = useMutation(api.auth.login);
+  const loginAction = useAction(api.auth.login);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,7 +51,7 @@ function LoginForm() {
     setError("");
 
     try {
-      const res = await loginMutation({
+      const res = await loginAction({
         email: email.trim().toLowerCase(),
         password,
       });
@@ -81,6 +86,11 @@ function LoginForm() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="card-surface p-8 space-y-6">
+          {searchParams.get("reason") === "session_expired" && (
+            <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">
+              You were signed out because your account was used to log in on another device. Please sign in again.
+            </div>
+          )}
           {error && (
             <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700">
               {error}
@@ -97,7 +107,7 @@ function LoginForm() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="demo@zetagrow.com"
+                  placeholder="you@example.com"
                   className="w-full pl-9 pr-3 py-2 rounded-lg border border-borderSubtle text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white"
                 />
               </div>
@@ -134,13 +144,6 @@ function LoginForm() {
               {isLoading ? "Signing in..." : "Sign In"}
             </button>
           </form>
-
-          {/* Quick Demo Login Helper */}
-          <div className="p-3 bg-neutral-50 rounded-lg border border-borderSubtle text-[11px] space-y-1 text-textMuted">
-            <p className="font-semibold text-textMain">Demo User Credentials:</p>
-            <p>Email: <code className="text-brand-700">demo@zetagrow.com</code></p>
-            <p>Password: <code className="text-brand-700">DemoPassword123!</code></p>
-          </div>
 
           <div className="text-center pt-2 border-t border-borderSubtle">
             <p className="text-xs text-textMuted">

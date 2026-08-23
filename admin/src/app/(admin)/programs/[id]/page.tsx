@@ -537,6 +537,8 @@ function ProgramForm({ initial, onSaved, updateProgramM, token }: any) {
   const [accessDuration, setAccessDuration] = useState(initial?.accessDuration ?? "Lifetime Access");
   const [certificateEnabled, setCertificateEnabled] = useState(initial?.certificateEnabled ?? true);
   const [affiliateEnabled, setAffiliateEnabled] = useState(initial?.affiliateEnabled ?? true);
+const [format, setFormat] = useState(initial?.format ?? "text");
+const [category, setCategory] = useState(initial?.category ?? "Digital Skills");
   const [sortOrder, setSortOrder] = useState<number>(initial?.sortOrder ?? 1);
   const [inclusions, setInclusions] = useState<string[]>(initial?.whatIncluded ?? []);
   const [outcomes, setOutcomes] = useState<string[]>(initial?.outcomes ?? []);
@@ -588,6 +590,8 @@ function ProgramForm({ initial, onSaved, updateProgramM, token }: any) {
         accessDuration,
         certificateEnabled,
         affiliateEnabled,
+      format,
+      category,
         sortOrder: Number(sortOrder),
         whatIncluded: inclusions.filter(Boolean),
         outcomes: outcomes.filter(Boolean),
@@ -626,7 +630,19 @@ function ProgramForm({ initial, onSaved, updateProgramM, token }: any) {
           </select>
         </Field>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3">
+          <Field label="Course Format">
+            <select value={format} onChange={(e) => setFormat(e.target.value)} className="input">
+              <option value="text">Text-based</option>
+              <option value="video">Video lessons</option>
+              <option value="mixed">Text + Video</option>
+            </select>
+          </Field>
+          <Field label="Category / Field">
+            <input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Digital Skills, Marketing, Skilled Trades..." className="input" />
+          </Field>
+        </div>
+<div className="grid grid-cols-2 gap-3">
         <Field label="Duration">
           <input value={duration} onChange={(e) => setDuration(e.target.value)} className="input" placeholder="e.g. 6.5 Hours" />
         </Field>

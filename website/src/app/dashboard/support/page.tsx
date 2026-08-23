@@ -253,7 +253,7 @@ export default function SupportCenterPage() {
                 minLength={5}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Payment failed for Digital Business Pro"
+                placeholder="e.g. Payment failed but plan not activated"
                 className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white"
               />
             </div>

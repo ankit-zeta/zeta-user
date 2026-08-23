@@ -34,7 +34,7 @@ export default function AboutPage() {
           </div>
           <h3 className="text-xl font-bold text-textMain">Commitment to Integrity</h3>
           <p className="text-sm text-textMuted leading-relaxed">
-            We prioritize transparent operations, verifiable curriculum milestones, clear qualification rules for client work, and compliant affiliate reward structures.
+            We prioritize transparent operations, verifiable curriculum milestones, and clear qualification rules for client work.
           </p>
         </div>
       </div>

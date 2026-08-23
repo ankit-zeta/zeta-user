@@ -178,6 +178,15 @@ export default function ContactPage() {
           )}
         </div>
       </div>
+
+      {/* Business Details */}
+      <div className="mt-10 card-surface p-6 space-y-2">
+        <h3 className="text-sm font-bold text-textMain">Business Information</h3>
+        <p className="text-xs text-textMuted font-semibold">Zetagrow Edutech and Solutions</p>
+        <p className="text-xs text-textMuted">Shop No. 06, Vrindavan Marriage Lawn, Dobhiyara, NH-330A, Sultanpur City, Lucknow District, Uttar Pradesh – 224229, India</p>
+        <p className="text-xs text-textMuted">Phone: +91 75218 40759 · Email: support@zetagrow.com</p>
+        <p className="text-xs text-textMuted">MSME (Udyam) Registration: UDYAM-UP-73-0047816</p>
+      </div>
     </div>
   );
 }

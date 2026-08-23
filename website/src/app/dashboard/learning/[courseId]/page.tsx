@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/lib/convex";
@@ -51,6 +51,21 @@ export default function CoursePlayerPage() {
   // Set default active lesson if not set
   const allLessons = modules.flatMap((m) => m.lessons);
   const currentLesson = allLessons.find((l) => l._id.toString() === activeLessonId) || allLessons[0];
+
+  // Quiz test state (resets per lesson)
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
+  useEffect(() => {
+    setAnswers({});
+    setQuizSubmitted(false);
+  }, [activeLessonId, currentLesson?._id]);
+  const quizData: any[] | null =
+    currentLesson?.type === "quiz" && Array.isArray((currentLesson as any).quizData)
+      ? (currentLesson as any).quizData
+      : null;
+  const quizPassed =
+    !!quizData && quizData.every((q: any, i: number) => answers[i] !== undefined && answers[i] === q.correctIndex);
+  const quizComplete = !!quizData && Object.keys(answers).length === quizData.length;
 
   const handleToggle = async (lessonId: any) => {
     if (!token) return;
@@ -138,11 +153,17 @@ export default function CoursePlayerPage() {
                 </div>
 
                 <button
-                  onClick={() => handleToggle(currentLesson._id)}
-                  disabled={isToggling}
+                  onClick={() => {
+                    if (quizData && !quizPassed) return;
+                    handleToggle(currentLesson._id);
+                  }}
+                  disabled={isToggling || (!!quizData && !quizPassed)}
+                  title={quizData && !quizPassed ? "Pass the test to complete this course" : undefined}
                   className={`btn-secondary text-xs py-2 px-4 flex items-center gap-2 ${
                     currentLesson.isCompleted
                       ? "bg-green-50 text-green-700 border-green-300 font-semibold"
+                      : quizData && !quizPassed
+                      ? "opacity-50 cursor-not-allowed"
                       : "hover:bg-brand-50 hover:text-brand-700"
                   }`}
                 >
@@ -150,6 +171,11 @@ export default function CoursePlayerPage() {
                     <>
                       <CheckCircle2 className="w-4 h-4 text-green-600" />
                       <span>Completed</span>
+                    </>
+                  ) : quizData ? (
+                    <>
+                      <Award className="w-4 h-4 text-neutral-400" />
+                      <span>Pass Test to Complete</span>
                     </>
                   ) : (
                     <>
@@ -176,8 +202,68 @@ export default function CoursePlayerPage() {
                 </div>
               )}
 
+              {/* Quiz Test */}
+              {quizData && (
+                <div className="space-y-5">
+                  {quizData.map((q: any, qi: number) => {
+                    const selected = answers[qi];
+                    return (
+                      <div key={qi} className="p-4 rounded-xl border border-borderSubtle bg-neutral-50/60 space-y-3">
+                        <h4 className="text-sm font-bold text-textMain">
+                          Q{qi + 1}. {q.question}
+                        </h4>
+                        <div className="space-y-2">
+                          {q.options.map((opt: string, oi: number) => {
+                            const isPicked = selected === oi;
+                            let cls = "border-borderSubtle hover:border-brand-300 cursor-pointer";
+                            if (quizSubmitted) {
+                              if (oi === q.correctIndex) cls = "border-green-500 bg-green-50 text-green-800";
+                              else if (isPicked) cls = "border-red-400 bg-red-50 text-red-700";
+                              else cls = "border-borderSubtle opacity-70";
+                            } else if (isPicked) {
+                              cls = "border-brand-600 bg-brand-50 text-brand-900";
+                            }
+                            return (
+                              <button
+                                key={oi}
+                                disabled={quizSubmitted}
+                                onClick={() => setAnswers((prev) => ({ ...prev, [qi]: oi }))}
+                                className={`w-full text-left text-xs px-3 py-2 rounded-lg border transition-colors ${cls}`}
+                              >
+                                {String.fromCharCode(65 + oi)}. {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {!quizSubmitted ? (
+                    <button
+                      disabled={!quizComplete}
+                      onClick={() => setQuizSubmitted(true)}
+                      className={`btn-primary w-full justify-center py-2.5 text-xs ${!quizComplete ? "opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                      Submit Answers
+                    </button>
+                  ) : quizPassed ? (
+                    <div className="p-4 rounded-xl bg-green-50 border border-green-300 text-sm text-green-800 font-semibold text-center">
+                      🎉 All correct! Click "Pass Test to Complete" above to finish the course and claim your certificate.
+                    </div>
+                  ) : (
+                    <div className="p-4 rounded-xl bg-red-50 border border-red-300 text-center space-y-2">
+                      <p className="text-sm text-red-800 font-semibold">Some answers are incorrect. Review the highlighted questions.</p>
+                      <button onClick={() => { setQuizSubmitted(false); }} className="btn-secondary text-xs py-1.5 px-4">
+                        Try Again
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Rich Lesson Content */}
-              <RichText content={currentLesson.content} />
+              {!quizData && <RichText content={currentLesson.content} />}
 
               {/* Downloadable Lesson Attachment */}
               {currentLesson.attachmentUrl && (

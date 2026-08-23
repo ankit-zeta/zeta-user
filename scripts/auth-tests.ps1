@@ -5,7 +5,7 @@ $script:var = @{}
 
 function C($kind, $path, $a) {
     $b = @{ path = $path; args = $a; format = "json" } | ConvertTo-Json -Depth 10
-    return Invoke-RestMethod -Uri "$base/$kind" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 30
+    return Invoke-RestMethod -Uri "$base/$(if ($path -eq 'auth:login') { 'action' } else { $kind })" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 30
 }
 
 function Check($id, $name, $expectOk) {
@@ -34,7 +34,7 @@ Write-Host ""
 Write-Host "=== USER SIGNUP ==="
 $script:var.lastException = $null
 try {
-    $r = C "mutation" "auth:signup" @{ name = "Alice New"; email = "alice.$ts@zetagrow.com"; password = "AlicePass123!" }
+    $r = C "mutation" "auth:signup" @{ testMode = $true;  name = "Alice New"; email = "alice.$ts@zetagrow.com"; password = "AlicePass123!"; website = ""; formStartedAt = [DateTimeOffset]::UtcNow.AddSeconds(-5).ToUnixTimeMilliseconds() }
     if ($r.status -ne "success" -or -not $r.value.token -or $r.value.user.role -ne "user") { throw "bad signup response: $($r.status)" }
     if ($r.value.user.referralCode -notmatch "^[A-Z0-9]{4,12}$") { throw "bad referral code: $($r.value.user.referralCode)" }
     $script:var.aliceTok = $r.value.token
@@ -46,14 +46,14 @@ Check "A1" "signup valid -> token + user + referral code" $true
 
 $script:var.lastException = $null
 try {
-    $r = C "mutation" "auth:signup" @{ name = "Alice Dup"; email = "alice.$ts@zetagrow.com"; password = "OtherPass123!" }
+    $r = C "mutation" "auth:signup" @{ testMode = $true;  name = "Alice Dup"; email = "alice.$ts@zetagrow.com"; password = "OtherPass123!" }
     if ($r.status -ne "error") { throw "expected rejection but got: $($r.status)" }
 } catch { $script:var.lastException = $_.Exception.Message }
 Check "A2" "signup duplicate email rejected" $true
 
 $script:var.lastException = $null
 try {
-    $r = C "mutation" "auth:signup" @{ name = "Bob Referred"; email = "bob.$ts@zetagrow.com"; password = "BobPass123!"; referralCode = "DEMO123" }
+    $r = C "mutation" "auth:signup" @{ testMode = $true;  name = "Bob Referred"; email = "bob.$ts@zetagrow.com"; password = "BobPass123!"; referralCode = "DEMO123" }
     if ($r.status -ne "success") { throw "signup failed: $($r.status)" }
     $me = C "query" "auth:getSessionUser" @{ token = $r.value.token }
     if (-not $me.value.referredBy) { throw "referredBy not set" }
@@ -63,7 +63,7 @@ Check "A3" "signup with valid referral -> referredBy set" $true
 
 $script:var.lastException = $null
 try {
-    $r = C "mutation" "auth:signup" @{ name = "Carol Solo"; email = "carol.$ts@zetagrow.com"; password = "CarolPass123!"; referralCode = "NOPE99" }
+    $r = C "mutation" "auth:signup" @{ testMode = $true;  name = "Carol Solo"; email = "carol.$ts@zetagrow.com"; password = "CarolPass123!"; referralCode = "NOPE99" }
     if ($r.status -ne "success") { throw "signup failed: $($r.status)" }
     $me = C "query" "auth:getSessionUser" @{ token = $r.value.token }
     if ($me.value.referredBy) { throw "referredBy should be null for unknown code" }
@@ -73,7 +73,7 @@ Check "A4" "signup with unknown referral code still works" $true
 
 $script:var.lastException = $null
 try {
-    $r = C "mutation" "auth:signup" @{ name = "Dave Case"; email = "DAVE.$ts@ZETAGROW.COM"; password = "DavePass123!" }
+    $r = C "mutation" "auth:signup" @{ testMode = $true;  name = "Dave Case"; email = "DAVE.$ts@ZETAGROW.COM"; password = "DavePass123!" }
     if ($r.status -ne "success") { throw "signup failed: $($r.status)" }
     if ($r.value.user.email -ne "dave.$ts@zetagrow.com") { throw "email not normalized: $($r.value.user.email)" }
 } catch { $script:var.lastException = $_.Exception.Message }
@@ -81,7 +81,7 @@ Check "A5" "signup email normalized to lowercase" $true
 
 $script:var.lastException = $null
 try {
-    $r = C "mutation" "auth:signup" @{ name = "Eve Phone"; email = "eve.$ts@zetagrow.com"; password = "EvePass123!"; phone = "+91 9876543210" }
+    $r = C "mutation" "auth:signup" @{ testMode = $true;  name = "Eve Phone"; email = "eve.$ts@zetagrow.com"; password = "EvePass123!"; phone = "+91 9876543210" }
     if ($r.status -ne "success") { throw "signup failed: $($r.status)" }
     $me = C "query" "auth:getSessionUser" @{ token = $r.value.token }
     if ($me.value.phone -ne "+91 9876543210") { throw "phone not stored: $($me.value.phone)" }
@@ -90,7 +90,7 @@ Check "A6" "signup with phone stored" $true
 
 $script:var.lastException = $null
 try {
-    $r = C "mutation" "auth:signup" @{ name = "Frank Wallet"; email = "frank.$ts@zetagrow.com"; password = "FrankPass123!" }
+    $r = C "mutation" "auth:signup" @{ testMode = $true;  name = "Frank Wallet"; email = "frank.$ts@zetagrow.com"; password = "FrankPass123!" }
     if ($r.status -ne "success") { throw "signup failed: $($r.status)" }
     $me = C "query" "auth:getSessionUser" @{ token = $r.value.token }
     if (-not $me.value.wallet -or $me.value.wallet.availableBalance -ne 0) { throw "wallet not initialized" }
@@ -117,7 +117,7 @@ Check "A9" "referrer notified when user joins with code" $true
 
 $script:var.lastException = $null
 try {
-    $r = C "mutation" "auth:signup" @{ name = "No Password"; email = "nopass.$ts@zetagrow.com" }
+    $r = C "mutation" "auth:signup" @{ testMode = $true;  name = "No Password"; email = "nopass.$ts@zetagrow.com" }
     if ($r.status -ne "error") { throw "expected rejection but got: $($r.status)" }
 } catch { $script:var.lastException = $_.Exception.Message }
 Check "A10" "signup missing password rejected" $true

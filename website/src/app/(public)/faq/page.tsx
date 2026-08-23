@@ -17,10 +17,6 @@ export default function FAQPage() {
       a: "Every certificate issued contains a unique identifier (e.g. ZG-2026-ABC123) and a public verification URL. Anyone can verify the validity and recipient on our registry at /certificate/[id].",
     },
     {
-      q: "How does the affiliate referral system work?",
-      a: "Enrolled users receive a unique referral link. When an eligible new user enrolls in a program using your link, you receive a performance commission based on our configured lower-program calculation engine.",
-    },
-    {
       q: "How do withdrawals work?",
       a: "Once your wallet balance reaches the minimum threshold (₹1,000), you can request a withdrawal via direct bank transfer (IMPS/NEFT) or UPI. Withdrawals are reviewed and processed within standard processing windows.",
     },

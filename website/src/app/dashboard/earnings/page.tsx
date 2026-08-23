@@ -6,8 +6,9 @@ import { useAuth } from "@/lib/convex";
 import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
 import { CreditCard, TrendingUp, Clock, CheckCircle2, AlertCircle, Briefcase, Share2, Wallet, Landmark } from "lucide-react";
+import AffiliateGate from "@/components/AffiliateGate";
 
-export default function EarningsLedgerPage() {
+function EarningsLedgerPageContent() {
   const { token } = useAuth();
   const stats = useQuery(
     api.affiliates.getUserAffiliateStats,
@@ -192,5 +193,13 @@ export default function EarningsLedgerPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function EarningsLedgerPage() {
+  return (
+    <AffiliateGate>
+      <EarningsLedgerPageContent />
+    </AffiliateGate>
   );
 }

@@ -120,6 +120,24 @@ export const toggleLessonComplete = mutation({
       throw new Error("Unauthorized");
     }
 
+    // Enrollment gate: only enrolled users (completed purchase or staff) may
+    // mark lessons complete — prevents minting certificates / unlocking job
+    // eligibility without actually owning the program.
+    const program = await ctx.db.get(args.programId);
+    if (!program) throw new Error("Program not found");
+    const sessionUser = await ctx.db.get(session.userId);
+    if (!sessionUser) throw new Error("User not found");
+    if (sessionUser.role === "user") {
+      const purchase = await ctx.db
+        .query("purchases")
+        .withIndex("by_userId", (q) => q.eq("userId", session.userId))
+        .filter((q) => q.eq(q.field("programId"), args.programId))
+        .first();
+      if (!purchase || purchase.status !== "completed") {
+        throw new Error("You must enroll in this program to access its lessons");
+      }
+    }
+
     const existing = await ctx.db
       .query("lessonProgress")
       .withIndex("by_user_lesson", (q) =>
@@ -146,6 +164,35 @@ export const toggleLessonComplete = mutation({
       });
     }
 
+    // Genuine-consumption gate: the buyer's FIRST completed lesson anywhere
+    // activates any referral commissions that were awaiting proof of usage.
+    const priorProgress = await ctx.db
+      .query("lessonProgress")
+      .withIndex("by_user_program", (q) => q.eq("userId", session.userId).eq("programId", args.programId))
+      .collect();
+    if (priorProgress.filter((p) => p.completed).length === 1) {
+      const pendingSales = await ctx.db
+        .query("affiliateSales")
+        .withIndex("by_buyerUserId", (q) => q.eq("buyerUserId", session.userId))
+        .collect();
+      for (const s of pendingSales) {
+        if (s.awaitingConsumption) {
+          await ctx.db.patch(s._id, { awaitingConsumption: false });
+        }
+      }
+      // Audit trail entry
+      await ctx.db.insert("auditLogs", {
+        adminUserId: session.userId,
+        adminEmail: sessionUser.email,
+        action: "consumption_verified",
+        entityType: "user",
+        entityId: session.userId.toString(),
+        previousValue: undefined,
+        newValue: undefined,
+        reason: "First lesson completed — referral commissions activated.",
+        timestamp: now,
+      });
+    }
     // Recalculate total course completion
     const allLessons = await ctx.db
       .query("lessons")
@@ -167,7 +214,6 @@ export const toggleLessonComplete = mutation({
 
     // If 100% completed and program has certificateEnabled, auto-issue certificate if not yet issued
     if (isAllCompleted) {
-      const program = await ctx.db.get(args.programId);
       if (program?.certificateEnabled) {
         const existingCert = await ctx.db
           .query("certificates")

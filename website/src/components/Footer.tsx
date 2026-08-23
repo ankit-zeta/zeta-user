@@ -1,141 +1,154 @@
 import React from "react";
 import Link from "next/link";
-import { Shield, BookOpen, Briefcase, Award, ExternalLink } from "lucide-react";
+import { Shield } from "lucide-react";
+
+const planLinks = [
+  { href: "/plans/sales-communication-essentials", label: "Sales & Communication Essentials", price: "₹2,000" },
+  { href: "/plans/ecommerce-business-essentials", label: "E-Commerce & Online Business Essentials", price: "₹4,000" },
+  { href: "/plans/digital-marketing-web-professional", label: "Digital Marketing & Web Professional", price: "₹8,000" },
+  { href: "/plans/ai-advanced-digital-skills", label: "AI & Advanced Digital Skills", price: "₹14,000" },
+];
+
+const courseLinks = [
+  { href: "/programs/meta-ads-deep-dive", label: "Meta Ads Course India" },
+  { href: "/programs/google-ads-essentials", label: "Google Ads for Beginners" },
+  { href: "/programs/shopify-store-setup", label: "Shopify Store Setup Course" },
+  { href: "/programs/woocommerce-store-setup", label: "WooCommerce Course" },
+  { href: "/programs/coding-foundations", label: "Coding for Absolute Beginners" },
+  { href: "/programs/gen-ai-prompting-mastery", label: "AI Prompting Course" },
+];
+
+const startLinks = [
+  { href: "/plans", label: "Online courses with certificates in India" },
+  { href: "/plans/digital-marketing-web-professional", label: "Learn digital marketing step by step" },
+  { href: "/work", label: "Freelancing & gig work opportunities" },
+  { href: "/plans/sales-communication-essentials", label: "Sales skills course for beginners" },
+  { href: "/plans/ai-advanced-digital-skills", label: "Learn AI tools & prompting" },
+  { href: "/signup", label: "Create free account & start learning" },
+];
+
+const ecosystemLinks = [
+  { href: "/work", label: "Work Opportunities" },
+  { href: "/how-it-works", label: "How It Works" },
+  { href: "/about", label: "About Us" },
+  { href: "/faq", label: "FAQ" },
+  { href: "/contact", label: "Contact" },
+  { href: "/support/track", label: "Track a Ticket" },
+];
+
+const legalLinks = [
+  { href: "/terms", label: "Terms" },
+  { href: "/privacy", label: "Privacy" },
+  { href: "/refund-policy", label: "Refund Policy" },
+  { href: "/disclaimer", label: "Disclaimer" },
+  { href: "/acceptable-use", label: "Acceptable Use" },
+  { href: "/intellectual-property", label: "IP Policy" },
+  { href: "/cookie-policy", label: "Cookies" },
+  { href: "/payment-terms", label: "Payment Terms" },
+  { href: "/accessibility", label: "Accessibility" },
+  { href: "/security", label: "Security" },{ href: "/variable-remuneration-policy", label: "Remuneration Policy" },
+];
+
+function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-3 min-w-0">
+      <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-200 whitespace-nowrap">{title}</h4>
+      <ul className="space-y-2.5 text-[13px] leading-snug text-neutral-400">{children}</ul>
+    </div>
+  );
+}
 
 export default function Footer() {
   return (
     <footer className="bg-[#1C221F] text-neutral-300 border-t border-neutral-800 text-sm mt-auto relative">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-600 to-transparent" aria-hidden />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
-          {/* Brand Col */}
-          <div className="lg:col-span-2 space-y-4">
+
+      {/* ── Top: brand + link columns ── */}
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 py-14">
+        <div className="grid gap-x-10 gap-y-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_.8fr]">
+          {/* Brand */}
+          <div className="space-y-4 sm:pr-6">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-base shadow-sm">
-                Z
-              </div>
-              <span className="text-xl font-bold tracking-tight text-white">
-                ZetaGrow
-              </span>
+              <div className="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-base shadow-sm">Z</div>
+              <span className="text-xl font-bold tracking-tight text-white">ZetaGrow</span>
             </div>
-            <p className="text-neutral-400 text-sm leading-relaxed max-w-sm">
-              ZetaGrow is an integrated digital skill development and vetted
-              work platform. We prepare ambitious individuals with actionable
-              skills, verifiable credentials, and direct client project access.
+            <p className="text-neutral-400 text-[13px] leading-relaxed">
+              Certificate courses in digital marketing, e-commerce, coding, AI tools and communication.
+              Anyone can join — learn self-paced, earn verified certificates, and apply for freelancing
+              & gig work on our curated marketplace.
+            </p>
+            <p className="text-[11px] text-neutral-500 leading-relaxed">
+              Zetagrow Edutech and Solutions · UDYAM-UP-73-0047816
+Shop No. 06, Vrindavan Marriage Lawn, Dobhiyara, NH-330A, Sultanpur City, Lucknow District, Uttar Pradesh – 224229
++91 75218 40759 · Serving learners across India
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-neutral-300">
               <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
               <span className="font-medium">Learn. Work. Grow.</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-neutral-400">
-              <Shield className="w-4 h-4 text-brand-400" />
-              <span>Compliant & Transparent Operations</span>
-            </div>
           </div>
 
-          {/* Programs */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-200">
-              Programs
-            </h4>
-            <ul className="space-y-2 text-sm text-neutral-400">
-              <li>
-                <Link href="/programs/starter-digital-skills" className="hover:text-white transition-colors">
-                  Starter Program (₹2,000)
+          {/* Learning Plans */}
+          <FooterCol title="Learning Plans">
+            {planLinks.map((p) => (
+              <li key={p.href}>
+                <Link href={p.href} className="hover:text-white transition-colors">
+                  {p.label} <span className="text-neutral-500">· {p.price}</span>
                 </Link>
               </li>
-              <li>
-                <Link href="/programs/growth-professional" className="hover:text-white transition-colors">
-                  Growth Program (₹4,000)
-                </Link>
-              </li>
-              <li>
-                <Link href="/programs/digital-business-execution" className="hover:text-white transition-colors">
-                  Digital Business Execution (₹8,000)
-                </Link>
-              </li>
-              <li>
-                <Link href="/programs/digital-business-pro" className="hover:text-white transition-colors">
-                  Digital Business Pro (₹14,000)
-                </Link>
-              </li>
-            </ul>
-          </div>
+            ))}
+          </FooterCol>
 
-          {/* Work & Platform */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-200">
-              Ecosystem
-            </h4>
-            <ul className="space-y-2 text-sm text-neutral-400">
-              <li>
-                <Link href="/work" className="hover:text-white transition-colors">
-                  Work Opportunities
-                </Link>
+          {/* Popular Courses */}
+          <FooterCol title="Popular Courses">
+            {courseLinks.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="hover:text-white transition-colors">{l.label}</Link>
               </li>
-              <li>
-                <Link href="/how-it-works" className="hover:text-white transition-colors">
-                  How It Works
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-white transition-colors">
-                  About ZetaGrow
-                </Link>
-              </li>
-              <li>
-                <Link href="/faq" className="hover:text-white transition-colors">
-                  Frequently Asked Questions
-                </Link>
-              </li>
-<li>
-                <Link href="/contact" className="hover:text-white transition-colors">
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/support/track" className="hover:text-white transition-colors">
-                  Track Support Ticket
-                </Link>
-              </li>
-            </ul>
-          </div>
+            ))}
+          </FooterCol>
 
-          {/* Governance & Policies */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-200">
-              Legal & Policies
-            </h4>
-            <ul className="space-y-2 text-sm text-neutral-400">
-              <li>
-                <Link href="/terms" className="hover:text-white transition-colors">
-                  Terms of Service
-                </Link>
+          {/* Start learning */}
+          <FooterCol title="Start Learning Today">
+            {startLinks.map((l) => (
+              <li key={l.href + l.label}>
+                <Link href={l.href} className="hover:text-white transition-colors">{l.label}</Link>
               </li>
-              <li>
-                <Link href="/privacy" className="hover:text-white transition-colors">
-                  Privacy Policy
-                </Link>
+            ))}
+          </FooterCol>
+
+          {/* Platform */}
+          <FooterCol title="Platform">
+            {ecosystemLinks.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="hover:text-white transition-colors">{l.label}</Link>
               </li>
-              <li>
-                <Link href="/refund-policy" className="hover:text-white transition-colors">
-                  Refund & Cancellation Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/direct-selling-policy" className="hover:text-white transition-colors">
-                  Direct Selling & Affiliate Policy
-                </Link>
-              </li>
-            </ul>
-          </div>
+            ))}
+          </FooterCol>
         </div>
+      </div>
 
-        <div className="border-t border-neutral-800 mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
-          <p>© {new Date().getFullYear()} ZetaGrow Technologies. All rights reserved.</p>
-          <div className="flex items-center gap-6">
-            <span>Learn. Work. Grow.</span>
-            <span>support@zetagrow.com</span>
+      {/* ── Middle: legal strip ── */}
+      <div className="border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 py-6">
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-200 mb-3">Legal & Policies</h4>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-neutral-500">
+            {legalLinks.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} className="hover:text-white transition-colors">{l.label}</Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* ── Bottom bar ── */}
+      <div className="border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-neutral-500">© {new Date().getFullYear()} ZetaGrow. All rights reserved.</p>
+          <div className="flex items-center gap-2 text-xs text-neutral-400">
+            <Shield className="w-4 h-4 text-brand-400" aria-hidden />
+            <span>Compliant & Transparent Operations · Made in India 🇮🇳</span>
           </div>
         </div>
       </div>

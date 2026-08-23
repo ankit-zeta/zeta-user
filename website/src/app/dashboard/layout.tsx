@@ -46,8 +46,12 @@ export default function DashboardLayout({
   useEffect(() => {
     if (!isLoading && !token) {
       router.push("/login?redirect=" + encodeURIComponent(pathname));
+    } else if (!isLoading && token && !user) {
+      // Session revoked elsewhere (e.g., login on another device) — hard reset to login
+      localStorage.removeItem("zetagrow_user_token");
+      window.location.href = "/login?reason=session_expired";
     }
-  }, [isLoading, token, router, pathname]);
+  }, [isLoading, token, user, router, pathname]);
 
   if (isLoading || !user) {
     return (
@@ -59,6 +63,9 @@ export default function DashboardLayout({
       </div>
     );
   }
+
+  // Affiliate features unlock only after the user owns at least one program
+  const hasPurchased = (user.enrolledProgramIds?.length || 0) > 0;
 
   const navSections = [
     {
@@ -82,19 +89,23 @@ export default function DashboardLayout({
         { name: "My Applications", href: "/dashboard/applications", icon: FileCheck },
       ],
     },
+    ...(hasPurchased
+      ? [
+          {
+            title: "Affiliate Panel",
+            items: [
+              { name: "Affiliate Center", href: "/dashboard/affiliate", icon: TrendingUp },
+              { name: "Referrals", href: "/dashboard/referrals", icon: Users },
+              { name: "Earnings & Sales", href: "/dashboard/earnings", icon: CreditCard },
+              { name: "Wallet & Payouts", href: "/dashboard/withdrawals", icon: Wallet },
+              { name: "Achievements", href: "/dashboard/achievements", icon: Zap },
+            ],
+          },
+        ]
+      : []),
     {
-      title: "Affiliate & Wallet",
+      title: "Account",
       items: [
-        { name: "Affiliate Center", href: "/dashboard/affiliate", icon: TrendingUp },
-        { name: "Referrals", href: "/dashboard/referrals", icon: Users },
-        { name: "Earnings & Sales", href: "/dashboard/earnings", icon: CreditCard },
-        { name: "Wallet & Payouts", href: "/dashboard/withdrawals", icon: Wallet },
-      ],
-    },
-    {
-      title: "Growth & Account",
-      items: [
-        { name: "Achievements", href: "/dashboard/achievements", icon: Zap },
         { 
           name: "Notifications", 
           href: "/dashboard/notifications", 
@@ -207,14 +218,16 @@ export default function DashboardLayout({
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Wallet Quick Balance */}
-            <Link
-              href="/dashboard/withdrawals"
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-borderSubtle bg-neutral-50 hover:bg-neutral-100 transition-colors text-xs font-medium text-textMain"
-            >
-              <Wallet className="w-3.5 h-3.5 text-brand-600" />
-              <span>Available: <strong>₹{(user.wallet?.availableBalance || 0).toLocaleString("en-IN")}</strong></span>
-            </Link>
+            {/* Wallet Quick Balance — only for program owners */}
+            {hasPurchased && (
+              <Link
+                href="/dashboard/withdrawals"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-borderSubtle bg-neutral-50 hover:bg-neutral-100 transition-colors text-xs font-medium text-textMain"
+              >
+                <Wallet className="w-3.5 h-3.5 text-brand-600" />
+                <span>Available: <strong>₹{(user.wallet?.availableBalance || 0).toLocaleString("en-IN")}</strong></span>
+              </Link>
+            )}
 
             {/* Notifications icon */}
             <Link

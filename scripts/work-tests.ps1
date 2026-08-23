@@ -5,7 +5,7 @@ $script:var = @{}
 
 function C($kind, $path, $a) {
     $b = @{ path = $path; args = $a; format = "json" } | ConvertTo-Json -Depth 10
-    return Invoke-RestMethod -Uri "$base/$kind" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 60
+    return Invoke-RestMethod -Uri "$base/$(if ($path -eq 'auth:login') { 'action' } else { $kind })" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 60
 }
 
 function Check($id, $name, $expectOk) {
@@ -122,7 +122,7 @@ Check "G2" "server blocks apply without program completion" $true
 
 $script:var.lastException = $null
 try {
-    $signup = C "mutation" "auth:signup" @{ name = "Cert Holder"; email = "certholder.$ts@zetagrow.com"; password = "CertPass123!" }
+    $signup = C "mutation" "auth:signup" @{ testMode = $true;  name = "Cert Holder"; email = "certholder.$ts@zetagrow.com"; password = "CertPass123!" }
     if ($signup.status -ne "success") { throw "signup failed" }
     $script:var.certTok = $signup.value.token
     $script:var.certId = $signup.value.user.id

@@ -23,9 +23,14 @@ export default function DashboardOverviewPage() {
   const { user, token } = useAuth();
   const [copied, setCopied] = useState(false);
 
+  const enrolledCount = user?.enrolledProgramIds?.length || 0;
+
+  // Affiliate surfaces stay completely hidden until the user owns a program
+  const hasPurchased = enrolledCount > 0;
+
   const affiliateStats = useQuery(
     api.affiliates.getUserAffiliateStats,
-    token ? { token } : "skip"
+    token && hasPurchased ? { token } : "skip"
   );
 
   const jobsWithEligibility = useQuery(
@@ -35,7 +40,7 @@ export default function DashboardOverviewPage() {
 
   const achievements = useQuery(
     api.achievements.getUserAchievements,
-    token ? { token } : "skip"
+    token && hasPurchased ? { token } : "skip"
   );
 
   const publicPrograms = useQuery(api.programs.getPublicPrograms);
@@ -44,13 +49,12 @@ export default function DashboardOverviewPage() {
 
   // Auto-evaluate achievements so unlocks + progress stay live without a page visit to the achievements tab
   useEffect(() => {
-    if (token) {
+    if (token && hasPurchased) {
       evaluateAchievements({ token }).catch(console.error);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, hasPurchased]);
 
-  const enrolledCount = user?.enrolledProgramIds?.length || 0;
   const referralLink = typeof window !== "undefined" 
     ? `${window.location.origin}/signup?ref=${user?.referralCode}`
     : `https://zetagrow.com/signup?ref=${user?.referralCode}`;
@@ -235,7 +239,8 @@ export default function DashboardOverviewPage() {
         </div>
       </div>
 
-      {/* 4. Affiliate Quick Link Banner */}
+      {/* 4. Affiliate Quick Link Banner — program owners only */}
+      {hasPurchased && (
       <div className="card-surface p-6 bg-gradient-to-r from-brand-900 to-brand-800 text-white rounded-xl space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
@@ -273,9 +278,10 @@ export default function DashboardOverviewPage() {
           </button>
         </div>
       </div>
+      )}
 
-      {/* 5. Achievements Preview */}
-      {achievements && achievements.length > 0 && (
+      {/* 5. Achievements Preview — program owners only */}
+      {hasPurchased && achievements && achievements.length > 0 && (
         <div className="card-surface p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-bold text-textMain flex items-center gap-2">

@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query, action } from "./_generated/server";
+import { requirePurchasedUser } from "./entitlements";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -49,6 +50,7 @@ export const requestWithdrawal = mutation({
     }
 
     // Resolve from a saved payout method if provided (details copied into the withdrawal record)
+    await requirePurchasedUser(ctx, args.token);
     if (args.payoutMethodId) {
       const saved = await ctx.db.get(args.payoutMethodId);
       if (!saved || saved.userId.toString() !== session.userId.toString()) {
@@ -233,6 +235,8 @@ export const getUserWithdrawals = query({
     if (!session || session.expiresAt < Date.now()) {
       throw new Error("Unauthorized");
     }
+
+    await requirePurchasedUser(ctx, args.token);
 
     const withdrawals = await ctx.db
       .query("withdrawals")

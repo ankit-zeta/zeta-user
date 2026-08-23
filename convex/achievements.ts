@@ -1,5 +1,6 @@
 ﻿import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requirePurchasedUser } from "./entitlements";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -81,6 +82,7 @@ export const evaluateUserAchievements = mutation({
     const userId = session.userId;
     const user = await ctx.db.get(userId);
     if (!user) throw new Error("User not found");
+    await requirePurchasedUser(ctx, args.token);
 
     const metrics = await gatherUserMetrics(ctx, userId);
 
@@ -172,6 +174,8 @@ export const getUserAchievements = query({
     if (!session || session.expiresAt < Date.now()) {
       throw new Error("Unauthorized");
     }
+
+    await requirePurchasedUser(ctx, args.token);
 
     const userId = session.userId;
     const allAchievements = await ctx.db

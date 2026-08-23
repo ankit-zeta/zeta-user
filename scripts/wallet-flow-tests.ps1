@@ -7,7 +7,7 @@ $script:var = @{}
 
 function C($kind, $path, $a) {
   $b = @{ path = $path; args = $a; format = "json" } | ConvertTo-Json -Depth 12
-  return Invoke-RestMethod -Uri "$base/$kind" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 60
+  return Invoke-RestMethod -Uri "$base/$(if ($path -eq 'auth:login') { 'action' } else { $kind })" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 60
 }
 
 function Check($name, $cond, $detail) {
@@ -74,8 +74,8 @@ $script:var.jobId = $job.value
 Check "L0 admin posts job opportunity" ($job.status -eq "success") "status=$($job.status) job=$($script:var.jobId)"
 
 # Two workers sign up + complete CV + apply
-$w1 = C "mutation" "auth:signup" @{ name = "Worker One $ts"; email = "worker1.$ts@zetagrow.com"; password = "WorkerPass123!" }
-$w2 = C "mutation" "auth:signup" @{ name = "Worker Two $ts"; email = "worker2.$ts@zetagrow.com"; password = "WorkerPass123!" }
+$w1 = C "mutation" "auth:signup" @{ testMode = $true;  name = "Worker One $ts"; email = "worker1.$ts@zetagrow.com"; password = "WorkerPass123!" }
+$w2 = C "mutation" "auth:signup" @{ testMode = $true;  name = "Worker Two $ts"; email = "worker2.$ts@zetagrow.com"; password = "WorkerPass123!" }
 $script:var.w1Tok = $w1.value.token
 $script:var.w2Tok = $w2.value.token
 MakeCv $script:var.w1Tok | Out-Null
@@ -229,14 +229,14 @@ Check "L17 worker cannot change application status" ($nonAdmin.status -eq "error
 
 # ---------- AFFILIATE COMMISSION FULL CYCLE ----------
 Write-Host "=== AFFILIATE COMMISSION: PURCHASE -> PENDING -> APPROVED -> AVAILABLE ==="
-$ref = C "mutation" "auth:signup" @{ name = "Referrer $ts"; email = "referrer.$ts@zetagrow.com"; password = "RefPass123!" }
+$ref = C "mutation" "auth:signup" @{ testMode = $true;  name = "Referrer $ts"; email = "referrer.$ts@zetagrow.com"; password = "RefPass123!" }
 $script:var.refTok = $ref.value.token
 $refLogin = C "query" "auth:getSessionUser" @{ token = $script:var.refTok }
 $script:var.refId = $refLogin.value._id
 $refCode = $ref.value.user.referralCode
 Write-Host "referral code: $refCode"
 
-$buyer = C "mutation" "auth:signup" @{ name = "Buyer $ts"; email = "buyer.$ts@zetagrow.com"; password = "BuyerPass123!"; referralCode = $refCode }
+$buyer = C "mutation" "auth:signup" @{ testMode = $true;  name = "Buyer $ts"; email = "buyer.$ts@zetagrow.com"; password = "BuyerPass123!"; referralCode = $refCode }
 $buyerTok = $buyer.value.token
 
 $refWallet0 = GetWallet $script:var.refTok
@@ -370,7 +370,7 @@ $origAff = $allSett.affiliate
 $origWd = $allSett.withdrawals
 
 # Work daily payout cap
-$w3 = C "mutation" "auth:signup" @{ name = "Worker Three $ts"; email = "worker3.$ts@zetagrow.com"; password = "WorkerPass123!" }
+$w3 = C "mutation" "auth:signup" @{ testMode = $true;  name = "Worker Three $ts"; email = "worker3.$ts@zetagrow.com"; password = "WorkerPass123!" }
 $script:var.w3Tok = $w3.value.token
 MakeCv $script:var.w3Tok | Out-Null
 $u3 = C "query" "auth:getSessionUser" @{ token = $script:var.w3Tok }
@@ -409,9 +409,9 @@ try {
 }
 
 # Affiliate per-sale cap
-$ref2 = C "mutation" "auth:signup" @{ name = "Referrer Two $ts"; email = "referrer2.$ts@zetagrow.com"; password = "RefPass123!" }
+$ref2 = C "mutation" "auth:signup" @{ testMode = $true;  name = "Referrer Two $ts"; email = "referrer2.$ts@zetagrow.com"; password = "RefPass123!" }
 $ref2Code = $ref2.value.user.referralCode
-$buyer2 = C "mutation" "auth:signup" @{ name = "Buyer Two $ts"; email = "buyer2.$ts@zetagrow.com"; password = "BuyerPass123!"; referralCode = $ref2Code }
+$buyer2 = C "mutation" "auth:signup" @{ testMode = $true;  name = "Buyer Two $ts"; email = "buyer2.$ts@zetagrow.com"; password = "BuyerPass123!"; referralCode = $ref2Code }
 try {
   $affSettings = @{
     enabled = $origAff.enabled

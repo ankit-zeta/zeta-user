@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
 import { Zap, CheckCircle2, Lock, Award, Flame, Trophy, TrendingUp } from "lucide-react";
+import AffiliateGate from "@/components/AffiliateGate";
 
 const METRIC_LABELS: Record<string, string> = {
   valid_referrals: "Direct referrals",
@@ -16,7 +17,7 @@ const METRIC_LABELS: Record<string, string> = {
   total_earnings: "Total earned (₹)",
 };
 
-export default function AchievementsPage() {
+function AchievementsPageContent() {
   const { token } = useAuth();
   const achievements = useQuery(
     api.achievements.getUserAchievements,
@@ -302,5 +303,12 @@ export default function AchievementsPage() {
         )}
       </div>
     </div>
+  );
+}
+export default function AchievementsPage() {
+  return (
+    <AffiliateGate>
+      <AchievementsPageContent />
+    </AffiliateGate>
   );
 }

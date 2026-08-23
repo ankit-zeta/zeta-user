@@ -361,6 +361,9 @@ export const updateUserRole = mutation({
     const user = await ctx.db.get(args.userId);
     if (!user) throw new Error("User not found");
     if (user._id === admin._id) throw new Error("You cannot change your own role");
+    if (["super_admin", "admin"].includes(user.role) && admin.role !== "super_admin") {
+      throw new Error("Only a super admin can change this account's role");
+    }
     if (!["user", "content_admin", "finance_admin", "work_admin"].includes(args.role)) {
       throw new Error("Invalid role");
     }
@@ -466,11 +469,32 @@ export const updateUserStatus = mutation({
     const user = await ctx.db.get(args.userId);
     if (!user) throw new Error("User not found");
 
+    if (!["active", "suspended"].includes(args.status)) {
+      throw new Error("Invalid status");
+    }
+    if (user._id === admin._id) {
+      throw new Error("You cannot change your own account status");
+    }
+    if (user.role === "super_admin" && admin.role !== "super_admin") {
+      throw new Error("Only a super admin can change this account's status");
+    }
+
     const previousStatus = user.status;
     await ctx.db.patch(args.userId, {
       status: args.status,
       updatedAt: Date.now(),
     });
+
+    // Suspension must terminate all active sessions immediately
+    if (args.status === "suspended") {
+      const sessions = await ctx.db
+        .query("sessions")
+        .withIndex("by_userId", (q: any) => q.eq("userId", args.userId))
+        .collect();
+      for (const s of sessions) {
+        await ctx.db.delete(s._id);
+      }
+    }
 
     // Log in audit log
     await ctx.db.insert("auditLogs", {

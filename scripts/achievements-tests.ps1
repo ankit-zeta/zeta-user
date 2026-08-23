@@ -5,7 +5,7 @@ $script:var = @{}
 
 function C($kind, $path, $a) {
     $b = @{ path = $path; args = $a; format = "json" } | ConvertTo-Json -Depth 10
-    return Invoke-RestMethod -Uri "$base/$kind" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 30
+    return Invoke-RestMethod -Uri "$base/$(if ($path -eq 'auth:login') { 'action' } else { $kind })" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 30
 }
 
 function Check($id, $name, $expectOk) {
@@ -122,14 +122,14 @@ Write-Host ""
 Write-Host "=== EVALUATION (server-side unlock) ==="
 $script:var.lastException = $null
 try {
-    $su = C "mutation" "auth:signup" @{ name = "Ach Chaser"; email = "achchaser.$ts@zetagrow.com"; password = "AchPass123!" }
+    $su = C "mutation" "auth:signup" @{ testMode = $true;  name = "Ach Chaser"; email = "achchaser.$ts@zetagrow.com"; password = "AchPass123!" }
     if ($su.status -ne "success") { throw "signup failed" }
     $script:var.freshTok = $su.value.token
     $script:var.freshId = $su.value.user.id
     $code = $su.value.user.referralCode
 
-    $r1 = C "mutation" "auth:signup" @{ name = "Ref One"; email = "refone.$ts@zetagrow.com"; password = "RefPass123!"; referralCode = $code }
-    $r2 = C "mutation" "auth:signup" @{ name = "Ref Two"; email = "reftwo.$ts@zetagrow.com"; password = "RefPass123!"; referralCode = $code }
+    $r1 = C "mutation" "auth:signup" @{ testMode = $true;  name = "Ref One"; email = "refone.$ts@zetagrow.com"; password = "RefPass123!"; referralCode = $code }
+    $r2 = C "mutation" "auth:signup" @{ testMode = $true;  name = "Ref Two"; email = "reftwo.$ts@zetagrow.com"; password = "RefPass123!"; referralCode = $code }
     if ($r1.status -ne "success" -or $r2.status -ne "success") { throw "referral signups failed" }
 
     $ev = C "mutation" "achievements:evaluateUserAchievements" @{ token = $script:var.freshTok }

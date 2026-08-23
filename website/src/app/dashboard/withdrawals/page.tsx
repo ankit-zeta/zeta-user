@@ -22,6 +22,7 @@ import {
   Trash2,
   ShieldCheck
 } from "lucide-react";
+import AffiliateGate from "@/components/AffiliateGate";
 
 async function compressImage(file: File, maxBytes = 100 * 1024, hardCap = 1024 * 1024): Promise<Blob> {
   if (file.size <= maxBytes) return file;
@@ -72,7 +73,7 @@ function methodSummary(m: any) {
   return "";
 }
 
-export default function WithdrawalsPage() {
+function WithdrawalsPageContent() {
   const { token, user } = useAuth();
   const walletData = useQuery(
     api.wallets.getUserWallet,
@@ -986,5 +987,12 @@ export default function WithdrawalsPage() {
         )}
       </div>
     </div>
+  );
+}
+export default function WithdrawalsPage() {
+  return (
+    <AffiliateGate>
+      <WithdrawalsPageContent />
+    </AffiliateGate>
   );
 }

@@ -9,6 +9,7 @@ import {
   LayoutDashboard, 
   Users, 
   BookOpen, 
+  Layers, 
   Briefcase, 
   TrendingUp, 
   Zap, 
@@ -53,7 +54,7 @@ export default function AdminDashboardLayout({
   const navItems = [
     { name: "Overview", href: "/", icon: LayoutDashboard },
     { name: "Users Management", href: "/users", icon: Users },
-    { name: "Programs & Courses", href: "/programs", icon: BookOpen },
+    { name: "Programs & Courses", href: "/programs", icon: BookOpen },{ name: "Plans & Bundles", href: "/plans", icon: Layers },
     { name: "Work Marketplace", href: "/work", icon: Briefcase },
     { name: "Affiliate & Sales", href: "/affiliate", icon: TrendingUp },
     { name: "Achievements Builder", href: "/achievements", icon: Zap },

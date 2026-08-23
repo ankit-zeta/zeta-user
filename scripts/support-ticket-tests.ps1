@@ -5,7 +5,7 @@ $script:var = @{}
 
 function C($kind, $path, $a) {
     $b = @{ path = $path; args = $a; format = "json" } | ConvertTo-Json -Depth 10
-    return Invoke-RestMethod -Uri "$base/$kind" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 30
+    return Invoke-RestMethod -Uri "$base/$(if ($path -eq 'auth:login') { 'action' } else { $kind })" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 30
 }
 
 function Check($id, $name, $expectOk) {
@@ -265,7 +265,7 @@ Check "T30" "updateTicketStatus invalid value rejected" $true
 
 $script:var.lastException = $null
 try {
-    $r = C "query" "auditLogs:getAuditLogs" @{ token = $script:var.adminTok }
+    $r = C "query" "auditLogs:getAuditLogs" @{ token = $script:var.adminTok; entityType = "supportTickets" }
     $logs = @($r.value | Where-Object { $_.entityType -eq "supportTickets" })
     if ($logs.Count -lt 4) { throw "expected >=4 audit entries, got $($logs.Count)" }
 } catch { $script:var.lastException = $_.Exception.Message }

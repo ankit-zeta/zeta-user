@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+﻿import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 async function requireAdmin(ctx: any, token: string) {
@@ -69,9 +69,38 @@ export const getProgramBySlug = query({
       })
     );
 
+    // Public resource preview for this program (no file URLs leaked pre-purchase)
+    const programResources = await ctx.db
+      .query("resources")
+      .withIndex("by_programId", (q) => q.eq("programId", program._id))
+      .collect();
+    programResources.sort((a, b) => a.sortOrder - b.sortOrder);
+
+    const totalLessons = modulesWithLessons.reduce(
+      (sum: number, m: any) => sum + (m.lessons?.length || 0),
+      0
+    );
+    const totalMinutes = modulesWithLessons.reduce(
+      (sum: number, m: any) =>
+        sum + (m.lessons || []).reduce((s: number, l: any) => s + (l.durationMinutes || 0), 0),
+      0
+    );
+
     return {
       ...program,
       modules: modulesWithLessons,
+      stats: {
+        moduleCount: modules.length,
+        lessonCount: totalLessons,
+        totalMinutes,
+      },
+      resources: programResources.map((r) => ({
+        title: r.title,
+        description: r.description,
+        fileType: r.fileType,
+        fileSize: r.fileSize,
+        accessType: r.accessType,
+      })),
     };
   },
 });
@@ -190,6 +219,8 @@ export const createProgram = mutation({
     accessDuration: v.string(),
     certificateEnabled: v.boolean(),
     affiliateEnabled: v.boolean(),
+    format: v.optional(v.string()),
+    category: v.optional(v.string()),
     sortOrder: v.number(),
     whatIncluded: v.array(v.string()),
     outcomes: v.array(v.string()),
@@ -213,6 +244,8 @@ export const createProgram = mutation({
       accessDuration: args.accessDuration,
       certificateEnabled: args.certificateEnabled,
       affiliateEnabled: args.affiliateEnabled,
+      format: args.format ?? "text",
+      category: args.category ?? "Digital Skills",
       sortOrder: args.sortOrder,
       whatIncluded: args.whatIncluded,
       outcomes: args.outcomes,
@@ -253,6 +286,8 @@ export const updateProgram = mutation({
     accessDuration: v.string(),
     certificateEnabled: v.boolean(),
     affiliateEnabled: v.boolean(),
+    format: v.optional(v.string()),
+    category: v.optional(v.string()),
     sortOrder: v.number(),
     whatIncluded: v.array(v.string()),
     outcomes: v.array(v.string()),
@@ -278,6 +313,8 @@ export const updateProgram = mutation({
       accessDuration: args.accessDuration,
       certificateEnabled: args.certificateEnabled,
       affiliateEnabled: args.affiliateEnabled,
+      format: args.format ?? "text",
+      category: args.category ?? "Digital Skills",
       sortOrder: args.sortOrder,
       whatIncluded: args.whatIncluded,
       outcomes: args.outcomes,

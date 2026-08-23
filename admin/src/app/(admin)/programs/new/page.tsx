@@ -25,6 +25,8 @@ export default function NewProgramPage() {
   const [sortOrder, setSortOrder] = useState<number>(1);
   const [certificateEnabled, setCertificateEnabled] = useState(true);
   const [affiliateEnabled, setAffiliateEnabled] = useState(true);
+const [format, setFormat] = useState("text");
+const [category, setCategory] = useState("Digital Skills");
 
   const [inclusions, setInclusions] = useState<string[]>([
     "8 Practical Modules with Lessons",
@@ -75,6 +77,8 @@ export default function NewProgramPage() {
         accessDuration,
         certificateEnabled,
         affiliateEnabled,
+        format,
+        category,
         sortOrder: Number(sortOrder),
         whatIncluded: inclusions.filter(Boolean),
         outcomes: outcomes.filter(Boolean),
@@ -121,6 +125,21 @@ export default function NewProgramPage() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-semibold text-gray-700 block mb-1">Course Format</label>
+              <select value={format} onChange={(e) => setFormat(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-1 focus:ring-green-600">
+                <option value="text">Text-based (current default)</option>
+                <option value="video">Video lessons</option>
+                <option value="mixed">Text + Video</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-gray-700 block mb-1">Category / Field</label>
+              <input value={category} onChange={(e) => setCategory(e.target.value)} placeholder="Digital Skills, Marketing, Skilled Trades..." className="w-full px-3 py-2 rounded-lg border border-gray-300 text-sm focus:ring-1 focus:ring-green-600" />
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-xs font-semibold text-textMain">Program Name *</label>

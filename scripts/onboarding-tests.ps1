@@ -7,7 +7,7 @@ $script:var = @{}
 
 function C($kind, $path, $a) {
   $b = @{ path = $path; args = $a; format = "json" } | ConvertTo-Json -Depth 12
-  return Invoke-RestMethod -Uri "$base/$kind" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 60
+  return Invoke-RestMethod -Uri "$base/$(if ($path -eq 'auth:login') { 'action' } else { $kind })" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 60
 }
 
 function Check($name, $cond, $detail) {
@@ -33,7 +33,7 @@ $script:var.programId = $programs.value[0]._id
 
 # ---------- SIGNUP RULES ----------
 Write-Host "=== SIGNUP RULES ==="
-$s1 = C "mutation" "auth:signup" @{
+$s1 = C "mutation" "auth:signup" @{ testMode = $true; 
   name = "Short Pw $ts"
   email = "shortpw.$ts@zetagrow.com"
   password = "short"
@@ -41,7 +41,7 @@ $s1 = C "mutation" "auth:signup" @{
 }
 Check "S1 password shorter than 8 rejected server-side" ($s1.status -eq "error") "status=$($s1.status)"
 
-$su = C "mutation" "auth:signup" @{
+$su = C "mutation" "auth:signup" @{ testMode = $true; 
   name = "Onboard Test $ts"
   email = "onboard.$ts@zetagrow.com"
   password = "OnboardPass123!"
@@ -51,7 +51,7 @@ $script:var.tok = $su.value.token
 $script:var.uid = $su.value.user.id
 Check "S2 valid signup succeeds" ($su.status -eq "success" -and $script:var.tok) "status=$($su.status)"
 
-$s3 = C "mutation" "auth:signup" @{
+$s3 = C "mutation" "auth:signup" @{ testMode = $true; 
   name = "Dup $ts"
   email = "onboard.$ts@zetagrow.com"
   password = "OnboardPass123!"
@@ -105,7 +105,7 @@ $job = C "mutation" "jobs:createJob" @{
 $script:var.jobId = $job.value
 
 # New user WITHOUT CV profile tries to apply
-$nocv = C "mutation" "auth:signup" @{
+$nocv = C "mutation" "auth:signup" @{ testMode = $true; 
   name = "No CV $ts"
   email = "nocv.$ts@zetagrow.com"
   password = "NoCvPass123!"
@@ -173,7 +173,7 @@ Check "CV5 re-save (update) keeps 100%" `
   ($cv3.status -eq "success" -and $cv3.value.completeness.percent -eq 100 -and $cv3.value.portfolioUrl -like "https://drive.google.com*") `
   "percent=$($cv3.value.completeness.percent)"
 
-$userB = C "mutation" "auth:signup" @{
+$userB = C "mutation" "auth:signup" @{ testMode = $true; 
   name = "Other User $ts"
   email = "other.$ts@zetagrow.com"
   password = "OtherPass123!"
@@ -250,13 +250,13 @@ Check "P3 old password dead + new password works" `
   "old=$($oldLogin.status) new=$($newLogin.status)"
 $script:var.tok = $newLogin.value.token
 
-$em1 = C "mutation" "auth:changeEmail" @{ token = $script:var.tok; newEmail = "not-an-email" }
+$em1 = C "mutation" "auth:changeEmail" @{ token = $script:var.tok; currentPassword = "OnboardPass123!"; newEmail = "not-an-email" }
 Check "P4 invalid email format rejected" ($em1.status -eq "error") "status=$($em1.status)"
 
-$em2 = C "mutation" "auth:changeEmail" @{ token = $script:var.tok; newEmail = "admin@zetagrow.com" }
+$em2 = C "mutation" "auth:changeEmail" @{ token = $script:var.tok; currentPassword = "OnboardPass123!"; newEmail = "admin@zetagrow.com" }
 Check "P5 email taken by another account rejected" ($em2.status -eq "error") "status=$($em2.status)"
 
-$em3 = C "mutation" "auth:changeEmail" @{ token = $script:var.tok; newEmail = "onboard.new.$ts@zetagrow.com" }
+$em3 = C "mutation" "auth:changeEmail" @{ token = $script:var.tok; currentPassword = "NewPass123!"; newEmail = "onboard.new.$ts@zetagrow.com" }
 Check "P6 email change succeeds" ($em3.status -eq "success") "status=$($em3.status)"
 
 $newEmailLogin = Login "onboard.new.$ts@zetagrow.com" "NewPass123!"

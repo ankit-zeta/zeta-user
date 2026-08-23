@@ -7,7 +7,7 @@ $script:var = @{}
 
 function C($kind, $path, $a) {
   $b = @{ path = $path; args = $a; format = "json" } | ConvertTo-Json -Depth 12
-  return Invoke-RestMethod -Uri "$base/$kind" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 60
+  return Invoke-RestMethod -Uri "$base/$(if ($path -eq 'auth:login') { 'action' } else { $kind })" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 60
 }
 
 function Check($name, $cond, $detail) {
@@ -20,10 +20,10 @@ $ts = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
 
 Write-Host "=== SETUP ==="
 $script:var.adminTok = (C "mutation" "auth:login" @{ email = "admin@zetagrow.com"; password = "AdminPassword123!" }).value.token
-$su = C "mutation" "auth:signup" @{ name = "Method Tester $ts"; email = "method.$ts@zetagrow.com"; password = "MethodPass123!" }
+$su = C "mutation" "auth:signup" @{ testMode = $true;  name = "Method Tester $ts"; email = "method.$ts@zetagrow.com"; password = "MethodPass123!" }
 $script:var.tok = $su.value.token
 $script:var.uName = $su.value.user.name
-$other = C "mutation" "auth:signup" @{ name = "Other User $ts"; email = "other.$ts@zetagrow.com"; password = "OtherPass123!" }
+$other = C "mutation" "auth:signup" @{ testMode = $true;  name = "Other User $ts"; email = "other.$ts@zetagrow.com"; password = "OtherPass123!" }
 $script:var.otherTok = $other.value.token
 
 # ---------- SAVED METHODS ----------

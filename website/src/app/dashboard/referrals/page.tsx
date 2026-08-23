@@ -6,8 +6,9 @@ import { useAuth } from "@/lib/convex";
 import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
 import { Users, CheckCircle2, CircleDashed, ArrowLeft } from "lucide-react";
+import AffiliateGate from "@/components/AffiliateGate";
 
-export default function ReferralsListPage() {
+function ReferralsListPageContent() {
   const { token } = useAuth();
   const referrals = useQuery(
     api.referrals.getUserReferrals,
@@ -91,5 +92,13 @@ export default function ReferralsListPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ReferralsListPage() {
+  return (
+    <AffiliateGate>
+      <ReferralsListPageContent />
+    </AffiliateGate>
   );
 }

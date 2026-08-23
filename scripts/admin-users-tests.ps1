@@ -5,7 +5,7 @@ $script:var = @{}
 
 function C($kind, $path, $a) {
     $b = @{ path = $path; args = $a; format = "json" } | ConvertTo-Json -Depth 10
-    return Invoke-RestMethod -Uri "$base/$kind" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 30
+    return Invoke-RestMethod -Uri "$base/$(if ($path -eq 'auth:login') { 'action' } else { $kind })" -Method Post -ContentType "application/json" -Body $b -UseBasicParsing -TimeoutSec 30
 }
 
 function Check($id, $name, $expectOk) {
@@ -160,7 +160,7 @@ Write-Host ""
 Write-Host "=== STATUS + AUDIT TRAIL ==="
 $script:var.lastException = $null
 try {
-    $signup = C "mutation" "auth:signup" @{ name = "Audit Probe"; email = "auditprobe.$ts@zetagrow.com"; password = "ProbePass123!" }
+    $signup = C "mutation" "auth:signup" @{ testMode = $true;  name = "Audit Probe"; email = "auditprobe.$ts@zetagrow.com"; password = "ProbePass123!" }
     if ($signup.status -ne "success") { throw "signup failed" }
     $uid = $signup.value.user.id
     $script:var.probeId = $uid
@@ -288,7 +288,7 @@ Write-Host ""
 Write-Host "=== PASSWORD RESET ==="
 $script:var.lastException = $null
 try {
-    $newUser = C "mutation" "auth:signup" @{ name = "Reset Target"; email = "resettarget.$ts@zetagrow.com"; password = "OldPass123!" }
+    $newUser = C "mutation" "auth:signup" @{ testMode = $true;  name = "Reset Target"; email = "resettarget.$ts@zetagrow.com"; password = "OldPass123!" }
     if ($newUser.status -ne "success") { throw "signup failed" }
     $uid = $newUser.value.user.id
     $oldTok = $newUser.value.token

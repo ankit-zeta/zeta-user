@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useMutation } from "convex/react";
+import { useMutation, useAction } from "convex/react";
 import { api } from "@/lib/convex";
 import { useAdminAuth } from "@/lib/convex";
 import { Shield, Lock, Mail, ArrowRight } from "lucide-react";
@@ -10,7 +10,7 @@ import { Shield, Lock, Mail, ArrowRight } from "lucide-react";
 export default function AdminLoginPage() {
   const router = useRouter();
   const { login } = useAdminAuth();
-  const loginMutation = useMutation(api.auth.login);
+  const loginAction = useAction(api.auth.login);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,7 +28,7 @@ export default function AdminLoginPage() {
     setError("");
 
     try {
-      const res = await loginMutation({
+      const res = await loginAction({
         email: email.trim().toLowerCase(),
         password,
       });
@@ -107,13 +107,6 @@ export default function AdminLoginPage() {
               {isLoading ? "Authenticating..." : "Sign In to Admin Panel"}
             </button>
           </form>
-
-          {/* Seed credentials hint */}
-          <div className="p-3 bg-neutral-900/80 rounded-lg border border-neutral-700 text-[11px] space-y-1 text-neutral-400">
-            <p className="font-semibold text-neutral-200">Default Super Admin:</p>
-            <p>Email: <code className="text-brand-400">admin@zetagrow.com</code></p>
-            <p>Password: <code className="text-brand-400">AdminPassword123!</code></p>
-          </div>
         </div>
       </div>
     </div>

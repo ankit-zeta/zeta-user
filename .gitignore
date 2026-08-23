@@ -24,3 +24,5 @@ Thumbs.db
 
 # Convex local state
 .convex/
+# Local images (use CDN)
+images/

@@ -1,5 +1,8 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, action, internalMutation, internalQuery } from "./_generated/server";
+import { internal } from "./_generated/api";
+import type { RegisteredAction } from "convex/server";
+import { enforceRateLimit } from "./rateLimit";
 
 // Helper function to hash password with salt using Web Crypto API
 export async function hashPassword(password: string, salt: string): Promise<string> {
@@ -47,9 +50,28 @@ export const signup = mutation({
     password: v.string(),
     referralCode: v.optional(v.string()),
     phone: v.optional(v.string()),
+    website: v.optional(v.string()),
+    formStartedAt: v.optional(v.number()),
+    testMode: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const email = args.email.trim().toLowerCase();
+
+    // Rate limit: per-email 3/hr + global 30/5min burst (skip in testMode)
+    if (!args.testMode) {
+      await enforceRateLimit(ctx, { key: `signup:email:${email}`, max: 3, windowMs: 60 * 60 * 1000 });
+      await enforceRateLimit(ctx, { key: "signup:global", max: 30, windowMs: 5 * 60 * 1000 });
+    }
+
+    // Server-side honeypot check
+    if (args.website) {
+      throw new Error("Invalid submission.");
+    }
+
+    // Server-side timing check (reject submissions under 2 seconds)
+    if (args.formStartedAt && Date.now() - args.formStartedAt < 2000) {
+      throw new Error("Please take a moment to fill out the form.");
+    }
 
     // Server-side password policy (client mirrors this)
     if (!args.password || args.password.length < 8) {
@@ -170,17 +192,28 @@ export const signup = mutation({
   },
 });
 
-export const login = mutation({
+export const login: RegisteredAction<
+  "public",
+  { email: string; password: string },
+  Promise<{
+    token: string;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+      referralCode?: string;
+      avatarUrl?: string;
+    };
+  }>
+> = action({
   args: {
     email: v.string(),
     password: v.string(),
   },
   handler: async (ctx, args) => {
     const email = args.email.trim().toLowerCase();
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", email))
-      .first();
+    const user = await ctx.runQuery(internal.auth.getUserForLogin, { email });
 
     if (!user) {
       throw new Error("Invalid email or password");
@@ -190,22 +223,26 @@ export const login = mutation({
       throw new Error("Your account has been suspended. Please contact support.");
     }
 
-    const testHash = await hashPassword(args.password, user.salt);
-    if (testHash !== user.passwordHash) {
+    // Brute-force lockout: 8 failed attempts -> locked for 15 minutes
+    const now = Date.now();
+    if (user.lockedUntil && user.lockedUntil > now) {
       throw new Error("Invalid email or password");
     }
 
-    const now = Date.now();
+    const testHash = await hashPassword(args.password, user.salt);
+    if (testHash !== user.passwordHash) {
+      await ctx.runMutation(internal.auth.recordFailedLogin, { userId: user._id });
+      throw new Error("Invalid email or password");
+    }
+
+    // Successful login resets the failure counter
+    if (user.failedLoginCount || user.lockedUntil) {
+      await ctx.runMutation(internal.auth.resetLoginCounters, { userId: user._id });
+    }
+
     const token = generateToken();
     const expiresAt = now + 30 * 24 * 60 * 60 * 1000;
-
-    await ctx.db.insert("sessions", {
-      userId: user._id,
-      token,
-      role: user.role,
-      expiresAt,
-      createdAt: now,
-    });
+    await ctx.runMutation(internal.auth.createSession, { userId: user._id, role: user.role, token, expiresAt });
 
     return {
       token,
@@ -218,6 +255,70 @@ export const login = mutation({
         avatarUrl: user.avatarUrl,
       },
     };
+  },
+});
+
+export const getUserForLogin = internalQuery({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
+  },
+});
+
+export const recordFailedLogin = internalMutation({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    if (!user) return;
+
+    const LOCK_THRESHOLD = 8;
+    const LOCK_WINDOW_MS = 15 * 60 * 1000;
+    const now = Date.now();
+
+    const failures = (user.failedLoginCount || 0) + 1;
+    const patch: any = { failedLoginCount: failures };
+    if (failures >= LOCK_THRESHOLD) {
+      patch.lockedUntil = now + LOCK_WINDOW_MS;
+      patch.failedLoginCount = 0;
+    }
+    await ctx.db.patch(user._id, patch);
+  },
+});
+
+export const resetLoginCounters = internalMutation({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, { failedLoginCount: 0, lockedUntil: 0 });
+  },
+});
+
+export const createSession = internalMutation({
+  args: {
+    userId: v.id("users"),
+    role: v.string(),
+    token: v.string(),
+    expiresAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    // Single-session policy: logging in on a new device revokes all other sessions
+    const previousSessions = await ctx.db
+      .query("sessions")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .collect();
+    for (const s of previousSessions) {
+      await ctx.db.delete(s._id);
+    }
+
+    await ctx.db.insert("sessions", {
+      userId: args.userId,
+      token: args.token,
+      role: args.role,
+      expiresAt: args.expiresAt,
+      createdAt: Date.now(),
+    });
   },
 });
 
@@ -314,6 +415,9 @@ export const changePassword = mutation({
     const user = await ctx.db.get(session.userId);
     if (!user) throw new Error("User not found");
 
+    // Rate limit: 3 password changes per hour per user
+    await enforceRateLimit(ctx, { key: `changePassword:userId:${user._id}`, max: 3, windowMs: 60 * 60 * 1000 });
+
     const currentHash = await hashPassword(args.currentPassword, user.salt);
     if (currentHash !== user.passwordHash) {
       throw new Error("Current password is incorrect");
@@ -361,6 +465,7 @@ export const changePassword = mutation({
 export const changeEmail = mutation({
   args: {
     token: v.string(),
+    currentPassword: v.string(),
     newEmail: v.string(),
   },
   handler: async (ctx, args) => {
@@ -373,6 +478,15 @@ export const changeEmail = mutation({
     }
     const user = await ctx.db.get(session.userId);
     if (!user) throw new Error("User not found");
+
+    // Rate limit: 3 email changes per hour per user
+    await enforceRateLimit(ctx, { key: `changeEmail:userId:${user._id}`, max: 3, windowMs: 60 * 60 * 1000 });
+
+    // Require current password confirmation before changing the account email
+    const currentHash = await hashPassword(args.currentPassword, user.salt);
+    if (currentHash !== user.passwordHash) {
+      throw new Error("Current password is incorrect");
+    }
 
     const email = args.newEmail.trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -425,6 +539,9 @@ export const deleteAccount = mutation({
     }
     const user = await ctx.db.get(session.userId);
     if (!user) throw new Error("User not found");
+
+    // Rate limit: 3 deletion attempts per hour per user
+    await enforceRateLimit(ctx, { key: `deleteAccount:userId:${user._id}`, max: 3, windowMs: 60 * 60 * 1000 });
 
     const hash = await hashPassword(args.password, user.salt);
     if (hash !== user.passwordHash) {

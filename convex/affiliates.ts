@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requirePurchasedUser } from "./entitlements";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -30,6 +31,7 @@ export const getUserAffiliateStats = query({
 
     const user = await ctx.db.get(session.userId);
     if (!user) throw new Error("User not found");
+    await requirePurchasedUser(ctx, args.token);
 
     const directReferrals = await ctx.db
       .query("referrals")
@@ -123,7 +125,8 @@ async function getPositionMultiplier(
 export const processPurchaseWithAffiliate = mutation({
   args: {
     token: v.string(),
-    programId: v.id("programs"),
+    programId: v.optional(v.id("programs")),
+    planId: v.optional(v.id("plans")),
     paymentMethod: v.string(),
   },
   handler: async (ctx, args) => {
@@ -136,21 +139,158 @@ export const processPurchaseWithAffiliate = mutation({
     }
 
     const buyer = await ctx.db.get(session.userId);
+    if (!buyer) throw new Error("Buyer not found");
+
+    const now = Date.now();
+    const paymentId = `PAY_${now}_${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+    // ---------- PLAN PURCHASE: enroll buyer into every course in the bundle ----------
+    if (args.planId) {
+      const plan = await ctx.db.get(args.planId);
+      if (!plan || plan.status !== "published") throw new Error("Plan not found");
+
+      const owned = new Set(
+        (
+          await ctx.db
+            .query("purchases")
+            .withIndex("by_userId", (q) => q.eq("userId", session.userId))
+            .filter((q) => q.eq(q.field("status"), "completed"))
+            .collect()
+        ).map((p: any) => p.programId.toString())
+      );
+
+      const newlyEnrolled: any[] = [];
+      let firstPurchaseId: any = null;
+      for (const pid of plan.programIds) {
+        if (!owned.has(pid.toString())) {
+          const pidInserted = await ctx.db.insert("purchases", {
+            userId: session.userId,
+            programId: pid,
+            planId: plan._id,
+            amount: 0,
+            status: "completed",
+            paymentId,
+            paymentMethod: args.paymentMethod,
+            createdAt: now,
+          });
+          if (!firstPurchaseId) firstPurchaseId = pidInserted;
+          const prog = await ctx.db.get(pid);
+          if (prog) newlyEnrolled.push(prog.name);
+        }
+      }
+
+      await ctx.db.insert("notifications", {
+        userId: session.userId,
+        type: "course",
+        title: "Plan Activated!",
+        message:
+          newlyEnrolled.length > 0
+            ? `You now have access to ${newlyEnrolled.length} course${newlyEnrolled.length === 1 ? "" : "s"} in "${plan.name}". Happy learning!`
+            : `You already had full access to everything in "${plan.name}".`,
+        read: false,
+        actionUrl: "/dashboard/programs",
+        createdAt: now,
+      });
+
+      // Affiliate commission on the PLAN price (once per sale)
+      let commissionPaid = 0;
+      if (buyer.referredBy && plan.price >= 2000) {
+        const referrer = await ctx.db.get(buyer.referredBy);
+        if (referrer && referrer._id.toString() !== buyer._id.toString() && referrer.status === "active") {
+          const settingsRecord = await ctx.db
+            .query("adminSettings")
+            .withIndex("by_key", (q) => q.eq("key", "affiliate"))
+            .first();
+          const affiliateSettings = settingsRecord?.value || {
+            enabled: true,
+            commissionMethod: "lower_program_rule",
+            defaultPercentage: 50,
+            holdingPeriodDays: 7,
+            minimumPurchaseAmount: 2000,
+          };
+          if (affiliateSettings.enabled && plan.price >= affiliateSettings.minimumPurchaseAmount) {
+            const referrerPurchases = await ctx.db
+              .query("purchases")
+              .withIndex("by_userId", (q) => q.eq("userId", referrer._id))
+              .filter((q) => q.eq(q.field("status"), "completed"))
+              .collect();
+            let referrerMaxProgramPrice = 0;
+            for (const rp of referrerPurchases) {
+              const rpProg = rp.programId ? await ctx.db.get(rp.programId) : null;
+              if (rpProg && rpProg.price > referrerMaxProgramPrice) {
+                referrerMaxProgramPrice = rpProg.price;
+              }
+            }
+            let commissionBasis = plan.price;
+            if (affiliateSettings.commissionMethod === "lower_program_rule" && referrerPurchases.length > 0) {
+              commissionBasis = Math.min(plan.price, referrerMaxProgramPrice);
+            }
+            let commissionAmount = Math.round((commissionBasis * (affiliateSettings.defaultPercentage || 50)) / 100);
+            if (affiliateSettings.perSaleCap && affiliateSettings.perSaleCap > 0) {
+              if (commissionAmount > affiliateSettings.perSaleCap) commissionAmount = affiliateSettings.perSaleCap;
+            }
+            if (commissionAmount > 0) {
+              const holdingPeriodEndsAt = now + (affiliateSettings.holdingPeriodDays || 7) * 24 * 60 * 60 * 1000;
+              await ctx.db.insert("affiliateSales", {
+                purchaseId: firstPurchaseId,
+                referrerUserId: referrer._id,
+                buyerUserId: session.userId,
+                programId: plan.programIds[0],
+                saleAmount: plan.price,
+                commissionAmount,
+                status: "pending",
+                awaitingConsumption: true,
+                ruleUsed:
+                  affiliateSettings.commissionMethod === "lower_program_rule"
+                    ? `50% of Lower-Value Program (Min of â‚¹${plan.price} & â‚¹${referrerMaxProgramPrice}) - Plan Sale`
+                    : `${affiliateSettings.defaultPercentage}% of Sale Amount (â‚¹${plan.price}) - Plan Sale`,
+                holdingPeriodEndsAt,
+                createdAt: now,
+                updatedAt: now,
+                kind: "direct",
+              });
+              await ctx.db.insert("notifications", {
+                userId: referrer._id,
+                type: "commission",
+                title: "New Referral Sale!",
+                message: `Your referral purchased the "${plan.name}" plan. Commission is pending confirmation.`,
+                read: false,
+                actionUrl: "/dashboard/affiliate",
+                createdAt: now,
+              });
+              commissionPaid = commissionAmount;
+            }
+          }
+        }
+      }
+
+      return {
+        success: true,
+        kind: "plan",
+        planId: plan._id,
+        enrolledCount: newlyEnrolled.length,
+        courses: newlyEnrolled,
+        firstProgramId: plan.programIds[0],
+        commissionAccrued: commissionPaid,
+      };
+    }
+
+    // ---------- SINGLE PROGRAM PURCHASE ----------
+    if (!args.programId) throw new Error("Provide programId or planId");
     const program = await ctx.db.get(args.programId);
-    if (!buyer || !program) throw new Error("Buyer or Program not found");
+    if (!program) throw new Error("Program not found");
 
     // Check if already purchased
     const existing = await ctx.db
       .query("purchases")
       .withIndex("by_userId", (q) => q.eq("userId", session.userId))
-      .filter((q) => q.and(q.eq(q.field("programId"), args.programId), q.eq(q.field("status"), "completed")))
+      .filter((q) => q.and(q.eq(q.field("programId"), args.programId!), q.eq(q.field("status"), "completed")))
       .first();
 
     if (existing) {
       throw new Error("You have already purchased this program");
     }
 
-    const now = Date.now();
     const purchaseId = await ctx.db.insert("purchases", {
       userId: session.userId,
       programId: args.programId,
@@ -212,9 +352,9 @@ export const processPurchaseWithAffiliate = mutation({
 
           if (affiliateSettings.commissionMethod === "lower_program_rule" && referrerPurchases.length > 0) {
             commissionBasis = Math.min(program.price, referrerMaxProgramPrice);
-            ruleUsed = `50% of Lower-Value Program (Min of ₹${program.price} & ₹${referrerMaxProgramPrice})`;
+            ruleUsed = `50% of Lower-Value Program (Min of â‚¹${program.price} & â‚¹${referrerMaxProgramPrice})`;
           } else {
-            ruleUsed = `${affiliateSettings.defaultPercentage}% of Sale Amount (₹${program.price})`;
+            ruleUsed = `${affiliateSettings.defaultPercentage}% of Sale Amount (â‚¹${program.price})`;
           }
 
           const commissionPercentage = affiliateSettings.defaultPercentage || 50;
@@ -247,6 +387,7 @@ export const processPurchaseWithAffiliate = mutation({
               saleAmount: program.price,
               commissionAmount,
               status: "pending",
+              awaitingConsumption: true,
               ruleUsed,
               holdingPeriodEndsAt,
               createdAt: now,
@@ -272,7 +413,7 @@ export const processPurchaseWithAffiliate = mutation({
               userId: referrer._id,
               type: "affiliate",
               title: "New Affiliate Commission Earned!",
-              message: `You earned ₹${commissionAmount} commission on ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
+              message: `You earned â‚¹${commissionAmount} commission on ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
               read: false,
               actionUrl: "/dashboard/affiliate",
               createdAt: now,
@@ -315,6 +456,7 @@ export const processPurchaseWithAffiliate = mutation({
                     saleAmount: program.price,
                     commissionAmount: chainAmount,
                     status: "pending",
+                    awaitingConsumption: true,
                     ruleUsed: `${chainPct}% of downline's ${commissionAmount} commission (Chain level 1)`,
                     holdingPeriodEndsAt,
                     createdAt: now,
@@ -340,7 +482,7 @@ export const processPurchaseWithAffiliate = mutation({
                     userId: upline._id,
                     type: "affiliate",
                     title: "Chain Commission Earned!",
-                    message: `You earned ₹${chainAmount} from ${referrer.name}'s affiliate commission on ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
+                    message: `You earned â‚¹${chainAmount} from ${referrer.name}'s affiliate commission on ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
                     read: false,
                     actionUrl: "/dashboard/affiliate",
                     createdAt: now,
@@ -400,11 +542,11 @@ export const updateCommissionStatus = mutation({
     if (!sale) throw new Error("Sale record not found");
 
     const previousStatus = sale.status;
-    const now = Date.now();
 
     if (previousStatus !== "pending") {
       throw new Error("This commission has already been processed");
     }
+    const now = Date.now();
     if (!["approved", "available", "rejected", "reversed"].includes(args.status)) {
       throw new Error("Invalid commission status");
     }
@@ -460,7 +602,7 @@ export const updateCommissionStatus = mutation({
               .reduce((s, t) => s + t.amount, 0) + sale.commissionAmount;
           if (dayCap > 0 && dayTotal > dayCap) {
             throw new Error(
-              `Daily affiliate commission limit of ₹${dayCap} exceeded for this user level`
+              `Daily affiliate commission limit of â‚¹${dayCap} exceeded for this user level`
             );
           }
 
@@ -469,7 +611,7 @@ export const updateCommissionStatus = mutation({
             recentComm.reduce((s, t) => s + t.amount, 0) + sale.commissionAmount;
           if (monthCap > 0 && monthTotal > monthCap) {
             throw new Error(
-              `Monthly affiliate commission limit of ₹${monthCap} exceeded for this user level`
+              `Monthly affiliate commission limit of â‚¹${monthCap} exceeded for this user level`
             );
           }
         }
@@ -495,8 +637,8 @@ export const updateCommissionStatus = mutation({
           referenceId: args.saleId,
           description:
             sale.kind === "chain"
-              ? `Chain commission approved (${sale.chainLevel ? `level ${sale.chainLevel}, ` : ""}${sale.baseCommissionAmount ? `${sale.baseCommissionAmount} base` : ""}): ₹${sale.commissionAmount}`
-              : `Affiliate commission approved: ₹${sale.commissionAmount}`,
+              ? `Chain commission approved (${sale.chainLevel ? `level ${sale.chainLevel}, ` : ""}${sale.baseCommissionAmount ? `${sale.baseCommissionAmount} base` : ""}): â‚¹${sale.commissionAmount}`
+              : `Affiliate commission approved: â‚¹${sale.commissionAmount}`,
           status: "completed",
           createdAt: now,
         });
@@ -543,7 +685,7 @@ export const updateCommissionStatus = mutation({
             amount: child.commissionAmount,
             balanceAfter: newAvailable,
             referenceId: child._id,
-            description: `Chain commission approved (level ${child.chainLevel || 1}): ₹${child.commissionAmount}`,
+            description: `Chain commission approved (level ${child.chainLevel || 1}): â‚¹${child.commissionAmount}`,
             status: "completed",
             createdAt: now,
           });

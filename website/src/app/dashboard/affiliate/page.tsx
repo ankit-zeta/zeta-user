@@ -18,8 +18,9 @@ import {
   CreditCard,
   Network
 } from "lucide-react";
+import AffiliateGate from "@/components/AffiliateGate";
 
-export default function AffiliateCenterPage() {
+function AffiliateCenterPageContent() {
   const { user, token } = useAuth();
   const [copied, setCopied] = useState(false);
 
@@ -239,5 +240,13 @@ export default function AffiliateCenterPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AffiliateCenterPage() {
+  return (
+    <AffiliateGate>
+      <AffiliateCenterPageContent />
+    </AffiliateGate>
   );
 }

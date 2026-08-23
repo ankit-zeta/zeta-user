@@ -22,12 +22,6 @@ export default function HowItWorksPage() {
       description: "Unlock access to client assignments on the Work Portal. Submit project deliverables, review feedback, and receive direct milestone payouts to your platform wallet.",
       icon: Briefcase,
     },
-    {
-      num: "04",
-      title: "Optional Affiliate Growth",
-      description: "Eligible members can voluntarily refer peers using their unique partner link, qualifying for transparent, performance-based commissions on verified program sales.",
-      icon: TrendingUp,
-    },
   ];
 
   return (
@@ -41,7 +35,7 @@ export default function HowItWorksPage() {
           How ZetaGrow Works
         </h1>
         <p className="text-base text-textMuted leading-relaxed">
-          ZetaGrow is built on a clear, ethical foundation: practical digital education prepares you with verified skills, which unlocks access to real contract opportunities and optional performance rewards.
+          ZetaGrow is built on a clear, ethical foundation: practical digital education prepares you with verified skills, which unlocks access to real contract opportunities and milestone-based payouts for your deliverables.
         </p>
       </div>
 
@@ -68,7 +62,7 @@ export default function HowItWorksPage() {
           <span>Ethical & Transparent Standards</span>
         </div>
         <p className="text-xs text-textMuted leading-relaxed max-w-3xl">
-          ZetaGrow does not make exaggerated income claims or promise effortless earnings. Earning through the Work Portal requires meeting qualification standards and completing actual deliverables. Affiliate commissions are strictly generated upon genuine retail purchases of our curriculum programs.
+          ZetaGrow does not make exaggerated income claims or promise effortless earnings. Earning through the Work Portal requires meeting qualification standards and completing actual deliverables.
         </p>
       </div>
 

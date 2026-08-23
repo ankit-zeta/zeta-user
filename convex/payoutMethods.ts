@@ -53,6 +53,8 @@ function validateDetails(type: string, details: any, holderName: string) {
 }
 
 // Session-less upload action (established pattern — actions have no ctx.db)
+import { requirePurchasedUser } from "./entitlements";
+
 export const generatePayoutMethodQrUploadUrl = action({
   args: {},
   handler: async (ctx) => {
@@ -64,6 +66,7 @@ export const getMyPayoutMethods = query({
   args: { token: v.string() },
   handler: async (ctx, args) => {
     const session = await requireAuth(ctx, args.token);
+    await requirePurchasedUser(ctx, args.token);
     const methods = await ctx.db
       .query("payoutMethods")
       .withIndex("by_userId", (q: any) => q.eq("userId", session.userId))
@@ -105,6 +108,7 @@ export const upsertPayoutMethod = mutation({
     const session = await requireAuth(ctx, args.token);
     const user = await ctx.db.get(session.userId);
     if (!user) throw new Error("User not found");
+    await requirePurchasedUser(ctx, args.token);
 
     const now = Date.now();
     validateDetails(args.type, args.details, (user as any).name || "");
@@ -168,6 +172,7 @@ export const deletePayoutMethod = mutation({
   args: { token: v.string(), id: v.id("payoutMethods") },
   handler: async (ctx, args) => {
     const session = await requireAuth(ctx, args.token);
+    await requirePurchasedUser(ctx, args.token);
     const method = await ctx.db.get(args.id);
     if (!method || method.userId.toString() !== session.userId.toString()) {
       throw new Error("Payout method not found or unauthorized");
@@ -193,6 +198,7 @@ export const setDefaultPayoutMethod = mutation({
   args: { token: v.string(), id: v.id("payoutMethods") },
   handler: async (ctx, args) => {
     const session = await requireAuth(ctx, args.token);
+    await requirePurchasedUser(ctx, args.token);
     const method = await ctx.db.get(args.id);
     if (!method || method.userId.toString() !== session.userId.toString()) {
       throw new Error("Payout method not found or unauthorized");

@@ -10,6 +10,7 @@ import {
   BookOpen, 
   HelpCircle, 
   LifeBuoy,
+  Layers,
   User, 
   Menu, 
   X, 
@@ -25,7 +26,7 @@ export default function Navbar() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const navLinks = [
-    { name: "Programs", href: "/programs", icon: BookOpen },
+    { name: "Plans", href: "/plans", icon: Layers },{ name: "Courses", href: "/programs", icon: BookOpen },
     { name: "Work Portal", href: "/work", icon: Briefcase },
     { name: "How It Works", href: "/how-it-works", icon: Compass },
     { name: "FAQ", href: "/faq", icon: HelpCircle },

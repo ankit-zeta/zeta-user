@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { query } from "./_generated/server";
+import { requirePurchasedUser } from "./entitlements";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -26,6 +27,7 @@ export const getUserReferrals = query({
     if (!session || session.expiresAt < Date.now()) {
       throw new Error("Unauthorized");
     }
+    await requirePurchasedUser(ctx, args.token);
 
     const referrals = await ctx.db
       .query("referrals")

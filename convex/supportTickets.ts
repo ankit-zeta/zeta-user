@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { action, mutation, query } from "./_generated/server";
+import { enforceRateLimit } from "./rateLimit";
 
 const TICKET_CATEGORIES = [
   "courses",
@@ -111,6 +112,9 @@ export const createTicket = mutation({
   },
   handler: async (ctx, args) => {
     const user = await requireUser(ctx, args.token);
+
+    // Rate limit: 5 tickets per hour per user
+    await enforceRateLimit(ctx, { key: `createTicket:userId:${user._id}`, max: 5, windowMs: 60 * 60 * 1000 });
 
     if (!TICKET_CATEGORIES.includes(args.category)) {
       throw new Error("Invalid ticket category");
