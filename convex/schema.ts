@@ -26,10 +26,15 @@ export default defineSchema({
     createdAt: v.number(),
     updatedAt: v.number(),
   })
-    .index("by_email", ["email"])
+.index("by_email", ["email"])
     .index("by_referralCode", ["referralCode"])
     .index("by_role", ["role"])
     .index("by_status", ["status"]),
+
+  // Auth placeholder table — enables api.auth generation for login/signup
+  auth: defineTable({
+    dummy: v.boolean(),
+  }),
 
   // Auth Sessions
   sessions: defineTable({

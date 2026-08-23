@@ -7,7 +7,7 @@ import { api } from "../../../convex/_generated/api";
 export { api };
 
 const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "https://terrific-dove-836.convex.cloud";
-const convex = new ConvexReactClient(convexUrl);
+const convex = new ConvexReactClient(convexUrl, { skipConvexDeploymentUrlCheck: true });
 
 interface AuthContextType {
   token: string | null;
