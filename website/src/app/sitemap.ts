@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { ConvexHttpClient } from "convex/browser";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../convex/_generated/api";
 
 const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://zetagrow.in";
 const convex = new ConvexHttpClient(
