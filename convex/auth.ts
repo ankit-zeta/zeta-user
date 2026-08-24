@@ -410,6 +410,7 @@ export const createSession = internalMutation({
     role: v.string(),
     token: v.string(),
     expiresAt: v.number(),
+    createdAt: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     // Single-session policy: logging in on a new device revokes all other sessions
@@ -716,9 +717,9 @@ export const createDemoCashfreeUser = internalMutation({
     }
     referralCode = "CF" + referralCode;
 
-    // Simple password hash for demo (password: "CashfreeDemo2024!")
+    // Hash the demo password properly
     const salt = "demosalt123";
-    const passwordHash = "demo_hash_placeholder";
+    const passwordHash = await hashPassword("test@Zeta123!", salt);
 
     const now = Date.now();
 
