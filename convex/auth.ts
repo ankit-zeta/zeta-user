@@ -2,7 +2,108 @@ import { v } from "convex/values";
 import { mutation, query, action, internalMutation, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
 import type { RegisteredAction } from "convex/server";
-import { enforceRateLimit } from "./rateLimit";
+
+// Internal mutations for deterministic DB writes (called from signup action)
+export const createUser = internalMutation({
+  args: {
+    name: v.string(),
+    email: v.string(),
+    passwordHash: v.string(),
+    salt: v.string(),
+    role: v.string(),
+    status: v.string(),
+    referralCode: v.string(),
+    referredBy: v.optional(v.id("users")),
+    phone: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("users", args);
+  },
+});
+
+export const createWallet = internalMutation({
+  args: {
+    userId: v.id("users"),
+    availableBalance: v.number(),
+    pendingBalance: v.number(),
+    totalEarned: v.number(),
+    totalWithdrawn: v.number(),
+    workEarnings: v.number(),
+    affiliateEarnings: v.number(),
+    updatedAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("wallets", args);
+  },
+});
+
+export const createReferral = internalMutation({
+  args: {
+    referrerUserId: v.id("users"),
+    referredUserId: v.id("users"),
+    referralCode: v.string(),
+    status: v.string(),
+    createdAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("referrals", args);
+  },
+});
+
+export const createNotification = internalMutation({
+  args: {
+    userId: v.id("users"),
+    type: v.string(),
+    title: v.string(),
+    message: v.string(),
+    read: v.boolean(),
+    actionUrl: v.optional(v.string()),
+    createdAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("notifications", args);
+  },
+});
+
+export const createSession = internalMutation({
+  args: {
+    userId: v.id("users"),
+    token: v.string(),
+    role: v.string(),
+    expiresAt: v.number(),
+    createdAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    // Single-session policy: logging in on a new device revokes all other sessions
+    const previousSessions = await ctx.db
+      .query("sessions")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .collect();
+    for (const s of previousSessions) {
+      await ctx.db.delete(s._id);
+    }
+
+    return await ctx.db.insert("sessions", args);
+  },
+});
+
+export const updateUserPassword = internalMutation({
+  args: {
+    userId: v.id("users"),
+    passwordHash: v.string(),
+    salt: v.string(),
+    updatedAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.patch(args.userId, {
+      passwordHash: args.passwordHash,
+      salt: args.salt,
+      updatedAt: args.updatedAt,
+    });
+  },
+});
 
 // Helper function to hash password with salt using Web Crypto API
 export async function hashPassword(password: string, salt: string): Promise<string> {
@@ -43,7 +144,7 @@ export function generateSalt(): string {
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-export const signup = mutation({
+export const signup = action({
   args: {
     name: v.string(),
     email: v.string(),
@@ -59,8 +160,8 @@ export const signup = mutation({
 
     // Rate limit: per-email 3/hr + global 30/5min burst (skip in testMode)
     if (!args.testMode) {
-      await enforceRateLimit(ctx, { key: `signup:email:${email}`, max: 3, windowMs: 60 * 60 * 1000 });
-      await enforceRateLimit(ctx, { key: "signup:global", max: 30, windowMs: 5 * 60 * 1000 });
+      await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `signup:email:${email}`, max: 3, windowMs: 60 * 60 * 1000 });
+      await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: "signup:global", max: 30, windowMs: 5 * 60 * 1000 });
     }
 
     // Server-side honeypot check
@@ -77,12 +178,9 @@ export const signup = mutation({
     if (!args.password || args.password.length < 8) {
       throw new Error("Password must be at least 8 characters long");
     }
-    
+
     // Check if user already exists
-    const existing = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", email))
-      .first();
+    const existing = await ctx.runQuery(internal.auth.getUserForLogin, { email });
     if (existing) {
       throw new Error("An account with this email already exists");
     }
@@ -96,20 +194,19 @@ export const signup = mutation({
     const userReferralCode = `${baseCode}${randomSuffix}`;
 
     // Handle referring user if referralCode is supplied
-    let referrerUserId = undefined;
+    let referrerUserId: string | undefined;
     if (args.referralCode && args.referralCode.trim()) {
       const cleanRef = args.referralCode.trim().toUpperCase();
-      const referrer = await ctx.db
-        .query("users")
-        .withIndex("by_referralCode", (q) => q.eq("referralCode", cleanRef))
-        .first();
+      const referrer = await ctx.runQuery(internal.auth.getUserByReferralCode, { referralCode: cleanRef });
       if (referrer) {
         referrerUserId = referrer._id;
       }
     }
 
     const now = Date.now();
-    const userId = await ctx.db.insert("users", {
+
+    // Create user
+    const userId = await ctx.runMutation(internal.auth.createUser, {
       name: args.name.trim(),
       email,
       passwordHash,
@@ -124,7 +221,7 @@ export const signup = mutation({
     });
 
     // Initialize user wallet
-    await ctx.db.insert("wallets", {
+    await ctx.runMutation(internal.auth.createWallet, {
       userId,
       availableBalance: 0,
       pendingBalance: 0,
@@ -137,7 +234,7 @@ export const signup = mutation({
 
     // If referred, insert into referrals table
     if (referrerUserId) {
-      await ctx.db.insert("referrals", {
+      await ctx.runMutation(internal.auth.createReferral, {
         referrerUserId,
         referredUserId: userId,
         referralCode: args.referralCode!.trim().toUpperCase(),
@@ -146,7 +243,7 @@ export const signup = mutation({
       });
 
       // Notify referrer
-      await ctx.db.insert("notifications", {
+      await ctx.runMutation(internal.auth.createNotification, {
         userId: referrerUserId,
         type: "affiliate",
         title: "New Referral Registered",
@@ -158,7 +255,7 @@ export const signup = mutation({
     }
 
     // Welcome notification
-    await ctx.db.insert("notifications", {
+    await ctx.runMutation(internal.auth.createNotification, {
       userId,
       type: "course",
       title: "Welcome to ZetaGrow!",
@@ -171,7 +268,7 @@ export const signup = mutation({
     // Create session token (valid 30 days)
     const token = generateToken();
     const expiresAt = now + 30 * 24 * 60 * 60 * 1000;
-    await ctx.db.insert("sessions", {
+    await ctx.runMutation(internal.auth.createSession, {
       userId,
       token,
       role: "user",
@@ -264,6 +361,16 @@ export const getUserForLogin = internalQuery({
     return await ctx.db
       .query("users")
       .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
+  },
+});
+
+export const getUserByReferralCode = internalQuery({
+  args: { referralCode: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_referralCode", (q) => q.eq("referralCode", args.referralCode))
       .first();
   },
 });
@@ -416,7 +523,7 @@ export const changePassword = mutation({
     if (!user) throw new Error("User not found");
 
     // Rate limit: 3 password changes per hour per user
-    await enforceRateLimit(ctx, { key: `changePassword:userId:${user._id}`, max: 3, windowMs: 60 * 60 * 1000 });
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `changePassword:userId:${user._id}`, max: 3, windowMs: 60 * 60 * 1000 });
 
     const currentHash = await hashPassword(args.currentPassword, user.salt);
     if (currentHash !== user.passwordHash) {
@@ -480,7 +587,7 @@ export const changeEmail = mutation({
     if (!user) throw new Error("User not found");
 
     // Rate limit: 3 email changes per hour per user
-    await enforceRateLimit(ctx, { key: `changeEmail:userId:${user._id}`, max: 3, windowMs: 60 * 60 * 1000 });
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `changeEmail:userId:${user._id}`, max: 3, windowMs: 60 * 60 * 1000 });
 
     // Require current password confirmation before changing the account email
     const currentHash = await hashPassword(args.currentPassword, user.salt);
@@ -541,7 +648,7 @@ export const deleteAccount = mutation({
     if (!user) throw new Error("User not found");
 
     // Rate limit: 3 deletion attempts per hour per user
-    await enforceRateLimit(ctx, { key: `deleteAccount:userId:${user._id}`, max: 3, windowMs: 60 * 60 * 1000 });
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `deleteAccount:userId:${user._id}`, max: 3, windowMs: 60 * 60 * 1000 });
 
     const hash = await hashPassword(args.password, user.salt);
     if (hash !== user.passwordHash) {

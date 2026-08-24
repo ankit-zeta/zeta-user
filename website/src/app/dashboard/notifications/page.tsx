@@ -12,7 +12,20 @@ export default function NotificationsPage() {
   const notifsData = useQuery(
     api.notifications.getUserNotifications,
     token ? { token } : "skip"
-  );
+  ) as {
+    notifications: Array<{
+      _id: string;
+      _creationTime: number;
+      userId: string;
+      type: string;
+      title: string;
+      message: string;
+      read: boolean;
+      actionUrl: string | undefined;
+      createdAt: number;
+    }>;
+    unreadCount: number;
+  } | undefined;
 
   const markAllRead = useMutation(api.notifications.markAllNotificationsRead);
   const markSingleRead = useMutation(api.notifications.markNotificationRead);

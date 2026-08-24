@@ -100,7 +100,21 @@ export default function ResourcesPage() {
   const resources = useQuery(
     api.resources.getResourcesForUser,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    title: string;
+    description: string;
+    fileType: string;
+    fileSize: string;
+    fileUrl: string | null;
+    accessType: string;
+    hasAccess: boolean;
+    lockReason: string;
+    programId: string | undefined;
+    programName: string | undefined;
+    programSlug: string | undefined;
+    downloadCount: number;
+  }> | undefined;
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewTitle, setPreviewTitle] = useState("");

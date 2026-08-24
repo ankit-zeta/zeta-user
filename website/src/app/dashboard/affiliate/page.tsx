@@ -24,10 +24,64 @@ function AffiliateCenterPageContent() {
   const { user, token } = useAuth();
   const [copied, setCopied] = useState(false);
 
-  const stats = useQuery(
+const stats = useQuery(
     api.affiliates.getUserAffiliateStats,
     token ? { token } : "skip"
-  );
+  ) as {
+    referralCode: string;
+    totalReferrals: number;
+    totalSalesCount: number;
+    totalCommissionGenerated: number;
+    pendingCommissions: number;
+    approvedCommissions: number;
+    availableCommissions: number;
+    chainEarnings: number;
+    pendingChainCommissions: number;
+    chainSales: Array<{
+      _id: string;
+      _creationTime: number;
+      purchaseId: string;
+      buyerUserId: string;
+      referrerUserId: string;
+      programId: string;
+      saleAmount: number;
+      commissionAmount: number;
+      status: string;
+      ruleUsed: string;
+      holdingPeriodEndsAt: number;
+      createdAt: number;
+      updatedAt: number;
+      kind: string | undefined;
+      awaitingConsumption: boolean | undefined;
+      parentSaleId: string | undefined;
+      chainLevel: number | undefined;
+      baseCommissionAmount: number | undefined;
+      buyerName: string;
+      programName: string;
+    }>;
+    sales: Array<{
+      _id: string;
+      _creationTime: number;
+      purchaseId: string;
+      buyerUserId: string;
+      referrerUserId: string;
+      programId: string;
+      saleAmount: number;
+      commissionAmount: number;
+      status: string;
+      ruleUsed: string;
+      holdingPeriodEndsAt: number;
+      createdAt: number;
+      updatedAt: number;
+      kind: string | undefined;
+      awaitingConsumption: boolean | undefined;
+      parentSaleId: string | undefined;
+      chainLevel: number | undefined;
+      baseCommissionAmount: number | undefined;
+      buyerName: string;
+      programName: string;
+    }>;
+  } | undefined;
 
   const referralLink = typeof window !== "undefined"
     ? `${window.location.origin}/signup?ref=${user?.referralCode}`

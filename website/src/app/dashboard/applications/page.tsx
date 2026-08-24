@@ -21,7 +21,50 @@ export default function MyApplicationsPage() {
   const applications = useQuery(
     api.applications.getUserApplications,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    jobId: string;
+    userId: string;
+    answers: Array<{ question: string; answer: string }>;
+    coverNote: string;
+    portfolioUrl: string | undefined;
+    resumeUrl: string | undefined;
+    status: string;
+    adminNotes: string | undefined;
+    submissionWorkUrl: string | undefined;
+    submissionNotes: string | undefined;
+    paymentStatus: string | undefined;
+    submittedAt: number;
+    updatedAt: number;
+    job: {
+      _id: string;
+      _creationTime: number;
+      title: string;
+      slug: string;
+      shortDescription: string;
+      description: string;
+      category: string;
+      skills: string[];
+      requirements: string[];
+      requiredProgramId: string | undefined;
+      requiredAchievementId: string | undefined;
+      payment: number;
+      paymentType: string;
+      workType: string;
+      difficulty: string;
+      estimatedDuration: string;
+      deadline: string;
+      openings: number;
+      status: string;
+      applicationQuestions: string[];
+      attachments: string[] | undefined;
+      company: string | undefined;
+      coverImageStorageId: string | undefined;
+      createdAt: number;
+      updatedAt: number;
+    } | null;
+  }> | undefined;
 
   const submitDeliverable = useMutation(api.applications.submitWorkDeliverable);
 

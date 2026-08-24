@@ -10,10 +10,23 @@ import AffiliateGate from "@/components/AffiliateGate";
 
 function ReferralsListPageContent() {
   const { token } = useAuth();
-  const referrals = useQuery(
+const referrals = useQuery(
     api.referrals.getUserReferrals,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    createdAt: number;
+    status: string;
+    user: {
+      name: string;
+      email: string;
+      avatarUrl: string | undefined;
+      createdAt: number;
+    } | null;
+    hasPurchased: boolean;
+    purchaseCount: number;
+    totalPurchasedAmount: number;
+  }> | undefined;
 
   return (
     <div className="space-y-8">

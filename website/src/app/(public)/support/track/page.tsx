@@ -65,7 +65,33 @@ export default function TrackTicketPage() {
     submitted && trackingId.trim() && email.trim()
       ? { trackingId: trackingId.trim(), email: email.trim() }
       : "skip"
-  );
+  ) as {
+    ticket: {
+      _id: string;
+      _creationTime: number;
+      trackingId: string;
+      userId: string;
+      userName: string;
+      userEmail: string;
+      category: string;
+      title: string;
+      message: string;
+      status: string;
+      attachments: Array<{ type: string; url: string; name?: string }> | undefined;
+      createdAt: number;
+      updatedAt: number;
+    };
+    messages: Array<{
+      _id: string;
+      _creationTime: number;
+      ticketId: string;
+      sender: "user" | "admin";
+      senderName: string;
+      message: string;
+      attachments: Array<{ type: string; url: string; name?: string }> | undefined;
+      createdAt: number;
+    }>;
+  } | undefined;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

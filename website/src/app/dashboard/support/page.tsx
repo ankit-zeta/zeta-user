@@ -39,7 +39,21 @@ export default function SupportCenterPage() {
   const tickets = useQuery(
     api.supportTickets.getMyTickets,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    trackingId: string;
+    userId: string;
+    userName: string;
+    userEmail: string;
+    category: string;
+    title: string;
+    message: string;
+    status: string;
+    attachments: Array<{ type: string; url: string; name?: string }> | undefined;
+    createdAt: number;
+    updatedAt: number;
+  }> | undefined;
 
   const createTicket = useMutation(api.supportTickets.createTicket);
   const generateUploadUrl = useAction(api.supportTickets.generateTicketUploadUrl);

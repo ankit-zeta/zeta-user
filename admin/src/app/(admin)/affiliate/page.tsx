@@ -26,12 +26,41 @@ export default function AdminAffiliatePage() {
   const sales = useQuery(
     api.affiliates.getAllAffiliateSalesAdmin,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    purchaseId: string;
+    buyerUserId: string;
+    referrerUserId: string;
+    programId: string;
+    saleAmount: number;
+    commissionAmount: number;
+    status: string;
+    ruleUsed: string;
+    holdingPeriodEndsAt: number;
+    createdAt: number;
+    updatedAt: number;
+    kind: string | undefined;
+    awaitingConsumption: boolean | undefined;
+    parentSaleId: string | undefined;
+    chainLevel: number | undefined;
+    baseCommissionAmount: number | undefined;
+    buyer: { _id: string; name: string; email: string } | null;
+    referrer: { _id: string; name: string; email: string; referralCode: string } | null;
+    program: { _id: string; name: string; price: number } | null;
+  }> | undefined;
 
   const referrals = useQuery(
     api.referrals.getAllReferralsAdmin,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    referralCode: string;
+    status: string;
+    createdAt: number;
+    referrer: { _id: string; name: string; email: string; referralCode: string } | null;
+    referred: { _id: string; name: string; email: string } | null;
+  }> | undefined;
 
   const updateSettingMutation = useMutation(api.settings.updateSetting);
   const updateCommissionStatusMutation = useMutation(api.affiliates.updateCommissionStatus);

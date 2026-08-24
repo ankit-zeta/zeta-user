@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { enforceRateLimit } from "./rateLimit";
+import { internal } from "./_generated/api";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -28,8 +28,8 @@ export const submitContactInquiry = mutation({
     const email = args.email.trim().toLowerCase();
 
     // Rate limit: 3/day per email + 10/day global
-    await enforceRateLimit(ctx, { key: `contact:email:${email}`, max: 3, windowMs: 24 * 60 * 60 * 1000 });
-    await enforceRateLimit(ctx, { key: "contact:global", max: 10, windowMs: 24 * 60 * 60 * 1000 });
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `contact:email:${email}`, max: 3, windowMs: 24 * 60 * 60 * 1000 });
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: "contact:global", max: 10, windowMs: 24 * 60 * 60 * 1000 });
 
     return await ctx.db.insert("contactInquiries", {
       name: args.name.trim(),

@@ -20,7 +20,19 @@ export default function AdminAuditLogsPage() {
           entityType: entityType || undefined,
         }
       : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    adminUserId: string;
+    adminEmail: string;
+    action: string;
+    entityType: string;
+    entityId: string;
+    previousValue: string | undefined;
+    newValue: string | undefined;
+    reason: string | undefined;
+    timestamp: number;
+  }> | undefined;
 
   return (
     <div className="space-y-8">

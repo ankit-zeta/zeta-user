@@ -3,40 +3,44 @@ import { query, internalMutation } from "./_generated/server";
 
 const DEFAULT_WINDOW_MS = 60 * 60 * 1000;
 
-export async function enforceRateLimit(
-  ctx: any,
-  args: { key: string; max: number; windowMs?: number }
-): Promise<{ allowed: boolean; remaining: number }> {
-  const windowMs = args.windowMs ?? DEFAULT_WINDOW_MS;
-  const now = Date.now();
-  const windowStart = now - windowMs;
+export const enforceRateLimit = internalMutation({
+  args: {
+    key: v.string(),
+    max: v.number(),
+    windowMs: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const windowMs = args.windowMs ?? DEFAULT_WINDOW_MS;
+    const now = Date.now();
+    const windowStart = now - windowMs;
 
-  const existing = await ctx.db
-    .query("rateLimits")
-    .withIndex("by_key", (q: any) => q.eq("key", args.key))
-    .first();
+    const existing = await ctx.db
+      .query("rateLimits")
+      .withIndex("by_key", (q) => q.eq("key", args.key))
+      .first();
 
-  if (existing) {
-    if (existing.windowStart >= windowStart) {
-      const newCount = existing.count + 1;
-      if (newCount > args.max) {
-        throw new Error("Rate limit exceeded. Please try again later.");
+    if (existing) {
+      if (existing.windowStart >= windowStart) {
+        const newCount = existing.count + 1;
+        if (newCount > args.max) {
+          throw new Error("Rate limit exceeded. Please try again later.");
+        }
+        await ctx.db.patch(existing._id, { count: newCount });
+        return { allowed: true, remaining: args.max - newCount };
+      } else {
+        await ctx.db.patch(existing._id, { windowStart: now, count: 1 });
+        return { allowed: true, remaining: args.max - 1 };
       }
-      await ctx.db.patch(existing._id, { count: newCount });
-      return { allowed: true, remaining: args.max - newCount };
     } else {
-      await ctx.db.patch(existing._id, { windowStart: now, count: 1 });
+      await ctx.db.insert("rateLimits", {
+        key: args.key,
+        windowStart: now,
+        count: 1,
+      });
       return { allowed: true, remaining: args.max - 1 };
     }
-  } else {
-    await ctx.db.insert("rateLimits", {
-      key: args.key,
-      windowStart: now,
-      count: 1,
-    });
-    return { allowed: true, remaining: args.max - 1 };
-  }
-}
+  },
+});
 
 export const cleanupRateLimits = internalMutation({
   args: {

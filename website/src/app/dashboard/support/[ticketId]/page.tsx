@@ -73,7 +73,33 @@ export default function TicketDetailPage() {
   const detail = useQuery(
     api.supportTickets.getTicketDetail,
     token && params.ticketId ? { token, ticketId: params.ticketId as any } : "skip"
-  );
+  ) as {
+    ticket: {
+      _id: string;
+      _creationTime: number;
+      trackingId: string;
+      userId: string;
+      userName: string;
+      userEmail: string;
+      category: string;
+      title: string;
+      message: string;
+      status: string;
+      attachments: Array<{ type: string; url: string; name?: string }> | undefined;
+      createdAt: number;
+      updatedAt: number;
+    };
+    messages: Array<{
+      _id: string;
+      _creationTime: number;
+      ticketId: string;
+      sender: "user" | "admin";
+      senderName: string;
+      message: string;
+      attachments: Array<{ type: string; url: string; name?: string }> | undefined;
+      createdAt: number;
+    }>;
+  } | undefined;
 
   const sendReply = useMutation(api.supportTickets.sendTicketReply);
   const generateUploadUrl = useAction(api.supportTickets.generateTicketUploadUrl);

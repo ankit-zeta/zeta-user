@@ -9,7 +9,31 @@ import { BookOpen, CheckCircle2, ArrowRight, Award } from "lucide-react";
 
 export default function MyProgramsPage() {
   const { user } = useAuth();
-  const allPrograms = useQuery(api.programs.getPublicPrograms);
+  const allPrograms = useQuery(api.programs.getPublicPrograms) as Array<{
+    _id: string;
+    _creationTime: number;
+    slug: string;
+    name: string;
+    shortDescription: string;
+    description: string;
+    price: number;
+    compareAtPrice: number | undefined;
+    status: string;
+    thumbnail: string;
+    bannerImage: string | undefined;
+    duration: string;
+    accessDuration: string;
+    certificateEnabled: boolean;
+    affiliateEnabled: boolean;
+    format: string | undefined;
+    category: string | undefined;
+    sortOrder: number;
+    whatIncluded: string[];
+    outcomes: string[];
+    faqs: Array<{ question: string; answer: string }>;
+    createdAt: number;
+    updatedAt: number;
+  }> | undefined;
 
   const enrolledIds = new Set(user?.enrolledProgramIds || []);
   const myEnrolledPrograms = allPrograms?.filter((p) => enrolledIds.has(p._id)) || [];

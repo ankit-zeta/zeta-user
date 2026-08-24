@@ -36,14 +36,89 @@ export default function DashboardOverviewPage() {
   const jobsWithEligibility = useQuery(
     api.jobs.getJobsWithEligibility,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    title: string;
+    slug: string;
+    shortDescription: string;
+    description: string;
+    category: string;
+    skills: string[];
+    requirements: string[];
+    requiredProgramId: string | undefined;
+    requiredAchievementId: string | undefined;
+    payment: number;
+    paymentType: string;
+    workType: string;
+    difficulty: string;
+    estimatedDuration: string;
+    deadline: string;
+    openings: number;
+    status: string;
+    applicationQuestions: string[];
+    attachments: string[] | undefined;
+    company: string | undefined;
+    coverImageStorageId: string | undefined;
+    createdAt: number;
+    updatedAt: number;
+    coverImageUrl: string | null;
+    isEligible: boolean;
+    missingRequirements: string[];
+    requiredProgramName: string | undefined;
+    requiredAchievementName: string | undefined;
+    applicationStatus: string | null;
+  }> | undefined;
 
   const achievements = useQuery(
     api.achievements.getUserAchievements,
     token && hasPurchased ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    name: string;
+    description: string;
+    conditionMode: string;
+    conditions: Array<{ metric: string; operator: string; value: number }>;
+    sortOrder: number;
+    status: string;
+    unlockPositionId: string | undefined;
+    unlockBadgeName: string | undefined;
+    isUnlocked: boolean;
+    unlockedAt: number | null;
+    positionName: string | null;
+    badgeColor: string | null;
+    metrics: Record<string, number>;
+    conditionProgress: Array<{ metric: string; operator: string; target: number; current: number; satisfied: boolean; progress: number }>;
+    progress: number;
+    remaining: number;
+  }> | undefined;
 
-  const publicPrograms = useQuery(api.programs.getPublicPrograms);
+  const publicPrograms = useQuery(api.programs.getPublicPrograms) as Array<{
+    _id: string;
+    _creationTime: number;
+    slug: string;
+    name: string;
+    shortDescription: string;
+    description: string;
+    price: number;
+    compareAtPrice: number | undefined;
+    status: string;
+    thumbnail: string;
+    bannerImage: string | undefined;
+    duration: string;
+    accessDuration: string;
+    certificateEnabled: boolean;
+    affiliateEnabled: boolean;
+    format: string | undefined;
+    category: string | undefined;
+    sortOrder: number;
+    whatIncluded: string[];
+    outcomes: string[];
+    faqs: Array<{ question: string; answer: string }>;
+    createdAt: number;
+    updatedAt: number;
+  }> | undefined;
 
   const evaluateAchievements = useMutation(api.achievements.evaluateUserAchievements);
 

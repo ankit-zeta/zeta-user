@@ -10,14 +10,93 @@ import AffiliateGate from "@/components/AffiliateGate";
 
 function EarningsLedgerPageContent() {
   const { token } = useAuth();
-  const stats = useQuery(
+const stats = useQuery(
     api.affiliates.getUserAffiliateStats,
     token ? { token } : "skip"
-  );
-  const walletData = useQuery(
+  ) as {
+    referralCode: string;
+    totalReferrals: number;
+    totalSalesCount: number;
+    totalCommissionGenerated: number;
+    pendingCommissions: number;
+    approvedCommissions: number;
+    availableCommissions: number;
+    chainEarnings: number;
+    pendingChainCommissions: number;
+    chainSales: Array<{
+      _id: string;
+      _creationTime: number;
+      purchaseId: string;
+      buyerUserId: string;
+      referrerUserId: string;
+      programId: string;
+      saleAmount: number;
+      commissionAmount: number;
+      status: string;
+      ruleUsed: string;
+      holdingPeriodEndsAt: number;
+      createdAt: number;
+      updatedAt: number;
+      kind: string | undefined;
+      awaitingConsumption: boolean | undefined;
+      parentSaleId: string | undefined;
+      chainLevel: number | undefined;
+      baseCommissionAmount: number | undefined;
+      buyerName: string;
+      programName: string;
+    }>;
+    sales: Array<{
+      _id: string;
+      _creationTime: number;
+      purchaseId: string;
+      buyerUserId: string;
+      referrerUserId: string;
+      programId: string;
+      saleAmount: number;
+      commissionAmount: number;
+      status: string;
+      ruleUsed: string;
+      holdingPeriodEndsAt: number;
+      createdAt: number;
+      updatedAt: number;
+      kind: string | undefined;
+      awaitingConsumption: boolean | undefined;
+      parentSaleId: string | undefined;
+      chainLevel: number | undefined;
+      baseCommissionAmount: number | undefined;
+      buyerName: string;
+      programName: string;
+    }>;
+  } | undefined;
+const walletData = useQuery(
     api.wallets.getUserWallet,
     token ? { token } : "skip"
-  );
+  ) as {
+    wallet: {
+      _id: string;
+      _creationTime: number;
+      userId: string;
+      availableBalance: number;
+      pendingBalance: number;
+      totalEarned: number;
+      totalWithdrawn: number;
+      workEarnings: number;
+      affiliateEarnings: number;
+      updatedAt: number;
+    } | null;
+    transactions: Array<{
+      _id: string;
+      _creationTime: number;
+      userId: string;
+      type: string;
+      amount: number;
+      balanceAfter: number;
+      referenceId: string | undefined;
+      description: string;
+      status: string;
+      createdAt: number;
+    }>;
+  } | undefined;
 
   const wallet = walletData?.wallet;
   const workTxns = (walletData?.transactions || []).filter((t) => t.type === "WORK_PAYOUT");

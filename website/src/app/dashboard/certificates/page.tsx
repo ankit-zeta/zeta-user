@@ -12,7 +12,17 @@ export default function CertificatesPage() {
   const certificates = useQuery(
     api.certificates.getUserCertificates,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    certificateId: string;
+    userId: string;
+    programId: string;
+    recipientName: string;
+    programName: string;
+    issueDate: number;
+    verificationUrl: string;
+  }> | undefined;
 
   return (
     <div className="space-y-8">

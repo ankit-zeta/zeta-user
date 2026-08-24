@@ -19,7 +19,39 @@ export default function DashboardWorkPage() {
   const jobs = useQuery(
     api.jobs.getJobsWithEligibility,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    title: string;
+    slug: string;
+    shortDescription: string;
+    description: string;
+    category: string;
+    skills: string[];
+    requirements: string[];
+    requiredProgramId: string | undefined;
+    requiredAchievementId: string | undefined;
+    payment: number;
+    paymentType: string;
+    workType: string;
+    difficulty: string;
+    estimatedDuration: string;
+    deadline: string;
+    openings: number;
+    status: string;
+    applicationQuestions: string[];
+    attachments: string[] | undefined;
+    company: string | undefined;
+    coverImageStorageId: string | undefined;
+    createdAt: number;
+    updatedAt: number;
+    coverImageUrl: string | null;
+    isEligible: boolean;
+    missingRequirements: string[];
+    requiredProgramName: string | undefined;
+    requiredAchievementName: string | undefined;
+    applicationStatus: string | null;
+  }> | undefined;
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");

@@ -76,11 +76,51 @@ export default function AdminCommunicationsPage() {
   const tickets = useQuery(
     api.supportTickets.getSupportTickets,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    trackingId: string;
+    userId: string;
+    userName: string;
+    userEmail: string;
+    category: string;
+    title: string;
+    message: string;
+    status: string;
+    attachments: Array<{ type: string; url: string; name?: string }> | undefined;
+    createdAt: number;
+    updatedAt: number;
+  }> | undefined;
   const selectedDetail = useQuery(
     api.supportTickets.getSupportTicketDetail,
     token && selectedId ? { token, ticketId: selectedId as any } : "skip"
-  );
+  ) as {
+    ticket: {
+      _id: string;
+      _creationTime: number;
+      trackingId: string;
+      userId: string;
+      userName: string;
+      userEmail: string;
+      category: string;
+      title: string;
+      message: string;
+      status: string;
+      attachments: Array<{ type: string; url: string; name?: string }> | undefined;
+      createdAt: number;
+      updatedAt: number;
+    };
+    messages: Array<{
+      _id: string;
+      _creationTime: number;
+      ticketId: string;
+      sender: "user" | "admin";
+      senderName: string;
+      message: string;
+      attachments: Array<{ type: string; url: string; name?: string }> | undefined;
+      createdAt: number;
+    }>;
+  } | undefined;
 
   const adminReply = useMutation(api.supportTickets.adminReplyTicket);
   const updateStatus = useMutation(api.supportTickets.updateTicketStatus);
@@ -92,7 +132,16 @@ export default function AdminCommunicationsPage() {
   const [isSending, setIsSending] = useState(false);
   const [msg, setMsg] = useState("");
 
-  const announcements = useQuery(api.notifications.getActiveAnnouncements);
+  const announcements = useQuery(api.notifications.getActiveAnnouncements) as Array<{
+    _id: string;
+    _creationTime: number;
+    title: string;
+    content: string;
+    targetRole: string;
+    isActive: boolean;
+    priority: string;
+    createdAt: number;
+  }> | undefined;
   const createAnnouncementMutation = useMutation(api.notifications.createAnnouncement);
   const [annTitle, setAnnTitle] = useState("");
   const [annContent, setAnnContent] = useState("");
@@ -555,7 +604,16 @@ function ContactInquiriesTable() {
   const inquiries = useQuery(
     api.contact.getContactInquiries,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+    status: string;
+    createdAt: number;
+  }> | undefined;
   const updateInquiryStatusMutation = useMutation(api.contact.updateInquiryStatus);
 
   const handleResolve = async (id: any) => {

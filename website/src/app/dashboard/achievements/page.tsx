@@ -19,10 +19,29 @@ const METRIC_LABELS: Record<string, string> = {
 
 function AchievementsPageContent() {
   const { token } = useAuth();
-  const achievements = useQuery(
+const achievements = useQuery(
     api.achievements.getUserAchievements,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    name: string;
+    description: string;
+    conditionMode: string;
+    conditions: Array<{ metric: string; operator: string; value: number }>;
+    sortOrder: number;
+    status: string;
+    unlockPositionId: string | undefined;
+    unlockBadgeName: string | undefined;
+    isUnlocked: boolean;
+    unlockedAt: number | null;
+    positionName: string | null;
+    badgeColor: string | null;
+    metrics: Record<string, number>;
+    conditionProgress: Array<{ metric: string; operator: string; target: number; current: number; satisfied: boolean; progress: number }>;
+    progress: number;
+    remaining: number;
+  }> | undefined;
 
   const evaluateMutation = useMutation(api.achievements.evaluateUserAchievements);
 

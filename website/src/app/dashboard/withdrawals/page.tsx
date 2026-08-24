@@ -55,7 +55,9 @@ async function compressImage(file: File, maxBytes = 100 * 1024, hardCap = 1024 *
     );
     if (blob && blob.size <= maxBytes) return blob;
   }
-  return canvas.toBlob!((b) => b as Blob, "image/jpeg", 0.1) ?? file;
+  return new Promise<Blob>((resolve) => {
+      canvas.toBlob((b) => resolve(b as Blob), "image/jpeg", 0.1);
+    });
 }
 
 const METHOD_META: Record<string, { icon: typeof Building; label: string }> = {
@@ -75,18 +77,83 @@ function methodSummary(m: any) {
 
 function WithdrawalsPageContent() {
   const { token, user } = useAuth();
-  const walletData = useQuery(
+const walletData = useQuery(
     api.wallets.getUserWallet,
     token ? { token } : "skip"
-  );
-  const withdrawals = useQuery(
+  ) as {
+    wallet: {
+      _id: string;
+      _creationTime: number;
+      userId: string;
+      availableBalance: number;
+      pendingBalance: number;
+      totalEarned: number;
+      totalWithdrawn: number;
+      workEarnings: number;
+      affiliateEarnings: number;
+      updatedAt: number;
+    } | null;
+    transactions: Array<{
+      _id: string;
+      _creationTime: number;
+      userId: string;
+      type: string;
+      amount: number;
+      balanceAfter: number;
+      referenceId: string | undefined;
+      description: string;
+      status: string;
+      createdAt: number;
+    }>;
+  } | undefined;
+const withdrawals = useQuery(
     api.withdrawals.getUserWithdrawals,
     token ? { token } : "skip"
-  );
-  const payoutMethods = useQuery(
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    userId: string;
+    amount: number;
+    fee: number;
+    netAmount: number;
+    payoutMethod: string;
+    payoutDetails: {
+      accountNumber: string | undefined;
+      ifscCode: string | undefined;
+      bankName: string | undefined;
+      accountHolderName: string | undefined;
+      upiId: string | undefined;
+      paypalEmail: string | undefined;
+      qrImageUrl: string | undefined;
+    };
+    status: string;
+    adminNote: string | undefined;
+    requestedAt: number;
+    processedAt: number | undefined;
+    qrImageUrl: string | null;
+  }> | undefined;
+const payoutMethods = useQuery(
     api.payoutMethods.getMyPayoutMethods,
     token ? { token } : "skip"
-  );
+  ) as Array<{
+    _id: string;
+    _creationTime: number;
+    userId: string;
+    type: string;
+    name: string;
+    details: {
+      accountNumber: string | undefined;
+      ifscCode: string | undefined;
+      bankName: string | undefined;
+      accountHolderName: string | undefined;
+      upiId: string | undefined;
+      qrImageUrl: string | undefined;
+    };
+    isDefault: boolean;
+    createdAt: number;
+    updatedAt: number;
+    qrImageUrl: string | null;
+  }> | undefined;
 
   const requestWithdrawalMutation = useMutation(api.withdrawals.requestWithdrawal);
   const getQrUploadUrl = useAction(api.withdrawals.generateWithdrawalQrUploadUrl);

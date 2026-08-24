@@ -40,7 +40,34 @@ function formatINR(value: number) {
 
 export default function HomePage() {
   const plans = useQuery(api.plans.getPublicPlans);
-  const jobs = useQuery(api.jobs.getPublicJobs);
+  const jobs = useQuery(api.jobs.getPublicJobs) as Array<{
+    _id: string;
+    _creationTime: number;
+    title: string;
+    slug: string;
+    shortDescription: string;
+    description: string;
+    category: string;
+    skills: string[];
+    requirements: string[];
+    requiredProgramId: string | undefined;
+    requiredAchievementId: string | undefined;
+    payment: number;
+    paymentType: string;
+    workType: string;
+    difficulty: string;
+    estimatedDuration: string;
+    deadline: string;
+    openings: number;
+    status: string;
+    applicationQuestions: string[];
+    attachments: string[] | undefined;
+    company: string | undefined;
+    coverImageStorageId: string | undefined;
+    createdAt: number;
+    updatedAt: number;
+    coverImageUrl: string | null;
+  }> | undefined;
 
   // Live stats derived from database
   const courseCount =

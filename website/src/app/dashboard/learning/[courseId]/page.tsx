@@ -29,7 +29,66 @@ export default function CoursePlayerPage() {
   const courseState = useQuery(
     api.learning.getCoursePlayerState,
     token && programId ? { token, programId } : "skip"
-  );
+  ) as {
+    program: {
+      _id: string;
+      _creationTime: number;
+      name: string;
+      slug: string;
+      price: number;
+      shortDescription: string;
+      duration: string;
+      description: string;
+      courseCount: number;
+      lessonCount: number;
+      resourceCount: number;
+      thumbnailStorageId: string | undefined;
+      status: string;
+      createdAt: number;
+      updatedAt: number;
+    };
+    isEnrolled: boolean;
+    modules: Array<{
+      _id: string;
+      _creationTime: number;
+      programId: string;
+      moduleId: string;
+      title: string;
+      description: string;
+      sortOrder: number;
+      lessons: Array<{
+        _id: string;
+        _creationTime: number;
+        moduleId: string;
+        title: string;
+        type: string;
+        content: string;
+        videoUrl: string | undefined;
+        durationMinutes: number;
+        sortOrder: number;
+        lessonCount: number;
+        duration: string;
+        isCompleted: boolean;
+        quizData: any[] | undefined;
+        attachmentUrl: string | undefined;
+        attachmentName: string | undefined;
+      }>;
+    }>;
+    totalLessons: number;
+    completedCount: number;
+    progressPercentage: number;
+    certificate: {
+      _id: string;
+      _creationTime: number;
+      certificateId: string;
+      userId: string;
+      programId: string;
+      recipientName: string;
+      programName: string;
+      issueDate: number;
+      verificationUrl: string;
+    } | null;
+  } | undefined;
 
   const toggleComplete = useMutation(api.learning.toggleLessonComplete);
 
