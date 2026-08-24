@@ -2,8 +2,13 @@ import { v } from "convex/values";
 import { internalAction, internalMutation, internalQuery } from "./_generated/server";
 import { Resend } from "resend";
 
-// Initialize Resend with environment variable (set in Convex dashboard)
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend(): Resend {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY not configured in Convex environment");
+  }
+  return new Resend(apiKey);
+}
 
 const BRAND = {
   name: "ZetaGrow",
@@ -30,7 +35,6 @@ function emailWrapper({ title, preheader, content, cta, ctaText, ctaUrl, footerN
     <tr>
       <td align="center" style="padding: 40px 20px;">
         <table role="presentation" width="100%" max-width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
-          <!-- Header -->
           <tr>
             <td style="background: linear-gradient(135deg, ${BRAND.primaryColor} 0%, ${BRAND.primaryHover} 100%); padding: 32px 40px; text-align: center;">
               <div style="display: inline-block; background: rgba(255,255,255,0.15); border-radius: 12px; padding: 12px 16px; margin-bottom: 16px;">
@@ -40,18 +44,12 @@ function emailWrapper({ title, preheader, content, cta, ctaText, ctaUrl, footerN
               <p style="margin: 8px 0 0; font-size: 12px; color: rgba(255,255,255,0.9); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">${BRAND.tagline}</p>
             </td>
           </tr>
-          
-          <!-- Preheader -->
           ${preheader ? `<tr><td style="padding: 24px 40px 0; text-align: center;"><p style="margin: 0; font-size: 14px; color: ${BRAND.textMuted}; line-height: 1.5;">${preheader}</p></td></tr>` : ''}
-          
-          <!-- Content -->
           <tr>
             <td style="padding: 32px 40px 24px;">
               ${content}
             </td>
           </tr>
-          
-          <!-- CTA -->
           ${cta && ctaText && ctaUrl ? `
           <tr>
             <td style="padding: 0 40px 32px; text-align: center;">
@@ -61,8 +59,6 @@ function emailWrapper({ title, preheader, content, cta, ctaText, ctaUrl, footerN
             </td>
           </tr>
           ` : ''}
-          
-          <!-- Footer -->
           <tr>
             <td style="background-color: ${BRAND.bgColor}; padding: 24px 40px; border-top: 1px solid #E4E8E5; text-align: center;">
               <p style="margin: 0 0 12px; font-size: 12px; color: ${BRAND.textMuted}; line-height: 1.6;">
@@ -113,6 +109,7 @@ export const sendVerificationEmail = internalAction({
     });
 
     try {
+      const resend = getResend();
       await resend.emails.send({
         from: `${BRAND.name} <noreply@zetagrow.in>`,
         to: args.email,
@@ -161,6 +158,7 @@ export const sendPasswordResetEmail = internalAction({
     });
 
     try {
+      const resend = getResend();
       await resend.emails.send({
         from: `${BRAND.name} <noreply@zetagrow.in>`,
         to: args.email,
@@ -213,6 +211,7 @@ export const sendWelcomeEmail = internalAction({
     });
 
     try {
+      const resend = getResend();
       await resend.emails.send({
         from: `${BRAND.name} <noreply@zetagrow.in>`,
         to: args.email,
@@ -260,6 +259,7 @@ export const sendReferralNotification = internalAction({
     });
 
     try {
+      const resend = getResend();
       await resend.emails.send({
         from: `${BRAND.name} <noreply@zetagrow.in>`,
         to: args.referrerEmail,

@@ -15,6 +15,11 @@ export const createUser = internalMutation({
     referralCode: v.string(),
     referredBy: v.optional(v.id("users")),
     phone: v.optional(v.string()),
+    emailVerified: v.optional(v.boolean()),
+    emailVerificationToken: v.optional(v.string()),
+    emailVerificationExpiresAt: v.optional(v.number()),
+    passwordResetToken: v.optional(v.string()),
+    passwordResetExpiresAt: v.optional(v.number()),
     createdAt: v.number(),
     updatedAt: v.number(),
   },
@@ -67,27 +72,7 @@ export const createNotification = internalMutation({
   },
 });
 
-export const createSession = internalMutation({
-  args: {
-    userId: v.id("users"),
-    token: v.string(),
-    role: v.string(),
-    expiresAt: v.number(),
-    createdAt: v.number(),
-  },
-  handler: async (ctx, args) => {
-    // Single-session policy: logging in on a new device revokes all other sessions
-    const previousSessions = await ctx.db
-      .query("sessions")
-      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
-      .collect();
-    for (const s of previousSessions) {
-      await ctx.db.delete(s._id);
-    }
 
-    return await ctx.db.insert("sessions", args);
-  },
-});
 
 export const updateUserPassword = internalMutation({
   args: {
@@ -132,14 +117,14 @@ export async function hashPassword(password: string, salt: string): Promise<stri
   return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-function generateToken(): string {
+export function generateToken(): string {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-export function generateToken(): string {
-  const array = new Uint8Array(32);
+export function generateSalt(): string {
+  const array = new Uint8Array(16);
   crypto.getRandomValues(array);
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
@@ -746,6 +731,7 @@ export const createDemoCashfreeUser = internalMutation({
       role: "user",
       status: "active",
       referralCode,
+      emailVerified: true,
       createdAt: now,
       updatedAt: now,
     });
@@ -766,7 +752,7 @@ export const createDemoCashfreeUser = internalMutation({
     const programs = await ctx.db
       .query("programs")
       .withIndex("by_status", (q) => q.eq("status", "published"))
-      .take(3)
+      .limit(3)
       .collect();
 
     // Enroll in first 3 programs
@@ -777,8 +763,8 @@ export const createDemoCashfreeUser = internalMutation({
         amount: program.price,
         status: "completed",
         paymentMethod: "demo",
+        paymentId: "demo_" + generateToken(),
         createdAt: now,
-        updatedAt: now,
       });
     }
 
@@ -790,7 +776,6 @@ export const createDemoCashfreeUser = internalMutation({
       token,
       role: "user",
       expiresAt,
-      createdAt: now,
     });
 
     return {

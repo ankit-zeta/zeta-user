@@ -18,6 +18,7 @@ import type * as certificates from "../certificates.js";
 import type * as contact from "../contact.js";
 import type * as crons from "../crons.js";
 import type * as cvProfiles from "../cvProfiles.js";
+import type * as email from "../email.js";
 import type * as entitlements from "../entitlements.js";
 import type * as jobs from "../jobs.js";
 import type * as learning from "../learning.js";
@@ -52,6 +53,7 @@ declare const fullApi: ApiFromModules<{
   contact: typeof contact;
   crons: typeof crons;
   cvProfiles: typeof cvProfiles;
+  email: typeof email;
   entitlements: typeof entitlements;
   jobs: typeof jobs;
   learning: typeof learning;
