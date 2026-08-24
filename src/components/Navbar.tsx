@@ -48,14 +48,17 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo */}
           <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-2.5">
+            <Link href="/" className="flex items-center gap-2">
               <Image
-                src="/zetagrow logo.png"
+                src="/zetagrow logo no bg.png"
                 alt="ZetaGrow"
-                width={120}
+                width={40}
                 height={40}
                 className="h-10 w-auto"
               />
+              <span className="text-xl font-bold tracking-tight text-brand-900 leading-none hidden sm:block">
+                ZetaGrow
+              </span>
             </Link>
 
             {/* Desktop Navigation Links */}
