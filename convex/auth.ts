@@ -706,7 +706,13 @@ export const createDemoCashfreeUser = internalMutation({
     // Check if user already exists
     const existing = await ctx.db.query("users").withIndex("by_email", (q) => q.eq("email", email)).first();
     if (existing) {
-      return { success: true, message: "Demo user already exists", userId: existing._id };
+      // Update existing user to have proper email verification
+      await ctx.db.patch(existing._id, {
+        emailVerified: true,
+        status: "active",
+        updatedAt: Date.now(),
+      });
+      return { success: true, message: "Demo user updated with verified email", userId: existing._id };
     }
 
     // Generate referral code
@@ -787,6 +793,62 @@ export const createDemoCashfreeUser = internalMutation({
       password: "test@Zeta123!",
       token,
       enrolledPrograms: programs.map(p => p.name),
+    };
+  },
+});
+
+// One-time mutation to fix demo user password hash
+// Run once: npx convex run auth:fixDemoUserPassword
+export const fixDemoUserPassword = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const email = "test@zeta.in";
+    const existing = await ctx.db.query("users").withIndex("by_email", (q) => q.eq("email", email)).first();
+    if (!existing) {
+      return { success: false, message: "Demo user not found" };
+    }
+
+    // Hash the correct password
+    const salt = "demosalt123";
+    const passwordHash = await hashPassword("test@Zeta123!", salt);
+
+    await ctx.db.patch(existing._id, {
+      passwordHash,
+      salt,
+      emailVerified: true,
+      status: "active",
+      updatedAt: Date.now(),
+    });
+
+    return { success: true, message: "Demo user password fixed", userId: existing._id };
+  },
+});
+
+// Test login mutation - tests the password hash directly
+export const testDemoUserLogin = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const email = "test@zeta.in";
+    const user = await ctx.db.query("users").withIndex("by_email", (q) => q.eq("email", email)).first();
+    if (!user) {
+      return { success: false, message: "User not found" };
+    }
+
+    // Test the password hash
+    const testHash = await hashPassword("test@Zeta123!", user.salt);
+    const match = testHash === user.passwordHash;
+
+    return {
+      success: true,
+      user: {
+        email: user.email,
+        emailVerified: user.emailVerified,
+        status: user.status,
+        salt: user.salt,
+        passwordHash: user.passwordHash,
+        testHash,
+        match,
+      },
     };
   },
 });
