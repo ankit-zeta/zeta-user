@@ -3,13 +3,13 @@ import { v } from "convex/values";
 
 export default defineSchema({
   // Users & Profiles
-  users: defineTable({
+users: defineTable({
     name: v.string(),
     email: v.string(),
     passwordHash: v.string(),
     salt: v.string(),
     role: v.string(), // "user" | "super_admin" | "content_admin" | "finance_admin" | "work_admin"
-    status: v.string(), // "active" | "suspended" | "pending"
+    status: v.string(), // "active" | "suspended" | "pending" | "unverified"
     referralCode: v.string(),
     referredBy: v.optional(v.id("users")),
     avatarUrl: v.optional(v.string()),
@@ -23,13 +23,20 @@ export default defineSchema({
     cvVerifiedBy: v.optional(v.string()),
     failedLoginCount: v.optional(v.number()),
     lockedUntil: v.optional(v.number()),
+    emailVerified: v.optional(v.boolean()),
+    emailVerificationToken: v.optional(v.string()),
+    emailVerificationExpiresAt: v.optional(v.number()),
+    passwordResetToken: v.optional(v.string()),
+    passwordResetExpiresAt: v.optional(v.number()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })
 .index("by_email", ["email"])
     .index("by_referralCode", ["referralCode"])
     .index("by_role", ["role"])
-    .index("by_status", ["status"]),
+    .index("by_status", ["status"])
+    .index("by_emailVerificationToken", ["emailVerificationToken"])
+    .index("by_passwordResetToken", ["passwordResetToken"]),
 
   // Auth placeholder table — enables api.auth generation for login/signup
   auth: defineTable({

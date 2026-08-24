@@ -107,8 +107,9 @@ function SignupForm() {
         formStartedAt: formData.formStartedAt,
       });
 
-      login(res.token, res.user);
-      router.push("/dashboard");
+      // Redirect to verification page instead of dashboard
+      // The signup now returns emailVerified: false
+      router.push(`/verify-email?email=${encodeURIComponent(formData.email.trim().toLowerCase())}`);
     } catch (err: any) {
       setError(err.message || "Failed to create account. Please try again.");
     } finally {

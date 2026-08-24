@@ -1,17 +1,52 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
-import { Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAction } from "convex/react";
+import { api } from "@/lib/convex";
+import { Mail, Lock, ArrowLeft, CheckCircle2, AlertCircle, Loader2, RefreshCw } from "lucide-react";
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-bgWarm">
+          <div className="w-5 h-5 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <ForgotPasswordForm />
+    </Suspense>
+  );
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
+function ForgotPasswordForm() {
+  const router = useRouter();
+  const requestResetMutation = useAction(api.auth.requestPasswordReset);
+
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      setSubmitted(true);
+    if (!email) {
+      setStatus("error");
+      setMessage("Please enter your email address.");
+      return;
+    }
+
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      await requestResetMutation({ email: email.trim().toLowerCase() });
+      setStatus("success");
+      setMessage("If an account exists, you'll receive a password reset link shortly.");
+    } catch (err: any) {
+      setStatus("error");
+      setMessage(err.message || "Failed to send reset link. Please try again.");
     }
   };
 
@@ -22,36 +57,43 @@ export default function ForgotPasswordPage() {
           <div className="w-9 h-9 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-lg">
             Z
           </div>
-          <span className="text-2xl font-bold tracking-tight text-textMain">
-            ZetaGrow
-          </span>
+          <span className="text-2xl font-bold tracking-tight text-textMain">ZetaGrow</span>
         </Link>
-        <h2 className="text-xl font-bold tracking-tight text-textMain">
-          Reset Your Password
-        </h2>
+        <h2 className="text-xl font-bold tracking-tight text-textMain">Forgot Password?</h2>
+        <p className="text-xs text-textMuted">
+          Enter your email and we'll send you a link to reset your password.
+        </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="card-surface p-8 space-y-6">
-          {submitted ? (
-            <div className="text-center py-6 space-y-3">
-              <div className="w-10 h-10 rounded-full bg-green-100 text-green-700 flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-5 h-5" />
+          {message && (
+            <div className={`p-3 rounded-lg text-xs ${
+              status === "error" ? "bg-red-50 border border-red-200 text-red-700"
+              : status === "loading" ? "bg-brand-50 border border-brand-200 text-brand-700"
+              : "bg-green-50 border border-green-200 text-green-700"
+            }`}>
+              {message}
+            </div>
+          )}
+
+          {status === "success" ? (
+            <div className="space-y-4 text-center">
+              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                <CheckCircle2 className="w-8 h-8 text-green-600" />
               </div>
-              <h3 className="text-base font-bold text-textMain">Recovery Email Dispatched</h3>
-              <p className="text-xs text-textMuted leading-relaxed">
-                If an account exists for <strong>{email}</strong>, you will receive password reset instructions.
+              <h3 className="text-lg font-semibold text-textMain">Check Your Email</h3>
+              <p className="text-xs text-textMuted">
+                We've sent a password reset link to <strong>{email}</strong>.
+                The link expires in 1 hour.
               </p>
-              <Link href="/login" className="btn-primary text-xs inline-flex mt-2">
-                Return to Sign In
+              <Link href="/login" className="btn-primary inline-flex items-center gap-2 mt-4">
+                <ArrowLeft className="w-4 h-4" />
+                Back to Sign In
               </Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <p className="text-xs text-textMuted leading-relaxed">
-                Enter your registered account email and we will send you a secure verification link.
-              </p>
-
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-textMain">Email Address</label>
                 <div className="relative">
@@ -62,26 +104,34 @@ export default function ForgotPasswordPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full pl-9 pr-3 py-2 rounded-lg border border-borderSubtle text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white"
+                    disabled={status === "loading"}
+                    className="w-full pl-9 pr-3 py-2 rounded-lg border border-borderSubtle text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white disabled:bg-neutral-50"
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="btn-primary w-full justify-center py-2.5 text-xs font-semibold shadow-sm mt-2"
+                disabled={status === "loading"}
+                className="btn-primary w-full justify-center py-2.5 text-xs font-semibold shadow-sm"
               >
-                Send Reset Link
+                {status === "loading" ? (
+                  <> <Loader2 className="w-4 h-4 animate-spin mr-2" /> Sending... </>
+                ) : (
+                  <> <Lock className="w-3.5 h-3.5 mr-2" /> Send Reset Link </>
+                )}
               </button>
+
+              <div className="text-center pt-2 border-t border-borderSubtle">
+                <p className="text-xs text-textMuted">
+                  Remember your password?{" "}
+                  <Link href="/login" className="font-semibold text-brand-600 hover:text-brand-700">
+                    Sign In
+                  </Link>
+                </p>
+              </div>
             </form>
           )}
-
-          <div className="text-center pt-2 border-t border-borderSubtle">
-            <Link href="/login" className="inline-flex items-center gap-1.5 text-xs text-brand-600 hover:text-brand-700 font-medium">
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Sign In</span>
-            </Link>
-          </div>
         </div>
       </div>
     </div>

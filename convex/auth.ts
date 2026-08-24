@@ -138,8 +138,8 @@ function generateToken(): string {
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
-export function generateSalt(): string {
-  const array = new Uint8Array(16);
+export function generateToken(): string {
+  const array = new Uint8Array(32);
   crypto.getRandomValues(array);
   return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
 }
@@ -204,18 +204,23 @@ export const signup = action({
     }
 
     const now = Date.now();
+    const verificationToken = generateToken();
+    const verificationExpiresAt = now + 24 * 60 * 60 * 1000; // 24 hours
 
-    // Create user
+    // Create user with unverified status
     const userId = await ctx.runMutation(internal.auth.createUser, {
       name: args.name.trim(),
       email,
       passwordHash,
       salt,
       role: "user",
-      status: "active",
+      status: "unverified",
       referralCode: userReferralCode,
       referredBy: referrerUserId,
       phone: args.phone?.trim(),
+      emailVerified: false,
+      emailVerificationToken: verificationToken,
+      emailVerificationExpiresAt: verificationExpiresAt,
       createdAt: now,
       updatedAt: now,
     });
@@ -265,6 +270,13 @@ export const signup = action({
       createdAt: now,
     });
 
+    // Send verification email
+    await ctx.runAction(internal.email.sendVerificationEmail, {
+      email,
+      token: verificationToken,
+      name: args.name.trim(),
+    });
+
     // Create session token (valid 30 days)
     const token = generateToken();
     const expiresAt = now + 30 * 24 * 60 * 60 * 1000;
@@ -284,6 +296,7 @@ export const signup = action({
         email,
         role: "user",
         referralCode: userReferralCode,
+        emailVerified: false,
       },
     };
   },
@@ -318,6 +331,10 @@ export const login: RegisteredAction<
 
     if (user.status === "suspended") {
       throw new Error("Your account has been suspended. Please contact support.");
+    }
+
+    if (user.status === "unverified" || user.emailVerified === false) {
+      throw new Error("Please verify your email address before signing in. Check your inbox for the verification link.");
     }
 
     // Brute-force lockout: 8 failed attempts -> locked for 15 minutes
@@ -784,6 +801,213 @@ export const createDemoCashfreeUser = internalMutation({
       password: "test@Zeta123!",
       token,
       enrolledPrograms: programs.map(p => p.name),
+    };
+  },
+});
+
+// ============================================================================
+// EMAIL VERIFICATION & PASSWORD RESET
+// ============================================================================
+
+// Verify email with token
+export const verifyEmail = action({
+  args: { token: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_emailVerificationToken", (q) => q.eq("emailVerificationToken", args.token))
+      .first();
+
+    if (!user) {
+      throw new Error("Invalid or expired verification link");
+    }
+
+    if (user.emailVerificationExpiresAt < Date.now()) {
+      throw new Error("Verification link has expired. Please sign up again.");
+    }
+
+    if (user.emailVerified) {
+      throw new Error("Email already verified. Please sign in.");
+    }
+
+    const now = Date.now();
+    await ctx.db.patch(user._id, {
+      emailVerified: true,
+      status: "active",
+      emailVerificationToken: undefined,
+      emailVerificationExpiresAt: undefined,
+      updatedAt: now,
+    });
+
+    // Send welcome email
+    await ctx.runAction(internal.email.sendWelcomeEmail, {
+      email: user.email,
+      name: user.name,
+    });
+
+    // Create session for immediate login
+    const token = generateToken();
+    const expiresAt = now + 30 * 24 * 60 * 60 * 1000;
+    await ctx.runMutation(internal.auth.createSession, {
+      userId: user._id,
+      token,
+      role: user.role,
+      expiresAt,
+      createdAt: now,
+    });
+
+    return {
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        referralCode: user.referralCode,
+        emailVerified: true,
+      },
+    };
+  },
+});
+
+// Resend verification email
+export const resendVerificationEmail = action({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    const email = args.email.trim().toLowerCase();
+    const user = await ctx.runQuery(internal.auth.getUserForLogin, { email });
+
+    if (!user) {
+      // Don't reveal if user exists
+      return { success: true };
+    }
+
+    if (user.emailVerified) {
+      throw new Error("Email already verified. Please sign in.");
+    }
+
+    if (user.status === "suspended") {
+      throw new Error("Account suspended. Contact support.");
+    }
+
+    const now = Date.now();
+    const verificationToken = generateToken();
+    const verificationExpiresAt = now + 24 * 60 * 60 * 1000;
+
+    await ctx.db.patch(user._id, {
+      emailVerificationToken: verificationToken,
+      emailVerificationExpiresAt: verificationExpiresAt,
+      updatedAt: now,
+    });
+
+    await ctx.runAction(internal.email.sendVerificationEmail, {
+      email,
+      token: verificationToken,
+      name: user.name,
+    });
+
+    return { success: true };
+  },
+});
+
+// Request password reset
+export const requestPasswordReset = action({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    const email = args.email.trim().toLowerCase();
+    const user = await ctx.runQuery(internal.auth.getUserForLogin, { email });
+
+    // Always return success to prevent email enumeration
+    if (!user) {
+      return { success: true };
+    }
+
+    if (user.status === "suspended") {
+      throw new Error("Account suspended. Contact support.");
+    }
+
+    const now = Date.now();
+    const resetToken = generateToken();
+    const resetExpiresAt = now + 60 * 60 * 1000; // 1 hour
+
+    await ctx.db.patch(user._id, {
+      passwordResetToken: resetToken,
+      passwordResetExpiresAt: resetExpiresAt,
+      updatedAt: now,
+    });
+
+    await ctx.runAction(internal.email.sendPasswordResetEmail, {
+      email,
+      token: resetToken,
+      name: user.name,
+    });
+
+    return { success: true };
+  },
+});
+
+// Reset password with token
+export const resetPassword = action({
+  args: { token: v.string(), newPassword: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_passwordResetToken", (q) => q.eq("passwordResetToken", args.token))
+      .first();
+
+    if (!user) {
+      throw new Error("Invalid or expired reset link");
+    }
+
+    if (user.passwordResetExpiresAt < Date.now()) {
+      throw new Error("Reset link has expired. Please request a new one.");
+    }
+
+    if (!args.newPassword || args.newPassword.length < 8) {
+      throw new Error("Password must be at least 8 characters long");
+    }
+
+    const salt = generateSalt();
+    const passwordHash = await hashPassword(args.newPassword, salt);
+    const now = Date.now();
+
+    await ctx.db.patch(user._id, {
+      passwordHash,
+      salt,
+      passwordResetToken: undefined,
+      passwordResetExpiresAt: undefined,
+      updatedAt: now,
+    });
+
+    // Revoke all existing sessions
+    const sessions = await ctx.db
+      .query("sessions")
+      .withIndex("by_userId", (q) => q.eq("userId", user._id))
+      .collect();
+    for (const s of sessions) {
+      await ctx.db.delete(s._id);
+    }
+
+    // Create new session
+    const token = generateToken();
+    const expiresAt = now + 30 * 24 * 60 * 60 * 1000;
+    await ctx.runMutation(internal.auth.createSession, {
+      userId: user._id,
+      token,
+      role: user.role,
+      expiresAt,
+      createdAt: now,
+    });
+
+    return {
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        referralCode: user.referralCode,
+      },
     };
   },
 });
