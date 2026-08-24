@@ -7,6 +7,11 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://zetagrow.in"),
+  icons: {
+    icon: "/zetagrow favicon.png",
+    shortcut: "/zetagrow favicon.png",
+    apple: "/zetagrow favicon.png",
+  },
   title: {
     default: "ZetaGrow — Online Courses with Verified Certificates & Real Work Opportunities in India",
     template: "%s | ZetaGrow",

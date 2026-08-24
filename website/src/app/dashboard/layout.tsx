@@ -66,6 +66,9 @@ export default function DashboardLayout({
 
   // Affiliate features unlock only after the user owns at least one program
   const hasPurchased = (user.enrolledProgramIds?.length || 0) > 0;
+  
+  // Hide affiliate panel for demo Cashfree user
+  const isDemoUser = user.email === "test@zeta.in";
 
   const navSections = [
     {
@@ -89,7 +92,7 @@ export default function DashboardLayout({
         { name: "My Applications", href: "/dashboard/applications", icon: FileCheck },
       ],
     },
-    ...(hasPurchased
+    ...(hasPurchased && !isDemoUser
       ? [
           {
             title: "Affiliate Panel",
@@ -219,7 +222,7 @@ export default function DashboardLayout({
 
           <div className="flex items-center gap-4">
             {/* Wallet Quick Balance — only for program owners */}
-            {hasPurchased && (
+            {hasPurchased && !isDemoUser && (
               <Link
                 href="/dashboard/withdrawals"
                 className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-borderSubtle bg-neutral-50 hover:bg-neutral-100 transition-colors text-xs font-medium text-textMain"

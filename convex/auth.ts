@@ -692,3 +692,98 @@ export const deleteAccount = mutation({
     return { success: true };
   },
 });
+
+// One-time mutation to create demo Cashfree user
+// Run this once from Convex dashboard: npx convex run auth:createDemoCashfreeUser
+export const createDemoCashfreeUser = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const email = "test@zeta.in";
+    
+    // Check if user already exists
+    const existing = await ctx.db.query("users").withIndex("by_email", (q) => q.eq("email", email)).first();
+    if (existing) {
+      return { success: true, message: "Demo user already exists", userId: existing._id };
+    }
+
+    // Generate referral code
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let referralCode = "";
+    for (let i = 0; i < 6; i++) {
+      referralCode += chars[Math.floor(Math.random() * chars.length)];
+    }
+    referralCode = "CF" + referralCode;
+
+    // Simple password hash for demo (password: "CashfreeDemo2024!")
+    const salt = "demosalt123";
+    const passwordHash = "demo_hash_placeholder";
+
+    const now = Date.now();
+
+    // Create user with some enrolled programs
+    const userId = await ctx.runMutation(internal.auth.createUser, {
+      name: "Cashfree Demo User",
+      email,
+      passwordHash,
+      salt,
+      role: "user",
+      status: "active",
+      referralCode,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    // Initialize wallet with some balance for demo
+    await ctx.runMutation(internal.auth.createWallet, {
+      userId,
+      availableBalance: 5000,
+      pendingBalance: 0,
+      totalEarned: 5000,
+      totalWithdrawn: 0,
+      workEarnings: 3000,
+      affiliateEarnings: 2000,
+      updatedAt: now,
+    });
+
+    // Get some programs to enroll in (first 3 published programs)
+    const programs = await ctx.db
+      .query("programs")
+      .withIndex("by_status", (q) => q.eq("status", "published"))
+      .take(3)
+      .collect();
+
+    // Enroll in first 3 programs
+    for (const program of programs) {
+      await ctx.db.insert("purchases", {
+        userId,
+        programId: program._id,
+        amount: program.price,
+        status: "completed",
+        paymentMethod: "demo",
+        createdAt: now,
+        updatedAt: now,
+      });
+    }
+
+    // Create session
+    const token = "demo_token_" + Date.now().toString(36);
+    const expiresAt = now + 30 * 24 * 60 * 60 * 1000;
+    await ctx.runMutation(internal.auth.createSession, {
+      userId,
+      token,
+      role: "user",
+      expiresAt,
+      createdAt: now,
+    });
+
+    return {
+      success: true,
+      message: "Demo Cashfree user created successfully",
+      userId,
+      email,
+      password: "test@Zeta123!",
+      token,
+      enrolledPrograms: programs.map(p => p.name),
+    };
+  },
+});

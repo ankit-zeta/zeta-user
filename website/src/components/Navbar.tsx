@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/convex";
 import { 
@@ -47,18 +48,17 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo */}
           <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
-                Z
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-bold tracking-tight text-brand-900 leading-none">
-                  ZetaGrow
-                </span>
-                <span className="text-[10px] text-textMuted tracking-wider font-medium uppercase mt-0.5">
-                  Learn. Work. Grow.
-                </span>
-              </div>
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src="/zetagrow logo no bg.png"
+                alt="ZetaGrow"
+                width={40}
+                height={40}
+                className="h-10 w-auto"
+              />
+              <span className="text-xl font-bold tracking-tight text-brand-900 leading-none hidden sm:block">
+                ZetaGrow
+              </span>
             </Link>
 
             {/* Desktop Navigation Links */}
