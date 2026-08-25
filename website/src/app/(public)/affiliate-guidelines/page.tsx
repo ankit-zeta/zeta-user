@@ -11,6 +11,22 @@ export default function AffiliateGuidelinesPage() {
         <p className="text-xs text-textMuted">Last updated: {new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}</p>
       </div>
 
+      {/* Prominent de-emphasis disclaimer */}
+      <div className="rounded-xl border border-borderSubtle bg-white p-5 space-y-3">
+        <p className="text-sm text-textMain leading-relaxed">
+          <strong>First, the important part:</strong> ZetaGrow is an online learning platform.
+          Courses are what we make; work opportunities, certificates, and this small referral
+          courtesy are extras — never the point, never required, and never a reason to spend
+          money you weren&apos;t already planning to spend on your education.
+        </p>
+        <ul className="list-disc pl-6 space-y-1.5 text-xs text-textMuted">
+          <li>You never have to buy anything to join, learn freely where content is free, or apply for any opportunity.</li>
+          <li>You never have to sell, recruit, or promote anything to anyone.</li>
+          <li>ZetaGrow is <strong>not</strong> an MLM, pyramid, network-marketing, or investment scheme — we sell education, nothing else.</li>
+          <li>No earnings are guaranteed from referrals or from work. Both are competitive and merit-based.</li>
+        </ul>
+      </div>
+
       <div className="prose prose-sm max-w-none text-textMuted space-y-8 text-sm leading-relaxed">
         <div className="bg-brand-50 border border-brand-200 rounded-xl p-5 mb-8">
           <h2 className="font-bold text-textMain mb-2">Overview</h2>

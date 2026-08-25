@@ -1,5 +1,7 @@
 "use client";
 
+import { friendlyError } from "@/lib/errors";
+
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -98,7 +100,7 @@ export default function ProgramDetailPage() {
         router.push("/dashboard/programs");
       }, 1400);
     } catch (err: any) {
-      setErrorMsg(err.message || "Failed to process enrollment.");
+      setErrorMsg(friendlyError(err, "Failed to process enrollment."));
     } finally {
       setIsProcessing(false);
     }

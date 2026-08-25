@@ -1,5 +1,7 @@
 "use client";
 
+import { friendlyError } from "@/lib/errors";
+
 import React, { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/convex";
@@ -93,7 +95,7 @@ export default function MyApplicationsPage() {
       setDeliverableUrl("");
       setDeliverableNotes("");
     } catch (err: any) {
-      setMsg(err.message || "Failed to submit deliverable.");
+      setMsg(friendlyError(err, "Failed to submit deliverable."));
     } finally {
       setIsSubmitting(false);
     }

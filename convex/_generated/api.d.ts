@@ -22,6 +22,7 @@ import type * as email from "../email.js";
 import type * as entitlements from "../entitlements.js";
 import type * as jobs from "../jobs.js";
 import type * as learning from "../learning.js";
+import type * as maintenance from "../maintenance.js";
 import type * as notifications from "../notifications.js";
 import type * as payoutMethods from "../payoutMethods.js";
 import type * as plans from "../plans.js";
@@ -57,6 +58,7 @@ declare const fullApi: ApiFromModules<{
   entitlements: typeof entitlements;
   jobs: typeof jobs;
   learning: typeof learning;
+  maintenance: typeof maintenance;
   notifications: typeof notifications;
   payoutMethods: typeof payoutMethods;
   plans: typeof plans;

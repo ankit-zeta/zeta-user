@@ -5,9 +5,11 @@ const convex = new ConvexHttpClient("https://terrific-dove-836.convex.cloud");
 async function testSignup() {
   try {
     console.log("Testing signup...");
+    const email = `test${Date.now()}@zeta.in`;
+    console.log("Email:", email);
     const result = await convex.action("auth:signup", {
       name: "Test User",
-      email: "newtest3@zeta.in",
+      email,
       password: "TestPass123!",
       formStartedAt: Date.now(),
       testMode: true,

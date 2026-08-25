@@ -1,5 +1,7 @@
 "use client";
 
+import { friendlyError } from "@/lib/errors";
+
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -29,8 +31,12 @@ function ForgotPasswordForm() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Hydration gate
+  const [hydrated, setHydrated] = useState(false);
+  React.useEffect(() => setHydrated(true), []);
+
+  const handleSubmit = async () => {
+    if (!hydrated) return;
     if (!email) {
       setStatus("error");
       setMessage("Please enter your email address.");
@@ -46,7 +52,7 @@ function ForgotPasswordForm() {
       setMessage("If an account exists, you'll receive a password reset link shortly.");
     } catch (err: any) {
       setStatus("error");
-      setMessage(err.message || "Failed to send reset link. Please try again.");
+      setMessage(friendlyError(err, "Failed to send reset link. Please try again."));
     }
   };
 
@@ -93,7 +99,12 @@ function ForgotPasswordForm() {
               </Link>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <div
+              className="space-y-4"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && hydrated && status !== "loading") void handleSubmit();
+              }}
+            >
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-textMain">Email Address</label>
                 <div className="relative">
@@ -111,11 +122,14 @@ function ForgotPasswordForm() {
               </div>
 
               <button
-                type="submit"
-                disabled={status === "loading"}
-                className="btn-primary w-full justify-center py-2.5 text-xs font-semibold shadow-sm"
+                type="button"
+                onClick={() => void handleSubmit()}
+                disabled={status === "loading" || !hydrated}
+                className="btn-primary w-full justify-center py-2.5 text-xs font-semibold shadow-sm disabled:opacity-60"
               >
-                {status === "loading" ? (
+                {!hydrated ? (
+                  "Loading…"
+                ) : status === "loading" ? (
                   <> <Loader2 className="w-4 h-4 animate-spin mr-2" /> Sending... </>
                 ) : (
                   <> <Lock className="w-3.5 h-3.5 mr-2" /> Send Reset Link </>
@@ -130,7 +144,7 @@ function ForgotPasswordForm() {
                   </Link>
                 </p>
               </div>
-            </form>
+            </div>
           )}
         </div>
       </div>

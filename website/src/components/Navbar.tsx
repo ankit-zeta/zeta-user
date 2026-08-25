@@ -5,16 +5,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/convex";
-import { 
-  Compass, 
-  Briefcase, 
-  BookOpen, 
-  HelpCircle, 
-  LifeBuoy,
+import {
+  Compass,
+  Briefcase,
+  BookOpen,
   Layers,
-  User, 
-  Menu, 
-  X, 
+  Menu,
+  X,
   ArrowRight,
   LogOut,
   LayoutDashboard
@@ -27,13 +24,10 @@ export default function Navbar() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const navLinks = [
-    { name: "Plans", href: "/plans", icon: Layers },{ name: "Courses", href: "/programs", icon: BookOpen },
+    { name: "Programs", href: "/programs", icon: Layers },
+    { name: "Courses", href: "/programs", icon: BookOpen },
     { name: "Work Portal", href: "/work", icon: Briefcase },
     { name: "How It Works", href: "/how-it-works", icon: Compass },
-    { name: "FAQ", href: "/faq", icon: HelpCircle },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
-    { name: "Track Ticket", href: "/support/track", icon: LifeBuoy },
   ];
 
   const isActive = (path: string) => {

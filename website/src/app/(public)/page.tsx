@@ -32,6 +32,7 @@ import {
   Layers,
   HelpCircle,
   ChevronDown,
+  Video,
 } from "lucide-react";
 
 function formatINR(value: number) {
@@ -134,6 +135,18 @@ export default function HomePage() {
           <div className="pt-16 pb-16 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28">
             {/* Hero Content — Centered, Simple */}
             <div className="max-w-3xl mx-auto text-center space-y-8">
+              {/* 🎥 Video courses coming soon — announcement */}
+              <div className="inline-flex flex-col sm:flex-row items-center gap-2.5 px-4 py-2.5 rounded-xl bg-brand-600 text-white shadow-lg shadow-brand-600/20">
+                <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+                  <Video className="w-4 h-4" />
+                  New: Video Courses
+                </span>
+                <span className="hidden sm:block w-px h-4 bg-white/30" aria-hidden="true" />
+                <span className="text-xs text-brand-50">
+                  Video-format programmes + free courses launching soon — coding, sales, business, e-commerce &amp; skilled trades
+                </span>
+              </div>
+
               {/* Trust badge */}
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-borderSubtle shadow-sm">
                 <span className="w-2 h-2 rounded-full bg-brand-600" aria-hidden="true" />

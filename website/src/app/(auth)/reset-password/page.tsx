@@ -1,5 +1,7 @@
 "use client";
 
+import { friendlyError } from "@/lib/errors";
+
 import React, { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -35,8 +37,12 @@ function ResetPasswordForm() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Hydration gate
+  const [hydrated, setHydrated] = useState(false);
+  React.useEffect(() => setHydrated(true), []);
+
+  const handleSubmit = async () => {
+    if (!hydrated) return;
     if (!token) {
       setStatus("error");
       setMessage("No reset token found in the link.");
@@ -64,7 +70,7 @@ function ResetPasswordForm() {
       setTimeout(() => router.push("/dashboard"), 2000);
     } catch (err: any) {
       setStatus("error");
-      setMessage(err.message || "Reset failed. The link may be invalid or expired.");
+      setMessage(friendlyError(err, "Reset failed. The link may be invalid or expired."));
     }
   };
 
@@ -115,7 +121,12 @@ function ResetPasswordForm() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div
+            className="space-y-4"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && hydrated && status !== "loading") void handleSubmit();
+            }}
+          >
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-textMain">New Password</label>
               <div className="relative">
@@ -157,11 +168,14 @@ function ResetPasswordForm() {
             </div>
 
             <button
-              type="submit"
-              disabled={status === "loading"}
-              className="btn-primary w-full justify-center py-2.5 text-xs font-semibold shadow-sm mt-2"
+              type="button"
+              onClick={() => void handleSubmit()}
+              disabled={status === "loading" || !hydrated}
+              className="btn-primary w-full justify-center py-2.5 text-xs font-semibold shadow-sm mt-2 disabled:opacity-60"
             >
-              {status === "loading" ? (
+              {!hydrated ? (
+                "Loading…"
+              ) : status === "loading" ? (
                 <> <Loader2 className="w-4 h-4 animate-spin mr-2" /> Resetting... </>
               ) : (
                 <> <Lock className="w-3.5 h-3.5 mr-2" /> Reset Password </>
@@ -175,7 +189,7 @@ function ResetPasswordForm() {
                 </Link>
               </p>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </div>

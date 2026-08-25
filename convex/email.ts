@@ -10,6 +10,9 @@ function getResend(): Resend {
   return new Resend(apiKey);
 }
 
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://zetagrow.in").trim();
+const LOGO_URL = `${SITE_URL}/email-logo.png`;
+
 const BRAND = {
   name: "ZetaGrow",
   tagline: "Learn. Work. Grow.",
@@ -36,12 +39,14 @@ function emailWrapper({ title, preheader, content, cta, ctaText, ctaUrl, footerN
       <td align="center" style="padding: 40px 20px;">
         <table role="presentation" width="100%" max-width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #FFFFFF; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
           <tr>
-            <td style="background: linear-gradient(135deg, ${BRAND.primaryColor} 0%, ${BRAND.primaryHover} 100%); padding: 32px 40px; text-align: center;">
-              <div style="display: inline-block; background: rgba(255,255,255,0.15); border-radius: 12px; padding: 12px 16px; margin-bottom: 16px;">
-                <span style="font-size: 24px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.5px;">Z</span>
-              </div>
-              <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #FFFFFF; letter-spacing: -0.5px;">${BRAND.name}</h1>
-              <p style="margin: 8px 0 0; font-size: 12px; color: rgba(255,255,255,0.9); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">${BRAND.tagline}</p>
+            <td style="background-color: #FFFFFF; border-bottom: 1px solid #E4E8E5; padding: 28px 40px; text-align: center;">
+              <img
+                src="${LOGO_URL}"
+                alt="${BRAND.name}"
+                width="180"
+                style="display: block; margin: 0 auto; height: auto; max-width: 200px;"
+              />
+              <p style="margin: 10px 0 0; font-size: 11px; color: ${BRAND.primaryColor}; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">${BRAND.tagline}</p>
             </td>
           </tr>
           ${preheader ? `<tr><td style="padding: 24px 40px 0; text-align: center;"><p style="margin: 0; font-size: 14px; color: ${BRAND.textMuted}; line-height: 1.5;">${preheader}</p></td></tr>` : ''}
@@ -86,7 +91,7 @@ export const sendVerificationEmail = internalAction({
       return { success: false, reason: "RESEND_API_KEY not configured" };
     }
 
-    const verificationUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://zetagrow.in"}/verify-email?token=${args.token}`;
+    const verificationUrl = `${SITE_URL}/verify-email?token=${args.token}&email=${encodeURIComponent(args.email)}`;
     
     const content = `
       <p style="margin: 0 0 16px; font-size: 16px; color: ${BRAND.textColor}; line-height: 1.5;">Hi ${args.name},</p>
@@ -132,7 +137,7 @@ export const sendPasswordResetEmail = internalAction({
       return { success: false, reason: "RESEND_API_KEY not configured" };
     }
 
-    const resetUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://zetagrow.in"}/reset-password?token=${args.token}`;
+    const resetUrl = `${SITE_URL}/reset-password?token=${args.token}`;
     
     const content = `
       <p style="margin: 0 0 16px; font-size: 16px; color: ${BRAND.textColor}; line-height: 1.5;">Hi ${args.name},</p>

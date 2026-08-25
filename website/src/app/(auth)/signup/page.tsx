@@ -1,9 +1,11 @@
 "use client";
 
+import { friendlyError } from "@/lib/errors";
+
 import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMutation } from "convex/react";
+import { useAction } from "convex/react";
 import { api } from "@/lib/convex";
 import { useAuth } from "@/lib/convex";
 import { User, Mail, Lock, Phone, Gift, Eye, EyeOff, Check } from "lucide-react";
@@ -27,8 +29,15 @@ function SignupForm() {
   const searchParams = useSearchParams();
   const refCodeFromUrl = searchParams.get("ref") || "";
 
-  const { login } = useAuth();
-  const signupMutation = useMutation(api.auth.signup);
+  const { login, token, user, isLoading: authLoading } = useAuth();
+  const signupAction = useAction(api.auth.signup);
+
+  // Already signed in? No need for the signup form.
+  useEffect(() => {
+    if (!authLoading && token && user) {
+      router.replace("/dashboard");
+    }
+  }, [authLoading, token, user, router]);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -54,8 +63,12 @@ function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const refCodeLocked = Boolean(refCodeFromUrl);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Hydration gate: prevents native form submission before handlers attach.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+
+  const handleSubmit = async () => {
+    if (!hydrated) return;
     if (!formData.name || !formData.email || !formData.password) {
       setError("Please fill out all required fields.");
       return;
@@ -97,7 +110,7 @@ function SignupForm() {
     setError("");
 
     try {
-      const res = await signupMutation({
+      const res = await signupAction({
         name: formData.name.trim(),
         email: formData.email.trim().toLowerCase(),
         password: formData.password,
@@ -111,7 +124,7 @@ function SignupForm() {
       // The signup now returns emailVerified: false
       router.push(`/verify-email?email=${encodeURIComponent(formData.email.trim().toLowerCase())}`);
     } catch (err: any) {
-      setError(err.message || "Failed to create account. Please try again.");
+      setError(friendlyError(err, "Failed to create account. Please try again."));
     } finally {
       setIsLoading(false);
     }
@@ -172,7 +185,12 @@ function SignupForm() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div
+            className="space-y-4"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && hydrated && !isLoading) void handleSubmit();
+            }}
+          >
             {/* Honeypot field - hidden from users, filled by bots */}
             <input
               type="text"
@@ -307,13 +325,14 @@ function SignupForm() {
             </div>
 
             <button
-              type="submit"
-              disabled={isLoading}
-              className="btn-primary w-full justify-center py-2.5 text-xs font-semibold shadow-sm mt-2"
+              type="button"
+              onClick={() => void handleSubmit()}
+              disabled={isLoading || !hydrated}
+              className="btn-primary w-full justify-center py-2.5 text-xs font-semibold shadow-sm mt-2 disabled:opacity-60"
             >
-              {isLoading ? "Creating Account..." : "Create Account"}
+              {!hydrated ? "Loading…" : isLoading ? "Creating Account..." : "Create Account"}
             </button>
-          </form>
+          </div>
 
           <div className="text-center pt-2 border-t border-borderSubtle">
             <p className="text-xs text-textMuted">

@@ -1,5 +1,7 @@
 "use client";
 
+import { friendlyError } from "@/lib/errors";
+
 import React, { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -140,7 +142,7 @@ export default function TicketDetailPage() {
         setImages((arr) => [...arr, { url: storageId, name: file.name }]);
       }
     } catch (err: any) {
-      setError(err.message || "Failed to upload image.");
+      setError(friendlyError(err, "Failed to upload image."));
     } finally {
       setIsUploading(false);
       e.target.value = "";
@@ -167,7 +169,7 @@ export default function TicketDetailPage() {
       setLinks([]);
       setImages([]);
     } catch (err: any) {
-      setError(err.message || "Failed to send reply.");
+      setError(friendlyError(err, "Failed to send reply."));
     } finally {
       setIsSending(false);
     }

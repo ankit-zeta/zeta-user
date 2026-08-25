@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import { friendlyError } from "@/lib/errors";
+
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation, useAction } from "convex/react";
@@ -32,7 +34,7 @@ function LoginForm() {
       ? rawRedirect
       : "/dashboard";
 
-  const { login } = useAuth();
+  const { login, token, user, isLoading: authLoading } = useAuth();
   const loginAction = useAction(api.auth.login);
 
   const [email, setEmail] = useState("");
@@ -41,8 +43,32 @@ function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Hydration gate: prevents native form submission if the user clicks
+  // before React event handlers are attached.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+
+  // Already signed in? Skip the form entirely.
+  useEffect(() => {
+    if (!authLoading && token && user) {
+      router.replace(redirectUrl);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authLoading, token, user]);
+
+  // Contextual notice based on why the user landed here
+  const reason = searchParams.get("reason");
+  const notice =
+    reason === "session_expired"
+      ? "You were signed out because your account was used to log in on another device. Please sign in again."
+      : reason === "affiliate_refresh"
+      ? "Your Affiliate Center session ended (page refresh). Sign in again to continue."
+      : reason === "affiliate_timeout"
+      ? "Your Affiliate Center session ended automatically after 10 minutes for security. Sign in again to continue."
+      : null;
+
+  const handleSubmit = async () => {
+    if (!hydrated) return; // never act before handlers are live
     if (!email || !password) {
       setError("Please enter both email and password.");
       return;
@@ -60,7 +86,7 @@ function LoginForm() {
       login(res.token, res.user);
       router.push(redirectUrl);
     } catch (err: any) {
-      setError(err.message || "Invalid email or password.");
+      setError(friendlyError(err, "Invalid email or password."));
     } finally {
       setIsLoading(false);
     }
@@ -87,9 +113,9 @@ function LoginForm() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="card-surface p-8 space-y-6">
-          {searchParams.get("reason") === "session_expired" && (
+          {notice && (
             <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">
-              You were signed out because your account was used to log in on another device. Please sign in again.
+              {notice}
             </div>
           )}
           {error && (
@@ -98,7 +124,12 @@ function LoginForm() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <div
+            className="space-y-4"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && hydrated && !isLoading) void handleSubmit();
+            }}
+          >
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-textMain">Email Address</label>
               <div className="relative">
@@ -146,13 +177,14 @@ function LoginForm() {
             </div>
 
             <button
-              type="submit"
-              disabled={isLoading}
-              className="btn-primary w-full justify-center py-2.5 text-xs font-semibold shadow-sm mt-2"
+              type="button"
+              onClick={() => void handleSubmit()}
+              disabled={isLoading || !hydrated}
+              className="btn-primary w-full justify-center py-2.5 text-xs font-semibold shadow-sm mt-2 disabled:opacity-60"
             >
-              {isLoading ? "Signing in..." : "Sign In"}
+              {!hydrated ? "Loading…" : isLoading ? "Signing in..." : "Sign In"}
             </button>
-          </form>
+          </div>
 
           <div className="text-center pt-2 border-t border-borderSubtle">
             <p className="text-xs text-textMuted">

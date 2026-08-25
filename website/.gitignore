@@ -50,3 +50,4 @@ build-output.txt
 *.bak
 *.tsbuildinfo
 next-env.d.ts
+.vercel

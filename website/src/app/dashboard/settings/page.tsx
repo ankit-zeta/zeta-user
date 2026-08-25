@@ -1,5 +1,7 @@
 "use client";
 
+import { friendlyError } from "@/lib/errors";
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/convex";
@@ -48,7 +50,7 @@ export default function SettingsPage() {
       setPwMsg("Password changed. Other sessions were signed out.");
       setPw({ current: "", next: "", confirm: "" });
     } catch (err: any) {
-      setPwErr(err.message || "Failed to change password.");
+      setPwErr(friendlyError(err, "Failed to change password."));
     }
   };
 
@@ -67,7 +69,7 @@ export default function SettingsPage() {
       setNewEmail("");
       setEmailPassword("");
     } catch (err: any) {
-      setEmailErr(err.message || "Failed to change email.");
+      setEmailErr(friendlyError(err, "Failed to change email."));
     }
   };
 
@@ -85,7 +87,7 @@ export default function SettingsPage() {
       logout();
       router.push("/");
     } catch (err: any) {
-      setDeleteErr(err.message || "Failed to delete account.");
+      setDeleteErr(friendlyError(err, "Failed to delete account."));
       setDeleting(false);
     }
   };

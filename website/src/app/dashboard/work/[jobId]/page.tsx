@@ -1,5 +1,7 @@
 "use client";
 
+import { friendlyError } from "@/lib/errors";
+
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -124,7 +126,7 @@ export default function JobApplicationDetailPage() {
         router.push("/dashboard/applications");
       }, 1500);
     } catch (err: any) {
-      setError(err.message || "Failed to submit application.");
+      setError(friendlyError(err, "Failed to submit application."));
     } finally {
       setIsSubmitting(false);
     }

@@ -44,7 +44,7 @@ users: defineTable({
   }),
 
   // Auth Sessions
-  sessions: defineTable({
+sessions: defineTable({
     userId: v.id("users"),
     token: v.string(),
     role: v.string(),
@@ -52,7 +52,8 @@ users: defineTable({
     createdAt: v.number(),
   })
     .index("by_token", ["token"])
-    .index("by_userId", ["userId"]),
+    .index("by_userId", ["userId"])
+    .index("by_expiresAt", ["expiresAt"]),
 
   // Structured CV Profiles (no file uploads — form data only)
   cvProfiles: defineTable({

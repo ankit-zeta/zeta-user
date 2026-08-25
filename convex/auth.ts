@@ -1,7 +1,89 @@
+/// <reference types="node" />
 import { v } from "convex/values";
 import { mutation, query, action, internalMutation, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
 import type { RegisteredAction } from "convex/server";
+
+const PBKDF2_ITERATIONS = 600_000;
+const LEGACY_PBKDF2_ITERATIONS = 10_000;
+
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
+async function pbkdf2Hash(password: string, salt: string, iterations: number): Promise<string> {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(password),
+    { name: "PBKDF2" },
+    false,
+    ["deriveBits", "deriveKey"]
+  );
+  const key = await crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt: enc.encode(salt),
+      iterations,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    { name: "HMAC", hash: "SHA-256", length: 256 },
+    true,
+    ["sign"]
+  );
+  const exported = await crypto.subtle.exportKey("raw", key);
+  const hashArray = Array.from(new Uint8Array(exported));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+export async function hashPassword(password: string, salt: string): Promise<string> {
+  return pbkdf2Hash(password, salt, PBKDF2_ITERATIONS);
+}
+
+export async function verifyPassword(password: string, salt: string, expectedHash: string): Promise<{ valid: boolean; needsUpgrade: boolean }> {
+  const currentHash = await pbkdf2Hash(password, salt, PBKDF2_ITERATIONS);
+  if (timingSafeEqual(currentHash, expectedHash)) {
+    return { valid: true, needsUpgrade: false };
+  }
+  const legacyHash = await pbkdf2Hash(password, salt, LEGACY_PBKDF2_ITERATIONS);
+  if (timingSafeEqual(legacyHash, expectedHash)) {
+    return { valid: true, needsUpgrade: true };
+  }
+  return { valid: false, needsUpgrade: false };
+}
+
+export function sanitizeName(name: string): string {
+  return name.replace(/[<>&"']/g, "").trim().slice(0, 80);
+}
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function generateReferralCode(baseName: string): string {
+  const base = baseName.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 4) || "ZETA";
+  const array = new Uint8Array(4);
+  crypto.getRandomValues(array);
+  const randomSuffix = Array.from(array, (b) => b.toString(16).padStart(2, "0")).join("").toUpperCase().slice(0, 4);
+  return `${base}${randomSuffix}`;
+}
+
+async function getUniqueReferralCode(ctx: any, baseName: string): Promise<string> {
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const code = generateReferralCode(baseName);
+    const existing = await ctx.db.query("users").withIndex("by_referralCode", (q: any) => q.eq("referralCode", code)).first();
+    if (!existing) return code;
+  }
+  const array = new Uint8Array(8);
+  crypto.getRandomValues(array);
+  return "ZETA" + Array.from(array, (b) => b.toString(16).padStart(2, "0")).join("").toUpperCase();
+}
 
 // Internal mutations for deterministic DB writes (called from signup action)
 export const createUser = internalMutation({
@@ -72,7 +154,17 @@ export const createNotification = internalMutation({
   },
 });
 
+export function generateToken(): string {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
 
+export function generateSalt(): string {
+  const array = new Uint8Array(16);
+  crypto.getRandomValues(array);
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
 
 export const updateUserPassword = internalMutation({
   args: {
@@ -90,45 +182,6 @@ export const updateUserPassword = internalMutation({
   },
 });
 
-// Helper function to hash password with salt using Web Crypto API
-export async function hashPassword(password: string, salt: string): Promise<string> {
-  const enc = new TextEncoder();
-  const keyMaterial = await crypto.subtle.importKey(
-    "raw",
-    enc.encode(password),
-    { name: "PBKDF2" },
-    false,
-    ["deriveBits", "deriveKey"]
-  );
-  const key = await crypto.subtle.deriveKey(
-    {
-      name: "PBKDF2",
-      salt: enc.encode(salt),
-      iterations: 10000,
-      hash: "SHA-256",
-    },
-    keyMaterial,
-    { name: "HMAC", hash: "SHA-256", length: 256 },
-    true,
-    ["sign"]
-  );
-  const exported = await crypto.subtle.exportKey("raw", key);
-  const hashArray = Array.from(new Uint8Array(exported));
-  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-export function generateToken(): string {
-  const array = new Uint8Array(32);
-  crypto.getRandomValues(array);
-  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
-}
-
-export function generateSalt(): string {
-  const array = new Uint8Array(16);
-  crypto.getRandomValues(array);
-  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join("");
-}
-
 export const signup = action({
   args: {
     name: v.string(),
@@ -142,9 +195,16 @@ export const signup = action({
   },
   handler: async (ctx, args) => {
     const email = args.email.trim().toLowerCase();
+    const name = sanitizeName(args.name);
 
-    // Rate limit: per-email 3/hr + global 30/5min burst (skip in testMode)
-    if (!args.testMode) {
+    if (!isValidEmail(email)) {
+      throw new Error("Invalid email address");
+    }
+
+    const testModeAllowed = process.env.ALLOW_TEST_MODE === "1";
+    const skipRateLimit = testModeAllowed && args.testMode === true;
+
+    if (!skipRateLimit) {
       await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `signup:email:${email}`, max: 3, windowMs: 60 * 60 * 1000 });
       await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: "signup:global", max: 30, windowMs: 5 * 60 * 1000 });
     }
@@ -167,22 +227,20 @@ export const signup = action({
     // Check if user already exists
     const existing = await ctx.runQuery(internal.auth.getUserForLogin, { email });
     if (existing) {
-      throw new Error("An account with this email already exists");
+      throw new Error("Unable to create account with these details. If you already have an account, please sign in or reset your password.");
     }
 
     const salt = generateSalt();
     const passwordHash = await hashPassword(args.password, salt);
 
     // Generate unique referral code for the user
-    const baseCode = args.name.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 4) || "ZETA";
-    const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
-    const userReferralCode = `${baseCode}${randomSuffix}`;
+    const userReferralCode = await getUniqueReferralCode(ctx, name);
 
     // Handle referring user if referralCode is supplied
     let referrerUserId: string | undefined;
     if (args.referralCode && args.referralCode.trim()) {
       const cleanRef = args.referralCode.trim().toUpperCase();
-      const referrer = await ctx.runQuery(internal.auth.getUserByReferralCode, { referralCode: cleanRef });
+      const referrer: { _id: string } | null = await ctx.runQuery(internal.auth.getUserByReferralCode, { referralCode: cleanRef });
       if (referrer) {
         referrerUserId = referrer._id;
       }
@@ -193,8 +251,8 @@ export const signup = action({
     const verificationExpiresAt = now + 24 * 60 * 60 * 1000; // 24 hours
 
     // Create user with unverified status
-    const userId = await ctx.runMutation(internal.auth.createUser, {
-      name: args.name.trim(),
+    const userId: string = await ctx.runMutation(internal.auth.createUser, {
+      name: name,
       email,
       passwordHash,
       salt,
@@ -237,7 +295,7 @@ export const signup = action({
         userId: referrerUserId,
         type: "affiliate",
         title: "New Referral Registered",
-        message: `${args.name.trim()} joined using your referral link.`,
+        message: `${name} joined using your referral link.`,
         read: false,
         actionUrl: "/dashboard/referrals",
         createdAt: now,
@@ -259,7 +317,7 @@ export const signup = action({
     await ctx.runAction(internal.email.sendVerificationEmail, {
       email,
       token: verificationToken,
-      name: args.name.trim(),
+      name,
     });
 
     // Create session token (valid 30 days)
@@ -277,7 +335,7 @@ export const signup = action({
       token,
       user: {
         id: userId,
-        name: args.name.trim(),
+        name,
         email,
         role: "user",
         referralCode: userReferralCode,
@@ -308,6 +366,11 @@ export const login: RegisteredAction<
   },
   handler: async (ctx, args) => {
     const email = args.email.trim().toLowerCase();
+
+    // Rate limiting on login: per-email 10/15min + global 100/5min
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `login:email:${email}`, max: 10, windowMs: 15 * 60 * 1000 });
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: "login:global", max: 100, windowMs: 5 * 60 * 1000 });
+
     const user = await ctx.runQuery(internal.auth.getUserForLogin, { email });
 
     if (!user) {
@@ -328,10 +391,17 @@ export const login: RegisteredAction<
       throw new Error("Invalid email or password");
     }
 
-    const testHash = await hashPassword(args.password, user.salt);
-    if (testHash !== user.passwordHash) {
+    const { valid, needsUpgrade } = await verifyPassword(args.password, user.salt, user.passwordHash);
+    if (!valid) {
       await ctx.runMutation(internal.auth.recordFailedLogin, { userId: user._id });
       throw new Error("Invalid email or password");
+    }
+
+    // Upgrade legacy hash to current iteration count
+    if (needsUpgrade) {
+      const newSalt = generateSalt();
+      const newHash = await hashPassword(args.password, newSalt);
+      await ctx.runMutation(internal.auth.updateUserPassword, { userId: user._id, passwordHash: newHash, salt: newSalt, updatedAt: now });
     }
 
     // Successful login resets the failure counter
@@ -432,6 +502,21 @@ export const createSession = internalMutation({
   },
 });
 
+export const cleanupExpiredSessions = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const now = Date.now();
+    const expired = await ctx.db
+      .query("sessions")
+      .withIndex("by_expiresAt", (q) => q.lte("expiresAt", now))
+      .collect();
+    for (const s of expired) {
+      await ctx.db.delete(s._id);
+    }
+    return { deleted: expired.length };
+  },
+});
+
 export const getSessionUser = query({
   args: { token: v.optional(v.union(v.null(), v.string())) },
   handler: async (ctx, args) => {
@@ -471,6 +556,21 @@ export const getSessionUser = query({
       .filter((p) => p.status === "completed")
       .map((p) => p.programId);
 
+    // ── Affiliate eligibility ──────────────────────────────────────────────
+    // Affiliate Center unlocks 1 hour after the user's FIRST completed
+    // programme purchase (any plan). Computed from purchase history so it is
+    // server-authoritative, spoof-proof, and covers every grant path.
+    const AFFILIATE_UNLOCK_DELAY_MS = 60 * 60 * 1000; // 1 hour
+    const completedPurchases = purchases.filter((p) => p.status === "completed");
+    const firstPurchaseAt =
+      completedPurchases.length > 0
+        ? Math.min(...completedPurchases.map((p) => p.createdAt))
+        : null;
+    const affiliateUnlocksAt =
+      firstPurchaseAt !== null ? firstPurchaseAt + AFFILIATE_UNLOCK_DELAY_MS : null;
+    const affiliateEligible =
+      affiliateUnlocksAt !== null && Date.now() >= affiliateUnlocksAt;
+
     return {
       _id: user._id,
       name: user.name,
@@ -489,6 +589,9 @@ export const getSessionUser = query({
       position,
       wallet: wallet || { availableBalance: 0, pendingBalance: 0, totalEarned: 0 },
       enrolledProgramIds,
+      firstPurchaseAt,
+      affiliateUnlocksAt,
+      affiliateEligible,
       createdAt: user.createdAt,
     };
   },
@@ -528,8 +631,8 @@ export const changePassword = mutation({
     // Rate limit: 3 password changes per hour per user
     await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `changePassword:userId:${user._id}`, max: 3, windowMs: 60 * 60 * 1000 });
 
-    const currentHash = await hashPassword(args.currentPassword, user.salt);
-    if (currentHash !== user.passwordHash) {
+    const { valid } = await verifyPassword(args.currentPassword, user.salt, user.passwordHash);
+    if (!valid) {
       throw new Error("Current password is incorrect");
     }
     if (args.newPassword.length < 8) {
@@ -593,8 +696,8 @@ export const changeEmail = mutation({
     await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `changeEmail:userId:${user._id}`, max: 3, windowMs: 60 * 60 * 1000 });
 
     // Require current password confirmation before changing the account email
-    const currentHash = await hashPassword(args.currentPassword, user.salt);
-    if (currentHash !== user.passwordHash) {
+    const { valid } = await verifyPassword(args.currentPassword, user.salt, user.passwordHash);
+    if (!valid) {
       throw new Error("Current password is incorrect");
     }
 
@@ -653,8 +756,8 @@ export const deleteAccount = mutation({
     // Rate limit: 3 deletion attempts per hour per user
     await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `deleteAccount:userId:${user._id}`, max: 3, windowMs: 60 * 60 * 1000 });
 
-    const hash = await hashPassword(args.password, user.salt);
-    if (hash !== user.passwordHash) {
+    const { valid } = await verifyPassword(args.password, user.salt, user.passwordHash);
+    if (!valid) {
       throw new Error("Password is incorrect");
     }
 
@@ -715,13 +818,8 @@ export const createDemoCashfreeUser = internalMutation({
       return { success: true, message: "Demo user updated with verified email", userId: existing._id };
     }
 
-    // Generate referral code
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let referralCode = "";
-    for (let i = 0; i < 6; i++) {
-      referralCode += chars[Math.floor(Math.random() * chars.length)];
-    }
-    referralCode = "CF" + referralCode;
+    // Generate unique referral code
+    const referralCode = await getUniqueReferralCode(ctx, "CF");
 
     // Hash the demo password properly
     const salt = "demosalt123";
@@ -790,7 +888,6 @@ export const createDemoCashfreeUser = internalMutation({
       message: "Demo Cashfree user created successfully",
       userId,
       email,
-      password: "test@Zeta123!",
       token,
       enrolledPrograms: programs.map(p => p.name),
     };
@@ -835,8 +932,7 @@ export const testDemoUserLogin = internalMutation({
     }
 
     // Test the password hash
-    const testHash = await hashPassword("test@Zeta123!", user.salt);
-    const match = testHash === user.passwordHash;
+    const { valid } = await verifyPassword("test@Zeta123!", user.salt, user.passwordHash);
 
     return {
       success: true,
@@ -844,10 +940,7 @@ export const testDemoUserLogin = internalMutation({
         email: user.email,
         emailVerified: user.emailVerified,
         status: user.status,
-        salt: user.salt,
-        passwordHash: user.passwordHash,
-        testHash,
-        match,
+        passwordValid: valid,
       },
     };
   },
@@ -857,20 +950,113 @@ export const testDemoUserLogin = internalMutation({
 // EMAIL VERIFICATION & PASSWORD RESET
 // ============================================================================
 
+// ── Internal helpers (actions cannot use ctx.db) ────────────────────────────
+
+export const getUserByVerificationToken = internalQuery({
+  args: { token: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_emailVerificationToken", (q) => q.eq("emailVerificationToken", args.token))
+      .first();
+  },
+});
+
+export const markEmailVerified = internalMutation({
+  args: { userId: v.id("users"), updatedAt: v.number() },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, {
+      emailVerified: true,
+      status: "active",
+      emailVerificationToken: undefined,
+      emailVerificationExpiresAt: undefined,
+      updatedAt: args.updatedAt,
+    });
+  },
+});
+
+export const updateVerificationToken = internalMutation({
+  args: {
+    userId: v.id("users"),
+    emailVerificationToken: v.string(),
+    emailVerificationExpiresAt: v.number(),
+    updatedAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, {
+      emailVerificationToken: args.emailVerificationToken,
+      emailVerificationExpiresAt: args.emailVerificationExpiresAt,
+      updatedAt: args.updatedAt,
+    });
+  },
+});
+
+export const getUserByPasswordResetToken = internalQuery({
+  args: { token: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_passwordResetToken", (q) => q.eq("passwordResetToken", args.token))
+      .first();
+  },
+});
+
+export const updatePasswordResetToken = internalMutation({
+  args: {
+    userId: v.id("users"),
+    passwordResetToken: v.string(),
+    passwordResetExpiresAt: v.number(),
+    updatedAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, {
+      passwordResetToken: args.passwordResetToken,
+      passwordResetExpiresAt: args.passwordResetExpiresAt,
+      updatedAt: args.updatedAt,
+    });
+  },
+});
+
+export const applyPasswordReset = internalMutation({
+  args: {
+    userId: v.id("users"),
+    passwordHash: v.string(),
+    salt: v.string(),
+    updatedAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, {
+      passwordHash: args.passwordHash,
+      salt: args.salt,
+      passwordResetToken: undefined,
+      passwordResetExpiresAt: undefined,
+      updatedAt: args.updatedAt,
+    });
+
+    // Revoke all existing sessions
+    const sessions = await ctx.db
+      .query("sessions")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .collect();
+    for (const s of sessions) {
+      await ctx.db.delete(s._id);
+    }
+  },
+});
+
+// ── Actions ─────────────────────────────────────────────────────────────────
+
 // Verify email with token
 export const verifyEmail = action({
   args: { token: v.string() },
   handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_emailVerificationToken", (q) => q.eq("emailVerificationToken", args.token))
-      .first();
+    const user = await ctx.runQuery(internal.auth.getUserByVerificationToken, { token: args.token });
 
     if (!user) {
       throw new Error("Invalid or expired verification link");
     }
 
-    if (user.emailVerificationExpiresAt < Date.now()) {
+    if (user.emailVerificationExpiresAt! < Date.now()) {
       throw new Error("Verification link has expired. Please sign up again.");
     }
 
@@ -879,11 +1065,8 @@ export const verifyEmail = action({
     }
 
     const now = Date.now();
-    await ctx.db.patch(user._id, {
-      emailVerified: true,
-      status: "active",
-      emailVerificationToken: undefined,
-      emailVerificationExpiresAt: undefined,
+    await ctx.runMutation(internal.auth.markEmailVerified, {
+      userId: user._id,
       updatedAt: now,
     });
 
@@ -894,18 +1077,18 @@ export const verifyEmail = action({
     });
 
     // Create session for immediate login
-    const token = generateToken();
+    const sessionToken = generateToken();
     const expiresAt = now + 30 * 24 * 60 * 60 * 1000;
     await ctx.runMutation(internal.auth.createSession, {
       userId: user._id,
-      token,
+      token: sessionToken,
       role: user.role,
       expiresAt,
       createdAt: now,
     });
 
     return {
-      token,
+      token: sessionToken,
       user: {
         id: user._id,
         name: user.name,
@@ -942,7 +1125,8 @@ export const resendVerificationEmail = action({
     const verificationToken = generateToken();
     const verificationExpiresAt = now + 24 * 60 * 60 * 1000;
 
-    await ctx.db.patch(user._id, {
+    await ctx.runMutation(internal.auth.updateVerificationToken, {
+      userId: user._id,
       emailVerificationToken: verificationToken,
       emailVerificationExpiresAt: verificationExpiresAt,
       updatedAt: now,
@@ -978,7 +1162,8 @@ export const requestPasswordReset = action({
     const resetToken = generateToken();
     const resetExpiresAt = now + 60 * 60 * 1000; // 1 hour
 
-    await ctx.db.patch(user._id, {
+    await ctx.runMutation(internal.auth.updatePasswordResetToken, {
+      userId: user._id,
       passwordResetToken: resetToken,
       passwordResetExpiresAt: resetExpiresAt,
       updatedAt: now,
@@ -998,16 +1183,13 @@ export const requestPasswordReset = action({
 export const resetPassword = action({
   args: { token: v.string(), newPassword: v.string() },
   handler: async (ctx, args) => {
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_passwordResetToken", (q) => q.eq("passwordResetToken", args.token))
-      .first();
+    const user = await ctx.runQuery(internal.auth.getUserByPasswordResetToken, { token: args.token });
 
     if (!user) {
       throw new Error("Invalid or expired reset link");
     }
 
-    if (user.passwordResetExpiresAt < Date.now()) {
+    if (user.passwordResetExpiresAt! < Date.now()) {
       throw new Error("Reset link has expired. Please request a new one.");
     }
 
@@ -1019,36 +1201,27 @@ export const resetPassword = action({
     const passwordHash = await hashPassword(args.newPassword, salt);
     const now = Date.now();
 
-    await ctx.db.patch(user._id, {
+    // Update password and revoke all sessions in one mutation
+    await ctx.runMutation(internal.auth.applyPasswordReset, {
+      userId: user._id,
       passwordHash,
       salt,
-      passwordResetToken: undefined,
-      passwordResetExpiresAt: undefined,
       updatedAt: now,
     });
 
-    // Revoke all existing sessions
-    const sessions = await ctx.db
-      .query("sessions")
-      .withIndex("by_userId", (q) => q.eq("userId", user._id))
-      .collect();
-    for (const s of sessions) {
-      await ctx.db.delete(s._id);
-    }
-
     // Create new session
-    const token = generateToken();
+    const sessionToken = generateToken();
     const expiresAt = now + 30 * 24 * 60 * 60 * 1000;
     await ctx.runMutation(internal.auth.createSession, {
       userId: user._id,
-      token,
+      token: sessionToken,
       role: user.role,
       expiresAt,
       createdAt: now,
     });
 
     return {
-      token,
+      token: sessionToken,
       user: {
         id: user._id,
         name: user.name,

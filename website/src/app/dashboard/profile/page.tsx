@@ -1,5 +1,7 @@
 "use client";
 
+import { friendlyError } from "@/lib/errors";
+
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
@@ -104,7 +106,7 @@ export default function ProfilePage() {
       });
       setMsg("Profile and CV saved successfully!");
     } catch (err: any) {
-      setMsg(err.message || "Failed to save profile.");
+      setMsg(friendlyError(err, "Failed to save profile."));
     } finally {
       setIsSaving(false);
     }

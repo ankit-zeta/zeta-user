@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { query, internalMutation } from "./_generated/server";
+import { internalQuery, internalMutation } from "./_generated/server";
 
 const DEFAULT_WINDOW_MS = 60 * 60 * 1000;
 
@@ -60,7 +60,7 @@ export const cleanupRateLimits = internalMutation({
   },
 });
 
-export const getRateLimitStatus = query({
+export const getRateLimitStatus = internalQuery({
   args: {
     key: v.string(),
     windowMs: v.optional(v.number()),

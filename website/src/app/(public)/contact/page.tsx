@@ -1,5 +1,7 @@
 "use client";
 
+import { friendlyError } from "@/lib/errors";
+
 import React, { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "@/lib/convex";
@@ -38,7 +40,7 @@ export default function ContactPage() {
       setSuccess(true);
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err: any) {
-      setError(err.message || "Failed to submit message. Please try again.");
+      setError(friendlyError(err, "Failed to submit message. Please try again."));
     } finally {
       setIsSubmitting(false);
     }

@@ -10,4 +10,11 @@ crons.cron(
   {}
 );
 
+crons.cron(
+  "cleanup-expired-sessions",
+  "0 4 * * *",
+  internal.auth.cleanupExpiredSessions,
+  {}
+);
+
 export default crons;
