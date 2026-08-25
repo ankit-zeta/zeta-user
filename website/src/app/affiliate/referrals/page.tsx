@@ -58,11 +58,11 @@ export default function AffiliateReferralsPage() {
                     <td className="py-3 px-3">
                       {r.hasPurchased ? (
                         <span className="text-[10px] font-bold bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded flex items-center gap-1 w-fit">
-                          <CheckCircle2 className="w-3 h-3" /> Qualifying
+                          <CheckCircle2 className="w-3 h-3" /> Purchased · Commission Pending
                         </span>
                       ) : (
-                        <span className="text-[10px] font-bold bg-neutral-800 text-neutral-400 px-2 py-0.5 rounded flex items-center gap-1 w-fit">
-                          <CircleDashed className="w-3 h-3" /> Pending
+                        <span className="text-[10px] font-bold bg-blue-950 text-blue-300 border border-blue-900 px-2 py-0.5 rounded flex items-center gap-1 w-fit">
+                          <CircleDashed className="w-3 h-3" /> Joined via your link
                         </span>
                       )}
                     </td>
