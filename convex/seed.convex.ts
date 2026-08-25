@@ -20,7 +20,7 @@ export const seedDatabase = mutation({
 
     // 2. Affiliate tier achievements (chain % wired via adminSettings.chainLevels)
     if ((await ctx.db.query("achievements").collect()).length === 0) {
-      const posId = (name: string) => ((await ctx.db.query("positions").collect()) as any[]).find((p) => p.name === name)?._id;
+      const posId = async (name: string) => ((await ctx.db.query("positions").collect()) as any[]).find((p) => p.name === name)?._id;
       const tiers = [
         { name: "Referral Partner I", slug: "referral-partner-i", desc: "Generate ₹1,00,000 verified referral sales with 20+ registered referrals. Unlocks Level-1 chain commission (5%).", conds: [{ metric: "valid_referrals", operator: ">=", value: 20 }, { metric: "total_sales_amount", operator: ">=", value: 100000 }], pos: "Associate Specialist", order: 1 },
         { name: "Referral Partner II", slug: "referral-partner-ii", desc: "Generate ₹3,00,000 verified referral sales with 30+ registered referrals. Upgrades chain commission to Level 2 (10%).", conds: [{ metric: "valid_referrals", operator: ">=", value: 30 }, { metric: "total_sales_amount", operator: ">=", value: 300000 }], pos: "Growth Lead", order: 2 },
@@ -31,7 +31,7 @@ export const seedDatabase = mutation({
           name: t.name, slug: t.slug, description: t.desc,
           icon: "trending-up", status: "active", sortOrder: t.order,
           conditionMode: "ALL", conditions: t.conds,
-          unlockPositionId: posId(t.pos),
+          unlockPositionId: await posId(t.pos),
           unlockBadgeName: t.name,
           notificationText: `You unlocked ${t.name}!`,
           createdAt: now, updatedAt: now,

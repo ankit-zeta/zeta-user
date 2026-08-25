@@ -2,6 +2,7 @@
 import { v } from "convex/values";
 import { mutation, query, action, internalMutation, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
+import type { Id } from "./_generated/dataModel";
 import type { RegisteredAction } from "convex/server";
 
 const PBKDF2_ITERATIONS = 600_000;
@@ -77,7 +78,7 @@ function generateReferralCode(baseName: string): string {
 async function getUniqueReferralCode(ctx: any, baseName: string): Promise<string> {
   for (let attempt = 0; attempt < 10; attempt++) {
     const code = generateReferralCode(baseName);
-    const existing = await ctx.db.query("users").withIndex("by_referralCode", (q: any) => q.eq("referralCode", code)).first();
+    const existing = await ctx.runQuery(internal.auth.getUserByReferralCode, { referralCode: code });
     if (!existing) return code;
   }
   const array = new Uint8Array(8);
@@ -193,7 +194,17 @@ export const signup = action({
     formStartedAt: v.optional(v.number()),
     testMode: v.optional(v.boolean()),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{
+    token: string;
+    user: {
+      id: Id<"users">;
+      name: string;
+      email: string;
+      role: string;
+      referralCode: string;
+      emailVerified: boolean;
+    };
+  }> => {
     const email = args.email.trim().toLowerCase();
     const name = sanitizeName(args.name);
 
@@ -237,10 +248,10 @@ export const signup = action({
     const userReferralCode = await getUniqueReferralCode(ctx, name);
 
     // Handle referring user if referralCode is supplied
-    let referrerUserId: string | undefined;
+    let referrerUserId: Id<"users"> | undefined;
     if (args.referralCode && args.referralCode.trim()) {
       const cleanRef = args.referralCode.trim().toUpperCase();
-      const referrer: { _id: string } | null = await ctx.runQuery(internal.auth.getUserByReferralCode, { referralCode: cleanRef });
+      const referrer = await ctx.runQuery(internal.auth.getUserByReferralCode, { referralCode: cleanRef });
       if (referrer) {
         referrerUserId = referrer._id;
       }
@@ -251,7 +262,7 @@ export const signup = action({
     const verificationExpiresAt = now + 24 * 60 * 60 * 1000; // 24 hours
 
     // Create user with unverified status
-    const userId: string = await ctx.runMutation(internal.auth.createUser, {
+    const userId = await ctx.runMutation(internal.auth.createUser, {
       name: name,
       email,
       passwordHash,
@@ -313,12 +324,16 @@ export const signup = action({
       createdAt: now,
     });
 
-    // Send verification email
-    await ctx.runAction(internal.email.sendVerificationEmail, {
-      email,
-      token: verificationToken,
-      name,
-    });
+    // Send verification email (non-fatal: account must be created even if email delivery hiccups)
+    try {
+      await ctx.runAction(internal.email.sendVerificationEmail, {
+        email,
+        token: verificationToken,
+        name,
+      });
+    } catch (emailError) {
+      console.error("Verification email failed for", email, emailError);
+    }
 
     // Create session token (valid 30 days)
     const token = generateToken();
@@ -803,7 +818,14 @@ export const deleteAccount = mutation({
 // Run this once from Convex dashboard: npx convex run auth:createDemoCashfreeUser
 export const createDemoCashfreeUser = internalMutation({
   args: {},
-  handler: async (ctx) => {
+  handler: async (ctx): Promise<{
+    success: boolean;
+    message?: string;
+    userId?: string;
+    email?: string;
+    token?: string;
+    enrolledPrograms?: string[];
+  }> => {
     const email = "test@zeta.in";
     
     // Check if user already exists
@@ -857,8 +879,8 @@ export const createDemoCashfreeUser = internalMutation({
     const programs = await ctx.db
       .query("programs")
       .withIndex("by_status", (q) => q.eq("status", "published"))
-      .limit(3)
-      .collect();
+      .order("desc")
+      .take(3);
 
     // Enroll in first 3 programs
     for (const program of programs) {
@@ -1049,7 +1071,17 @@ export const applyPasswordReset = internalMutation({
 // Verify email with token
 export const verifyEmail = action({
   args: { token: v.string() },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{
+    token: string;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+      referralCode?: string;
+      emailVerified: boolean;
+    };
+  }> => {
     const user = await ctx.runQuery(internal.auth.getUserByVerificationToken, { token: args.token });
 
     if (!user) {
@@ -1182,7 +1214,16 @@ export const requestPasswordReset = action({
 // Reset password with token
 export const resetPassword = action({
   args: { token: v.string(), newPassword: v.string() },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<{
+    token: string;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+      referralCode?: string;
+    };
+  }> => {
     const user = await ctx.runQuery(internal.auth.getUserByPasswordResetToken, { token: args.token });
 
     if (!user) {

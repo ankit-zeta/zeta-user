@@ -50,14 +50,14 @@ export const wipeAllUsers = internalMutation({
     // Delete every row in each linked table that belongs to a doomed user.
     for (const tableName of USER_ID_TABLES) {
       let count = 0;
-      const rows = await ctx.db.query(tableName as never).collect();
+      const rows = (await ctx.db.query(tableName as never).collect()) as Array<Record<string, unknown> & { _id: string }>;
       for (const row of rows) {
         const anyRow = row as unknown as Record<string, unknown>;
         const owner =
           (anyRow.userId as string | undefined) ??
           (anyRow.adminUserId as string | undefined);
         if (owner && doomedUserIds.has(owner as never)) {
-          await ctx.db.delete(row._id);
+          await ctx.db.delete(row._id as never);
           count++;
         }
       }
@@ -113,7 +113,7 @@ export const wipeAllUsers = internalMutation({
 
     // Finally delete the users themselves
     for (const id of doomedUserIds) {
-      const u = await ctx.db.get(id);
+      const u = await ctx.db.get(id as never);
       if (u) {
         await ctx.db.delete(u._id);
         deletedUsers++;
@@ -174,7 +174,7 @@ export const createCleanTestUser = internalMutation({
       updatedAt: now,
     });
 
-    // Intentionally NO purchases / enrollments / notifications — fresh state.
+    // Intentionally NO purchases / enrollments / notifications ï¿½ fresh state.
 
     return {
       success: true,
@@ -187,7 +187,7 @@ export const createCleanTestUser = internalMutation({
 });
 
 /**
- * TEMP simulation helper — creates a completed purchase for a user at an
+ * TEMP simulation helper ï¿½ creates a completed purchase for a user at an
  * arbitrary createdAt so the affiliate cooling-window logic can be verified.
  * Remove after testing. Run: npx convex run maintenance:simPurchase
  * '{"userId":"...","hoursAgo":2}'
