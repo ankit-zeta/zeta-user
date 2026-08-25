@@ -67,7 +67,12 @@ export default function PlanDetailPage() {
 
   const ownedCount =
     plan.courses?.filter((c: any) => user?.enrolledProgramIds?.includes(c._id)).length || 0;
-  const hasPlanAccess = plan.courses && ownedCount === plan.courses.length;
+  const totalCourses = plan.courses?.length || 0;
+  const hasFullAccess = totalCourses > 0 && ownedCount === totalCourses;
+  const hasPartialAccess = ownedCount > 0 && !hasFullAccess;
+  const firstOwnedCourse = (plan.courses || []).find(
+    (c: any) => user?.enrolledProgramIds?.includes(c._id)
+  );
 
   const handlePurchase = () => {
     if (!token) {
@@ -146,10 +151,34 @@ export default function PlanDetailPage() {
               </p>
             </div>
 
-            {hasPlanAccess ? (
-              <Link href="/dashboard/programs" className="btn-primary w-full text-center justify-center py-3 text-sm font-semibold block">
-                Go To My Courses
+            {hasFullAccess ? (
+              <Link
+                href={firstOwnedCourse ? `/dashboard/learning/${firstOwnedCourse._id}` : "/dashboard/programs"}
+                className="btn-primary w-full text-center justify-center py-3 text-sm font-semibold block"
+              >
+                Start Learning
               </Link>
+            ) : hasPartialAccess ? (
+              <div className="space-y-2.5">
+                <div className="p-3 rounded-lg bg-brand-50 border border-brand-200 flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-brand-800 leading-relaxed">
+                    You already own {ownedCount} of {totalCourses} courses in this plan.
+                  </p>
+                </div>
+                <Link
+                  href={firstOwnedCourse ? `/dashboard/learning/${firstOwnedCourse._id}` : "/dashboard/programs"}
+                  className="btn-primary w-full text-center justify-center py-3 text-sm font-semibold block"
+                >
+                  Start Learning
+                </Link>
+                <button
+                  onClick={handlePurchase}
+                  className="btn-secondary w-full justify-center py-2.5 text-xs font-semibold"
+                >
+                  Unlock the remaining {totalCourses - ownedCount} course{totalCourses - ownedCount === 1 ? "" : "s"}
+                </button>
+              </div>
             ) : (
               <>
                 <button

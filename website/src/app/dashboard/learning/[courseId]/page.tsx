@@ -96,6 +96,15 @@ export default function CoursePlayerPage() {
   const [openModuleIndex, setOpenModuleIndex] = useState<number | null>(0);
   const [isToggling, setIsToggling] = useState(false);
 
+  // Quiz test state (resets per lesson) — declared BEFORE any early returns
+  // to respect the Rules of Hooks (hook count must match across renders).
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
+  useEffect(() => {
+    setAnswers({});
+    setQuizSubmitted(false);
+  }, [activeLessonId]);
+
   if (courseState === undefined) {
     return (
       <div className="card-surface p-12 text-center animate-pulse space-y-4">
@@ -110,14 +119,6 @@ export default function CoursePlayerPage() {
   // Set default active lesson if not set
   const allLessons = modules.flatMap((m) => m.lessons);
   const currentLesson = allLessons.find((l) => l._id.toString() === activeLessonId) || allLessons[0];
-
-  // Quiz test state (resets per lesson)
-  const [answers, setAnswers] = useState<Record<number, number>>({});
-  const [quizSubmitted, setQuizSubmitted] = useState(false);
-  useEffect(() => {
-    setAnswers({});
-    setQuizSubmitted(false);
-  }, [activeLessonId, currentLesson?._id]);
   const quizData: any[] | null =
     currentLesson?.type === "quiz" && Array.isArray((currentLesson as any).quizData)
       ? (currentLesson as any).quizData
