@@ -5,10 +5,5 @@
   "framework": "nextjs",
   "installCommand": "npm install",
   "devCommand": "npm run dev:website",
-  "regions": ["iad1"],
-  "functions": {
-    "website/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
+  "regions": ["iad1"]
 }
