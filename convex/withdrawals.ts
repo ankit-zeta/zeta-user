@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query, action } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { requirePurchasedUser } from "./entitlements";
 
 async function requireAdmin(ctx: any, token: string) {
@@ -398,6 +399,24 @@ export const updateWithdrawalStatus = mutation({
       actionUrl: "/dashboard/withdrawals",
       createdAt: now,
     });
+
+    // Email on final outcome (completed / rejected)
+    if (args.status === "completed" || args.status === "rejected") {
+      const user = await ctx.db.get(withdrawal.userId);
+      if (user) {
+        try {
+          await ctx.scheduler.runAfter(0, internal.email.sendWithdrawalStatusEmail, {
+            email: user.email,
+            name: user.name,
+            amount: withdrawal.amount,
+            status: args.status,
+            adminNote: args.adminNote,
+          });
+        } catch (e) {
+          console.error("Failed to schedule withdrawal status email:", e);
+        }
+      }
+    }
 
     // Audit log
     await ctx.db.insert("auditLogs", {

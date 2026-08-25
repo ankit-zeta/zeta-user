@@ -278,3 +278,286 @@ export const sendReferralNotification = internalAction({
     }
   },
 });
+
+// ── Transactional emails (purchases, work, withdrawals, affiliate sales) ────
+
+function inr(amount: number): string {
+  return `₹${amount.toLocaleString("en-IN")}`;
+}
+
+// Course / Plan purchase confirmation (sent to buyer)
+export const sendPurchaseConfirmationEmail = internalAction({
+  args: {
+    email: v.string(),
+    name: v.string(),
+    itemName: v.string(),
+    itemType: v.string(), // "course" | "plan"
+    amount: v.number(),
+    coursesIncluded: v.optional(v.array(v.string())),
+  },
+  handler: async (ctx, args) => {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY not configured, skipping email");
+      return { success: false, reason: "RESEND_API_KEY not configured" };
+    }
+
+    const isPlan = args.itemType === "plan";
+    const courseList = args.coursesIncluded && args.coursesIncluded.length > 0
+      ? `
+      <div style="background: #F8FAF9; border: 1px solid #E4E8E5; border-radius: 8px; padding: 20px; margin: 24px 0;">
+        <h3 style="margin: 0 0 12px; font-size: 14px; color: ${BRAND.primaryColor}; font-weight: 700;">Courses included (${args.coursesIncluded.length})</h3>
+        <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: ${BRAND.textColor}; line-height: 2;">
+          ${args.coursesIncluded.map((c) => `<li>${c}</li>`).join("")}
+        </ul>
+      </div>`
+      : "";
+
+    const content = `
+      <p style="margin: 0 0 16px; font-size: 16px; color: ${BRAND.textColor}; line-height: 1.5;">Hi ${args.name},</p>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        Your payment was successful! You're now enrolled in the ${isPlan ? "plan" : "course"} below.
+      </p>
+      <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 20px; margin: 24px 0;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="font-size: 14px; color: ${BRAND.textMuted}; padding-bottom: 6px;">${isPlan ? "Plan" : "Course"}</td>
+            <td style="font-size: 14px; color: ${BRAND.textColor}; font-weight: 600; text-align: right; padding-bottom: 6px;">${args.itemName}</td>
+          </tr>
+          <tr>
+            <td style="font-size: 14px; color: ${BRAND.textMuted}; padding-bottom: 6px;">Amount paid</td>
+            <td style="font-size: 14px; color: ${BRAND.primaryColor}; font-weight: 700; text-align: right; padding-bottom: 6px;">${inr(args.amount)}</td>
+          </tr>
+        </table>
+      </div>
+      ${courseList}
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        You can start learning right away from your dashboard. Your certificate will unlock once you complete all lessons.
+      </p>
+    `;
+
+    const html = emailWrapper({
+      title: "Purchase Confirmed - ZetaGrow",
+      preheader: `You're enrolled in ${args.itemName}`,
+      content,
+      cta: true,
+      ctaText: "Start Learning",
+      ctaUrl: `${SITE_URL}/dashboard/programs`,
+      footerNote: "Keep this email as your purchase receipt. For any billing questions, reply to this email."
+    });
+
+    try {
+      const resend = getResend();
+      await resend.emails.send({
+        from: `${BRAND.name} <noreply@zetagrow.in>`,
+        to: args.email,
+        subject: `Purchase confirmed: ${args.itemName} - ZetaGrow`,
+        html,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("Failed to send purchase confirmation email:", err);
+      return { success: false, error: String(err) };
+    }
+  },
+});
+
+// Affiliate commission earned on a referral's purchase (sent to referrer)
+export const sendAffiliateSaleEmail = internalAction({
+  args: {
+    referrerEmail: v.string(),
+    referrerName: v.string(),
+    buyerName: v.string(),
+    itemName: v.string(),
+    saleAmount: v.number(),
+    commissionAmount: v.number(),
+    holdingPeriodDays: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY not configured, skipping email");
+      return { success: false, reason: "RESEND_API_KEY not configured" };
+    }
+
+    const holdDays = args.holdingPeriodDays ?? 7;
+
+    const content = `
+      <p style="margin: 0 0 16px; font-size: 16px; color: ${BRAND.textColor}; line-height: 1.5;">Hi ${args.referrerName},</p>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        💰 <strong>${args.buyerName}</strong>, who joined through your referral, just purchased <strong>${args.itemName}</strong>!
+      </p>
+      <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 20px; margin: 24px 0; text-align: center;">
+        <p style="margin: 0 0 8px; font-size: 14px; color: ${BRAND.textMuted};">Your commission</p>
+        <p style="margin: 0 0 4px; font-size: 32px; font-weight: 800; color: ${BRAND.primaryColor};">${inr(args.commissionAmount)}</p>
+        <p style="margin: 0; font-size: 13px; color: ${BRAND.textMuted};">on a sale of ${inr(args.saleAmount)}</p>
+      </div>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        Your commission moves from <strong>pending</strong> to <strong>available</strong> after the ${holdDays}-day holding period, then you can withdraw it anytime.
+      </p>
+    `;
+
+    const html = emailWrapper({
+      title: "Commission Earned! - ZetaGrow",
+      preheader: `You earned ${inr(args.commissionAmount)} commission`,
+      content,
+      cta: true,
+      ctaText: "View My Earnings",
+      ctaUrl: `${SITE_URL}/dashboard/affiliate`,
+      footerNote: "Commissions are held for the configured period before becoming withdrawable."
+    });
+
+    try {
+      const resend = getResend();
+      await resend.emails.send({
+        from: `${BRAND.name} <noreply@zetagrow.in>`,
+        to: args.referrerEmail,
+        subject: `💰 You earned ${inr(args.commissionAmount)} — new referral sale!`,
+        html,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("Failed to send affiliate sale email:", err);
+      return { success: false, error: String(err) };
+    }
+  },
+});
+
+// Work/freelancing application status update (sent to applicant)
+export const sendApplicationStatusEmail = internalAction({
+  args: {
+    email: v.string(),
+    name: v.string(),
+    jobTitle: v.string(),
+    status: v.string(), // accepted | rejected | completed
+    payoutAmount: v.optional(v.number()),
+    adminNotes: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY not configured, skipping email");
+      return { success: false, reason: "RESEND_API_KEY not configured" };
+    }
+
+    let heading = "";
+    let message = "";
+    let subject = "";
+    let boxBg = "#F0FDF4";
+    let boxBorder = "#BBF7D0";
+    let boxColor = BRAND.primaryColor;
+    let ctaText = "Open Dashboard";
+    let ctaUrl = `${SITE_URL}/dashboard/work`;
+
+    if (args.status === "accepted") {
+      heading = "You've been selected!";
+      message = `Great news, <strong>${args.name}</strong>! Your application for <strong>${args.jobTitle}</strong> has been <strong>accepted</strong>. The client/admin will guide you through the next steps.`;
+      subject = `🎉 Selected for work: ${args.jobTitle}`;
+    } else if (args.status === "completed") {
+      const payout = args.payoutAmount && args.payoutAmount > 0
+        ? `<div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 20px; margin: 24px 0; text-align: center;">
+            <p style="margin: 0 0 8px; font-size: 14px; color: ${BRAND.textMuted};">Payout credited to your wallet</p>
+            <p style="margin: 0; font-size: 32px; font-weight: 800; color: ${BRAND.primaryColor};">${inr(args.payoutAmount)}</p>
+          </div>`
+        : "";
+      heading = "Work completed";
+      message = `Your work on <strong>${args.jobTitle}</strong> has been marked <strong>completed</strong>.${payout}`;
+      subject = `Work completed: ${args.jobTitle}${args.payoutAmount ? ` — ${inr(args.payoutAmount)} credited` : ""}`;
+      ctaUrl = `${SITE_URL}/dashboard/wallet`;
+    } else {
+      heading = "Application update";
+      message = `Thank you for applying to <strong>${args.jobTitle}</strong>. Unfortunately, your application was <strong>not selected</strong> this time.${args.adminNotes ? `<br/><br/><em>Feedback: ${args.adminNotes}</em>` : ""}<br/><br/>Don't be discouraged — new opportunities are posted regularly, and we encourage you to apply again.`;
+      subject = `Update on your application: ${args.jobTitle}`;
+      boxBg = "#FEF3F2";
+      boxBorder = "#FED7D7";
+      boxColor = "#C53030";
+      ctaText = "Browse More Jobs";
+      ctaUrl = `${SITE_URL}/jobs`;
+    }
+
+    const content = `
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        <span style="font-size: 18px; font-weight: 700; color: ${boxColor}; display: block; margin-bottom: 12px;">${heading}</span>
+        ${message}
+      </p>
+    `;
+
+    const html = emailWrapper({
+      title: `Work update - ZetaGrow`,
+      preheader: args.jobTitle,
+      content,
+      cta: true,
+      ctaText,
+      ctaUrl,
+      footerNote: "Manage all your applications from your dashboard."
+    });
+
+    try {
+      const resend = getResend();
+      await resend.emails.send({
+        from: `${BRAND.name} <noreply@zetagrow.in>`,
+        to: args.email,
+        subject,
+        html,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("Failed to send application status email:", err);
+      return { success: false, error: String(err) };
+    }
+  },
+});
+
+// Withdrawal outcome (sent to user): completed or rejected
+export const sendWithdrawalStatusEmail = internalAction({
+  args: {
+    email: v.string(),
+    name: v.string(),
+    amount: v.number(),
+    status: v.string(), // completed | rejected
+    adminNote: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY not configured, skipping email");
+      return { success: false, reason: "RESEND_API_KEY not configured" };
+    }
+
+    const approved = args.status === "completed";
+
+    const content = `
+      <p style="margin: 0 0 16px; font-size: 16px; color: ${BRAND.textColor}; line-height: 1.5;">Hi ${args.name},</p>
+      <div style="background: ${approved ? "#F0FDF4" : "#FEF3F2"}; border: 1px solid ${approved ? "#BBF7D0" : "#FED7D7"}; border-radius: 8px; padding: 20px; margin: 0 0 24px; text-align: center;">
+        <p style="margin: 0 0 8px; font-size: 14px; color: ${BRAND.textMuted};">Withdrawal ${approved ? "successful" : "rejected"}</p>
+        <p style="margin: 0 0 4px; font-size: 32px; font-weight: 800; color: ${approved ? BRAND.primaryColor : "#C53030"};">${inr(args.amount)}</p>
+        ${approved ? `<p style="margin: 0; font-size: 13px; color: ${BRAND.textMuted};">The amount has been sent to your payout account.</p>` : `<p style="margin: 0; font-size: 13px; color: ${BRAND.textMuted};">The amount has been refunded to your ZetaGrow wallet.</p>`}
+      </div>
+      ${approved
+        ? `<p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">It may take a few minutes to a couple of hours (depending on your bank/UPI) for the money to reflect in your account.</p>`
+        : `<p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">${args.adminNote ? `Reason: <em>${args.adminNote}</em><br/><br/>` : ""}You can request the withdrawal again once the issue is fixed. The full amount is back in your available balance.</p>`}
+    `;
+
+    const html = emailWrapper({
+      title: `Withdrawal ${approved ? "Successful" : "Rejected"} - ZetaGrow`,
+      preheader: `${inr(args.amount)} withdrawal ${approved ? "completed" : "rejected"}`,
+      content,
+      cta: true,
+      ctaText: approved ? "View Wallet" : "Go To Wallet",
+      ctaUrl: `${SITE_URL}/dashboard/wallet`,
+      footerNote: "Withdrawal queries? Reply to this email with your transaction details."
+    });
+
+    try {
+      const resend = getResend();
+      await resend.emails.send({
+        from: `${BRAND.name} <noreply@zetagrow.in>`,
+        to: args.email,
+        subject: approved
+          ? `✅ Withdrawal of ${inr(args.amount)} successful`
+          : `⚠️ Withdrawal of ${inr(args.amount)} rejected & refunded`,
+        html,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("Failed to send withdrawal status email:", err);
+      return { success: false, error: String(err) };
+    }
+  },
+});

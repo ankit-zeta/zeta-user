@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query, internalMutation } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { requirePurchasedUser } from "./entitlements";
 
 async function requireAdmin(ctx: any, token: string) {
@@ -192,6 +193,20 @@ export const processPurchaseWithAffiliate = mutation({
         createdAt: now,
       });
 
+      // Purchase confirmation email to buyer
+      try {
+        await ctx.scheduler.runAfter(0, internal.email.sendPurchaseConfirmationEmail, {
+          email: buyer.email,
+          name: buyer.name,
+          itemName: plan.name,
+          itemType: "plan",
+          amount: plan.price,
+          coursesIncluded: newlyEnrolled,
+        });
+      } catch (e) {
+        console.error("Failed to schedule purchase confirmation email:", e);
+      }
+
       // Affiliate commission on the PLAN price (once per sale)
       let commissionPaid = 0;
       if (buyer.referredBy && plan.price >= 2000) {
@@ -258,6 +273,20 @@ export const processPurchaseWithAffiliate = mutation({
                 actionUrl: "/dashboard/affiliate",
                 createdAt: now,
               });
+              // Affiliate commission email to referrer
+              try {
+                await ctx.scheduler.runAfter(0, internal.email.sendAffiliateSaleEmail, {
+                  referrerEmail: referrer.email,
+                  referrerName: referrer.name,
+                  buyerName: buyer.name,
+                  itemName: `the "${plan.name}" plan`,
+                  saleAmount: plan.price,
+                  commissionAmount,
+                  holdingPeriodDays: affiliateSettings.holdingPeriodDays || 7,
+                });
+              } catch (e) {
+                console.error("Failed to schedule affiliate sale email:", e);
+              }
               commissionPaid = commissionAmount;
             }
           }
@@ -311,6 +340,19 @@ export const processPurchaseWithAffiliate = mutation({
       actionUrl: `/dashboard/learning/${args.programId}`,
       createdAt: now,
     });
+
+    // Purchase confirmation email to buyer
+    try {
+      await ctx.scheduler.runAfter(0, internal.email.sendPurchaseConfirmationEmail, {
+        email: buyer.email,
+        name: buyer.name,
+        itemName: program.name,
+        itemType: "course",
+        amount: program.price,
+      });
+    } catch (e) {
+      console.error("Failed to schedule purchase confirmation email:", e);
+    }
 
     // Check if buyer has a referrer
     if (buyer.referredBy && program.affiliateEnabled) {
@@ -418,6 +460,21 @@ export const processPurchaseWithAffiliate = mutation({
               actionUrl: "/dashboard/affiliate",
               createdAt: now,
             });
+
+            // Affiliate commission email to referrer
+            try {
+              await ctx.scheduler.runAfter(0, internal.email.sendAffiliateSaleEmail, {
+                referrerEmail: referrer.email,
+                referrerName: referrer.name,
+                buyerName: buyer.name,
+                itemName: `"${program.name}"`,
+                saleAmount: program.price,
+                commissionAmount,
+                holdingPeriodDays: affiliateSettings.holdingPeriodDays || 7,
+              });
+            } catch (e) {
+              console.error("Failed to schedule affiliate sale email:", e);
+            }
 
             // Chain / upline commission: the referrer's own referrer earns X% of this commission
             if (affiliateSettings.chainEnabled && referrer.referredBy) {

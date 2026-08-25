@@ -249,11 +249,13 @@ export const signup = action({
 
     // Handle referring user if referralCode is supplied
     let referrerUserId: Id<"users"> | undefined;
+    let referrerDoc: { _id: string; name: string; email: string } | null = null;
     if (args.referralCode && args.referralCode.trim()) {
       const cleanRef = args.referralCode.trim().toUpperCase();
       const referrer = await ctx.runQuery(internal.auth.getUserByReferralCode, { referralCode: cleanRef });
       if (referrer) {
         referrerUserId = referrer._id;
+        referrerDoc = { _id: referrer._id, name: referrer.name, email: referrer.email };
       }
     }
 
@@ -311,6 +313,19 @@ export const signup = action({
         actionUrl: "/dashboard/referrals",
         createdAt: now,
       });
+
+      // Email the referrer (non-fatal)
+      if (referrerDoc) {
+        try {
+          await ctx.runAction(internal.email.sendReferralNotification, {
+            referrerEmail: referrerDoc.email,
+            referrerName: referrerDoc.name,
+            referredName: name,
+          });
+        } catch (e) {
+          console.error("Failed to send referral notification email:", e);
+        }
+      }
     }
 
     // Welcome notification

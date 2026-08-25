@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { internal } from "./_generated/api";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -520,6 +521,25 @@ export const updateApplicationStatus = mutation({
       actionUrl: "/dashboard/applications",
       createdAt: now,
     });
+
+    // Email on key status changes (accepted / completed / rejected)
+    if (["accepted", "completed", "rejected"].includes(args.status)) {
+      const applicant = await ctx.db.get(app.userId);
+      if (applicant) {
+        try {
+          await ctx.scheduler.runAfter(0, internal.email.sendApplicationStatusEmail, {
+            email: applicant.email,
+            name: applicant.name,
+            jobTitle: job?.title || "Contract Task",
+            status: args.status,
+            payoutAmount: args.status === "completed" ? args.payoutAmount : undefined,
+            adminNotes: args.adminNotes,
+          });
+        } catch (e) {
+          console.error("Failed to schedule application status email:", e);
+        }
+      }
+    }
 
     // Audit log
     await ctx.db.insert("auditLogs", {
