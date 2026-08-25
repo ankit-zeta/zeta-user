@@ -9,6 +9,7 @@ import { useQuery } from "convex/react";
 import { useMutation, useAction } from "convex/react";
 import { api } from "@/lib/convex";
 import { useAuth } from "@/lib/convex";
+import { useGst, withGst } from "@/lib/gst";
 import {
   ShieldCheck,
   Lock,
@@ -85,6 +86,7 @@ export default function CheckoutPage() {
   );
 
   const rzpConfig: any = useQuery(api.paymentsConfig.getRazorpayConfig);
+  const gst = useGst();
 
   const createOrder = useAction(api.payments.createRazorpayOrder);
   const verifyPayment = useAction(api.payments.verifyRazorpayPayment);
@@ -209,6 +211,10 @@ export default function CheckoutPage() {
   }
 
   const savings = plan.compareAtPrice ? plan.compareAtPrice - plan.price : 0;
+  // Paise-precise totals, identical formula to the server-side order creation.
+  const totals = withGst(plan.price, gst);
+  const fmt = (paise: number) =>
+    (paise / 100).toLocaleString("en-IN", { maximumFractionDigits: 2 });
 
   // ── Success screen ──
   if (stage === "done") {
@@ -395,7 +401,7 @@ export default function CheckoutPage() {
                   <strong>TDS disclosure:</strong> if you later earn via work projects or affiliate commissions,
                   Tax Deducted at Source applies as per Income Tax rules (currently 2% above ₹20,000/yr on affiliate
                   commissions and 10% above ₹50,000/yr on work earnings, Apr–Mar). Course fees are one-time purchase
-                  prices; GST is included in the listed price where applicable.
+                  prices; {gst?.enabled ? `${gst.rate}% ${gst.label} is added at checkout as shown in the order summary.` : "taxes are shown at checkout where applicable."}
                 </div>
               </div>
             </div>
@@ -407,8 +413,8 @@ export default function CheckoutPage() {
 
                 <div className="space-y-2.5 text-xs">
                   <div className="flex items-center justify-between text-textMuted">
-                    <span>{plan.name}</span>
-                    <span className="font-medium text-textMain">₹{plan.price.toLocaleString("en-IN")}</span>
+                    <span>{plan.name} <span className="text-[10px]">(excl. {gst?.label || "GST"})</span></span>
+                    <span className="font-medium text-textMain">{fmt(totals.base)}</span>
                   </div>
                   {savings > 0 && (
                     <>
@@ -422,14 +428,21 @@ export default function CheckoutPage() {
                       </div>
                     </>
                   )}
-                  <div className="flex items-center justify-between text-textMuted">
-                    <span>GST</span>
-                    <span>Included</span>
-                  </div>
+                  {gst?.enabled ? (
+                    <div className="flex items-center justify-between text-textMuted">
+                      <span>{gst.label} @ {gst.rate}% (CGST + SGST / IGST as applicable)</span>
+                      <span className="font-medium text-textMain">{fmt(totals.tax)}</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between text-textMuted">
+                      <span>{gst?.label || "GST"}</span>
+                      <span>Not applicable</span>
+                    </div>
+                  )}
                   <div className="border-t border-borderSubtle pt-3 flex items-baseline justify-between">
                     <span className="text-sm font-bold text-textMain">Total payable</span>
                     <span className="text-2xl font-extrabold text-textMain">
-                      ₹{plan.price.toLocaleString("en-IN")}
+                      ₹{fmt(totals.total)}
                     </span>
                   </div>
                 </div>
@@ -468,7 +481,7 @@ export default function CheckoutPage() {
                     ) : (
                       <span className="flex items-center justify-center gap-2">
                         <CreditCard className="w-4 h-4" />
-                        Pay ₹{plan.price.toLocaleString("en-IN")} Securely
+                        Pay ₹{fmt(totals.total)} Securely
                       </span>
                     )}
                   </button>

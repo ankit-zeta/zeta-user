@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { internalMutation, internalQuery } from "./_generated/server";
+import { getGstSettings } from "./paymentsConfig";
 
 // Database helpers for the Razorpay flow. Lives in the default runtime so it
 // can touch ctx.db; convex/payments.ts ("use node") calls these via
@@ -15,6 +16,14 @@ export const getSessionByToken = internalQuery({
       .first();
     if (!session || session.expiresAt < Date.now()) return null;
     return { userId: session.userId };
+  },
+});
+
+// GST config for the order action (actions cannot read the db directly).
+export const getGstInternal = internalQuery({
+  args: {},
+  handler: async (ctx) => {
+    return await getGstSettings(ctx.db);
   },
 });
 

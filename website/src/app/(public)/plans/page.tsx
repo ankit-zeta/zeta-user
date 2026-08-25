@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
+import { useGst, gstSuffix } from "@/lib/gst";
 import { CheckCircle2, ArrowRight, BookOpen, Layers, Star, ShieldCheck, Award, Clock, Users, TrendingUp, Target, Sparkles, GraduationCap, Briefcase, BarChart2 } from "lucide-react";
 
 export default function PlansPage() {
@@ -326,6 +327,7 @@ function PlansSkeleton() {
 }
 
 function PlanCard({ plan, index, totalLessons, totalMinutes, courseCount }: any) {
+  const gst = useGst();
   return (
     <Link
       href={`/plans/${plan.slug}`}
@@ -391,6 +393,11 @@ function PlanCard({ plan, index, totalLessons, totalMinutes, courseCount }: any)
             </span>
           )}
         </div>
+        {gst?.enabled && (
+          <p className="text-[10px] text-textMuted -mt-1">
+            Excluding {gst.rate}% {gst.label} — added at checkout
+          </p>
+        )}
 
         <p className="text-sm text-textMuted leading-relaxed line-clamp-3">
           {plan.description}

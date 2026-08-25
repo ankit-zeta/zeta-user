@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
 import { useAuth } from "@/lib/convex";
+import { useGst, gstSuffix } from "@/lib/gst";
 import { 
   CheckCircle2, 
   Clock, 
@@ -41,6 +42,7 @@ export default function ProgramDetailPage() {
 
   const program = useQuery(api.programs.getProgramBySlug, slug ? { slug } : "skip");
   const plans = useQuery(api.plans.getPublicPlans);
+  const gst = useGst();
 
   // The plan that contains this course
   const parentPlan = plans?.find((p: any) =>
@@ -173,6 +175,11 @@ export default function ProgramDetailPage() {
                         </span>
                       )}
                     </div>
+                    {gst?.enabled && (
+                      <p className="text-[11px] text-textMuted">
+                        Excluding {gst.rate}% {gst.label} — added at checkout
+                      </p>
+                    )}
                     <p className="text-xs text-textMuted">
                       Unlocks this course plus {parentPlan.courses.length - 1} more courses and all plan resources.
                     </p>
@@ -191,6 +198,7 @@ export default function ProgramDetailPage() {
                       className="btn-primary w-full justify-center py-3 text-sm font-semibold shadow-sm"
                     >
                       Get {parentPlan.name} — ₹{parentPlan.price.toLocaleString("en-IN")}
+                      <span className="font-normal">{gstSuffix(gst)}</span>
                     </button>
                   )}
                   {!isAlreadyEnrolled && (

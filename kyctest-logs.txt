@@ -142,3 +142,17 @@ Validator: v.string()
 
 26/8/2026, 3:38:21 am [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
 
+26/8/2026, 4:16:40 am [CONVEX Q(paymentsConfig:getGstConfig)] Could not find public function for 'paymentsConfig:getGstConfig'.
+
+26/8/2026, 4:16:40 am [CONVEX Q(paymentsConfig:getGstConfig)] Could not find public function for 'paymentsConfig:getGstConfig'.
+
+26/8/2026, 4:16:48 am [CONVEX Q(paymentsConfig:getGstConfig)] Could not find public function for 'paymentsConfig:getGstConfig'.
+
+26/8/2026, 4:16:51 am [CONVEX Q(paymentsConfig:getGstConfig)] Could not find public function for 'paymentsConfig:getGstConfig'.
+
+26/8/2026, 4:17:06 am [CONVEX Q(paymentsConfig:getGstConfig)] Could not find public function for 'paymentsConfig:getGstConfig'.
+
+26/8/2026, 4:17:15 am [CONVEX Q(paymentsConfig:getGstConfig)] Could not find public function for 'paymentsConfig:getGstConfig'.
+
+26/8/2026, 4:17:24 am [CONVEX Q(paymentsConfig:getGstConfig)] Could not find public function for 'paymentsConfig:getGstConfig'.
+
