@@ -89,9 +89,13 @@ export default function PlanDetailPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
           <div className="lg:col-span-2 space-y-6">
             <div className="relative h-56 lg:h-72 rounded-xl overflow-hidden">
-              {plan.bannerImage ? (
+              {plan.thumbnail || plan.bannerImage ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={plan.bannerImage} alt={plan.name} className="w-full h-full object-cover" />
+                <img
+                  src={plan.thumbnail || plan.bannerImage}
+                  alt={plan.name}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div className="w-full h-full bg-brand-100"></div>
               )}
