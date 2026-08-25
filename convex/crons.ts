@@ -17,4 +17,11 @@ crons.cron(
   {}
 );
 
+crons.cron(
+  "auto-release-commissions",
+  "0 * * * *",
+  internal.affiliates.autoReleaseCommissions,
+  {}
+);
+
 export default crons;

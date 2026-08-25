@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalMutation } from "./_generated/server";
 import { requirePurchasedUser } from "./entitlements";
 
 async function requireAdmin(ctx: any, token: string) {
@@ -712,5 +712,154 @@ export const updateCommissionStatus = mutation({
     });
 
     return { success: true };
+  },
+});
+
+// ── Auto-release engine ─────────────────────────────────────────────────────
+// Moves pending commissions to "available" once their holding period ends.
+// Runs hourly via cron. Enforces daily/monthly commission caps — capped sales
+// stay pending for manual admin review. Notifies the referrer on release.
+export const autoReleaseCommissions = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const now = Date.now();
+
+    const dueSales = await ctx.db
+      .query("affiliateSales")
+      .withIndex("by_status", (q) => q.eq("status", "pending"))
+      .filter((q) => q.lte(q.field("holdingPeriodEndsAt"), now))
+      .collect();
+
+    if (dueSales.length === 0) {
+      return { released: 0, deferredForCaps: 0 };
+    }
+
+    const settingsRecord = await ctx.db
+      .query("adminSettings")
+      .withIndex("by_key", (q) => q.eq("key", "affiliate"))
+      .first();
+    const affiliateSettings = settingsRecord?.value as any;
+
+    // Per-referrer cap cache: dayCap/monthCap + running totals from ledger
+    type CapInfo = {
+      dayCap: number;
+      monthCap: number;
+      dayTotal: number;
+      monthTotal: number;
+    };
+    const capCache = new Map<string, CapInfo>();
+
+    const getCapInfo = async (referrerId: string): Promise<CapInfo> => {
+      const cached = capCache.get(referrerId);
+      if (cached) return cached;
+
+      let dayCap = 0;
+      let monthCap = 0;
+      if (affiliateSettings) {
+        const posMultiplier = await getPositionMultiplier(
+          ctx,
+          referrerId as any,
+          affiliateSettings.positionMultipliers
+        );
+        const scale = (cap: number | undefined) =>
+          cap && cap > 0 ? Math.round(cap * posMultiplier) : 0;
+        dayCap = scale(affiliateSettings.dailyCommissionCap);
+        monthCap = scale(affiliateSettings.monthlyCommissionCap);
+      }
+
+      const recentComm = await ctx.db
+        .query("walletTransactions")
+        .withIndex("by_userId", (q) => q.eq("userId", referrerId as any))
+        .filter((q) =>
+          q.and(
+            q.or(
+              q.eq(q.field("type"), "AFFILIATE_COMMISSION"),
+              q.eq(q.field("type"), "CHAIN_COMMISSION")
+            ),
+            q.eq(q.field("status"), "completed"),
+            q.gte(q.field("createdAt"), now - 30 * 24 * 60 * 60 * 1000)
+          )
+        )
+        .collect();
+
+      const info: CapInfo = {
+        dayCap,
+        monthCap,
+        dayTotal: recentComm
+          .filter((t) => t.createdAt >= now - 24 * 60 * 60 * 1000)
+          .reduce((s, t) => s + t.amount, 0),
+        monthTotal: recentComm.reduce((s, t) => s + t.amount, 0),
+      };
+      capCache.set(referrerId, info);
+      return info;
+    };
+
+    let released = 0;
+    let deferredForCaps = 0;
+
+    for (const sale of dueSales) {
+      // Enforce configured caps; defer capped sales to manual review
+      const capInfo = await getCapInfo(sale.referrerUserId);
+      if (capInfo.dayCap > 0 && capInfo.dayTotal + sale.commissionAmount > capInfo.dayCap) {
+        deferredForCaps++;
+        continue;
+      }
+      if (capInfo.monthCap > 0 && capInfo.monthTotal + sale.commissionAmount > capInfo.monthCap) {
+        deferredForCaps++;
+        continue;
+      }
+
+      const wallet = await ctx.db
+        .query("wallets")
+        .withIndex("by_userId", (q) => q.eq("userId", sale.referrerUserId))
+        .first();
+      if (!wallet) continue;
+
+      const newPending = Math.max(0, wallet.pendingBalance - sale.commissionAmount);
+      const newAvailable = wallet.availableBalance + sale.commissionAmount;
+      await ctx.db.patch(wallet._id, {
+        pendingBalance: newPending,
+        availableBalance: newAvailable,
+        totalEarned: wallet.totalEarned + sale.commissionAmount,
+        affiliateEarnings: wallet.affiliateEarnings + sale.commissionAmount,
+        updatedAt: now,
+      });
+
+      await ctx.db.patch(sale._id, {
+        status: "available",
+        updatedAt: now,
+      });
+
+      await ctx.db.insert("walletTransactions", {
+        userId: sale.referrerUserId,
+        type: sale.kind === "chain" ? "CHAIN_COMMISSION" : "AFFILIATE_COMMISSION",
+        amount: sale.commissionAmount,
+        balanceAfter: newAvailable,
+        referenceId: sale._id,
+        description:
+          sale.kind === "chain"
+            ? `Chain commission released after holding period: ₹${sale.commissionAmount}`
+            : `Affiliate commission released after holding period: ₹${sale.commissionAmount}`,
+        status: "completed",
+        createdAt: now,
+      });
+
+      await ctx.db.insert("notifications", {
+        userId: sale.referrerUserId,
+        type: sale.kind === "chain" ? "affiliate" : "commission",
+        title: "Commission Released!",
+        message: `₹${sale.commissionAmount} has been added to your available wallet balance and is ready to withdraw.`,
+        read: false,
+        actionUrl: "/affiliate/wallet",
+        createdAt: now,
+      });
+
+      // Update running cap totals so subsequent sales in this batch respect caps
+      capInfo.dayTotal += sale.commissionAmount;
+      capInfo.monthTotal += sale.commissionAmount;
+      released++;
+    }
+
+    return { released, deferredForCaps };
   },
 });
