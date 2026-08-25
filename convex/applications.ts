@@ -1,4 +1,5 @@
 import { v } from "convex/values";
+import { ConvexError } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 
@@ -57,6 +58,19 @@ export const submitApplication = mutation({
       if (!overviewOk || !experienceOk || !educationOk || !skillsOk) {
         throw new Error(
           "Complete your CV profile (overview, experience, education and at least 3 skills) before applying for work"
+        );
+      }
+      // TDS compliance: work earnings require verified KYC before starting
+      if (((user as any).kycStatus || "not_submitted") !== "verified") {
+        const state =
+          ((user as any).kycStatus === "pending")
+            ? "is under review — you can apply once it's approved"
+            : ((user as any).kycStatus === "rejected")
+              ? "was rejected — please resubmit your documents"
+              : "is not submitted yet";
+        // ConvexError so the message reaches the client (plain Errors are masked on prod)
+        throw new ConvexError(
+          `Complete your KYC verification before applying for work. Your KYC ${state}`
         );
       }
     }

@@ -43,7 +43,7 @@ export default function ProgramsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
           {Array.from({ length: 9 }).map((_, i) => (
             <div key={i} className="card-surface overflow-hidden">
-              <div className="h-32 bg-neutral-200"></div>
+              <div className="aspect-video bg-neutral-200"></div>
               <div className="p-5 space-y-3">
                 <div className="h-5 bg-neutral-200 rounded w-2/3"></div>
                 <div className="h-10 bg-neutral-200 rounded"></div>
@@ -75,15 +75,19 @@ export default function ProgramsPage() {
                   href={`/programs/${c.slug}`}
                   className="card-surface overflow-hidden flex flex-col hover:border-brand-200 hover:shadow-md transition-all duration-200 group"
                 >
-                  <div className="relative h-32 overflow-hidden bg-brand-50">
-                    {c.thumbnail && (
+                  <div className="relative aspect-video w-full overflow-hidden bg-brand-50">
+                    {c.thumbnail ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={c.thumbnail}
                         alt={c.name}
                         loading="lazy"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                       />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-brand-600 to-brand-900 flex items-center justify-center">
+                        <span className="text-white/90 text-sm font-bold px-4 text-center">{c.name}</span>
+                      </div>
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                   </div>

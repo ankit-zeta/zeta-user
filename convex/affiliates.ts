@@ -129,6 +129,7 @@ export const processPurchaseWithAffiliate = mutation({
     programId: v.optional(v.id("programs")),
     planId: v.optional(v.id("plans")),
     paymentMethod: v.string(),
+    orderId: v.optional(v.id("paymentOrders")),
   },
   handler: async (ctx, args) => {
     const session = await ctx.db
@@ -141,6 +142,28 @@ export const processPurchaseWithAffiliate = mutation({
 
     const buyer = await ctx.db.get(session.userId);
     if (!buyer) throw new Error("Buyer not found");
+
+    // Razorpay checkouts must point at a server-verified "paid" order.
+    // Any other paymentMethod keeps legacy behavior (admin grants, demos).
+    let paidOrder: any = null;
+    if (args.paymentMethod === "razorpay") {
+      if (!args.orderId) {
+        throw new Error("Payment verification missing. Please complete the checkout payment.");
+      }
+      paidOrder = await ctx.db.get(args.orderId);
+      if (!paidOrder || paidOrder.userId !== session.userId) {
+        throw new Error("Payment order not found for this account");
+      }
+      if (paidOrder.status === "consumed") {
+        throw new Error("This payment has already been applied to your account.");
+      }
+      if (paidOrder.status !== "paid") {
+        throw new Error("Payment not completed. Contact support if you were charged.");
+      }
+      if (args.planId && paidOrder.planId !== args.planId) {
+        throw new Error("Payment does not match this plan");
+      }
+    }
 
     const now = Date.now();
     const paymentId = `PAY_${now}_${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
@@ -178,6 +201,11 @@ export const processPurchaseWithAffiliate = mutation({
           const prog = await ctx.db.get(pid);
           if (prog) newlyEnrolled.push(prog.name);
         }
+      }
+
+      // Enrollment done — burn the payment order so it can't be reused.
+      if (paidOrder) {
+        await ctx.db.patch(paidOrder._id, { status: "consumed", updatedAt: Date.now() });
       }
 
       await ctx.db.insert("notifications", {
@@ -489,6 +517,7 @@ export const processPurchaseWithAffiliate = mutation({
                 upline._id.toString() !== referrer._id.toString() &&
                 upline._id.toString() !== buyer._id.toString() &&
                 upline.status === "active" &&
+                (upline as any).partnerTier === "growth_partner" && // Growth Partner Program: chain earnings are invite-only
                 chainPct > 0
               ) {
                 let chainAmount = Math.round((commissionAmount * chainPct) / 100);
@@ -788,7 +817,7 @@ export const autoReleaseCommissions = internalMutation({
       .collect();
 
     if (dueSales.length === 0) {
-      return { released: 0, deferredForCaps: 0 };
+      return { released: 0, deferredForCaps: 0, heldForKyc: 0 };
     }
 
     const settingsRecord = await ctx.db
@@ -853,8 +882,17 @@ export const autoReleaseCommissions = internalMutation({
 
     let released = 0;
     let deferredForCaps = 0;
+    let heldForKyc = 0;
 
     for (const sale of dueSales) {
+      // TDS compliance: commissions stay pending until the referrer's KYC is
+      // verified. They auto-release on the next hourly run post-approval.
+      const referrer = await ctx.db.get(sale.referrerUserId);
+      if (!referrer || (referrer.kycStatus || "not_submitted") !== "verified") {
+        heldForKyc++;
+        continue;
+      }
+
       // Enforce configured caps; defer capped sales to manual review
       const capInfo = await getCapInfo(sale.referrerUserId);
       if (capInfo.dayCap > 0 && capInfo.dayTotal + sale.commissionAmount > capInfo.dayCap) {
@@ -917,6 +955,6 @@ export const autoReleaseCommissions = internalMutation({
       released++;
     }
 
-    return { released, deferredForCaps };
+    return { released, deferredForCaps, heldForKyc };
   },
 });

@@ -31,4 +31,13 @@ crons.cron(
   {}
 );
 
+// Deletes KYC document images (PAN/Aadhaar) 90 days after approval.
+// Staggered at 4:15 AM UTC so it never overlaps the other cleanup jobs.
+crons.cron(
+  "kyc-image-retention",
+  "15 4 * * *",
+  internal.kyc.cleanupApprovedKycImages,
+  {}
+);
+
 export default crons;

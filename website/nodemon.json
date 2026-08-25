@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/nodemon.json",
+  "watch": [
+    "next.config.mjs",
+    "tailwind.config.ts",
+    "postcss.config.js",
+    "package.json",
+    ".env.local"
+  ],
+  "delay": 800,
+  "exec": "node scripts/dev.mjs",
+  "events": {
+    "start": "echo [nodemon] starting dev server..."
+  }
+}

@@ -570,6 +570,7 @@ export const sendWithdrawalRequestEmail = internalAction({
     netAmount: v.number(),
     fee: v.number(),
     payoutMethod: v.string(),
+    tdsAmount: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     if (!process.env.RESEND_API_KEY) {
@@ -588,6 +589,11 @@ export const sendWithdrawalRequestEmail = internalAction({
             <td style="font-size: 14px; color: ${BRAND.textMuted}; padding-bottom: 6px;">Requested amount</td>
             <td style="font-size: 14px; color: ${BRAND.textColor}; font-weight: 600; text-align: right; padding-bottom: 6px;">${inr(args.amount)}</td>
           </tr>
+          ${args.tdsAmount && args.tdsAmount > 0 ? `
+          <tr>
+            <td style="font-size: 14px; color: ${BRAND.textMuted}; padding-bottom: 6px;">TDS (Income Tax)</td>
+            <td style="font-size: 14px; color: ${BRAND.textMuted}; text-align: right; padding-bottom: 6px;">- ${inr(args.tdsAmount)}</td>
+          </tr>` : ""}
           <tr>
             <td style="font-size: 14px; color: ${BRAND.textMuted}; padding-bottom: 6px;">Processing fee</td>
             <td style="font-size: 14px; color: ${BRAND.textMuted}; text-align: right; padding-bottom: 6px;">- ${inr(args.fee)}</td>
@@ -602,6 +608,7 @@ export const sendWithdrawalRequestEmail = internalAction({
           </tr>
         </table>
       </div>
+      ${args.tdsAmount && args.tdsAmount > 0 ? `<p style="margin: 0 0 16px; font-size: 13px; color: ${BRAND.textMuted}; line-height: 1.6;">TDS is deducted as per Income Tax rules and reported against your PAN — you can claim credit for it when filing your income tax return.</p>` : ""}
       <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
         You'll get another email as soon as the transfer is completed — usually within 24-48 hours.
       </p>
@@ -741,6 +748,214 @@ export const sendOnboardingNudgeEmail = internalAction({
       return { success: true };
     } catch (err) {
       console.error("Failed to send onboarding nudge email:", err);
+      return { success: false, error: String(err) };
+    }
+  },
+});
+
+// ── KYC emails ───────────────────────────────────────────────────────────────
+
+// Account created on the member's behalf by the ZetaGrow team (Admin Panel).
+export const sendAdminCreatedAccountEmail = internalAction({
+  args: { email: v.string(), name: v.string() },
+  handler: async (ctx, args) => {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY not configured, skipping email");
+      return { success: false, reason: "RESEND_API_KEY not configured" };
+    }
+
+    const content = `
+      <p style="margin: 0 0 16px; font-size: 16px; color: ${BRAND.textColor}; line-height: 1.5;">Hi ${args.name},</p>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        A <strong>ZetaGrow account has been created for you</strong> by our team. Your login email is
+        <strong>${args.email}</strong> — our team member who set this up will share your temporary password with you privately.
+      </p>
+      <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 20px; margin: 0 0 24px;">
+        <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: ${BRAND.textColor}; line-height: 2;">
+          <li>🎓 Access courses, certificates and work opportunities</li>
+          <li>🔐 We recommend changing your password after first login</li>
+          <li>💬 Questions? Just reply to this email — we're happy to help</li>
+        </ul>
+      </div>
+    `;
+
+    const html = emailWrapper({
+      title: "Your ZetaGrow account is ready",
+      preheader: "Welcome to the ZetaGrow family",
+      content,
+      cta: true,
+      ctaText: "Log In to Your Account",
+      ctaUrl: `${SITE_URL}/login`,
+      footerNote: `You're receiving this because an account was created for ${args.email} on ${BRAND.name}.`
+    });
+
+    try {
+      const resend = getResend();
+      await resend.emails.send({
+        from: `${BRAND.name} <noreply@zetagrow.in>`,
+        to: args.email,
+        subject: "👋 Welcome to ZetaGrow — your account is ready",
+        html,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("Failed to send admin-created account email:", err);
+      return { success: false, error: String(err) };
+    }
+  },
+});
+
+// Instant acknowledgment right after submission
+export const sendKycReceivedEmail = internalAction({
+  args: { email: v.string(), name: v.string() },
+  handler: async (ctx, args) => {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY not configured, skipping email");
+      return { success: false, reason: "RESEND_API_KEY not configured" };
+    }
+
+    const content = `
+      <p style="margin: 0 0 16px; font-size: 16px; color: ${BRAND.textColor}; line-height: 1.5;">Hi ${args.name},</p>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        We've received your <strong>KYC documents</strong> (PAN &amp; Aadhaar) along with your address details.
+      </p>
+      <div style="background: #FFFbeb; border: 1px solid #FDE68A; border-radius: 8px; padding: 20px; margin: 0 0 24px;">
+        <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: ${BRAND.textColor}; line-height: 2;">
+          <li>🔍 Our team will <strong>manually verify</strong> your details</li>
+          <li>📧 We'll notify you by email as soon as it's confirmed</li>
+          <li>⏱️ Verification usually completes within <strong>24&ndash;48 hours</strong></li>
+        </ul>
+      </div>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        Until your KYC is verified, affiliate payouts and withdrawals stay on hold. Everything else on the platform remains fully available.
+      </p>
+      <p style="margin: 0 0 24px; font-size: 13px; color: ${BRAND.textMuted}; line-height: 1.6;">
+        Your privacy matters to us: your document images are automatically and permanently deleted from our servers 90 days after approval.
+      </p>
+    `;
+
+    const html = emailWrapper({
+      title: "KYC documents received - ZetaGrow",
+      preheader: "We'll notify you once we confirm your KYC",
+      content,
+      cta: true,
+      ctaText: "View KYC Status",
+      ctaUrl: `${SITE_URL}/dashboard/kyc`,
+      footerNote: "You're receiving this because you submitted KYC documents on your ZetaGrow account."
+    });
+
+    try {
+      const resend = getResend();
+      await resend.emails.send({
+        from: `${BRAND.name} <noreply@zetagrow.in>`,
+        to: args.email,
+        subject: "✅ KYC documents received — verification in progress",
+        html,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("Failed to send KYC received email:", err);
+      return { success: false, error: String(err) };
+    }
+  },
+});
+
+export const sendKycApprovedEmail = internalAction({
+  args: { email: v.string(), name: v.string() },
+  handler: async (ctx, args) => {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY not configured, skipping email");
+      return { success: false, reason: "RESEND_API_KEY not configured" };
+    }
+
+    const content = `
+      <p style="margin: 0 0 16px; font-size: 16px; color: ${BRAND.textColor}; line-height: 1.5;">Hi ${args.name},</p>
+      <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 20px; margin: 0 0 24px; text-align: center;">
+        <p style="margin: 0 0 8px; font-size: 14px; color: ${BRAND.textMuted};">Your identity verification is complete</p>
+        <p style="margin: 0; font-size: 30px; font-weight: 800; color: ${BRAND.primaryColor};">KYC Verified 🎉</p>
+      </div>
+      <p style="margin: 0 0 16px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">Here's what's now unlocked for you:</p>
+      <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 20px; margin: 0 0 24px;">
+        <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: ${BRAND.textColor}; line-height: 2;">
+          <li>💰 Affiliate commissions release to your wallet automatically</li>
+          <li>🏧 Withdrawals are enabled on your account</li>
+          <li>💼 Work earnings flow without any holds</li>
+        </ul>
+      </div>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        TDS deductions (if applicable) will be handled against your verified PAN automatically at year-end.
+      </p>
+    `;
+
+    const html = emailWrapper({
+      title: "KYC Verified - ZetaGrow",
+      preheader: "Earnings and withdrawals are now unlocked",
+      content,
+      cta: true,
+      ctaText: "Open Affiliate Center",
+      ctaUrl: `${SITE_URL}/affiliate/wallet`,
+      footerNote: "KYC queries? Reply to this email and our team will help."
+    });
+
+    try {
+      const resend = getResend();
+      await resend.emails.send({
+        from: `${BRAND.name} <noreply@zetagrow.in>`,
+        to: args.email,
+        subject: "🎉 Your ZetaGrow KYC is verified — earnings unlocked!",
+        html,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("Failed to send KYC approved email:", err);
+      return { success: false, error: String(err) };
+    }
+  },
+});
+
+export const sendKycRejectedEmail = internalAction({
+  args: { email: v.string(), name: v.string(), reason: v.string() },
+  handler: async (ctx, args) => {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY not configured, skipping email");
+      return { success: false, reason: "RESEND_API_KEY not configured" };
+    }
+
+    const content = `
+      <p style="margin: 0 0 16px; font-size: 16px; color: ${BRAND.textColor}; line-height: 1.5;">Hi ${args.name},</p>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        Unfortunately we could not verify your KYC this time.
+      </p>
+      <div style="background: #FEF3F2; border: 1px solid #FED7D7; border-radius: 8px; padding: 20px; margin: 0 0 24px;">
+        <p style="margin: 0 0 6px; font-size: 13px; font-weight: 700; color: #C53030; text-transform: uppercase; letter-spacing: 1px;">Reason</p>
+        <p style="margin: 0; font-size: 14px; color: ${BRAND.textColor}; line-height: 1.6;">${args.reason}</p>
+      </div>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        You can fix the issue and resubmit your documents from your dashboard — e.g. a clearer photo of the card, correct spelling of your name as printed on the PAN, or the right last 4 digits of your Aadhaar.
+      </p>
+    `;
+
+    const html = emailWrapper({
+      title: "KYC verification failed - ZetaGrow",
+      preheader: "Resubmit your documents to unlock earnings",
+      content,
+      cta: true,
+      ctaText: "Resubmit KYC",
+      ctaUrl: `${SITE_URL}/dashboard/kyc`,
+      footerNote: "Need help? Reply to this email and our team will guide you."
+    });
+
+    try {
+      const resend = getResend();
+      await resend.emails.send({
+        from: `${BRAND.name} <noreply@zetagrow.in>`,
+        to: args.email,
+        subject: "⚠️ Action needed: your KYC could not be verified",
+        html,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("Failed to send KYC rejected email:", err);
       return { success: false, error: String(err) };
     }
   },

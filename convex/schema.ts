@@ -21,6 +21,10 @@ users: defineTable({
     cvRemarks: v.optional(v.string()),
     cvReviewedAt: v.optional(v.number()),
     cvVerifiedBy: v.optional(v.string()),
+    kycStatus: v.optional(v.string()), // "not_submitted" | "pending" | "verified" | "rejected"
+    kycReviewedAt: v.optional(v.number()),
+    partnerTier: v.optional(v.string()), // undefined | "growth_partner" (Growth Partner Program — invite only)
+    partnerSince: v.optional(v.number()),
     failedLoginCount: v.optional(v.number()),
     lockedUntil: v.optional(v.number()),
     onboardingEmailSentAt: v.optional(v.number()),
@@ -228,6 +232,7 @@ sessions: defineTable({
     status: v.string(), // "completed" | "refunded" | "cancelled"
     paymentId: v.string(),
     paymentMethod: v.string(),
+    accessType: v.optional(v.string()), // "purchase" (default) | "admin_grant" (free giveaway — not a sale)
     createdAt: v.number(),
   })
     .index("by_userId", ["userId"])
@@ -400,6 +405,17 @@ sessions: defineTable({
     }),
     status: v.string(), // "requested" | "under_review" | "approved" | "processing" | "completed" | "rejected" | "cancelled"
     adminNote: v.optional(v.string()),
+    // TDS computed at request time (Apr-Mar FY, per-category thresholds)
+    tdsAmount: v.optional(v.number()), // total TDS deducted
+    tdsBreakdown: v.optional(
+      v.object({
+        affiliateGross: v.number(),
+        affiliateTds: v.number(),
+        workGross: v.number(),
+        workTds: v.number(),
+        financialYear: v.number(), // FY start year, e.g. 2026 for Apr 2026 - Mar 2027
+      })
+    ),
     requestedAt: v.number(),
     processedAt: v.optional(v.number()),
   })
@@ -558,4 +574,53 @@ sessions: defineTable({
     ),
     createdAt: v.number(),
   }).index("by_ticketId", ["ticketId"]),
+
+  // KYC Profiles (TDS compliance) — stores only masked identifiers.
+  // Full Aadhaar is NEVER stored (UIDAI data-minimization): last 4 digits only.
+  // PAN is stored in full for TDS filing but always masked in client UIs.
+  kycProfiles: defineTable({
+    userId: v.id("users"),
+    fullNameAsPerPan: v.string(),
+    panNumber: v.string(), // stored uppercase; masked to ABCDE****F in every client response
+    panImageId: v.optional(v.id("_storage")),
+    aadhaarLast4: v.string(), // exactly 4 digits
+    aadhaarImageId: v.optional(v.id("_storage")),
+    // Address is legacy-optional: no longer collected at signup KYC (no physical
+    // deliveries). Older verified profiles may still carry it for TDS records.
+    addressLine1: v.optional(v.string()),
+    addressLine2: v.optional(v.string()),
+    city: v.optional(v.string()),
+    state: v.optional(v.string()),
+    pincode: v.optional(v.string()),
+    status: v.string(), // "pending" | "verified" | "rejected"
+    rejectionReason: v.optional(v.string()),
+    submissionCount: v.number(), // resubmission tracking
+    submittedAt: v.number(),
+    reviewedAt: v.optional(v.number()),
+    reviewedBy: v.optional(v.string()), // admin email
+    verificationMode: v.optional(v.string()), // "manual" (fallback) | "api" (future)
+  })
+    .index("by_userId", ["userId"])
+    .index("by_status", ["status"])
+    .index("by_panNumber", ["panNumber"]),
+
+  // Razorpay payment orders (checkout bridge). Purely additive — existing
+  // tables/logic are untouched. A purchase only unlocks when an order reaches
+  // status "paid" (server-verified signature) and is then marked "consumed"
+  // by the enrollment mutation.
+  paymentOrders: defineTable({
+    userId: v.id("users"),
+    planId: v.id("plans"),
+    razorpayOrderId: v.string(),
+    razorpayPaymentId: v.optional(v.string()),
+    razorpaySignature: v.optional(v.string()),
+    amount: v.number(), // in paise
+    currency: v.string(), // "INR"
+    receipt: v.string(),
+    status: v.string(), // "created" | "paid" | "consumed" | "failed" | "cancelled"
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_razorpayOrderId", ["razorpayOrderId"])
+    .index("by_userId", ["userId"]),
 });

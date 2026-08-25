@@ -63,7 +63,7 @@ export function sanitizeName(name: string): string {
   return name.replace(/[<>&"']/g, "").trim().slice(0, 80);
 }
 
-function isValidEmail(email: string): boolean {
+export function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
@@ -75,7 +75,7 @@ function generateReferralCode(baseName: string): string {
   return `${base}${randomSuffix}`;
 }
 
-async function getUniqueReferralCode(ctx: any, baseName: string): Promise<string> {
+export async function getUniqueReferralCode(ctx: any, baseName: string): Promise<string> {
   for (let attempt = 0; attempt < 10; attempt++) {
     const code = generateReferralCode(baseName);
     const existing = await ctx.runQuery(internal.auth.getUserByReferralCode, { referralCode: code });
@@ -616,6 +616,9 @@ export const getSessionUser = query({
       cvStatus: user.cvStatus || "pending",
       cvRemarks: user.cvRemarks,
       cvReviewedAt: user.cvReviewedAt,
+      kycStatus: user.kycStatus || "not_submitted",
+      partnerTier: user.partnerTier || null,
+      partnerSince: user.partnerSince || null,
       position,
       wallet: wallet || { availableBalance: 0, pendingBalance: 0, totalEarned: 0 },
       enrolledProgramIds,

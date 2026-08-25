@@ -11,11 +11,12 @@ import {
   Clock, 
   CheckCircle2, 
   Lock, 
-  ArrowRight 
+  ArrowRight,
+  ShieldAlert
 } from "lucide-react";
 
 export default function DashboardWorkPage() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const jobs = useQuery(
     api.jobs.getJobsWithEligibility,
     token ? { token } : "skip"
@@ -83,6 +84,31 @@ export default function DashboardWorkPage() {
           Verified client assignments. Requirements are validated in real-time against your enrolled programs and completed milestones.
         </p>
       </div>
+
+      {/* KYC gate — applications blocked until verified (TDS compliance) */}
+      {user && (user as any).kycStatus !== "verified" && (
+        <Link
+          href="/dashboard/kyc"
+          className="card-surface p-4 flex items-center gap-4 hover:border-brand-400 transition-colors"
+        >
+          <ShieldAlert className={`w-6 h-6 shrink-0 ${(user as any).kycStatus === "pending" ? "text-blue-500" : "text-red-500"}`} />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold text-textMain">
+              {(user as any).kycStatus === "pending"
+                ? "KYC under review — you can apply once it's approved"
+                : (user as any).kycStatus === "rejected"
+                  ? "KYC rejected — resubmit your documents to apply for work"
+                  : "KYC verification required before applying for work"}
+            </p>
+            <p className="text-[11px] text-textMuted mt-0.5">
+              PAN &amp; Aadhaar verification keeps payouts TDS-compliant. Complete your CV first if you haven't already.
+            </p>
+          </div>
+          <span className="btn-primary text-[11px] py-2 px-3 shrink-0">
+            {(user as any).kycStatus === "pending" ? "View Status" : "Start KYC"}
+          </span>
+        </Link>
+      )}
 
       {/* Filter toolbar */}
       <div className="card-surface p-4 flex flex-col md:flex-row items-center justify-between gap-4">

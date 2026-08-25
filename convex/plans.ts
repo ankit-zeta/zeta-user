@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalQuery } from "./_generated/server";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -46,10 +46,18 @@ export const getPublicPlans = query({
   handler: async (ctx) => {
     const plans = await ctx.db
       .query("plans")
-      .withIndex("by_status", (q) => q.eq("status", "published"))
+      .withIndex("by_status", (q: any) => q.eq("status", "published"))
       .collect();
     plans.sort((a: any, b: any) => a.sortOrder - b.sortOrder);
     return Promise.all(plans.map((p: any) => planWithCourses(ctx, p)));
+  },
+});
+
+// Internal lookup for server actions (Razorpay order creation).
+export const getPlanByIdInternal = internalQuery({
+  args: { planId: v.id("plans") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.planId);
   },
 });
 

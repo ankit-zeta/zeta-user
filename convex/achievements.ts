@@ -1,4 +1,5 @@
 ﻿import { v } from "convex/values";
+import { ConvexError } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { requirePurchasedUser } from "./entitlements";
 
@@ -80,9 +81,16 @@ export const evaluateUserAchievements = mutation({
     }
 
     const userId = session.userId;
-    const user = await ctx.db.get(userId);
+    const user: any = await ctx.db.get(userId);
     if (!user) throw new Error("User not found");
     await requirePurchasedUser(ctx, args.token);
+
+    // Growth Partner Program: achievements are exclusive to invited partners
+    if (user.partnerTier !== "growth_partner") {
+      throw new ConvexError(
+        "The Growth Partner Program is invite-only. Achievements unlock exclusively for invited Growth Partners."
+      );
+    }
 
     const metrics = await gatherUserMetrics(ctx, userId);
 

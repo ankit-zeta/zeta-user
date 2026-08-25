@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useEffect, useMemo } from "react";
+import Link from "next/link";
 import { useAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
-import { Trophy, CheckCircle2, Lock, Zap } from "lucide-react";
+import { Trophy, CheckCircle2, Lock, Zap, Crown, ShieldCheck } from "lucide-react";
 
 const METRIC_LABELS: Record<string, string> = {
   valid_referrals: "Direct referrals",
@@ -17,20 +18,59 @@ const METRIC_LABELS: Record<string, string> = {
 };
 
 export default function AffiliateAchievementsPage() {
-  const { token } = useAuth();
+  const { user, token } = useAuth();
+
+  // ── Growth Partner gate: invite-only section ──
+  const isGrowthPartner = !!(user as any)?.partnerTier;
+
+  const partnerProfile = useQuery(
+    api.partners.getMyPartnerProfile,
+    token && isGrowthPartner ? { token } : "skip"
+  ) as
+    | { isPartner: boolean; tierName: string | null; chainPct: number; partnerSince: number | null }
+    | undefined;
+
   const achievements = useQuery(
     api.achievements.getUserAchievements,
-    token ? { token } : "skip"
+    token && isGrowthPartner ? { token } : "skip"
   );
 
   const evaluateMutation = useMutation(api.achievements.evaluateUserAchievements);
 
   useEffect(() => {
-    if (token) {
+    if (token && isGrowthPartner) {
       evaluateMutation({ token }).catch(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, isGrowthPartner]);
+
+  // Non-members see an elegant invitation-only screen (server enforces too)
+  if (!isGrowthPartner) {
+    return (
+      <div className="max-w-lg mx-auto text-center space-y-5 py-16 text-neutral-100">
+        <div className="w-16 h-16 rounded-2xl bg-amber-950/60 border border-amber-800/70 flex items-center justify-center mx-auto">
+          <Crown className="w-8 h-8 text-amber-400" />
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-xl font-bold">Growth Partner Program</h1>
+          <p className="text-xs text-neutral-400 leading-relaxed">
+            This is an invite-only circle of ZetaGrow's most trusted partners — unlocking exclusive
+            partnership tiers and chain commission levels.
+          </p>
+        </div>
+        <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-6 space-y-3">
+          <ShieldCheck className="w-6 h-6 text-brand-400 mx-auto" />
+          <p className="text-[11px] text-neutral-500 leading-relaxed">
+            Membership is extended personally by the ZetaGrow team based on your impact and consistency.
+            Keep growing your referrals and work quality — our team is always watching for exceptional partners.
+          </p>
+        </div>
+        <Link href="/affiliate" className="btn-secondary text-xs py-2 px-4 inline-block">
+          Back to Affiliate Overview
+        </Link>
+      </div>
+    );
+  }
 
   const unlockedCount = useMemo(
     () => (achievements || []).filter((a) => a.isUnlocked).length,
@@ -39,12 +79,44 @@ export default function AffiliateAchievementsPage() {
 
   return (
     <div className="space-y-8 text-neutral-100">
+      {/* Program header */}
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight">Milestone Achievements</h1>
+        <div className="flex items-center gap-2 flex-wrap">
+          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+            <Crown className="w-6 h-6 text-amber-400" /> Growth Partner Program
+          </h1>
+          <span className="text-[9px] font-bold uppercase tracking-wider text-amber-300 bg-amber-950/60 border border-amber-800/70 px-2 py-0.5 rounded-full">
+            Invite Only
+          </span>
+        </div>
         <p className="text-xs text-neutral-400">
-          Unlock badges and positions — each milestone boosts your chain commission level.
+          Welcome to the circle, {user?.name?.split(" ")[0]}. Your milestones here upgrade your chain
+          commission level — an earning privilege reserved for partners only.
         </p>
       </div>
+
+      {/* Membership status strip */}
+      {partnerProfile?.isPartner && (
+        <div className="rounded-2xl border border-amber-800/70 bg-gradient-to-br from-amber-950/30 to-[#0F1412] p-4 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+          <div className="flex items-center gap-3">
+            <Crown className="w-5 h-5 text-amber-400" />
+            <div>
+              <p className="text-xs font-bold text-neutral-100">
+                Active Growth Partner · {partnerProfile.tierName || "Level I"}
+              </p>
+              <p className="text-[10px] text-neutral-500 mt-0.5">
+                Member since{" "}
+                {partnerProfile.partnerSince
+                  ? new Date(partnerProfile.partnerSince).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+                  : "—"}
+              </p>
+            </div>
+          </div>
+          <span className="text-[10px] font-bold text-amber-300 bg-amber-950/50 border border-amber-900 px-3 py-1.5 rounded-full">
+            Chain commission level: {partnerProfile.chainPct}%
+          </span>
+        </div>
+      )}
 
       {/* Progress summary */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

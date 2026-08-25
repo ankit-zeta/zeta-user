@@ -14,6 +14,8 @@ import {
   Link2,
   Clock,
   ArrowRight,
+  ShieldAlert,
+  ShieldCheck,
 } from "lucide-react";
 
 export default function AffiliateOverviewPage() {
@@ -33,6 +35,12 @@ export default function AffiliateOverviewPage() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  // KYC gate messaging — commissions accrue but stay on hold until verified
+  const kycStatus = (user as any)?.kycStatus || "not_submitted";
+  const kycPending = kycStatus === "not_submitted";
+  const kycUnderReview = kycStatus === "pending";
+  const kycRejected = kycStatus === "rejected";
 
   if (stats === undefined || walletData === undefined) {
     return (
@@ -59,6 +67,43 @@ export default function AffiliateOverviewPage() {
           Track your referral performance, commissions and payout status in one place.
         </p>
       </div>
+
+      {/* KYC gate banner */}
+      {kycStatus !== "verified" && (
+        <Link
+          href="/dashboard/kyc"
+          className={`block rounded-2xl border p-4 flex items-center gap-4 transition-colors ${
+            kycUnderReview
+              ? "border-blue-800 bg-blue-950/30 hover:bg-blue-950/50"
+              : "border-amber-800 bg-amber-950/20 hover:bg-amber-950/40"
+          }`}
+        >
+          {kycUnderReview ? (
+            <Clock className="w-6 h-6 text-blue-400 shrink-0" />
+          ) : (
+            <ShieldAlert className="w-6 h-6 text-amber-400 shrink-0" />
+          )}
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold text-neutral-100">
+              {kycUnderReview
+                ? "KYC under review — payouts temporarily on hold"
+                : kycRejected
+                  ? "KYC rejected — resubmit to unlock payouts"
+                  : "Complete your KYC to unlock payouts"}
+            </p>
+            <p className="text-[11px] text-neutral-400 mt-0.5">
+              {kycUnderReview
+                ? "Your commissions keep accruing and release automatically once verification is approved (24-48 hrs)."
+                : "Your referral link keeps working, but commissions stay on hold until your PAN & Aadhaar are verified."}
+            </p>
+          </div>
+          {!kycUnderReview && (
+            <span className="btn-primary text-[11px] py-2 px-3 shrink-0 flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5" /> Verify Now
+            </span>
+          )}
+        </Link>
+      )}
 
       {/* Referral link card */}
       <div className="rounded-2xl border border-brand-800 bg-gradient-to-br from-brand-900/40 to-[#0F1412] p-6 space-y-4">

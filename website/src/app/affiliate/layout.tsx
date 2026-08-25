@@ -19,6 +19,7 @@ import {
   X,
   ArrowLeft,
   Timer,
+  Crown,
 } from "lucide-react";
 
 const AFFILIATE_SESSION_MS = 10 * 60 * 1000; // 10 minutes
@@ -123,6 +124,9 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
   const mm = secondsLeft !== null ? String(Math.floor(secondsLeft / 60)).padStart(2, "0") : "--";
   const ss = secondsLeft !== null ? String(secondsLeft % 60).padStart(2, "0") : "--";
 
+  // Growth Partner Program: exclusive section visibility (invite-only)
+  const isGrowthPartner = !!(user as any)?.partnerTier;
+
   const navSections = [
     {
       title: "Affiliate",
@@ -131,7 +135,9 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
         { name: "My Referrals", href: "/affiliate/referrals", icon: Users },
         { name: "Commission Ledger", href: "/affiliate/earnings", icon: CreditCard },
         { name: "Wallet & Payouts", href: "/affiliate/wallet", icon: Wallet },
-        { name: "Achievements", href: "/affiliate/achievements", icon: Zap },
+        ...(isGrowthPartner
+          ? [{ name: "Partnership", href: "/affiliate/achievements", icon: Zap }]
+          : []),
       ],
     },
     {
@@ -186,7 +192,13 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-xs font-bold text-white truncate">{user.name}</p>
-            <p className="text-[11px] text-neutral-400 truncate">Affiliate Partner</p>
+            {isGrowthPartner ? (
+              <span className="inline-flex items-center gap-1 mt-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-300 bg-amber-950/60 border border-amber-800/70 px-1.5 py-0.5 rounded-full">
+                <Crown className="w-2.5 h-2.5" /> Growth Partner
+              </span>
+            ) : (
+              <p className="text-[11px] text-neutral-400 truncate">Affiliate Member</p>
+            )}
           </div>
         </div>
 

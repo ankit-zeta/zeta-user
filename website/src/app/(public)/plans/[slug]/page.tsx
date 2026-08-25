@@ -1,11 +1,9 @@
 "use client";
 
-import { friendlyError } from "@/lib/errors";
-
-import React, { useState } from "react";
+import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
 import { useAuth } from "@/lib/convex";
 import {
@@ -35,11 +33,6 @@ export default function PlanDetailPage() {
   const { user, token } = useAuth();
 
   const plan = useQuery(api.plans.getPlanBySlug, slug ? { slug } : "skip");
-  const processPurchase = useMutation(api.affiliates.processPurchaseWithAffiliate);
-
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
 
   if (plan === undefined) {
     return (
@@ -74,27 +67,12 @@ export default function PlanDetailPage() {
     plan.courses?.filter((c: any) => user?.enrolledProgramIds?.includes(c._id)).length || 0;
   const hasPlanAccess = plan.courses && ownedCount === plan.courses.length;
 
-  const handlePurchase = async () => {
+  const handlePurchase = () => {
     if (!token) {
-      router.push(`/login?redirect=/plans/${slug}`);
+      router.push(`/login?redirect=/checkout/${slug}`);
       return;
     }
-    setIsProcessing(true);
-    setErrorMsg("");
-    setSuccessMsg("");
-    try {
-      const res: any = await processPurchase({
-        token,
-        planId: plan._id,
-        paymentMethod: "instant_checkout",
-      });
-      setSuccessMsg(`Unlocked! ${res.enrolledCount ?? 0} new courses added to your dashboard.`);
-      setTimeout(() => router.push("/dashboard/programs"), 1400);
-    } catch (err: any) {
-      setErrorMsg(friendlyError(err, "Failed to process enrollment."));
-    } finally {
-      setIsProcessing(false);
-    }
+    router.push(`/checkout/${slug}`);
   };
 
   return (
@@ -158,37 +136,32 @@ export default function PlanDetailPage() {
               </p>
             </div>
 
-            {errorMsg && (
-              <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700">{errorMsg}</div>
-            )}
-            {successMsg && (
-              <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-xs text-green-700">{successMsg}</div>
-            )}
-
             {hasPlanAccess ? (
               <Link href="/dashboard/programs" className="btn-primary w-full text-center justify-center py-3 text-sm font-semibold block">
                 Go To My Courses
               </Link>
             ) : (
-              <button
-                onClick={handlePurchase}
-                disabled={isProcessing}
-                className="btn-primary w-full justify-center py-3 text-sm font-semibold shadow-sm"
-              >
-                {isProcessing
-                  ? "Processing..."
-                  : `Get ${plan.name} — ₹${plan.price.toLocaleString("en-IN")}`}
-              </button>
+              <>
+                <button
+                  onClick={handlePurchase}
+                  className="btn-primary w-full justify-center py-3 text-sm font-semibold shadow-sm"
+                >
+                  Get {plan.name} — ₹{plan.price.toLocaleString("en-IN")}
+                </button>
+                <p className="text-center text-[10px] text-textMuted">
+                  Secure checkout via Razorpay · UPI, cards &amp; NetBanking
+                </p>
+              </>
             )}
 
             <div className="space-y-2.5 pt-2 text-xs text-textMuted">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-brand-600" />
                 <span>Instant access to every course included</span>
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-brand-600" />
-                  <span>Digital product — non-refundable once accessed</span>
-                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-brand-600" />
+                <span>Digital product — non-refundable once accessed</span>
               </div>
               <div className="flex items-center gap-2">
                 <Award className="w-4 h-4 text-brand-600" />

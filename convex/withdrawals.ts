@@ -1,7 +1,9 @@
 import { v } from "convex/values";
+import { ConvexError } from "convex/values";
 import { mutation, query, action } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { requirePurchasedUser } from "./entitlements";
+import { requirePurchasedUser, requireKycVerified } from "./entitlements";
+import { computeTds } from "./tds";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -51,7 +53,9 @@ export const requestWithdrawal = mutation({
     }
 
     // Resolve from a saved payout method if provided (details copied into the withdrawal record)
-    await requirePurchasedUser(ctx, args.token);
+    const sessionUser = await requirePurchasedUser(ctx, args.token);
+    // TDS compliance: money out requires a verified KYC (PAN on file)
+    await requireKycVerified(ctx, sessionUser);
     if (args.payoutMethodId) {
       const saved = await ctx.db.get(args.payoutMethodId);
       if (!saved || saved.userId.toString() !== session.userId.toString()) {
@@ -119,8 +123,10 @@ export const requestWithdrawal = mutation({
       minimumWithdrawal: 1000,
       maximumWithdrawal: 100000,
       dailyLimit: 25000,
+      monthlyLimit: 200000,
       feePercentage: 2,
       fixedFee: 0,
+      maxFee: 0, // 0 = no cap
     };
 
     if (args.amount < withdrawalSettings.minimumWithdrawal) {
@@ -176,10 +182,18 @@ export const requestWithdrawal = mutation({
       throw new Error("You already have a pending withdrawal under review");
     }
 
-    // Calculate fee
+    // Calculate fee: percentage + flat, optionally capped at maxFee (0 = no cap)
     const feePercentage = withdrawalSettings.feePercentage || 0;
-    const fee = Math.round((args.amount * feePercentage) / 100) + (withdrawalSettings.fixedFee || 0);
-    const netAmount = Math.max(0, args.amount - fee);
+    const rawFee =
+      Math.round((args.amount * feePercentage) / 100) + (withdrawalSettings.fixedFee || 0);
+    const maxFee = withdrawalSettings.maxFee || 0;
+    const fee = maxFee > 0 ? Math.min(rawFee, maxFee) : rawFee;
+
+    // ── TDS computation (Apr-Mar FY, per earning category) ──
+    const tds = await computeTds(ctx, session.userId, args.amount, now);
+    const tdsAmount = tds?.total || 0;
+
+    const netAmount = Math.max(0, args.amount - fee - tdsAmount);
 
     // Deduct available balance immediately into pending withdrawal
     const newAvailable = wallet.availableBalance - args.amount;
@@ -196,6 +210,8 @@ export const requestWithdrawal = mutation({
       payoutMethod: args.payoutMethod,
       payoutDetails: args.payoutDetails,
       status: "requested",
+      tdsAmount: tdsAmount > 0 ? tdsAmount : undefined,
+      tdsBreakdown: tds?.breakdown || undefined,
       requestedAt: now,
     });
 
@@ -206,7 +222,9 @@ export const requestWithdrawal = mutation({
       amount: -args.amount,
       balanceAfter: newAvailable,
       referenceId: withdrawalId,
-      description: `Withdrawal request of ₹${args.amount} (${args.payoutMethod.toUpperCase()})`,
+      description: `Withdrawal request of ₹${args.amount} (${args.payoutMethod.toUpperCase()})${
+        tdsAmount > 0 ? ` · TDS ₹${tdsAmount}` : ""
+      }`,
       status: "pending",
       createdAt: now,
     });
@@ -216,7 +234,9 @@ export const requestWithdrawal = mutation({
       userId: session.userId,
       type: "withdrawal",
       title: "Withdrawal Request Submitted",
-      message: `Your withdrawal request of ₹${args.amount} (Net: ₹${netAmount}) has been submitted for processing.`,
+      message: `Your withdrawal request of ₹${args.amount} (Net: ₹${netAmount}${
+        tdsAmount > 0 ? `, TDS deducted: ₹${tdsAmount}` : ""
+      }) has been submitted for processing.`,
       read: false,
       actionUrl: "/dashboard/withdrawals",
       createdAt: now,
@@ -233,6 +253,7 @@ export const requestWithdrawal = mutation({
           netAmount,
           fee,
           payoutMethod: args.payoutMethod,
+          tdsAmount: tdsAmount > 0 ? tdsAmount : undefined,
         });
       }
     } catch (e) {
@@ -449,5 +470,46 @@ export const updateWithdrawalStatus = mutation({
     });
 
     return { success: true };
+  },
+});
+
+// ── Live cost preview (withdrawal form) ─────────────────────────────────────
+// Mirrors the exact request-time math: platform fee (% + flat, capped) and
+// TDS (per earning category, Apr-Mar FY thresholds). Shows ₹0 lines too so
+// users always see what charges apply.
+export const previewWithdrawalCosts = query({
+  args: { token: v.string(), amount: v.number() },
+  handler: async (ctx, args) => {
+    const session = await ctx.db
+      .query("sessions")
+      .withIndex("by_token", (q: any) => q.eq("token", args.token))
+      .first();
+    if (!session || session.expiresAt < Date.now()) {
+      throw new ConvexError("Unauthorized");
+    }
+
+    const settingsRecord = await ctx.db
+      .query("adminSettings")
+      .withIndex("by_key", (q: any) => q.eq("key", "withdrawals"))
+      .first();
+    const s = settingsRecord?.value || {};
+    const feePercentage = s.feePercentage || 0;
+    const fixedFee = s.fixedFee || 0;
+    const maxFee = s.maxFee || 0;
+
+    const rawFee =
+      Math.round(((args.amount || 0) * feePercentage) / 100) + fixedFee;
+    const fee = maxFee > 0 ? Math.min(rawFee, maxFee) : rawFee;
+
+    const tds = await computeTds(ctx, session.userId, args.amount || 0, Date.now());
+    const tdsTotal = tds?.total || 0;
+
+    return {
+      feeSettings: { feePercentage, fixedFee, maxFee },
+      fee,
+      tdsEnabled: !!tds,
+      tdsTotal,
+      net: Math.max(0, (args.amount || 0) - fee - tdsTotal),
+    };
   },
 });

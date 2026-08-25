@@ -1,7 +1,8 @@
 import { v } from "convex/values";
+import { ConvexError } from "convex/values";
 import { mutation, query, internalMutation } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { hashPassword, generateSalt } from "./auth";
+import { hashPassword, generateSalt, isValidEmail, sanitizeName, getUniqueReferralCode } from "./auth";
 
 // Daily onboarding nudge: email verified users who signed up 2-10 days ago
 // and have never purchased anything. Sends at most once per user (flag-gated).
@@ -68,6 +69,99 @@ async function requireAdmin(ctx: any, token: string) {
   }
   return user;
 }
+
+// ── Admin: create a user account directly ───────────────────────────────────
+// Account is created active + email-verified (admin vouches for the person),
+// with wallet + referral code initialized like normal signup. Audit-logged.
+export const adminCreateUser = mutation({
+  args: {
+    token: v.string(),
+    name: v.string(),
+    email: v.string(),
+    password: v.string(),
+    phone: v.optional(v.string()),
+    sendWelcomeEmail: v.optional(v.boolean()),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx, args.token);
+
+    const name = sanitizeName(args.name);
+    if (!name || name.length < 2) {
+      throw new ConvexError("Enter the person's full name (min 2 characters)");
+    }
+    const email = args.email.trim().toLowerCase();
+    if (!isValidEmail(email)) {
+      throw new ConvexError("Enter a valid email address");
+    }
+    if (!args.password || args.password.length < 8) {
+      throw new ConvexError("Password must be at least 8 characters");
+    }
+
+    const existing = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .first();
+    if (existing) {
+      throw new ConvexError("An account with this email already exists");
+    }
+
+    const salt = generateSalt();
+    const passwordHash = await hashPassword(args.password, salt);
+    const referralCode = await getUniqueReferralCode(ctx, name);
+    const now = Date.now();
+
+    const userId = await ctx.db.insert("users", {
+      name,
+      email,
+      passwordHash,
+      salt,
+      role: "user",
+      status: "active",
+      referralCode,
+      phone: args.phone?.trim() || undefined,
+      emailVerified: true,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    await ctx.db.insert("wallets", {
+      userId,
+      availableBalance: 0,
+      pendingBalance: 0,
+      totalEarned: 0,
+      totalWithdrawn: 0,
+      workEarnings: 0,
+      affiliateEarnings: 0,
+      updatedAt: now,
+    });
+
+    await ctx.db.insert("auditLogs", {
+      adminUserId: admin._id,
+      adminEmail: admin.email,
+      action: "ADMIN_CREATE_USER",
+      entityType: "users",
+      entityId: userId,
+      previousValue: "none",
+      newValue: `${name} <${email}>`,
+      reason: "Account created from Admin Panel",
+      timestamp: now,
+    });
+
+    // Optional branded welcome email (credentials are NEVER emailed)
+    if (args.sendWelcomeEmail) {
+      try {
+        await ctx.scheduler.runAfter(0, internal.email.sendAdminCreatedAccountEmail, {
+          email,
+          name,
+        });
+      } catch (e) {
+        console.error("Failed to schedule admin-created welcome email:", e);
+      }
+    }
+
+    return { success: true, userId, referralCode };
+  },
+});
 
 export const updateProfile = mutation({
   args: {
@@ -595,6 +689,9 @@ export const grantProgramAccess = mutation({
       status: "completed",
       paymentId: `ADMIN_GRANT_${now}`,
       paymentMethod: "manual_grant",
+      // Free giveaway — full learning access, but labeled so records/reports
+      // can distinguish it from an actual sale (₹0 revenue either way).
+      accessType: "admin_grant",
       createdAt: now,
     });
 
@@ -602,8 +699,8 @@ export const grantProgramAccess = mutation({
     await ctx.db.insert("notifications", {
       userId: args.userId,
       type: "course",
-      title: "Program Access Granted",
-      message: `You have been granted access to "${program.name}".`,
+      title: "Free Course Unlocked 🎁",
+      message: `"${program.name}" has been added to your account as a free giveaway from the ZetaGrow team. Happy learning!`,
       read: false,
       actionUrl: `/dashboard/learning/${args.programId}`,
       createdAt: now,

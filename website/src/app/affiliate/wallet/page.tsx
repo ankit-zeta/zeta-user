@@ -13,6 +13,7 @@ import {
   PlusCircle,
   CheckCircle2,
   AlertCircle,
+  FileBarChart,
 } from "lucide-react";
 
 type SavedMethod = {
@@ -30,7 +31,7 @@ type SavedMethod = {
 };
 
 export default function AffiliateWalletPage() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const walletData = useQuery(api.wallets.getUserWallet, token ? { token } : "skip");
   const withdrawals = useQuery(api.withdrawals.getUserWithdrawals, token ? { token } : "skip");
   const methods = useQuery(api.payoutMethods.getMyPayoutMethods, token ? { token } : "skip") as
@@ -38,6 +39,17 @@ export default function AffiliateWalletPage() {
     | undefined;
   const withdrawalSettings = useQuery(api.settings.getSetting, { key: "withdrawals" }) as
     | { minimumWithdrawal?: number; maximumWithdrawal?: number }
+    | undefined;
+
+  // TDS engine — FY summary (live preview query lives below form state)
+  const taxSummary = useQuery(api.tds.getMyTaxSummary, token ? { token } : "skip") as
+    | {
+        fyLabel: string;
+        enabled: boolean;
+        affiliate: { label: string; rate: number; gross: number; tds: number; threshold: number };
+        work: { label: string; rate: number; gross: number; tds: number; threshold: number };
+        totalTds: number;
+      }
     | undefined;
 
   const requestMutation = useMutation(api.withdrawals.requestWithdrawal);
@@ -50,6 +62,20 @@ export default function AffiliateWalletPage() {
   const [selectedMethodId, setSelectedMethodId] = useState<string>("");
   const [reqMsg, setReqMsg] = useState("");
   const [isRequesting, setIsRequesting] = useState(false);
+
+  // Live cost estimate for the amount being typed: platform fee + TDS + net
+  const tdsPreview = useQuery(
+    api.withdrawals.previewWithdrawalCosts,
+    token && Number(amount) > 0 ? { token, amount: Number(amount) } : "skip"
+  ) as
+    | {
+        feeSettings: { feePercentage: number; fixedFee: number; maxFee: number };
+        fee: number;
+        tdsEnabled: boolean;
+        tdsTotal: number;
+        net: number;
+      }
+    | undefined;
 
   // Add-method form state
   const [upiId, setUpiId] = useState("");
@@ -75,6 +101,10 @@ export default function AffiliateWalletPage() {
   const wallet = walletData.wallet;
   const available = wallet?.availableBalance || 0;
   const hasPending = withdrawals.some((w) => w.status === "requested" || w.status === "processing");
+
+  // TDS compliance: withdrawals unlock only after KYC verification
+  const kycStatus = (user as any)?.kycStatus || "not_submitted";
+  const kycVerified = kycStatus === "verified";
 
   const upiMethods = methods.filter((m) => m.type === "upi" || m.type === "upi_qr");
   const bankMethods = methods.filter((m) => m.type === "bank_transfer");
@@ -129,6 +159,10 @@ export default function AffiliateWalletPage() {
   const handleRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
+    if (!kycVerified) {
+      setReqMsg("Complete your KYC verification before requesting a withdrawal.");
+      return;
+    }
     const amt = Number(amount);
     if (!amt || amt <= 0) {
       setReqMsg("Enter a valid amount.");
@@ -201,6 +235,48 @@ export default function AffiliateWalletPage() {
         </div>
       </div>
 
+      {/* ── FY Tax Summary (TDS) ───────────────────────────────────────────── */}
+      {taxSummary?.enabled && (
+        <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold flex items-center gap-2">
+              <FileBarChart className="w-4 h-4 text-brand-400" /> Tax Summary · {taxSummary.fyLabel}
+            </h3>
+            <span className="text-[10px] text-neutral-500">Apr – Mar financial year</span>
+          </div>
+          {taxSummary.totalTds === 0 ? (
+            <p className="text-[11px] text-neutral-500">
+              No TDS deducted yet this financial year. TDS applies only on payouts above your yearly
+              threshold — 2% on affiliate commissions above ₹20,000, 10% on work earnings above ₹50,000.
+            </p>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <TaxCard
+                  title={`Affiliate (${taxSummary.affiliate.label} · ${taxSummary.affiliate.rate}%)`}
+                  gross={taxSummary.affiliate.gross}
+                  tds={taxSummary.affiliate.tds}
+                />
+                <TaxCard
+                  title={`Work (${taxSummary.work.label} · ${taxSummary.work.rate}%)`}
+                  gross={taxSummary.work.gross}
+                  tds={taxSummary.work.tds}
+                />
+                <div className="rounded-xl border border-brand-800 bg-brand-950/30 p-3">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Total TDS deducted</p>
+                  <p className="text-lg font-extrabold text-amber-400 mt-1">₹{taxSummary.totalTds.toLocaleString("en-IN")}</p>
+                  <p className="text-[10px] text-neutral-500 mt-0.5">Claimable in your income tax return</p>
+                </div>
+              </div>
+              <p className="text-[10px] text-neutral-600">
+                Deducted TDS is deposited with the Income Tax Department against your PAN and appears in your
+                Form 26AS / AIS. Form 16A is issued quarterly.
+              </p>
+            </>
+          )}
+        </div>
+      )}
+
       {/* ── Request withdrawal ─────────────────────────────────────────────── */}
       <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-6 space-y-4">
         <div className="flex items-center justify-between">
@@ -210,8 +286,30 @@ export default function AffiliateWalletPage() {
           </span>
         </div>
 
-        {/* Gate: require BOTH UPI and bank details */}
-        {!payoutReady ? (
+        {/* Gate: KYC must be verified before any payout */}
+        {!kycVerified ? (
+          <a
+            href="/dashboard/kyc"
+            className="flex items-center gap-3 rounded-xl border border-amber-900 bg-amber-950/40 p-4 hover:bg-amber-950/60 transition-colors"
+          >
+            <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold text-amber-200">
+                {kycStatus === "pending"
+                  ? "KYC under review — withdrawals unlock once approved"
+                  : kycStatus === "rejected"
+                    ? "KYC rejected — resubmit your documents to unlock withdrawals"
+                    : "Complete KYC verification to unlock withdrawals"}
+              </p>
+              <p className="text-[11px] text-amber-200/70 mt-0.5">
+                PAN &amp; Aadhaar verification is required for TDS-compliant payouts. Takes ~2 minutes.
+              </p>
+            </div>
+            <span className="btn-primary text-[11px] py-2 px-3 shrink-0">
+              {kycStatus === "pending" ? "View Status" : "Verify Now"}
+            </span>
+          </a>
+        ) : !payoutReady ? (
           <div className="space-y-4">
             <div className="flex items-start gap-2.5 rounded-xl border border-amber-900 bg-amber-950/40 p-4">
               <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
@@ -323,6 +421,37 @@ export default function AffiliateWalletPage() {
                 >
                   Withdraw full balance (₹{available.toLocaleString("en-IN")})
                 </button>
+                {/* Live cost breakdown: fee + TDS + net */}
+                {Number(amount) > 0 && tdsPreview && (
+                  <div className="mt-2 rounded-lg border border-neutral-800 bg-black/20 px-3 py-2 space-y-1">
+                    <div className="flex justify-between text-[10px] text-neutral-400">
+                      <span>
+                        Processing fee
+                        {tdsPreview.feeSettings.feePercentage > 0
+                          ? ` (${tdsPreview.feeSettings.feePercentage}%${tdsPreview.feeSettings.maxFee > 0 ? `, max ₹${tdsPreview.feeSettings.maxFee}` : ""})`
+                          : ""}
+                      </span>
+                      <span className={tdsPreview.fee > 0 ? "text-neutral-200 font-semibold" : "text-green-400 font-semibold"}>
+                        {tdsPreview.fee > 0 ? `− ₹${tdsPreview.fee.toLocaleString("en-IN")}` : "₹0 · currently free"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-[10px] text-neutral-400">
+                      <span>TDS (Income Tax)</span>
+                      {tdsPreview.tdsTotal > 0 ? (
+                        <span className="text-amber-400 font-semibold">− ₹{tdsPreview.tdsTotal.toLocaleString("en-IN")}</span>
+                      ) : (
+                        <span className="text-green-400 font-semibold">₹0</span>
+                      )}
+                    </div>
+                    <div className="flex justify-between text-[11px] pt-1 border-t border-neutral-800">
+                      <span className="text-neutral-300 font-semibold">You'd receive approx.</span>
+                      <span className="text-brand-300 font-bold">₹{tdsPreview.net.toLocaleString("en-IN")}</span>
+                    </div>
+                    <p className="text-[9px] text-neutral-600 leading-snug">
+                      TDS is deducted as per Income Tax rules and reported against your PAN — claimable in your ITR.
+                    </p>
+                  </div>
+                )}
               </div>
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-400 block">
@@ -471,6 +600,21 @@ export default function AffiliateWalletPage() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function TaxCard({ title, gross, tds }: { title: string; gross: number; tds: number }) {
+  return (
+    <div className="rounded-xl border border-neutral-800 bg-black/20 p-3">
+      <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">{title}</p>
+      <div className="flex items-baseline justify-between mt-1">
+        <span className="text-sm font-bold text-neutral-200">₹{gross.toLocaleString("en-IN")}</span>
+        {tds > 0 && (
+          <span className="text-[10px] text-amber-400 font-semibold">− ₹{tds.toLocaleString("en-IN")} TDS</span>
+        )}
+      </div>
+      <p className="text-[9px] text-neutral-600 mt-0.5">paid out this FY</p>
     </div>
   );
 }

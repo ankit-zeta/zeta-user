@@ -25,7 +25,6 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Programs", href: "/programs", icon: Layers },
-    { name: "Courses", href: "/programs", icon: BookOpen },
     { name: "Work Portal", href: "/work", icon: Briefcase },
     { name: "How It Works", href: "/how-it-works", icon: Compass },
   ];

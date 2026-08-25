@@ -335,7 +335,7 @@ export default function HomePage() {
               <div className="flex gap-5 overflow-x-auto pb-4 -mx-4 px-4 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 {(plan.courses || []).map((c: any) => (
                   <article key={c._id} itemScope itemType="https://schema.org/Course" className="card-surface overflow-hidden flex flex-col shrink-0 w-[260px] sm:w-[280px] snap-start hover:border-brand-200 hover:shadow-md transition-all duration-200 group">
-                    <Link href={`/programs/${c.slug}`} className="relative h-32 overflow-hidden bg-brand-50 block">
+                    <Link href={`/programs/${c.slug}`} className="relative aspect-video overflow-hidden bg-brand-50 block">
                       {c.thumbnail ? (
                         <Image src={c.thumbnail} alt={c.name} fill sizes="280px" className="object-cover" loading="lazy" />
                       ) : (

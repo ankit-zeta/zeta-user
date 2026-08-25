@@ -1,11 +1,9 @@
 "use client";
 
-import { friendlyError } from "@/lib/errors";
-
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
 import { useAuth } from "@/lib/convex";
 import { 
@@ -43,7 +41,6 @@ export default function ProgramDetailPage() {
 
   const program = useQuery(api.programs.getProgramBySlug, slug ? { slug } : "skip");
   const plans = useQuery(api.plans.getPublicPlans);
-  const processPurchase = useMutation(api.affiliates.processPurchaseWithAffiliate);
 
   // The plan that contains this course
   const parentPlan = plans?.find((p: any) =>
@@ -51,9 +48,6 @@ export default function ProgramDetailPage() {
   );
 
   const [openModuleIndex, setOpenModuleIndex] = useState<number | null>(0);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
 
   if (program === undefined) {
     return (
@@ -78,32 +72,13 @@ export default function ProgramDetailPage() {
 
   const isAlreadyEnrolled = user?.enrolledProgramIds?.includes(program._id);
 
-  const handleEnrollment = async () => {
+  const handleEnrollment = () => {
     if (!token) {
-      router.push(`/login?redirect=/programs/${slug}`);
+      router.push(`/login?redirect=/checkout/${parentPlan?.slug || slug}`);
       return;
     }
     if (!parentPlan) return;
-
-    setIsProcessing(true);
-    setErrorMsg("");
-    setSuccessMsg("");
-
-    try {
-      const res: any = await processPurchase({
-        token,
-        planId: parentPlan._id,
-        paymentMethod: "instant_checkout",
-      });
-      setSuccessMsg(`Unlocked! ${res.enrolledCount ?? 0} new courses added to your dashboard.`);
-      setTimeout(() => {
-        router.push("/dashboard/programs");
-      }, 1400);
-    } catch (err: any) {
-      setErrorMsg(friendlyError(err, "Failed to process enrollment."));
-    } finally {
-      setIsProcessing(false);
-    }
+    router.push(`/checkout/${parentPlan.slug}`);
   };
 
   return (
@@ -114,6 +89,25 @@ export default function ProgramDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
             {/* Left 2 Cols: Title & Overview */}
             <div className="lg:col-span-2 space-y-6">
+              {/* 16:9 Cover Image — same source as the /programs catalog cards */}
+              {program.thumbnail || program.bannerImage ? (
+                <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-borderSubtle bg-neutral-100 shadow-sm">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={program.thumbnail || program.bannerImage}
+                    alt={program.name}
+                    loading="eager"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-borderSubtle bg-gradient-to-br from-brand-600 to-brand-900 flex items-center justify-center shadow-sm">
+                  <span className="text-white/90 text-base sm:text-lg font-bold px-6 text-center">
+                    {program.name}
+                  </span>
+                </div>
+              )}
+
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-semibold text-brand-700 bg-brand-50 px-2.5 py-1 rounded-full border border-brand-200">
                   {program.duration}
@@ -184,13 +178,6 @@ export default function ProgramDetailPage() {
                     </p>
                   </div>
 
-                  {errorMsg && (
-                    <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700">{errorMsg}</div>
-                  )}
-                  {successMsg && (
-                    <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-xs text-green-700">{successMsg}</div>
-                  )}
-
                   {isAlreadyEnrolled ? (
                     <Link
                       href={`/dashboard/learning/${program._id}`}
@@ -201,13 +188,15 @@ export default function ProgramDetailPage() {
                   ) : (
                     <button
                       onClick={handleEnrollment}
-                      disabled={isProcessing}
                       className="btn-primary w-full justify-center py-3 text-sm font-semibold shadow-sm"
                     >
-                      {isProcessing
-                        ? "Processing..."
-                        : `Get ${parentPlan.name} — ₹${parentPlan.price.toLocaleString("en-IN")}`}
+                      Get {parentPlan.name} — ₹{parentPlan.price.toLocaleString("en-IN")}
                     </button>
+                  )}
+                  {!isAlreadyEnrolled && (
+                    <p className="text-center text-[10px] text-textMuted">
+                      Secure checkout via Razorpay · UPI, cards &amp; NetBanking
+                    </p>
                   )}
 
                   <Link

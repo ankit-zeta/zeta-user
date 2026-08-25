@@ -96,7 +96,7 @@ function formatSize(size: string | undefined) {
 }
 
 export default function ResourcesPage() {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const resources = useQuery(
     api.resources.getResourcesForUser,
     token ? { token } : "skip"
@@ -186,6 +186,10 @@ export default function ResourcesPage() {
     return { total, unlocked, locked: total - unlocked };
   }, [resources]);
 
+  const hasEnrollments = (user?.enrolledProgramIds?.length || 0) > 0;
+  const noUnlockedResources =
+    stats !== null && stats.total > 0 && stats.unlocked === 0;
+
   const toggleFolder = (key: string) => {
     setExpandedFolders((prev) => {
       const next = new Set(prev);
@@ -214,8 +218,8 @@ export default function ResourcesPage() {
         </p>
       </div>
 
-      {/* Stats row */}
-      {stats && (
+      {/* Stats row — hidden when nothing is unlocked (empty state below takes over) */}
+      {stats && !noUnlockedResources && (
         <div className="grid grid-cols-3 gap-4">
           <div className="card-surface p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-700 flex items-center justify-center">
@@ -254,7 +258,8 @@ export default function ResourcesPage() {
       )}
 
       {/* Controls */}
-      <div className="card-surface p-4 flex flex-wrap items-center gap-3">
+      {!noUnlockedResources && (
+        <div className="card-surface p-4 flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
           <input
@@ -299,10 +304,35 @@ export default function ResourcesPage() {
             Collapse
           </button>
         </div>
-      </div>
+        </div>
+      )}
 
       {/* Program folders */}
-      {grouped === null ? (
+      {noUnlockedResources ? (
+        <div className="card-surface p-12 text-center space-y-4">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
+            <LockKeyhole className="w-7 h-7" />
+          </div>
+          <div className="space-y-1.5">
+            <h2 className="text-base font-bold text-textMain">
+              {hasEnrollments ? "No resources available yet" : "No resources unlocked yet"}
+            </h2>
+            <p className="text-xs text-textMuted max-w-md mx-auto leading-relaxed">
+              {hasEnrollments
+                ? "Your enrolled programs don't have downloadable resources published yet. Check back soon — new toolkits are added regularly."
+                : "Resource libraries and toolkits are included with every program. Enroll in a program and your downloads will appear here."}
+            </p>
+          </div>
+          <div className="flex items-center justify-center gap-3 pt-1">
+            <Link href="/programs" className="btn-primary text-xs py-2 inline-flex items-center gap-1.5">
+              Explore Programs <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+            <Link href="/dashboard/programs" className="btn-secondary text-xs py-2">
+              My Programs
+            </Link>
+          </div>
+        </div>
+      ) : grouped === null ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="card-surface p-6 animate-pulse space-y-3">

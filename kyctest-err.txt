@@ -1,0 +1,4 @@
+▌ Showing logs of deployment:
+▌ [Production] ankit-kumar-f5f56:zetagrow:production (prod) (dashboard: https://dashboard.convex.dev/t/ankit-kumar-f5f56/zetagrow/terrific-dove-836)
+▌ └─ https://terrific-dove-836.convex.cloud
+Watching logs for dev deployment terrific-dove-836...

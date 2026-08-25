@@ -21,7 +21,8 @@ import {
   Menu,
   X,
   Wallet,
-  LifeBuoy
+  LifeBuoy,
+  ShieldCheck
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -67,6 +68,15 @@ export default function DashboardLayout({
   // period (server-computed flag `affiliateEligible` — spoof-proof).
   const showAffiliate = !!user.affiliateEligible;
 
+  // KYC status dot: amber (pending) / red (rejected or not submitted)
+  const kycStatus = user.kycStatus || "not_submitted";
+  const kycDot =
+    kycStatus === "verified"
+      ? null
+      : kycStatus === "pending"
+        ? "bg-amber-500"
+        : "bg-red-500";
+
   const navSections = [
     {
       title: "Main",
@@ -101,6 +111,12 @@ export default function DashboardLayout({
               },
             ]
           : []),
+        {
+          name: "KYC Verification",
+          href: "/dashboard/kyc",
+          icon: ShieldCheck,
+          badgeDot: kycDot,
+        },
         {
           name: "Notifications",
           href: "/dashboard/notifications",
@@ -176,6 +192,8 @@ export default function DashboardLayout({
                       <span className="w-4 h-4 rounded-full bg-red-600 text-white text-[10px] font-bold flex items-center justify-center">
                         {item.badge}
                       </span>
+                    ) : (item as any).badgeDot ? (
+                      <span className={`w-2 h-2 rounded-full ${(item as any).badgeDot}`} />
                     ) : null}
                   </Link>
                 );
@@ -268,14 +286,19 @@ export default function DashboardLayout({
                       key={item.href}
                       href={item.href}
                       onClick={() => setMobileNavOpen(false)}
-                      className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-medium ${
+                      className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium ${
                         isActive(item.href)
                           ? "bg-brand-50 text-brand-700 font-semibold"
                           : "text-textMuted hover:bg-neutral-50 hover:text-textMain"
                       }`}
                     >
-                      <item.icon className="w-4 h-4" />
-                      <span>{item.name}</span>
+                      <div className="flex items-center gap-2.5">
+                        <item.icon className={`w-4 h-4 ${isActive(item.href) ? "text-brand-600" : "text-neutral-400"}`} />
+                        <span>{item.name}</span>
+                      </div>
+                      {(item as any).badgeDot ? (
+                        <span className={`w-2 h-2 rounded-full ${(item as any).badgeDot}`} />
+                      ) : null}
                     </Link>
                   ))}
                 </div>

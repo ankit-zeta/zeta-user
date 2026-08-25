@@ -1,0 +1,144 @@
+25/8/2026, 10:26:21 pm [CONVEX M(kyc:submitKyc)] Uncaught Error: System tables can only be accessed with db.system.
+    at async handler (../convex/kyc.ts:194:9)
+
+25/8/2026, 11:12:15 pm [CONVEX M(applications:submitApplication)] Uncaught Error: Complete your KYC verification before applying for work. Your KYC is under review — you can apply once it's approved
+    at handler (../convex/applications.ts:70:10)
+
+25/8/2026, 11:12:15 pm [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+
+25/8/2026, 11:18:55 pm [CONVEX M(applications:submitApplication)] Uncaught Error: Complete your KYC verification before applying for work. Your KYC is under review — you can apply once it's approved
+    at handler (../convex/applications.ts:70:10)
+
+25/8/2026, 11:18:55 pm [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+
+25/8/2026, 11:20:14 pm [CONVEX M(applications:submitApplication)] Uncaught Error: Complete your KYC verification before applying for work. Your KYC is under review — you can apply once it's approved
+    at handler (../convex/applications.ts:70:10)
+
+25/8/2026, 11:20:17 pm [CONVEX M(kyc:submitKyc)] Uncaught Error: This PAN number is already linked to a different account. Contact support if you believe this is a mistake.
+    at handler (../convex/kyc.ts:205:8)
+
+25/8/2026, 11:20:47 pm [CONVEX M(kyc:submitKyc)] Uncaught Error: Unauthorized
+    at getSessionUserDoc (../convex/kyc.ts:14:15)
+    at async handler (../convex/kyc.ts:153:59)
+
+25/8/2026, 11:24:18 pm [CONVEX M(kyc:submitKyc)] Uncaught ConvexError: Unauthorized
+    at getSessionUserDoc (../convex/kyc.ts:15:15)
+    at async handler (../convex/kyc.ts:154:59)
+
+25/8/2026, 11:24:34 pm [CONVEX M(kyc:submitKyc)] Uncaught ConvexError: Unauthorized
+    at getSessionUserDoc (../convex/kyc.ts:15:15)
+    at async handler (../convex/kyc.ts:154:59)
+
+25/8/2026, 11:25:44 pm [CONVEX M(applications:submitApplication)] Uncaught ConvexError: Complete your KYC verification before applying for work. Your KYC is under review — you can apply once it's approved
+    at handler (../convex/applications.ts:72:10)
+
+25/8/2026, 11:25:47 pm [CONVEX M(kyc:submitKyc)] Uncaught ConvexError: This PAN number is already linked to a different account. Contact support if you believe this is a mistake.
+    at handler (../convex/kyc.ts:206:8)
+
+26/8/2026, 12:03:00 am [CONVEX M(withdrawals:requestWithdrawal)] Uncaught Error: Requested amount exceeds your available balance
+    at handler (../convex/withdrawals.ts:140:25)
+
+26/8/2026, 12:45:32 am [CONVEX M(users:adminCreateUser)] Uncaught ConvexError: An account with this email already exists
+    at handler (../convex/users.ts:107:17)
+
+26/8/2026, 12:45:34 am [CONVEX M(achievements:evaluateUserAchievements)] Uncaught ConvexError: The Growth Partner Program is invite-only. Achievements unlock exclusively for invited Growth Partners.
+    at handler (../convex/achievements.ts:90:8)
+
+26/8/2026, 12:46:11 am [CONVEX M(users:adminCreateUser)] Uncaught ConvexError: An account with this email already exists
+    at handler (../convex/users.ts:107:17)
+
+26/8/2026, 12:46:12 am [CONVEX M(achievements:evaluateUserAchievements)] Uncaught ConvexError: The Growth Partner Program is invite-only. Achievements unlock exclusively for invited Growth Partners.
+    at handler (../convex/achievements.ts:90:8)
+
+26/8/2026, 3:10:00 am [CONVEX M(affiliates:processPurchaseWithAffiliate)] Uncaught Error: Unauthorized
+    at handler (../convex/affiliates.ts:142:18)
+
+26/8/2026, 3:10:02 am [CONVEX M(affiliates:processPurchaseWithAffiliate)] Uncaught Error: Unauthorized
+    at handler (../convex/affiliates.ts:142:18)
+
+26/8/2026, 3:10:02 am [CONVEX M(affiliates:processPurchaseWithAffiliate)] Uncaught Error: Unauthorized
+    at handler (../convex/affiliates.ts:142:18)
+
+26/8/2026, 3:10:03 am [CONVEX M(affiliates:processPurchaseWithAffiliate)] Uncaught Error: Unauthorized
+    at handler (../convex/affiliates.ts:142:18)
+
+26/8/2026, 3:10:04 am [CONVEX M(affiliates:processPurchaseWithAffiliate)] Uncaught Error: Unauthorized
+    at handler (../convex/affiliates.ts:142:18)
+
+26/8/2026, 3:10:27 am [CONVEX M(affiliates:processPurchaseWithAffiliate)] Uncaught Error: Unauthorized
+    at handler (../convex/affiliates.ts:142:18)
+
+26/8/2026, 3:38:14 am [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+
+26/8/2026, 3:38:14 am [CONVEX Q(programs:getAllProgramsAdmin)] ArgumentValidationError: Value does not match validator.
+Path: .token
+Value: null
+Validator: v.string()
+
+
+26/8/2026, 3:38:15 am [CONVEX M(auth:signup)] Trying to execute auth.js:signup as Mutation, but it is defined as Action.
+
+26/8/2026, 3:38:15 am [CONVEX M(users:grantProgramAccess)] ArgumentValidationError: Value does not match validator.
+Path: .programId
+Value: null
+Validator: v.id("programs")
+
+
+26/8/2026, 3:38:15 am [CONVEX M(auth:signup)] Trying to execute auth.js:signup as Mutation, but it is defined as Action.
+
+26/8/2026, 3:38:16 am [CONVEX Q(wallets:getUserWallet)] ArgumentValidationError: Value does not match validator.
+Path: .token
+Value: null
+Validator: v.string()
+
+
+26/8/2026, 3:38:16 am [CONVEX M(auth:signup)] Trying to execute auth.js:signup as Mutation, but it is defined as Action.
+
+26/8/2026, 3:38:16 am [CONVEX M(users:updateUserRole)] ArgumentValidationError: Value does not match validator.
+Path: .token
+Value: null
+Validator: v.string()
+
+
+26/8/2026, 3:38:17 am [CONVEX M(auth:signup)] Trying to execute auth.js:signup as Mutation, but it is defined as Action.
+
+26/8/2026, 3:38:17 am [CONVEX M(auth:changeEmail)] ArgumentValidationError: Object is missing the required field `currentPassword`. Consider wrapping the field validator in `v.optional(...)` if this is expected.
+
+Object: {newEmail: "emailguard2.1787695690@zetagrow.com", token: null}
+Validator: v.object({currentPassword: v.string(), newEmail: v.string(), token: v.string()})
+
+
+26/8/2026, 3:38:17 am [CONVEX M(auth:changeEmail)] ArgumentValidationError: Value does not match validator.
+Path: .token
+Value: null
+Validator: v.string()
+
+
+26/8/2026, 3:38:17 am [CONVEX M(auth:changeEmail)] ArgumentValidationError: Value does not match validator.
+Path: .token
+Value: null
+Validator: v.string()
+
+
+26/8/2026, 3:38:18 am [CONVEX M(auth:signup)] Trying to execute auth.js:signup as Mutation, but it is defined as Action.
+
+26/8/2026, 3:38:18 am [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+
+26/8/2026, 3:38:18 am [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+
+26/8/2026, 3:38:19 am [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+
+26/8/2026, 3:38:19 am [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+
+26/8/2026, 3:38:19 am [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+
+26/8/2026, 3:38:20 am [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+
+26/8/2026, 3:38:20 am [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+
+26/8/2026, 3:38:20 am [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+
+26/8/2026, 3:38:20 am [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+
+26/8/2026, 3:38:21 am [CONVEX A(auth:login)] Uncaught Error: Invalid email or password
+

@@ -43,11 +43,13 @@ function VerifyEmailForm() {
   const resendMutation = useAction(api.auth.resendVerificationEmail);
 
   const startedRef = useRef(false);
-  const [status, setStatus] = useState<"verifying" | "success" | "error">(
-    token ? "verifying" : "error"
+  // "pending" = post-signup check-your-inbox screen (email param, no token).
+  // "error" stays reserved for broken/missing verification links.
+  const [status, setStatus] = useState<"pending" | "verifying" | "success" | "error">(
+    token ? "verifying" : emailFromUrl ? "pending" : "error"
   );
   const [message, setMessage] = useState<string>(
-    token ? "" : "No verification token found in the link."
+    token ? "" : emailFromUrl ? "" : "No verification token found in the link."
   );
   const [countdown, setCountdown] = useState(3);
   const [isResending, setIsResending] = useState(false);
@@ -115,6 +117,16 @@ function VerifyEmailForm() {
           <span className="text-2xl font-bold tracking-tight text-textMain">ZetaGrow</span>
         </Link>
 
+        {status === "pending" && (
+          <>
+            <h2 className="text-xl font-bold tracking-tight text-textMain">
+              Confirm your email
+            </h2>
+            <p className="text-xs text-textMuted">
+              One quick step left to activate your account.
+            </p>
+          </>
+        )}
         {status === "verifying" && (
           <>
             <h2 className="text-xl font-bold tracking-tight text-textMain">
@@ -137,6 +149,63 @@ function VerifyEmailForm() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="card-surface p-8 space-y-6">
+          {/* ── PENDING: confirmation email sent after signup ──────── */}
+          {status === "pending" && (
+            <div className="space-y-5">
+              <div className="flex flex-col items-center gap-3 text-center">
+                <div className="relative">
+                  <span className="absolute inset-0 rounded-full bg-brand-100 animate-ping opacity-50" />
+                  <span className="relative w-16 h-16 rounded-full bg-brand-50 border border-brand-100 flex items-center justify-center">
+                    <Mail className="w-8 h-8 text-brand-600" strokeWidth={1.75} />
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-textMain">Check your inbox 📬</h3>
+                <p className="text-sm text-textMuted leading-relaxed max-w-xs">
+                  We&apos;ve sent a confirmation link to{" "}
+                  <strong className="text-textMain">{emailFromUrl}</strong>. Click it to activate
+                  your account and start learning.
+                </p>
+              </div>
+
+              {!resent ? (
+                <button
+                  onClick={handleResend}
+                  disabled={isResending}
+                  className="btn-secondary w-full justify-center inline-flex items-center gap-2 py-2.5 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isResending ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> Sending new link…
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="w-4 h-4" /> Didn&apos;t get it? Send a fresh link
+                    </>
+                  )}
+                </button>
+              ) : (
+                message && (
+                  <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-xs text-green-700 text-center">
+                    {message}
+                  </div>
+                )
+              )}
+
+              <p className="text-[11px] text-textMuted text-center leading-relaxed">
+                Tip: check your spam/promotions folder if it doesn&apos;t arrive within a minute.
+              </p>
+
+              <div className="pt-4 border-t border-borderSubtle flex justify-center text-xs">
+                <Link
+                  href="/login"
+                  className="font-semibold text-brand-600 hover:text-brand-700 inline-flex items-center gap-1"
+                >
+                  <ArrowLeft className="w-3 h-3" /> Back to Sign In
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* ── VERIFYING ─────────────────────────────────────────── */}
           {status === "verifying" && (
             <div className="flex flex-col items-center gap-4 py-6">
