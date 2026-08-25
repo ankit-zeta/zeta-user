@@ -23,6 +23,7 @@ users: defineTable({
     cvVerifiedBy: v.optional(v.string()),
     failedLoginCount: v.optional(v.number()),
     lockedUntil: v.optional(v.number()),
+    onboardingEmailSentAt: v.optional(v.number()),
     emailVerified: v.optional(v.boolean()),
     emailVerificationToken: v.optional(v.string()),
     emailVerificationExpiresAt: v.optional(v.number()),

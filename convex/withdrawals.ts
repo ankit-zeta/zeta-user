@@ -222,6 +222,23 @@ export const requestWithdrawal = mutation({
       createdAt: now,
     });
 
+    // Instant acknowledgment email
+    try {
+      const user = await ctx.db.get(session.userId);
+      if (user) {
+        await ctx.scheduler.runAfter(0, internal.email.sendWithdrawalRequestEmail, {
+          email: user.email,
+          name: user.name,
+          amount: args.amount,
+          netAmount,
+          fee,
+          payoutMethod: args.payoutMethod,
+        });
+      }
+    } catch (e) {
+      console.error("Failed to schedule withdrawal request email:", e);
+    }
+
     return { success: true, withdrawalId };
   },
 });

@@ -24,4 +24,11 @@ crons.cron(
   {}
 );
 
+crons.cron(
+  "onboarding-nudge",
+  "30 4 * * *",
+  internal.users.sendOnboardingNudges,
+  {}
+);
+
 export default crons;

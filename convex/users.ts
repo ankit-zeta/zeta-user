@@ -1,6 +1,57 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalMutation } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { hashPassword, generateSalt } from "./auth";
+
+// Daily onboarding nudge: email verified users who signed up 2-10 days ago
+// and have never purchased anything. Sends at most once per user (flag-gated).
+export const sendOnboardingNudges = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const now = Date.now();
+    const MIN_AGE_MS = 2 * 24 * 60 * 60 * 1000; // at least 2 days since signup
+    const MAX_AGE_MS = 10 * 24 * 60 * 60 * 1000; // stop nudging after 10 days
+
+    const activeUsers = await ctx.db
+      .query("users")
+      .withIndex("by_status", (q) => q.eq("status", "active"))
+      .collect();
+
+    let sent = 0;
+    let skippedBuyers = 0;
+
+    for (const u of activeUsers) {
+      if (u.onboardingEmailSentAt) continue;
+      const age = now - u.createdAt;
+      if (age < MIN_AGE_MS || age > MAX_AGE_MS) continue;
+
+      const purchases = await ctx.db
+        .query("purchases")
+        .withIndex("by_userId", (q) => q.eq("userId", u._id))
+        .filter((q) => q.eq(q.field("status"), "completed"))
+        .first();
+      if (purchases) {
+        // Buyer — mark so they are never nudged in future runs
+        await ctx.db.patch(u._id, { onboardingEmailSentAt: now });
+        skippedBuyers++;
+        continue;
+      }
+
+      try {
+        await ctx.scheduler.runAfter(0, internal.email.sendOnboardingNudgeEmail, {
+          email: u.email,
+          name: u.name,
+        });
+        await ctx.db.patch(u._id, { onboardingEmailSentAt: now });
+        sent++;
+      } catch (e) {
+        console.error(`Failed to schedule onboarding nudge for ${u.email}:`, e);
+      }
+    }
+
+    return { sent, skippedBuyers, scanned: activeUsers.length };
+  },
+});
 
 // Helper to authenticate admin
 async function requireAdmin(ctx: any, token: string) {

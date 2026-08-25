@@ -506,8 +506,7 @@ export const sendApplicationStatusEmail = internalAction({
 });
 
 // Withdrawal outcome (sent to user): completed or rejected
-export const sendWithdrawalStatusEmail = internalAction({
-  args: {
+export const sendWithdrawalStatusEmail = internalAction({  args: {
     email: v.string(),
     name: v.string(),
     amount: v.number(),
@@ -557,6 +556,191 @@ export const sendWithdrawalStatusEmail = internalAction({
       return { success: true };
     } catch (err) {
       console.error("Failed to send withdrawal status email:", err);
+      return { success: false, error: String(err) };
+    }
+  },
+});
+
+// Withdrawal request acknowledgment (sent instantly when user requests a withdrawal)
+export const sendWithdrawalRequestEmail = internalAction({
+  args: {
+    email: v.string(),
+    name: v.string(),
+    amount: v.number(),
+    netAmount: v.number(),
+    fee: v.number(),
+    payoutMethod: v.string(),
+  },
+  handler: async (ctx, args) => {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY not configured, skipping email");
+      return { success: false, reason: "RESEND_API_KEY not configured" };
+    }
+
+    const content = `
+      <p style="margin: 0 0 16px; font-size: 16px; color: ${BRAND.textColor}; line-height: 1.5;">Hi ${args.name},</p>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        We've received your withdrawal request. It's now <strong>under review</strong> by our team.
+      </p>
+      <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 20px; margin: 0 0 24px;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+          <tr>
+            <td style="font-size: 14px; color: ${BRAND.textMuted}; padding-bottom: 6px;">Requested amount</td>
+            <td style="font-size: 14px; color: ${BRAND.textColor}; font-weight: 600; text-align: right; padding-bottom: 6px;">${inr(args.amount)}</td>
+          </tr>
+          <tr>
+            <td style="font-size: 14px; color: ${BRAND.textMuted}; padding-bottom: 6px;">Processing fee</td>
+            <td style="font-size: 14px; color: ${BRAND.textMuted}; text-align: right; padding-bottom: 6px;">- ${inr(args.fee)}</td>
+          </tr>
+          <tr>
+            <td style="font-size: 14px; color: ${BRAND.textMuted}; padding-bottom: 6px;">Payout method</td>
+            <td style="font-size: 14px; color: ${BRAND.textColor}; text-align: right; padding-bottom: 6px;">${args.payoutMethod.replace("_", " ").toUpperCase()}</td>
+          </tr>
+          <tr>
+            <td style="font-size: 15px; color: ${BRAND.primaryColor}; font-weight: 700;">You'll receive</td>
+            <td style="font-size: 18px; color: ${BRAND.primaryColor}; font-weight: 800; text-align: right;">${inr(args.netAmount)}</td>
+          </tr>
+        </table>
+      </div>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        You'll get another email as soon as the transfer is completed — usually within 24-48 hours.
+      </p>
+    `;
+
+    const html = emailWrapper({
+      title: "Withdrawal Request Received - ZetaGrow",
+      preheader: `${inr(args.amount)} withdrawal is under review`,
+      content,
+      cta: true,
+      ctaText: "View Withdrawals",
+      ctaUrl: `${SITE_URL}/dashboard/withdrawals`,
+      footerNote: "You don't need to do anything — we'll notify you when it's done."
+    });
+
+    try {
+      const resend = getResend();
+      await resend.emails.send({
+        from: `${BRAND.name} <noreply@zetagrow.in>`,
+        to: args.email,
+        subject: `📥 Withdrawal request received — ${inr(args.amount)}`,
+        html,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("Failed to send withdrawal request email:", err);
+      return { success: false, error: String(err) };
+    }
+  },
+});
+
+// Certificate earned (sent when user completes 100% of a certificate-enabled course)
+export const sendCertificateEarnedEmail = internalAction({
+  args: {
+    email: v.string(),
+    name: v.string(),
+    programName: v.string(),
+    certificateId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY not configured, skipping email");
+      return { success: false, reason: "RESEND_API_KEY not configured" };
+    }
+
+    const certUrl = `${SITE_URL}/certificate/${args.certificateId}`;
+
+    const content = `
+      <p style="margin: 0 0 16px; font-size: 16px; color: ${BRAND.textColor}; line-height: 1.5;">Hi ${args.name},</p>
+      <p style="margin: 0 0 8px; font-size: 22px; font-weight: 800; color: ${BRAND.primaryColor};">🎓 Congratulations!</p>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        You've completed <strong>${args.programName}</strong> and earned your verified ZetaGrow certificate.
+      </p>
+      <div style="background: #F0FDF4; border: 2px dashed ${BRAND.primaryColor}; border-radius: 12px; padding: 28px; margin: 0 0 24px; text-align: center;">
+        <p style="margin: 0 0 8px; font-size: 13px; color: ${BRAND.textMuted}; text-transform: uppercase; letter-spacing: 2px;">Certificate ID</p>
+        <p style="margin: 0 0 4px; font-size: 22px; font-weight: 800; color: ${BRAND.primaryColor}; letter-spacing: 1px;">${args.certificateId}</p>
+        <p style="margin: 8px 0 0; font-size: 14px; color: ${BRAND.textColor};">Awarded to <strong>${args.name}</strong> for completing<br/><strong>${args.programName}</strong></p>
+      </div>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        Add it to your résumé, share it on LinkedIn, or show it off — anyone can verify its authenticity with the ID above.
+      </p>
+    `;
+
+    const html = emailWrapper({
+      title: "Certificate Earned! - ZetaGrow",
+      preheader: `Your certificate for ${args.programName} is ready`,
+      content,
+      cta: true,
+      ctaText: "View My Certificate",
+      ctaUrl: certUrl,
+      footerNote: "Certificates are publicly verifiable via their unique verification link."
+    });
+
+    try {
+      const resend = getResend();
+      await resend.emails.send({
+        from: `${BRAND.name} <noreply@zetagrow.in>`,
+        to: args.email,
+        subject: `🎓 Certificate earned: ${args.programName}`,
+        html,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("Failed to send certificate email:", err);
+      return { success: false, error: String(err) };
+    }
+  },
+});
+
+// Onboarding nudge (signed up but never purchased)
+export const sendOnboardingNudgeEmail = internalAction({
+  args: { email: v.string(), name: v.string() },
+  handler: async (ctx, args) => {
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("RESEND_API_KEY not configured, skipping email");
+      return { success: false, reason: "RESEND_API_KEY not configured" };
+    }
+
+    const content = `
+      <p style="margin: 0 0 16px; font-size: 16px; color: ${BRAND.textColor}; line-height: 1.5;">Hi ${args.name},</p>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        Your ZetaGrow account is ready — but your learning journey hasn't started yet!
+      </p>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        Here's what's waiting for you once you enroll in your first course:
+      </p>
+      <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px; padding: 20px; margin: 0 0 24px;">
+        <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: ${BRAND.textColor}; line-height: 2;">
+          <li>🎓 A <strong>verified certificate</strong> employers can check online</li>
+          <li>💼 Access to real <strong>freelancing work opportunities</strong></li>
+          <li>💰 The chance to earn through our <strong>affiliate program</strong></li>
+        </ul>
+      </div>
+      <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
+        Not sure where to start? Explore our most popular learning plans — there's something for every career goal.
+      </p>
+    `;
+
+    const html = emailWrapper({
+      title: "Your journey starts here - ZetaGrow",
+      preheader: "Pick your first course and start learning today",
+      content,
+      cta: true,
+      ctaText: "Explore Learning Plans",
+      ctaUrl: `${SITE_URL}/plans`,
+      footerNote: `You're receiving this because you created a ${BRAND.name} account.`
+    });
+
+    try {
+      const resend = getResend();
+      await resend.emails.send({
+        from: `${BRAND.name} <noreply@zetagrow.in>`,
+        to: args.email,
+        subject: `👋 ${args.name.split(" ")[0]}, your first course awaits…`,
+        html,
+      });
+      return { success: true };
+    } catch (err) {
+      console.error("Failed to send onboarding nudge email:", err);
       return { success: false, error: String(err) };
     }
   },

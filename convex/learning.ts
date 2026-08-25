@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { internal } from "./_generated/api";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -246,6 +247,20 @@ export const toggleLessonComplete = mutation({
             actionUrl: `/dashboard/certificates`,
             createdAt: now,
           });
+
+          // Certificate earned email
+          try {
+            if (user) {
+              await ctx.scheduler.runAfter(0, internal.email.sendCertificateEarnedEmail, {
+                email: user.email,
+                name: user.name,
+                programName: program.name,
+                certificateId: certId,
+              });
+            }
+          } catch (e) {
+            console.error("Failed to schedule certificate email:", e);
+          }
         }
       }
     }
