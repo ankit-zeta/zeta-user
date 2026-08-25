@@ -55,7 +55,7 @@ export default function HowItWorksPage() {
         </div>
         <p className="text-xs text-textMuted leading-relaxed">
           <strong className="text-textMain">Coming soon:</strong> video-format programmes across
-          coding, sales, business, e-commerce operations, skilled trades (including electrician
+          coding, sales, business, e-commerce operations, skilled professions (including electrician
           and other vocational paths) — plus{" "}
           <strong className="text-brand-700">free courses</strong> launching shortly, so anyone
           can start learning at zero cost.

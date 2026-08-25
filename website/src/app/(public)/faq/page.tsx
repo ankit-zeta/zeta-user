@@ -18,7 +18,7 @@ export default function FAQPage() {
     },
     {
       q: "Are video-based courses coming to ZetaGrow?",
-      a: "Yes! We are actively producing video-format programmes across coding, sales, business, e-commerce operations, skilled trades such as electrical work, and more — designed so you can learn faster in less time. We will also be introducing free courses in the near future. Watch this space.",
+      a: "Yes! We are actively producing video-format programmes across coding, sales, business, e-commerce operations, skilled professions such as electrical work, and more — designed so you can learn faster in less time. We will also be introducing free courses in the near future. Watch this space.",
     },
     {
       q: "How does program access work after enrollment?",

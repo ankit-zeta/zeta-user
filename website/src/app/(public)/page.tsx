@@ -143,7 +143,7 @@ export default function HomePage() {
                 </span>
                 <span className="hidden sm:block w-px h-4 bg-white/30" aria-hidden="true" />
                 <span className="text-xs text-brand-50">
-                  Video-format programmes + free courses launching soon — coding, sales, business, e-commerce &amp; skilled trades
+                  Video-format programmes + free courses launching soon — coding, sales, business, e-commerce &amp; skilled professions
                 </span>
               </div>
 
