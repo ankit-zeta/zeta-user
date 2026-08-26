@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "convex/react";
@@ -42,20 +42,6 @@ export default function ProgramDetailPage() {
   );
 
   const [openModuleIndex, setOpenModuleIndex] = useState<number | null>(0);
-  const [mobileBuyVisible, setMobileBuyVisible] = useState(false);
-
-  // Show sticky buy bar on mobile after scrolling past the pricing card
-  useEffect(() => {
-    const handleScroll = () => {
-      const pricingCard = document.getElementById("pricing-card-desktop");
-      if (pricingCard) {
-        const rect = pricingCard.getBoundingClientRect();
-        setMobileBuyVisible(rect.top < -100);
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   if (program === undefined) {
     return (
@@ -222,7 +208,7 @@ export default function ProgramDetailPage() {
                 <div className="card-surface p-6 space-y-5 shadow-sm border-brand-200">
                   {parentPlan ? (
                     <>
-                      {/* Plan badge */}
+                      {/* Plan badge + savings */}
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-200 px-2.5 py-1 rounded-full uppercase tracking-wider">
                           Part of {parentPlan.name}
@@ -234,8 +220,9 @@ export default function ProgramDetailPage() {
                         )}
                       </div>
 
-                      {/* Price */}
-                      <div className="space-y-1">
+                      {/* Price — clean info display */}
+                      <div className="bg-neutral-50 rounded-xl p-4 space-y-1.5">
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-textMuted">Plan Price</p>
                         <div className="flex items-baseline gap-3">
                           <span className="text-4xl font-extrabold text-textMain">
                             ₹{parentPlan.price.toLocaleString("en-IN")}
@@ -251,13 +238,16 @@ export default function ProgramDetailPage() {
                             + {gst.rate}% {gst.label} added at checkout
                           </p>
                         )}
+                        <p className="text-[11px] text-textMuted">
+                          All {parentPlan.courses.length} courses · Lifetime access
+                        </p>
                       </div>
 
-                      {/* CTA */}
+                      {/* Buy Now — standalone button */}
                       {isAlreadyEnrolled ? (
                         <Link
                           href={`/dashboard/learning/${program._id}`}
-                          className="btn-primary w-full text-center justify-center py-3 text-sm font-semibold"
+                          className="block w-full text-center bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 px-6 rounded-xl text-sm transition-colors shadow-lg shadow-brand-600/20"
                         >
                           Continue Learning →
                         </Link>
@@ -266,8 +256,7 @@ export default function ProgramDetailPage() {
                           onClick={handleEnrollment}
                           className="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 px-6 rounded-xl text-sm transition-colors shadow-lg shadow-brand-600/20"
                         >
-                          Buy Now — ₹{parentPlan.price.toLocaleString("en-IN")}
-                          <span className="font-normal ml-1">{gstSuffix(gst)}</span>
+                          Buy Now
                         </button>
                       )}
 
@@ -446,12 +435,12 @@ export default function ProgramDetailPage() {
         </section>
       )}
 
-      {/* ─── Mobile Sticky Buy Bar ─────────────────────────────────── */}
-      {parentPlan && !isAlreadyEnrolled && mobileBuyVisible && (
+      {/* ─── Mobile Sticky Buy Bar (always visible when not enrolled) ── */}
+      {parentPlan && !isAlreadyEnrolled && (
         <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-borderSubtle px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
           <div className="flex items-center justify-between gap-4 max-w-lg mx-auto">
             <div className="min-w-0">
-              <p className="text-xs text-textMuted truncate">{parentPlan.name}</p>
+              <p className="text-[10px] text-textMuted truncate">{parentPlan.name}</p>
               <div className="flex items-baseline gap-2">
                 <span className="text-lg font-extrabold text-textMain">
                   ₹{parentPlan.price.toLocaleString("en-IN")}
