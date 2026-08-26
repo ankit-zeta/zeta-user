@@ -23,7 +23,6 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Zap,
-  DollarSign,
   BarChart3,
   CreditCard,
 } from "lucide-react";
@@ -148,23 +147,18 @@ function KpiCard({
   icon: Icon,
   sub,
   badge,
-  gradient,
-  iconBg,
 }: {
   label: string;
   value: string;
   icon: any;
   sub?: React.ReactNode;
   badge?: React.ReactNode;
-  gradient: string;
-  iconBg: string;
 }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-neutral-100 bg-white p-5 shadow-sm hover:shadow-md transition-all duration-300">
-      <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r ${gradient}`} />
+    <div className="rounded-xl border border-neutral-200 bg-white p-5 hover:shadow-sm transition-shadow duration-200">
       <div className="flex items-start justify-between">
-        <div className="space-y-2 flex-1 min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+        <div className="space-y-1.5 flex-1 min-w-0">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-400">
             {label}
           </p>
           <div className="flex items-center gap-2 flex-wrap">
@@ -175,10 +169,8 @@ function KpiCard({
           </div>
           {sub && <div className="text-[11px] text-neutral-500 leading-relaxed">{sub}</div>}
         </div>
-        <div
-          className={`w-10 h-10 rounded-xl ${iconBg} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-300`}
-        >
-          <Icon className="w-5 h-5" />
+        <div className="w-8 h-8 rounded-lg bg-neutral-50 flex items-center justify-center shrink-0">
+          <Icon className="w-4 h-4 text-neutral-400" />
         </div>
       </div>
     </div>
@@ -188,24 +180,14 @@ function KpiCard({
 function SectionHeader({
   title,
   hint,
-  icon: Icon,
 }: {
   title: string;
   hint?: string;
-  icon?: any;
 }) {
   return (
-    <div className="flex items-center gap-3">
-      {Icon && (
-        <div className="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center">
-          <Icon className="w-4 h-4 text-neutral-500" />
-        </div>
-      )}
-      <div className="flex-1">
-        <h2 className="text-sm font-bold text-neutral-900">{title}</h2>
-        {hint && <p className="text-[11px] text-neutral-400 mt-0.5">{hint}</p>}
-      </div>
-      <div className="flex-1 h-px bg-gradient-to-r from-neutral-200 to-transparent" />
+    <div>
+      <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-900">{title}</h2>
+      {hint && <p className="text-[11px] text-neutral-400 mt-0.5">{hint}</p>}
     </div>
   );
 }
@@ -395,15 +377,10 @@ export default function AdminOverviewPage() {
       {/* ── Header ──────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="space-y-1">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <BarChart3 className="w-5 h-5 text-white" />
-            </div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-neutral-900">
-              Dashboard
-            </h1>
-          </div>
-          <p className="text-[12px] text-neutral-400 pl-[46px]">
+          <h1 className="text-2xl font-extrabold tracking-tight text-neutral-900">
+            Dashboard
+          </h1>
+          <p className="text-[12px] text-neutral-400">
             {data === undefined
               ? "Loading live data..."
               : `${rangeCaption(days)} · ${days === 365 ? "last 12 months" : `last ${days} days`}`}
@@ -487,15 +464,12 @@ export default function AdminOverviewPage() {
             <SectionHeader
               title="Revenue & Profitability"
               hint={`${days}d performance · all figures include GST where applicable`}
-              icon={DollarSign}
             />
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <KpiCard
                 label="Gross Collected"
                 value={fmtRs(k.grossRevenue)}
                 icon={IndianRupee}
-                gradient="from-emerald-500 to-emerald-600"
-                iconBg="bg-emerald-50 text-emerald-600"
                 badge={<GrowthBadge pct={k.revenueGrowthPct} />}
                 sub={
                   <>
@@ -508,8 +482,6 @@ export default function AdminOverviewPage() {
                 label="Net of GST"
                 value={fmtRs(k.netRevenue)}
                 icon={Percent}
-                gradient="from-blue-500 to-blue-600"
-                iconBg="bg-blue-50 text-blue-600"
                 sub={
                   <>
                     minus {data.gst.label}{" "}
@@ -521,8 +493,6 @@ export default function AdminOverviewPage() {
                 label="Operating Expenses"
                 value={fmtRs(k.expenses)}
                 icon={Receipt}
-                gradient="from-amber-500 to-amber-600"
-                iconBg="bg-amber-50 text-amber-600"
                 sub={
                   <Link href="/expenses" className="text-emerald-600 hover:underline font-semibold">
                     manage expenses →
@@ -533,8 +503,6 @@ export default function AdminOverviewPage() {
                 label="Net Profit"
                 value={fmtRs(k.profitAfterTax)}
                 icon={Wallet}
-                gradient={k.profitAfterTax >= 0 ? "from-emerald-500 to-emerald-600" : "from-red-500 to-red-600"}
-                iconBg={k.profitAfterTax >= 0 ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"}
                 sub={<>after {data.taxRatePct}% tax on PBT ₹{k.profitBeforeTax.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</>}
               />
             </div>
@@ -545,15 +513,12 @@ export default function AdminOverviewPage() {
             <SectionHeader
               title="Customers & Conversion"
               hint="acquisition, conversion and average order metrics"
-              icon={Users}
             />
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <KpiCard
                 label="Total Users"
                 value={String(k.totalUsers)}
                 icon={Users}
-                gradient="from-purple-500 to-purple-600"
-                iconBg="bg-purple-50 text-purple-600"
                 badge={<GrowthBadge pct={k.signupsGrowthPct} />}
                 sub={<>{p.activeUsers} active · +{k.signupsInRange} joined in {days}d</>}
               />
@@ -561,24 +526,18 @@ export default function AdminOverviewPage() {
                 label="Checkout Conversion"
                 value={`${k.conversionPct.toFixed(1)}%`}
                 icon={Target}
-                gradient="from-blue-500 to-blue-600"
-                iconBg="bg-blue-50 text-blue-600"
                 sub={<>{f.paid} paid of {f.attempts} attempts</>}
               />
               <KpiCard
                 label="Avg Order Value"
                 value={fmtRs(k.avgOrderValue || 0)}
                 icon={ShoppingCart}
-                gradient="from-emerald-500 to-emerald-600"
-                iconBg="bg-emerald-50 text-emerald-600"
                 sub={<>per paid order, incl. GST</>}
               />
               <KpiCard
                 label="Revenue Per User"
                 value={fmtRs(k.arpu || 0)}
                 icon={UserPlus}
-                gradient="from-amber-500 to-amber-600"
-                iconBg="bg-amber-50 text-amber-600"
                 sub={<>all-time collected / all users</>}
               />
             </div>
@@ -1002,7 +961,7 @@ export default function AdminOverviewPage() {
 
           {/* ── Quick Actions ──────────────────────────────── */}
           <section className="space-y-4">
-            <SectionHeader title="Quick Actions" hint="jump to areas that need attention" icon={Zap} />
+            <SectionHeader title="Quick Actions" hint="jump to areas that need attention" />
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Link
                 href="/finance"
