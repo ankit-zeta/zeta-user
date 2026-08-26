@@ -55,6 +55,13 @@ sessions: defineTable({
     role: v.string(),
     expiresAt: v.number(),
     createdAt: v.number(),
+    // Login metadata (captured from client at login time)
+    ip: v.optional(v.string()),
+    userAgent: v.optional(v.string()),
+    deviceType: v.optional(v.string()), // "desktop" | "mobile" | "tablet"
+    deviceOS: v.optional(v.string()),   // "Windows" | "macOS" | "Linux" | "Android" | "iOS"
+    deviceBrowser: v.optional(v.string()), // "Chrome" | "Safari" | "Firefox" | "Edge" | etc.
+    location: v.optional(v.string()),   // "City, Country" from IP geolocation
   })
     .index("by_token", ["token"])
     .index("by_userId", ["userId"])

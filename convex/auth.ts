@@ -377,7 +377,7 @@ export const signup = action({
 
 export const login: RegisteredAction<
   "public",
-  { email: string; password: string },
+  { email: string; password: string; ip?: string; userAgent?: string; deviceType?: string; deviceOS?: string; deviceBrowser?: string; location?: string },
   Promise<{
     token: string;
     user: {
@@ -393,6 +393,12 @@ export const login: RegisteredAction<
   args: {
     email: v.string(),
     password: v.string(),
+    ip: v.optional(v.string()),
+    userAgent: v.optional(v.string()),
+    deviceType: v.optional(v.string()),
+    deviceOS: v.optional(v.string()),
+    deviceBrowser: v.optional(v.string()),
+    location: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const email = args.email.trim().toLowerCase();
@@ -441,7 +447,18 @@ export const login: RegisteredAction<
 
     const token = generateToken();
     const expiresAt = now + 30 * 24 * 60 * 60 * 1000;
-    await ctx.runMutation(internal.auth.createSession, { userId: user._id, role: user.role, token, expiresAt });
+    await ctx.runMutation(internal.auth.createSession, {
+      userId: user._id,
+      role: user.role,
+      token,
+      expiresAt,
+      ip: args.ip,
+      userAgent: args.userAgent,
+      deviceType: args.deviceType,
+      deviceOS: args.deviceOS,
+      deviceBrowser: args.deviceBrowser,
+      location: args.location,
+    });
 
     return {
       token,
@@ -511,6 +528,12 @@ export const createSession = internalMutation({
     token: v.string(),
     expiresAt: v.number(),
     createdAt: v.optional(v.number()),
+    ip: v.optional(v.string()),
+    userAgent: v.optional(v.string()),
+    deviceType: v.optional(v.string()),
+    deviceOS: v.optional(v.string()),
+    deviceBrowser: v.optional(v.string()),
+    location: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     // Single-session policy: logging in on a new device revokes all other sessions
@@ -528,6 +551,12 @@ export const createSession = internalMutation({
       role: args.role,
       expiresAt: args.expiresAt,
       createdAt: Date.now(),
+      ip: args.ip,
+      userAgent: args.userAgent,
+      deviceType: args.deviceType,
+      deviceOS: args.deviceOS,
+      deviceBrowser: args.deviceBrowser,
+      location: args.location,
     });
   },
 });

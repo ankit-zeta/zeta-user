@@ -45,3 +45,61 @@ export const getAuditLogs = query({
     return logs.slice(0, 100);
   },
 });
+
+export const getLoginHistory = query({
+  args: {
+    token: v.string(),
+    userId: v.optional(v.string()),
+    search: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx, args.token);
+
+    let sessions = await ctx.db.query("sessions").collect();
+
+    // Enrich with user email
+    const enriched = await Promise.all(
+      sessions.map(async (s) => {
+        const user = await ctx.db.get(s.userId);
+        return {
+          _id: s._id,
+          userId: s.userId,
+          userEmail: user?.email || "unknown",
+          userName: user?.name || "unknown",
+          createdAt: s.createdAt,
+          expiresAt: s.expiresAt,
+          ip: s.ip || "",
+          userAgent: s.userAgent || "",
+          deviceType: s.deviceType || "",
+          deviceOS: s.deviceOS || "",
+          deviceBrowser: s.deviceBrowser || "",
+          location: s.location || "",
+        };
+      })
+    );
+
+    enriched.sort((a, b) => b.createdAt - a.createdAt);
+
+    let filtered = enriched;
+
+    if (args.userId) {
+      filtered = filtered.filter((s) => s.userId === args.userId);
+    }
+
+    if (args.search && args.search.trim()) {
+      const q = args.search.toLowerCase().trim();
+      filtered = filtered.filter(
+        (s) =>
+          s.userEmail.toLowerCase().includes(q) ||
+          s.userName.toLowerCase().includes(q) ||
+          s.ip.toLowerCase().includes(q) ||
+          s.location.toLowerCase().includes(q) ||
+          s.deviceOS.toLowerCase().includes(q) ||
+          s.deviceBrowser.toLowerCase().includes(q) ||
+          s.deviceType.toLowerCase().includes(q)
+      );
+    }
+
+    return filtered.slice(0, 200);
+  },
+});
