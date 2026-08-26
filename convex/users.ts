@@ -734,6 +734,69 @@ export const grantProgramAccess = mutation({
     });
 
     return { success: true };
+  }
+});
+
+export const revokeProgramAccess = mutation({
+  args: {
+    token: v.string(),
+    userId: v.id("users"),
+    programId: v.id("programs"),
+    reason: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx, args.token);
+    const user = await ctx.db.get(args.userId);
+    const program = await ctx.db.get(args.programId);
+    if (!user || !program) throw new Error("User or Program not found");
+
+    const purchase = await ctx.db
+      .query("purchases")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.eq(q.field("programId"), args.programId))
+      .filter((q) => q.eq(q.field("status"), "completed"))
+      .first();
+
+    if (!purchase) throw new Error("No active enrollment found for this program");
+
+    const now = Date.now();
+    await ctx.db.patch(purchase._id, { status: "revoked" });
+
+    // Revoke any certificates for this program
+    const certs = await ctx.db
+      .query("certificates")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .filter((q) => q.eq(q.field("programId"), args.programId))
+      .collect();
+    for (const cert of certs) {
+      await ctx.db.delete(cert._id);
+    }
+
+    // Notification
+    await ctx.db.insert("notifications", {
+      userId: args.userId,
+      type: "course",
+      title: "Course Access Removed",
+      message: `Your access to "${program.name}" has been revoked by an administrator.${args.reason ? ` Reason: ${args.reason}` : ""}`,
+      read: false,
+      actionUrl: `/dashboard/programs`,
+      createdAt: now,
+    });
+
+    // Audit log
+    await ctx.db.insert("auditLogs", {
+      adminUserId: admin._id,
+      adminEmail: admin.email,
+      action: "MANUAL_PROGRAM_REVOKE",
+      entityType: "purchases",
+      entityId: args.userId,
+      previousValue: purchase.accessType || "purchase",
+      newValue: "revoked",
+      reason: args.reason,
+      timestamp: now,
+    });
+
+    return { success: true, revoked: true };
   },
 });
 
