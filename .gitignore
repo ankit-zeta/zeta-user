@@ -15,6 +15,9 @@ build/
 # Logs
 *.log
 *.txt
+*-output.txt
+*-test.txt
+*-err.txt
 dev-server.log
 dev-server-err.log
 
@@ -33,3 +36,4 @@ images/
 test-*.mjs
 sim-*.mjs
 check-*.mjs
+set-zero-fee.mjs
