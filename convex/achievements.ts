@@ -160,7 +160,7 @@ export const evaluateUserAchievements = mutation({
           title: `Achievement Unlocked: ${ach.name}!`,
           message: ach.notificationText || `You have earned the "${ach.name}" achievement.`,
           read: false,
-          actionUrl: "/dashboard/achievements",
+          actionUrl: "/affiliate/achievements",
           createdAt: now,
         });
 

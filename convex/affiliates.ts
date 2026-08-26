@@ -298,7 +298,7 @@ export const processPurchaseWithAffiliate = mutation({
                 title: "New Referral Sale!",
                 message: `Your referral purchased the "${plan.name}" plan. Commission is pending confirmation.`,
                 read: false,
-                actionUrl: "/dashboard/affiliate",
+                actionUrl: "/affiliate/wallet",
                 createdAt: now,
               });
               // Affiliate commission email to referrer
@@ -570,7 +570,7 @@ export const processPurchaseWithAffiliate = mutation({
                     title: "Chain Commission Earned!",
                     message: `You earned â‚¹${chainAmount} from ${referrer.name}'s affiliate commission on ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
                     read: false,
-                    actionUrl: "/dashboard/affiliate",
+                    actionUrl: "/affiliate/wallet",
                     createdAt: now,
                   });
                 }

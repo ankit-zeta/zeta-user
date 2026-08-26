@@ -156,3 +156,87 @@ Validator: v.string()
 
 26/8/2026, 4:17:24 am [CONVEX Q(paymentsConfig:getGstConfig)] Could not find public function for 'paymentsConfig:getGstConfig'.
 
+26/8/2026, 12:11:47 pm [CONVEX Q(notifications:getUserNotifications)] Uncaught Error: Unauthorized
+    at handler (../convex/notifications.ts:29:19)
+
+26/8/2026, 12:15:47 pm [CONVEX Q(programs:getAllProgramsAdmin)] Uncaught Error: Unauthorized: Invalid session
+    at requireAdmin (../convex/programs.ts:11:15)
+    at async handler (../convex/programs.ts:179:4)
+
+26/8/2026, 12:17:03 pm [CONVEX Q(jobs:getAllJobs)] Could not find public function for 'jobs:getAllJobs'.
+
+26/8/2026, 12:53:36 pm [CONVEX Q(analytics:getAdminOverviewMetrics)] Uncaught Error: Unauthorized: Invalid session
+    at requireAdmin (../convex/analytics.ts:11:15)
+    at async handler (../convex/analytics.ts:23:4)
+
+26/8/2026, 1:22:32 pm [CONVEX Q(analyticsAdmin:getDashboardAnalytics)] Uncaught Error: Unauthorized: Invalid session
+    at requireAdmin (../convex/analyticsAdmin.ts:16:15)
+    at async handler (../convex/analyticsAdmin.ts:48:4)
+
+26/8/2026, 1:22:32 pm [CONVEX Q(plans:getAllPlansAdmin)] Uncaught Error: Unauthorized: Invalid session
+    at requireAdmin (../convex/plans.ts:11:15)
+    at async handler (../convex/plans.ts:79:4)
+
+26/8/2026, 1:22:32 pm [CONVEX Q(programs:getAllProgramsAdmin)] Uncaught Error: Unauthorized: Invalid session
+    at requireAdmin (../convex/programs.ts:11:15)
+    at async handler (../convex/programs.ts:179:4)
+
+26/8/2026, 1:26:55 pm [CONVEX Q(auth:getSessionUser)] Could not find public function for 'auth:getSessionUser'.
+
+26/8/2026, 1:26:55 pm [CONVEX Q(auth:getSessionUser)] Could not find public function for 'auth:getSessionUser'.
+
+26/8/2026, 1:26:55 pm [CONVEX Q(auth:getSessionUser)] Could not find public function for 'auth:getSessionUser'.
+
+26/8/2026, 1:26:55 pm [CONVEX Q(auth:getSessionUser)] Could not find public function for 'auth:getSessionUser'.
+
+26/8/2026, 1:26:55 pm [CONVEX Q(plans:getPublicPlans)] Could not find public function for 'plans:getPublicPlans'.
+
+26/8/2026, 1:26:55 pm [CONVEX Q(jobs:getPublicJobs)] Could not find public function for 'jobs:getPublicJobs'.
+
+26/8/2026, 1:39:59 pm [CONVEX Q(plans:getPublicPlans)] Could not find public function for 'plans:getPublicPlans'.
+
+26/8/2026, 1:41:01 pm [CONVEX Q(users:getAllUsers)] ArgumentValidationError: Object is missing the required field `token`. Consider wrapping the field validator in `v.optional(...)` if this is expected.
+
+Object: {}
+Validator: v.object({role: v.optional(v.string()), search: v.optional(v.string()), status: v.optional(v.string()), token: v.string()})
+
+
+26/8/2026, 4:04:39 pm [CONVEX M(withdrawals:generateWithdrawalQrUploadUrl)] Trying to execute withdrawals.js:generateWithdrawalQrUploadUrl as Mutation, but it is defined as Action.
+
+26/8/2026, 4:08:06 pm [CONVEX M(withdrawals:generateWithdrawalQrUploadUrl)] Trying to execute withdrawals.js:generateWithdrawalQrUploadUrl as Mutation, but it is defined as Action.
+
+26/8/2026, 8:37:18 pm [CONVEX Q(notifications:getUserNotifications)] Uncaught Error: Unauthorized
+    at handler (../convex/notifications.ts:29:19)
+
+26/8/2026, 8:37:18 pm [CONVEX Q(notifications:getUserNotifications)] Uncaught Error: Unauthorized
+    at handler (../convex/notifications.ts:29:19)
+
+26/8/2026, 9:02:12 pm [CONVEX Q(analyticsAdmin:getDashboardAnalytics)] Uncaught Error: Unauthorized: Invalid session
+    at requireAdmin (../convex/analyticsAdmin.ts:16:15)
+    at async handler (../convex/analyticsAdmin.ts:48:4)
+
+26/8/2026, 9:02:12 pm [CONVEX Q(analytics:getAdminOverviewMetrics)] Uncaught Error: Unauthorized: Invalid session
+    at requireAdmin (../convex/analytics.ts:11:15)
+    at async handler (../convex/analytics.ts:23:4)
+
+26/8/2026, 9:27:58 pm [CONVEX Q(wallets:getUserWallet)] Uncaught Error: Unauthorized
+    at handler (../convex/wallets.ts:30:31)
+
+26/8/2026, 9:27:58 pm [CONVEX Q(payoutMethods:getMyPayoutMethods)] Uncaught Error: Unauthorized: Invalid session
+    at requireAuth (../convex/payoutMethods.ts:11:9)
+    at async handler (../convex/payoutMethods.ts:68:31)
+
+26/8/2026, 9:27:58 pm [CONVEX Q(tds:getMyTaxSummary)] Uncaught ConvexError: Unauthorized
+
+26/8/2026, 9:27:58 pm [CONVEX Q(notifications:getUserNotifications)] Uncaught Error: Unauthorized
+    at handler (../convex/notifications.ts:29:19)
+
+26/8/2026, 9:27:58 pm [CONVEX Q(certificates:getUserCertificates)] Uncaught Error: Unauthorized
+    at handler (../convex/certificates.ts:14:25)
+
+26/8/2026, 9:27:58 pm [CONVEX Q(withdrawals:getUserWithdrawals)] Uncaught Error: Unauthorized
+    at handler (../convex/withdrawals.ts:277:31)
+
+26/8/2026, 9:27:58 pm [CONVEX Q(notifications:getUserNotifications)] Uncaught Error: Unauthorized
+    at handler (../convex/notifications.ts:29:19)
+

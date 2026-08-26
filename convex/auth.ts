@@ -310,7 +310,7 @@ export const signup = action({
         title: "New Referral Registered",
         message: `${name} joined using your referral link.`,
         read: false,
-        actionUrl: "/dashboard/referrals",
+        actionUrl: "/affiliate/referrals",
         createdAt: now,
       });
 
