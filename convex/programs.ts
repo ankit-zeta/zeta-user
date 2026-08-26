@@ -26,7 +26,17 @@ export const getPublicPrograms = query({
       .collect();
 
     programs.sort((a, b) => a.sortOrder - b.sortOrder);
-    return programs;
+
+    const enriched = await Promise.all(
+      programs.map(async (p) => {
+        const thumbnailUrl = p.thumbnail
+          ? await ctx.storage.getUrl(p.thumbnail as any)
+          : null;
+        return { ...p, thumbnailUrl };
+      })
+    );
+
+    return enriched;
   },
 });
 
@@ -367,5 +377,69 @@ export const deleteProgram = mutation({
     });
 
     return { success: true };
+  },
+});
+
+export const getEnrolledProgramsDetail = query({
+  args: { programIds: v.array(v.id("programs")) },
+  handler: async (ctx, args) => {
+    const results = await Promise.all(
+      args.programIds.map(async (pid) => {
+        const prog = await ctx.db.get(pid);
+        if (!prog || prog.status !== "published") return null;
+
+        const thumbnailUrl = prog.thumbnail
+          ? await ctx.storage.getUrl(prog.thumbnail as any)
+          : null;
+
+        const modules = await ctx.db
+          .query("programModules")
+          .withIndex("by_programId", (q) => q.eq("programId", pid))
+          .collect();
+        modules.sort((a, b) => a.sortOrder - b.sortOrder);
+
+        const modulesWithLessons = await Promise.all(
+          modules.map(async (m) => {
+            const lessons = await ctx.db
+              .query("lessons")
+              .withIndex("by_moduleId", (q) => q.eq("moduleId", m._id))
+              .collect();
+            lessons.sort((a, b) => a.sortOrder - b.sortOrder);
+            return {
+              _id: m._id,
+              title: m.title,
+              description: m.description,
+              sortOrder: m.sortOrder,
+              lessonCount: lessons.length,
+              lessons: lessons.map((l) => ({
+                _id: l._id,
+                title: l.title,
+                slug: l.slug,
+                type: l.type,
+                sortOrder: l.sortOrder,
+              })),
+            };
+          })
+        );
+
+        const totalLessons = modulesWithLessons.reduce((s, m) => s + m.lessonCount, 0);
+
+        return {
+          _id: prog._id,
+          slug: prog.slug,
+          name: prog.name,
+          shortDescription: prog.shortDescription,
+          duration: prog.duration,
+          accessDuration: prog.accessDuration,
+          category: prog.category,
+          thumbnailUrl,
+          moduleCount: modules.length,
+          totalLessons,
+          modules: modulesWithLessons,
+        };
+      })
+    );
+
+    return results.filter(Boolean);
   },
 });

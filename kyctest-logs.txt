@@ -240,3 +240,15 @@ Validator: v.object({role: v.optional(v.string()), search: v.optional(v.string()
 26/8/2026, 9:27:58 pm [CONVEX Q(notifications:getUserNotifications)] Uncaught Error: Unauthorized
     at handler (../convex/notifications.ts:29:19)
 
+26/8/2026, 10:00:19 pm [CONVEX Q(programs:getPublicPrograms)] Uncaught Error: Invalid argument `storageId` for `storage.getUrl`: Invalid storage ID: "/covers/basics-of-sales.png". Storage ID should be an
+                    Id of '_storage' table, or a UUID string.
+    at async <anonymous> (../convex/programs.ts:34:23)
+    at async Promise.all (index 0)all [as all] (<anonymous>)
+    at async handler (../convex/programs.ts:30:32)
+
+26/8/2026, 10:00:19 pm [CONVEX Q(programs:getPublicPrograms)] Uncaught Error: Invalid argument `storageId` for `storage.getUrl`: Invalid storage ID: "/covers/basics-of-sales.png". Storage ID should be an
+                    Id of '_storage' table, or a UUID string.
+    at async <anonymous> (../convex/programs.ts:34:23)
+    at async Promise.all (index 0)all [as all] (<anonymous>)
+    at async handler (../convex/programs.ts:30:32)
+
