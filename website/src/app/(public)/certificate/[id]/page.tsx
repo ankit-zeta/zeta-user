@@ -401,9 +401,18 @@ export default function CertificateVerificationPage() {
                 {/* Signature / seal / date row */}
                 <div className="mt-8 sm:mt-10 grid grid-cols-3 items-end gap-2 sm:gap-6">
                   <div className="text-center">
-                    <p className={`${scriptFont.className} text-2xl sm:text-[34px] leading-none text-neutral-800`}>
-                      Ankit Kumar
-                    </p>
+                    {verification.signatureUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={verification.signatureUrl}
+                        alt="CEO signature"
+                        className="h-12 sm:h-16 w-auto object-contain mx-auto"
+                      />
+                    ) : (
+                      <p className={`${scriptFont.className} text-2xl sm:text-[34px] leading-none text-neutral-800`}>
+                        Ankit Kumar
+                      </p>
+                    )}
                     <div className="h-px bg-neutral-400 mt-1.5 mx-2 sm:mx-6" />
                     <p className="text-[9px] sm:text-[11px] font-extrabold tracking-wider mt-1.5" style={{ color: GREEN }}>
                       ANKIT KUMAR

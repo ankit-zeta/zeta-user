@@ -33,6 +33,19 @@ export const verifyCertificate = query({
 
     const program = await ctx.db.get(cert.programId);
 
+    // CEO signature image lives in Convex storage (never in the public
+    // bundle). The storage URL is unguessable; the signature is displayed on
+    // every issued certificate by design.
+    let signatureUrl: string | null = null;
+    const setting = await ctx.db
+      .query("adminSettings")
+      .withIndex("by_key", (q) => q.eq("key", "certificate"))
+      .first();
+    const sigId = setting?.value?.signatureStorageId;
+    if (sigId) {
+      signatureUrl = (await ctx.storage.getUrl(sigId as any)) || null;
+    }
+
     return {
       isValid: true,
       certificateId: cert.certificateId,
@@ -41,6 +54,7 @@ export const verifyCertificate = query({
       issueDate: cert.issueDate,
       programDuration: program?.duration || "Complete",
       issuer: "ZetaGrow Credential Registry",
+      signatureUrl,
     };
   },
 });
