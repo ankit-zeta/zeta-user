@@ -52,66 +52,99 @@ function LaurelWreath({ size = 64, color = GOLD }: { size?: number; color?: stri
   );
 }
 
-// Scalloped gold seal with green core and Z monogram.
+// Scalloped gold seal with green core, embossed Z and inner laurel.
 function GoldSeal({ size = 150 }: { size?: number }) {
-  const scallops = [];
-  const n = 28;
+  // Smooth scalloped edge: outward arcs between valley points (bottle-cap style).
+  const n = 24;
+  const cx = 75, cy = 75, rValley = 58;
+  const pt = (i: number, r: number) => {
+    const a = (i / n) * Math.PI * 2 - Math.PI / 2;
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  };
+  let d = `M ${pt(0, rValley).join(" ")} `;
   for (let i = 0; i < n; i++) {
-    const a = (i / n) * Math.PI * 2;
-    scallops.push(
-      <circle
-        key={i}
-        cx={75 + 62 * Math.cos(a)}
-        cy={75 + 62 * Math.sin(a)}
-        r={7.5}
-        fill="url(#sealGold)"
-        stroke="#8f6b12"
-        strokeWidth={0.6}
-      />
-    );
+    const [vx, vy] = pt(i, rValley);
+    const [wx, wy] = pt(i + 1, rValley);
+    const chord = Math.hypot(wx - vx, wy - vy);
+    const r = (chord / 2) * 1.18;
+    d += `A ${r} ${r} 0 0 1 ${wx} ${wy} `;
   }
-  const stars = [];
-  for (let i = 0; i < 3; i++) {
-    const a = ((i - 1) * 26 * Math.PI) / 180;
-    const sx = 75 + 44 * Math.sin(a);
-    const sy = 118 - 36 * Math.cos(a) * 0.35;
-    stars.push(
-      <polygon
-        key={i}
-        points="0,-4.5 1.3,-1.4 4.6,-1.4 2,0.9 2.9,4.2 0,2.2 -2.9,4.2 -2,0.9 -4.6,-1.4 -1.3,-1.4"
-        fill={GOLD_LIGHT}
-        transform={`translate(${sx} ${sy})`}
-      />
-    );
+  d += "Z";
+
+  // Inner laurel sprigs flanking the Z.
+  const sprigLeaves = [];
+  for (let side = 0; side < 2; side++) {
+    for (let i = 0; i < 4; i++) {
+      const t = 0.15 + i * 0.2;
+      const angle = side === 0 ? 150 - t * 120 : 30 + t * 120;
+      const rad = (angle * Math.PI) / 180;
+      const lx = 75 + 33 * Math.cos(rad);
+      const ly = 78 + 26 * Math.sin(rad);
+      sprigLeaves.push(
+        <ellipse
+          key={`${side}-${i}`}
+          cx={lx}
+          cy={ly}
+          rx={4.4}
+          ry={1.7}
+          fill={GOLD_LIGHT}
+          opacity={0.9}
+          transform={`rotate(${angle + (side === 0 ? -55 : 55)} ${lx} ${ly})`}
+        />
+      );
+    }
   }
+
+  const star = (x: number, y: number, s: number) => (
+    <polygon
+      points={`0,${-4.5 * s} ${1.3 * s},${-1.4 * s} ${4.6 * s},${-1.4 * s} ${2 * s},${0.9 * s} ${2.9 * s},${4.2 * s} 0,${2.2 * s} ${-2.9 * s},${4.2 * s} ${-2 * s},${0.9 * s} ${-4.6 * s},${-1.4 * s} ${-1.3 * s},${-1.4 * s}`}
+      fill={GOLD_LIGHT}
+      transform={`translate(${x} ${y})`}
+    />
+  );
+
   return (
     <svg width={size} height={size} viewBox="0 0 150 150" aria-hidden>
       <defs>
-        <linearGradient id="sealGold" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#8f6b12" />
-          <stop offset="35%" stopColor="#D4AF37" />
-          <stop offset="60%" stopColor="#F5E6A8" />
-          <stop offset="100%" stopColor="#B08D1E" />
+        <linearGradient id="sealGoldEdge" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#7a5c0e" />
+          <stop offset="30%" stopColor="#D4AF37" />
+          <stop offset="55%" stopColor="#F7EBB4" />
+          <stop offset="80%" stopColor="#C9A227" />
+          <stop offset="100%" stopColor="#8a680f" />
         </linearGradient>
-        <radialGradient id="sealGreen" cx="0.4" cy="0.35" r="1">
-          <stop offset="0%" stopColor="#1C5A40" />
-          <stop offset="100%" stopColor="#0C2E21" />
+        <linearGradient id="sealGoldFace" x1="0" y1="0" x2="0.8" y2="1">
+          <stop offset="0%" stopColor="#F7EBB4" />
+          <stop offset="40%" stopColor="#E3C25C" />
+          <stop offset="70%" stopColor="#C9A227" />
+          <stop offset="100%" stopColor="#9c7a15" />
+        </linearGradient>
+        <radialGradient id="sealGreen" cx="0.38" cy="0.32" r="1">
+          <stop offset="0%" stopColor="#1E6144" />
+          <stop offset="70%" stopColor="#10382A" />
+          <stop offset="100%" stopColor="#0A2A1E" />
         </radialGradient>
+        <filter id="sealShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#3a2c05" floodOpacity="0.35" />
+        </filter>
       </defs>
-      {scallops}
-      <circle cx="75" cy="75" r="58" fill="url(#sealGold)" stroke="#8f6b12" strokeWidth={1} />
-      <circle cx="75" cy="75" r="50" fill="none" stroke="#F5E6A8" strokeWidth={1.4} strokeDasharray="3 2.4" />
-      <circle cx="75" cy="75" r="44" fill="url(#sealGreen)" stroke="#D4AF37" strokeWidth={1.6} />
-      {stars}
-      <text
-        x="75"
-        y="88"
-        textAnchor="middle"
-        fontFamily="Georgia, serif"
-        fontSize="42"
-        fontWeight="700"
-        fill="#F5E6A8"
-      >
+
+      {/* Scalloped rim */}
+      <path d={d} fill="url(#sealGoldEdge)" stroke="#6e520b" strokeWidth={0.8} filter="url(#sealShadow)" />
+      {/* Gold face */}
+      <circle cx="75" cy="75" r="56" fill="url(#sealGoldFace)" stroke="#8a680f" strokeWidth={0.8} />
+      <circle cx="75" cy="75" r="50.5" fill="none" stroke="#FBF3D0" strokeWidth={1.3} strokeDasharray="2.6 2.2" opacity={0.95} />
+      {/* Green core */}
+      <circle cx="75" cy="75" r="45" fill="url(#sealGreen)" stroke="#E3C25C" strokeWidth={1.6} />
+      <circle cx="75" cy="75" r="41.5" fill="none" stroke="#C9A227" strokeWidth={0.7} opacity={0.65} />
+      {/* Inner laurel + stars + embossed Z */}
+      {sprigLeaves}
+      {star(56, 82, 0.85)}
+      {star(94, 82, 0.85)}
+      <text x="76.5" y="90.5" textAnchor="middle" fontFamily="Georgia, serif" fontSize="44" fontWeight="700" fill="#06231A" opacity={0.85}>
+        Z
+      </text>
+      <text x="75" y="89" textAnchor="middle" fontFamily="Georgia, serif" fontSize="44" fontWeight="700" fill="#F5E6A8">
         Z
       </text>
     </svg>
@@ -256,10 +289,12 @@ export default function CertificateVerificationPage() {
 
                 {/* Header: logo + wordmark */}
                 <div className="flex items-center justify-center gap-2.5">
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-sm"
-                    style={{ background: `linear-gradient(145deg, #1C5A40, ${GREEN})` }}>
-                    Z
-                  </div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/zetagrow logo no bg.png"
+                    alt="ZetaGrow logo"
+                    className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl object-cover shadow-sm"
+                  />
                   <span className="text-2xl sm:text-3xl font-extrabold tracking-tight" style={{ color: GREEN }}>
                     ZetaGrow
                   </span>
