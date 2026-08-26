@@ -1,38 +1,31 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "convex/react";
-import { api } from "@/lib/convex";
-import { useAuth } from "@/lib/convex";
+import { api, useAuth } from "@/lib/convex";
 import { useGst, gstSuffix } from "@/lib/gst";
-import { 
-  CheckCircle2, 
-  Clock, 
-  Award, 
-  BookOpen, 
-  ShieldCheck, 
-  ChevronDown, 
-  ChevronUp, 
-  PlayCircle, 
-  FileText, 
+import {
+  CheckCircle2,
+  Clock,
+  Award,
+  BookOpen,
+  ShieldCheck,
+  ChevronDown,
+  ChevronUp,
+  PlayCircle,
+  FileText,
   HelpCircle,
   ArrowRight,
   FolderDown,
   Lock,
   Users,
-  Layers
+  Layers,
+  Star,
+  Zap,
+  Tag,
 } from "lucide-react";
-
-const RESOURCE_META: Record<string, { icon: typeof FileText; label: string }> = {
-  pdf: { icon: FileText, label: "PDF Guide" },
-  zip: { icon: FolderDown, label: "Asset Pack" },
-  template: { icon: FileText, label: "Template" },
-  doc: { icon: FileText, label: "Document" },
-  video: { icon: PlayCircle, label: "Video" },
-  link: { icon: ArrowRight, label: "External Link" },
-};
 
 export default function ProgramDetailPage() {
   const params = useParams();
@@ -44,18 +37,31 @@ export default function ProgramDetailPage() {
   const plans = useQuery(api.plans.getPublicPlans);
   const gst = useGst();
 
-  // The plan that contains this course
   const parentPlan = plans?.find((p: any) =>
     (p.courses || []).some((c: any) => c.slug === slug)
   );
 
   const [openModuleIndex, setOpenModuleIndex] = useState<number | null>(0);
+  const [mobileBuyVisible, setMobileBuyVisible] = useState(false);
+
+  // Show sticky buy bar on mobile after scrolling past the pricing card
+  useEffect(() => {
+    const handleScroll = () => {
+      const pricingCard = document.getElementById("pricing-card-desktop");
+      if (pricingCard) {
+        const rect = pricingCard.getBoundingClientRect();
+        setMobileBuyVisible(rect.top < -100);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   if (program === undefined) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 animate-pulse space-y-8">
-        <div className="h-10 bg-neutral-200 rounded w-1/3"></div>
-        <div className="h-64 bg-neutral-200 rounded"></div>
+        <div className="h-10 bg-neutral-200 rounded w-1/3" />
+        <div className="h-64 bg-neutral-200 rounded" />
       </div>
     );
   }
@@ -65,14 +71,18 @@ export default function ProgramDetailPage() {
       <div className="max-w-3xl mx-auto px-4 py-20 text-center space-y-4">
         <h1 className="text-2xl font-bold text-textMain">Program Not Found</h1>
         <p className="text-sm text-textMuted">The requested curriculum does not exist or has been archived.</p>
-        <Link href="/programs" className="btn-primary inline-flex">
-          Browse All Programs
-        </Link>
+        <Link href="/programs" className="btn-primary inline-flex">Browse All Programs</Link>
       </div>
     );
   }
 
   const isAlreadyEnrolled = user?.enrolledProgramIds?.includes(program._id);
+  const totalLessons = program.stats?.lessonCount ?? 0;
+  const moduleCount = program.stats?.moduleCount ?? program.modules?.length ?? 0;
+  const totalMinutes = program.stats?.totalMinutes ?? 0;
+  const timeDisplay = totalMinutes >= 60
+    ? `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m`
+    : `${totalMinutes} min`;
 
   const handleEnrollment = () => {
     if (!token) {
@@ -83,205 +93,245 @@ export default function ProgramDetailPage() {
     router.push(`/checkout/${parentPlan.slug}`);
   };
 
+  const savings = parentPlan?.compareAtPrice
+    ? parentPlan.compareAtPrice - parentPlan.price
+    : 0;
+  const savingsPercent = parentPlan?.compareAtPrice
+    ? Math.round(((parentPlan.compareAtPrice - parentPlan.price) / parentPlan.compareAtPrice) * 100)
+    : 0;
+
   return (
-    <div className="space-y-16 pb-20">
-      {/* 1. Program Header Banner */}
-      <section className="bg-white border-b border-borderSubtle py-12 lg:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
-            {/* Left 2 Cols: Title & Overview */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* 16:9 Cover Image — same source as the /programs catalog cards */}
-              {program.thumbnail || program.bannerImage ? (
-                <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-borderSubtle bg-neutral-100 shadow-sm">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
+    <div className="pb-24 lg:pb-8">
+      {/* ─── Hero Section ──────────────────────────────────────────── */}
+      <section className="bg-white border-b border-borderSubtle">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12 items-start">
+            {/* Left: Image + Info (3 cols) */}
+            <div className="lg:col-span-3 space-y-6">
+              {/* Cover Image */}
+              <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-borderSubtle bg-neutral-100 shadow-sm">
+                {program.thumbnail || program.bannerImage ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={program.thumbnail || program.bannerImage}
                     alt={program.name}
                     loading="eager"
                     className="absolute inset-0 h-full w-full object-cover"
                   />
-                </div>
-              ) : (
-                <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-borderSubtle bg-gradient-to-br from-brand-600 to-brand-900 flex items-center justify-center shadow-sm">
-                  <span className="text-white/90 text-base sm:text-lg font-bold px-6 text-center">
-                    {program.name}
-                  </span>
-                </div>
-              )}
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-brand-600 to-brand-900 flex items-center justify-center">
+                    <span className="text-white/90 text-base sm:text-lg font-bold px-6 text-center">{program.name}</span>
+                  </div>
+                )}
+              </div>
 
+              {/* Badges */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-semibold text-brand-700 bg-brand-50 px-2.5 py-1 rounded-full border border-brand-200">
+                <span className="text-xs font-semibold text-brand-700 bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
                   {program.duration}
                 </span>
-                <span className="text-xs text-textMuted bg-neutral-100 px-2.5 py-1 rounded-full">
+                <span className="text-xs text-textMuted bg-neutral-100 px-3 py-1 rounded-full">
                   {program.accessDuration}
                 </span>
-                {/* Format badge */}
                 {(program.format ?? "text") !== "video" && (
-                  <span className="text-xs text-textMain flex items-center gap-1 font-medium bg-neutral-100 px-2.5 py-1 rounded-full border border-borderSubtle">
-                    <BookOpen className="w-3.5 h-3.5" />
-                    Text-Based Course
+                  <span className="text-xs text-textMain flex items-center gap-1 font-medium bg-neutral-100 px-3 py-1 rounded-full border border-borderSubtle">
+                    <BookOpen className="w-3.5 h-3.5" /> Text-Based
                   </span>
                 )}
                 {program.certificateEnabled && (
-                  <span className="text-xs text-brand-700 flex items-center gap-1 font-medium bg-brand-50/60 px-2.5 py-1 rounded-full">
-                    <Award className="w-3.5 h-3.5" />
-                    Verified Certificate
+                  <span className="text-xs text-brand-700 flex items-center gap-1 font-medium bg-brand-50/60 px-3 py-1 rounded-full">
+                    <Award className="w-3.5 h-3.5" /> Certificate
+                  </span>
+                )}
+                {program.affiliateEnabled && (
+                  <span className="text-xs text-green-700 flex items-center gap-1 font-medium bg-green-50 px-3 py-1 rounded-full">
+                    <Tag className="w-3.5 h-3.5" /> Affiliate
                   </span>
                 )}
               </div>
 
-              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-textMain">
-                {program.name}
-              </h1>
+              {/* Title + Description */}
+              <div className="space-y-3">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-textMain leading-tight">
+                  {program.name}
+                </h1>
+                <p className="text-sm sm:text-base text-textMuted leading-relaxed">
+                  {program.description}
+                </p>
+              </div>
 
-              <p className="text-base text-textMuted leading-relaxed">
-                {program.description}
-              </p>
-
-              {/* Inclusions checklist */}
-              <div className="space-y-3 pt-2">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-textMain">
-                  Key Inclusions
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {program.whatIncluded.map((inc: string, idx: number) => (
-                    <div key={idx} className="flex items-start gap-2 text-xs text-textMuted">
-                      <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0 mt-0.5" />
-                      <span>{inc}</span>
-                    </div>
-                  ))}
+              {/* Stats Strip */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="card-surface p-3 flex items-center gap-2.5">
+                  <Layers className="w-4 h-4 text-brand-600 shrink-0" />
+                  <div>
+                    <p className="text-base font-extrabold text-textMain leading-none">{moduleCount}</p>
+                    <p className="text-[10px] text-textMuted mt-0.5">Modules</p>
+                  </div>
+                </div>
+                <div className="card-surface p-3 flex items-center gap-2.5">
+                  <BookOpen className="w-4 h-4 text-brand-600 shrink-0" />
+                  <div>
+                    <p className="text-base font-extrabold text-textMain leading-none">{totalLessons}</p>
+                    <p className="text-[10px] text-textMuted mt-0.5">Lessons</p>
+                  </div>
+                </div>
+                <div className="card-surface p-3 flex items-center gap-2.5">
+                  <Clock className="w-4 h-4 text-brand-600 shrink-0" />
+                  <div>
+                    <p className="text-base font-extrabold text-textMain leading-none">{timeDisplay}</p>
+                    <p className="text-[10px] text-textMuted mt-0.5">Content</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Right Col: Plan Checkout Card */}
-            <div className="card-surface p-6 space-y-6 lg:sticky lg:top-24 shadow-sm border-brand-200">
-              {parentPlan ? (
-                <>
-                  <div className="space-y-2">
-                    <span className="text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-200 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                      Included in {parentPlan.name}
-                    </span>
-                    <p className="text-xs font-medium text-textMuted">Plan Price (all courses included)</p>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-4xl font-extrabold text-textMain">
-                        ₹{parentPlan.price.toLocaleString("en-IN")}
-                      </span>
-                      {parentPlan.compareAtPrice && (
-                        <span className="text-base text-textMuted line-through">
-                          ₹{parentPlan.compareAtPrice.toLocaleString("en-IN")}
-                        </span>
-                      )}
-                    </div>
-                    {gst?.enabled && (
-                      <p className="text-[11px] text-textMuted">
-                        Excluding {gst.rate}% {gst.label} — added at checkout
-                      </p>
-                    )}
-                    <p className="text-xs text-textMuted">
-                      Unlocks this course plus {parentPlan.courses.length - 1} more courses and all plan resources.
-                    </p>
+              {/* What's Included */}
+              {program.whatIncluded?.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-textMain">What&apos;s Included</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {program.whatIncluded.map((inc: string, idx: number) => (
+                      <div key={idx} className="flex items-start gap-2 text-xs text-textMuted">
+                        <CheckCircle2 className="w-4 h-4 text-brand-600 shrink-0 mt-0.5" />
+                        <span>{inc}</span>
+                      </div>
+                    ))}
                   </div>
-
-                  {isAlreadyEnrolled ? (
-                    <Link
-                      href={`/dashboard/learning/${program._id}`}
-                      className="btn-primary w-full text-center justify-center py-3 text-sm font-semibold"
-                    >
-                      Continue Learning
-                    </Link>
-                  ) : (
-                    <button
-                      onClick={handleEnrollment}
-                      className="btn-primary w-full justify-center py-3 text-sm font-semibold shadow-sm"
-                    >
-                      Get {parentPlan.name} — ₹{parentPlan.price.toLocaleString("en-IN")}
-                      <span className="font-normal">{gstSuffix(gst)}</span>
-                    </button>
-                  )}
-                  {!isAlreadyEnrolled && (
-                    <p className="text-center text-[10px] text-textMuted">
-                      Secure checkout via Razorpay · UPI, cards &amp; NetBanking
-                    </p>
-                  )}
-
-                  <Link
-                    href={`/plans/${parentPlan.slug}`}
-                    className="block w-full text-center text-xs font-semibold text-brand-700 hover:underline"
-                  >
-                    See everything in the {parentPlan.name} →
-                  </Link>
-
-                  <div className="space-y-2.5 pt-2 text-xs text-textMuted">
-                    <div className="flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-brand-600" />
-                      <span>One payment unlocks every course in the plan</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Award className="w-4 h-4 text-brand-600" />
-                      <span>Certificate after passing each course test</span>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="space-y-3 text-xs text-textMuted">
-                  <p className="font-semibold text-textMain">Course catalog updating…</p>
-                  <Link href="/plans" className="btn-primary w-full text-center justify-center py-3 text-sm font-semibold block">
-                    View Plans
-                  </Link>
                 </div>
               )}
+
+              {/* Learning Outcomes */}
+              {program.outcomes?.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-textMain">What You Will Achieve</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {program.outcomes.map((outcome: string, idx: number) => (
+                      <div key={idx} className="flex items-start gap-2 text-xs text-textMain">
+                        <Zap className="w-4 h-4 text-brand-600 shrink-0 mt-0.5" />
+                        <span className="font-medium">{outcome}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Right: Pricing Card (2 cols) — desktop sticky */}
+            <div className="lg:col-span-2" id="pricing-card-desktop">
+              <div className="lg:sticky lg:top-24">
+                <div className="card-surface p-6 space-y-5 shadow-sm border-brand-200">
+                  {parentPlan ? (
+                    <>
+                      {/* Plan badge */}
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-200 px-2.5 py-1 rounded-full uppercase tracking-wider">
+                          Part of {parentPlan.name}
+                        </span>
+                        {savings > 0 && (
+                          <span className="text-[10px] font-bold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full">
+                            Save {savingsPercent}%
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Price */}
+                      <div className="space-y-1">
+                        <div className="flex items-baseline gap-3">
+                          <span className="text-4xl font-extrabold text-textMain">
+                            ₹{parentPlan.price.toLocaleString("en-IN")}
+                          </span>
+                          {parentPlan.compareAtPrice && (
+                            <span className="text-lg text-textMuted line-through">
+                              ₹{parentPlan.compareAtPrice.toLocaleString("en-IN")}
+                            </span>
+                          )}
+                        </div>
+                        {gst?.enabled && (
+                          <p className="text-[11px] text-textMuted">
+                            + {gst.rate}% {gst.label} added at checkout
+                          </p>
+                        )}
+                      </div>
+
+                      {/* CTA */}
+                      {isAlreadyEnrolled ? (
+                        <Link
+                          href={`/dashboard/learning/${program._id}`}
+                          className="btn-primary w-full text-center justify-center py-3 text-sm font-semibold"
+                        >
+                          Continue Learning →
+                        </Link>
+                      ) : (
+                        <button
+                          onClick={handleEnrollment}
+                          className="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3.5 px-6 rounded-xl text-sm transition-colors shadow-lg shadow-brand-600/20"
+                        >
+                          Buy Now — ₹{parentPlan.price.toLocaleString("en-IN")}
+                          <span className="font-normal ml-1">{gstSuffix(gst)}</span>
+                        </button>
+                      )}
+
+                      {!isAlreadyEnrolled && (
+                        <p className="text-center text-[10px] text-textMuted">
+                          Secure checkout via Razorpay · UPI, cards &amp; NetBanking
+                        </p>
+                      )}
+
+                      {/* Course count */}
+                      <div className="pt-3 border-t border-borderSubtle">
+                        <p className="text-xs text-textMuted text-center">
+                          Unlocks <strong className="text-textMain">{parentPlan.courses.length} courses</strong> including this one
+                        </p>
+                        <Link
+                          href={`/plans/${parentPlan.slug}`}
+                          className="block text-center text-[11px] font-semibold text-brand-700 hover:underline mt-1.5"
+                        >
+                          See everything in {parentPlan.name} →
+                        </Link>
+                      </div>
+
+                      {/* Trust signals */}
+                      <div className="space-y-2 pt-2">
+                        <div className="flex items-center gap-2 text-xs text-textMuted">
+                          <ShieldCheck className="w-4 h-4 text-brand-600 shrink-0" />
+                          <span>One payment, lifetime access</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-textMuted">
+                          <Award className="w-4 h-4 text-brand-600 shrink-0" />
+                          <span>Verified certificate on completion</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-textMuted">
+                          <Users className="w-4 h-4 text-brand-600 shrink-0" />
+                          <span>{parentPlan.courses.length} courses included</span>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="space-y-3 text-xs text-textMuted text-center py-4">
+                      <p className="font-semibold text-textMain">Course catalog updating…</p>
+                      <Link href="/plans" className="btn-primary w-full text-center justify-center py-3 text-sm font-semibold block">
+                        View Plans
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. Syllabus & Modules */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      {/* ─── Curriculum ────────────────────────────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14 space-y-6">
         <div className="max-w-3xl space-y-2">
-          <span className="text-xs font-semibold text-brand-600 uppercase tracking-wider">
-            Curriculum Structure
-          </span>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-textMain">
-            What Content You Will Get
-          </h2>
+          <span className="text-xs font-semibold text-brand-600 uppercase tracking-wider">Curriculum</span>
+          <h2 className="text-2xl font-bold tracking-tight text-textMain">Course Content</h2>
           <p className="text-sm text-textMuted">
-            Reading-based modules with study materials, worked examples, and practical exercises — review the full breakdown before enrolling.
+            {moduleCount} modules · {totalLessons} lessons · {timeDisplay} of content
           </p>
         </div>
 
-        {/* Curriculum stats strip */}
-        <div className="max-w-4xl grid grid-cols-3 gap-4">
-          <div className="card-surface p-4 flex items-center gap-3">
-            <Layers className="w-5 h-5 text-brand-600 shrink-0" />
-            <div>
-              <p className="text-lg font-extrabold text-textMain leading-none">{program.stats?.moduleCount ?? program.modules?.length ?? 0}</p>
-              <p className="text-[11px] text-textMuted mt-1">Modules</p>
-            </div>
-          </div>
-          <div className="card-surface p-4 flex items-center gap-3">
-            <BookOpen className="w-5 h-5 text-brand-600 shrink-0" />
-            <div>
-              <p className="text-lg font-extrabold text-textMain leading-none">{program.stats?.lessonCount ?? 0}</p>
-              <p className="text-[11px] text-textMuted mt-1">Lessons</p>
-            </div>
-          </div>
-          <div className="card-surface p-4 flex items-center gap-3">
-            <Clock className="w-5 h-5 text-brand-600 shrink-0" />
-            <div>
-              <p className="text-lg font-extrabold text-textMain leading-none">
-                {program.stats?.totalMinutes >= 60
-                  ? `${Math.floor(program.stats.totalMinutes / 60)}h ${program.stats.totalMinutes % 60}m`
-                  : `${program.stats?.totalMinutes ?? 0} min`}
-              </p>
-              <p className="text-[11px] text-textMuted mt-1">Content Length</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="max-w-4xl space-y-4">
+        <div className="max-w-4xl space-y-3">
           {program.modules && program.modules.length > 0 ? (
             program.modules.map((mod: any, idx: number) => {
               const isOpen = openModuleIndex === idx;
@@ -289,56 +339,54 @@ export default function ProgramDetailPage() {
                 <div key={mod._id} className="card-surface overflow-hidden border-borderSubtle">
                   <button
                     onClick={() => setOpenModuleIndex(isOpen ? null : idx)}
-                    className="w-full px-6 py-4 flex items-center justify-between text-left bg-neutral-50/50 hover:bg-neutral-50 transition-colors"
+                    className="w-full px-5 py-4 flex items-center justify-between text-left bg-neutral-50/50 hover:bg-neutral-50 transition-colors"
                   >
-                    <div>
-                      <h4 className="text-sm font-bold text-textMain">{mod.title}</h4>
-                      <p className="text-xs text-textMuted mt-0.5">{mod.description}</p>
-                    </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-xs text-textMuted">
-                        {mod.lessons?.length || 0} Lessons
+                      <span className="w-7 h-7 rounded-lg bg-brand-100 text-brand-700 text-xs font-bold flex items-center justify-center shrink-0">
+                        {idx + 1}
                       </span>
-                      {isOpen ? (
-                        <ChevronUp className="w-4 h-4 text-textMuted" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 text-textMuted" />
-                      )}
+                      <div>
+                        <h4 className="text-sm font-bold text-textMain">{mod.title}</h4>
+                        <p className="text-[11px] text-textMuted mt-0.5">{mod.description}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0 ml-3">
+                      <span className="text-[11px] text-textMuted">
+                        {mod.lessons?.length || 0} lessons
+                      </span>
+                      {isOpen ? <ChevronUp className="w-4 h-4 text-textMuted" /> : <ChevronDown className="w-4 h-4 text-textMuted" />}
                     </div>
                   </button>
 
-                  {isOpen && (
-                    <div className="divide-y divide-borderSubtle bg-white px-6">
-                      {mod.lessons && mod.lessons.length > 0 ? (
-                        mod.lessons.map((lesson: any) => (
-                          <div
-                            key={lesson._id}
-                            className="py-3 flex items-center justify-between text-xs"
-                          >
-                            <div className="flex items-center gap-3">
-                              {lesson.type === "video" ? (
-                                <PlayCircle className="w-4 h-4 text-brand-600 shrink-0" />
-                              ) : (
-                                <FileText className="w-4 h-4 text-neutral-500 shrink-0" />
-                              )}
-                              <span className="font-medium text-textMain">{lesson.title}</span>
-                              {lesson.isPreview && (
-                                <span className="text-[10px] bg-brand-100 text-brand-800 px-2 py-0.5 rounded font-semibold">
-                                  Free Preview
-                                </span>
-                              )}
-                            </div>
-                            <span className="text-textMuted flex items-center gap-1">
+                  {isOpen && mod.lessons && mod.lessons.length > 0 && (
+                    <div className="divide-y divide-borderSubtle bg-white px-5">
+                      {mod.lessons.map((lesson: any) => (
+                        <div key={lesson._id} className="py-3 flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-3">
+                            {lesson.type === "video" ? (
+                              <PlayCircle className="w-4 h-4 text-brand-600 shrink-0" />
+                            ) : lesson.type === "quiz" ? (
+                              <HelpCircle className="w-4 h-4 text-amber-600 shrink-0" />
+                            ) : lesson.type === "download" ? (
+                              <FolderDown className="w-4 h-4 text-blue-600 shrink-0" />
+                            ) : (
+                              <FileText className="w-4 h-4 text-neutral-500 shrink-0" />
+                            )}
+                            <span className="font-medium text-textMain">{lesson.title}</span>
+                            {lesson.isPreview && (
+                              <span className="text-[10px] bg-brand-100 text-brand-800 px-2 py-0.5 rounded font-semibold">
+                                Free Preview
+                              </span>
+                            )}
+                          </div>
+                          {lesson.durationMinutes > 0 && (
+                            <span className="text-textMuted flex items-center gap-1 shrink-0">
                               <Clock className="w-3 h-3" />
                               {lesson.durationMinutes} min
                             </span>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="py-4 text-xs text-textMuted">
-                          Lessons being finalized for this module.
+                          )}
                         </div>
-                      )}
+                      ))}
                     </div>
                   )}
                 </div>
@@ -352,89 +400,101 @@ export default function ProgramDetailPage() {
         </div>
       </section>
 
-      {/* 3. Resources Included */}
+      {/* ─── Resources ─────────────────────────────────────────────── */}
       {program.resources && program.resources.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14 space-y-6">
           <div className="max-w-3xl space-y-2">
-            <span className="text-xs font-semibold text-brand-600 uppercase tracking-wider">
-              Included Resources
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-textMain">
-              Downloadable Kits & Materials
-            </h2>
-            <p className="text-sm text-textMuted">
-              Templates, guides, and asset packs that come with this program — ready to use from day one.
-            </p>
+            <span className="text-xs font-semibold text-brand-600 uppercase tracking-wider">Included Resources</span>
+            <h2 className="text-2xl font-bold tracking-tight text-textMain">Downloadable Materials</h2>
           </div>
-
-          <div className="max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4">
-            {program.resources.map((res: any, idx: number) => {
-              const meta = RESOURCE_META[res.fileType] || RESOURCE_META.doc;
-              const IconComp = meta.icon;
-              return (
-                <div key={idx} className="card-surface p-5 flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
-                    <IconComp className="w-5 h-5" />
-                  </div>
-                  <div className="min-w-0 flex-1 space-y-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <h4 className="text-sm font-bold text-textMain truncate">{res.title}</h4>
-                      {res.accessType === "enrolled" ? (
-                        <span className="text-[10px] font-semibold text-textMuted bg-neutral-100 border border-borderSubtle px-2 py-0.5 rounded-full shrink-0 flex items-center gap-1">
-                          <Lock className="w-3 h-3" />
-                          With Enrollment
-                        </span>
-                      ) : (
-                        <span className="text-[10px] font-semibold text-brand-700 bg-brand-50 border border-brand-200 px-2 py-0.5 rounded-full shrink-0">
-                          Free Sample
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-textMuted leading-relaxed line-clamp-2">{res.description}</p>
-                    <p className="text-[11px] text-textMuted flex items-center gap-1.5">
-                      <Users className="w-3 h-3" />
-                      {meta.label}
-                      {res.fileSize ? ` · ${res.fileSize}` : ""}
-                    </p>
-                  </div>
+          <div className="max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-3">
+            {program.resources.map((res: any, idx: number) => (
+              <div key={idx} className="card-surface p-4 flex items-start gap-3">
+                <div className="w-9 h-9 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
+                  <FileText className="w-4 h-4" />
                 </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* 4. Learning Outcomes */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-        <h2 className="text-2xl font-bold text-textMain">What You Will Achieve</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
-          {program.outcomes.map((outcome: string, idx: number) => (
-            <div key={idx} className="card-surface p-5 flex items-start gap-3">
-              <div className="w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center shrink-0 mt-0.5">
-                <CheckCircle2 className="w-4 h-4" />
-              </div>
-              <span className="text-xs text-textMain leading-relaxed font-medium">{outcome}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 5. FAQs */}
-      {program.faqs && program.faqs.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <h2 className="text-2xl font-bold text-textMain">Frequently Asked Questions</h2>
-          <div className="max-w-4xl space-y-3">
-            {program.faqs.map((faq: any, idx: number) => (
-              <div key={idx} className="card-surface p-5 space-y-2">
-                <h4 className="text-sm font-bold text-textMain flex items-center gap-2">
-                  <HelpCircle className="w-4 h-4 text-brand-600" />
-                  {faq.question}
-                </h4>
-                <p className="text-xs text-textMuted leading-relaxed pl-6">{faq.answer}</p>
+                <div className="min-w-0 flex-1 space-y-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="text-xs font-bold text-textMain truncate">{res.title}</h4>
+                    {res.accessType === "enrolled" ? (
+                      <span className="text-[9px] font-semibold text-textMuted bg-neutral-100 border border-borderSubtle px-1.5 py-0.5 rounded-full shrink-0 flex items-center gap-0.5">
+                        <Lock className="w-2.5 h-2.5" /> Enrolled
+                      </span>
+                    ) : (
+                      <span className="text-[9px] font-semibold text-brand-700 bg-brand-50 border border-brand-200 px-1.5 py-0.5 rounded-full shrink-0">
+                        Free
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-textMuted leading-relaxed line-clamp-2">{res.description}</p>
+                </div>
               </div>
             ))}
           </div>
         </section>
+      )}
+
+      {/* ─── FAQs ──────────────────────────────────────────────────── */}
+      {program.faqs && program.faqs.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-14 space-y-6">
+          <h2 className="text-2xl font-bold text-textMain">Frequently Asked Questions</h2>
+          <div className="max-w-4xl space-y-3">
+            {program.faqs.map((faq: any, idx: number) => (
+              <FaqItem key={idx} question={faq.question} answer={faq.answer} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ─── Mobile Sticky Buy Bar ─────────────────────────────────── */}
+      {parentPlan && !isAlreadyEnrolled && mobileBuyVisible && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-borderSubtle px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+          <div className="flex items-center justify-between gap-4 max-w-lg mx-auto">
+            <div className="min-w-0">
+              <p className="text-xs text-textMuted truncate">{parentPlan.name}</p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-lg font-extrabold text-textMain">
+                  ₹{parentPlan.price.toLocaleString("en-IN")}
+                </span>
+                {parentPlan.compareAtPrice && (
+                  <span className="text-xs text-textMuted line-through">
+                    ₹{parentPlan.compareAtPrice.toLocaleString("en-IN")}
+                  </span>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={handleEnrollment}
+              className="bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-6 rounded-xl text-sm transition-colors shrink-0 shadow-lg shadow-brand-600/20"
+            >
+              Buy Now
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── FAQ Accordion Item ────────────────────────────────────────────────── */
+function FaqItem({ question, answer }: { question: string; answer: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="card-surface overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-neutral-50 transition-colors"
+      >
+        <h4 className="text-sm font-bold text-textMain flex items-center gap-2 pr-4">
+          <HelpCircle className="w-4 h-4 text-brand-600 shrink-0" />
+          {question}
+        </h4>
+        {open ? <ChevronUp className="w-4 h-4 text-textMuted shrink-0" /> : <ChevronDown className="w-4 h-4 text-textMuted shrink-0" />}
+      </button>
+      {open && (
+        <div className="px-5 pb-4 pl-11">
+          <p className="text-xs text-textMuted leading-relaxed">{answer}</p>
+        </div>
       )}
     </div>
   );
