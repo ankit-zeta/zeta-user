@@ -638,4 +638,32 @@ sessions: defineTable({
     .index("by_razorpayOrderId", ["razorpayOrderId"])
     .index("by_userId", ["userId"])
     .index("by_status", ["status"]),
+
+  // ── Operating expenses (admin-entered) for profitability analytics ────────
+  // Admin-defined cost categories (server, email, events, tools, …).
+  expenseCategories: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    color: v.optional(v.string()), // hex, used by dashboard charts
+    archived: v.optional(v.boolean()),
+    createdBy: v.id("users"),
+    createdAt: v.number(),
+  }).index("by_name", ["name"]),
+
+  // Individual expense entries. Amount is stored in PAISE (same as revenue)
+  // so profit math never mixes units. `recurring` marks repeat costs like
+  // monthly server bills (informational — entries are still per-occurrence).
+  expenses: defineTable({
+    categoryId: v.id("expenseCategories"),
+    description: v.string(),
+    amount: v.number(), // in paise
+    date: v.number(), // when the cost was incurred
+    vendor: v.optional(v.string()),
+    notes: v.optional(v.string()),
+    recurring: v.optional(v.boolean()),
+    createdBy: v.id("users"),
+    createdAt: v.number(),
+  })
+    .index("by_categoryId", ["categoryId"])
+    .index("by_date", ["date"]),
 });

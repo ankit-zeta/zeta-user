@@ -11,6 +11,7 @@
 import type * as achievements from "../achievements.js";
 import type * as affiliates from "../affiliates.js";
 import type * as analytics from "../analytics.js";
+import type * as analyticsAdmin from "../analyticsAdmin.js";
 import type * as applications from "../applications.js";
 import type * as auditLogs from "../auditLogs.js";
 import type * as auth from "../auth.js";
@@ -20,6 +21,7 @@ import type * as crons from "../crons.js";
 import type * as cvProfiles from "../cvProfiles.js";
 import type * as email from "../email.js";
 import type * as entitlements from "../entitlements.js";
+import type * as expensesAdmin from "../expensesAdmin.js";
 import type * as http from "../http.js";
 import type * as jobs from "../jobs.js";
 import type * as kyc from "../kyc.js";
@@ -55,6 +57,7 @@ declare const fullApi: ApiFromModules<{
   achievements: typeof achievements;
   affiliates: typeof affiliates;
   analytics: typeof analytics;
+  analyticsAdmin: typeof analyticsAdmin;
   applications: typeof applications;
   auditLogs: typeof auditLogs;
   auth: typeof auth;
@@ -64,6 +67,7 @@ declare const fullApi: ApiFromModules<{
   cvProfiles: typeof cvProfiles;
   email: typeof email;
   entitlements: typeof entitlements;
+  expensesAdmin: typeof expensesAdmin;
   http: typeof http;
   jobs: typeof jobs;
   kyc: typeof kyc;
