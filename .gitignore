@@ -27,3 +27,8 @@ Thumbs.db
 # Local images (use CDN)
 images/
 .vercel
+
+# Test scripts (contain hardcoded credentials — never commit)
+test-*.mjs
+sim-*.mjs
+check-*.mjs
