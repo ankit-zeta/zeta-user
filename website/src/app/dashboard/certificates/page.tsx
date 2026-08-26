@@ -1,28 +1,109 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/convex";
 import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
-import { Award, CheckCircle2, ExternalLink, Download, Share2 } from "lucide-react";
+import {
+  Award,
+  CheckCircle2,
+  ExternalLink,
+  ImageDown,
+  FileDown,
+  Link2,
+  Check,
+} from "lucide-react";
+import { toPng } from "html-to-image";
+import { jsPDF } from "jspdf";
+import { CertificateCard } from "@/components/CertificateDesign";
+
+type Cert = {
+  _id: string;
+  _creationTime: number;
+  certificateId: string;
+  userId: string;
+  programId: string;
+  recipientName: string;
+  programName: string;
+  issueDate: number;
+  verificationUrl: string;
+  signatureUrl?: string | null;
+};
 
 export default function CertificatesPage() {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const certificates = useQuery(
     api.certificates.getUserCertificates,
     token ? { token } : "skip"
-  ) as Array<{
-    _id: string;
-    _creationTime: number;
-    certificateId: string;
-    userId: string;
-    programId: string;
-    recipientName: string;
-    programName: string;
-    issueDate: number;
-    verificationUrl: string;
-  }> | undefined;
+  ) as Cert[] | undefined;
+
+  const [exporting, setExporting] = useState<string | null>(null); // `${certId}:${ext}`
+  const [exportError, setExportError] = useState("");
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const renderCardToPng = async (domId: string): Promise<string> => {
+    const el = document.getElementById(domId);
+    if (!el) throw new Error("not-ready");
+    // Two passes: the first render can miss freshly-inlined web fonts.
+    await toPng(el, { pixelRatio: 2, backgroundColor: "#0D2E22", cacheBust: true });
+    return toPng(el, { pixelRatio: 2, backgroundColor: "#0D2E22", cacheBust: true });
+  };
+
+  const downloadPng = async (cert: Cert) => {
+    const domId = `certificate-card-${cert.certificateId}`;
+    setExporting(`${cert.certificateId}:png`);
+    setExportError("");
+    try {
+      const dataUrl = await renderCardToPng(domId);
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = `ZetaGrow-Certificate-${cert.certificateId}.png`;
+      a.click();
+    } catch {
+      setExportError("Could not generate the image. Please try again.");
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const downloadPdf = async (cert: Cert) => {
+    const domId = `certificate-card-${cert.certificateId}`;
+    setExporting(`${cert.certificateId}:pdf`);
+    setExportError("");
+    try {
+      const dataUrl = await renderCardToPng(domId);
+      const img = new Image();
+      img.src = dataUrl;
+      await new Promise((resolve, reject) => {
+        img.onload = () => resolve(null);
+        img.onerror = reject;
+      });
+      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+      const pw = pdf.internal.pageSize.getWidth();
+      const ph = pdf.internal.pageSize.getHeight();
+      const scale = Math.min(pw / img.width, ph / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      pdf.addImage(dataUrl, "PNG", (pw - w) / 2, (ph - h) / 2, w, h);
+      pdf.save(`ZetaGrow-Certificate-${cert.certificateId}.pdf`);
+    } catch {
+      setExportError("Could not generate the PDF. Please try again.");
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const copyShareLink = async (cert: Cert) => {
+    try {
+      const url = `${window.location.origin}/certificate/${cert.certificateId}`;
+      await navigator.clipboard.writeText(url);
+      setCopiedId(cert.certificateId);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {
+      // Clipboard unavailable — nothing to do.
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -32,7 +113,8 @@ export default function CertificatesPage() {
           Verified Certificates & Credentials
         </h1>
         <p className="text-xs text-textMuted">
-          Official completion credentials with unique verification identifiers on the public registry.
+          Your official credentials — download for LinkedIn & resumes, or share
+          the public verification link.
         </p>
       </div>
 
@@ -53,52 +135,81 @@ export default function CertificatesPage() {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {certificates.map((cert) => (
-            <div
-              key={cert._id}
-              className="card-surface p-8 space-y-6 border-2 border-brand-200 shadow-sm relative bg-white"
-            >
-              <div className="flex items-center justify-between border-b border-borderSubtle pb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded bg-brand-600 text-white font-bold flex items-center justify-center text-xs">
-                    Z
-                  </div>
-                  <span className="text-xs font-bold text-brand-900 uppercase tracking-wider">
-                    ZetaGrow Certified
-                  </span>
-                </div>
-                <span className="text-[10px] font-mono text-brand-700 bg-brand-50 px-2 py-0.5 rounded font-bold">
-                  {cert.certificateId}
-                </span>
-              </div>
-
-              <div className="space-y-2 text-center py-2">
-                <span className="text-[10px] uppercase tracking-widest text-textMuted font-semibold">
-                  Awarded To
-                </span>
-                <h3 className="text-xl font-bold text-textMain">{cert.recipientName}</h3>
-                <p className="text-xs text-textMuted leading-relaxed">
-                  For successful mastery and completion of
-                </p>
-                <h4 className="text-sm font-bold text-brand-700">{cert.programName}</h4>
-              </div>
-
-              <div className="pt-4 border-t border-borderSubtle flex items-center justify-between text-xs">
-                <span className="text-textMuted">
-                  Issued on: {new Date(cert.issueDate).toLocaleDateString("en-IN")}
-                </span>
-                <Link
-                  href={`/certificate/${cert.certificateId}`}
-                  target="_blank"
-                  className="text-brand-700 hover:text-brand-800 font-semibold flex items-center gap-1"
-                >
-                  <span>Public Verification URL</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </Link>
-              </div>
+        <div className="space-y-10">
+          {exportError && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 text-center">
+              {exportError}
             </div>
-          ))}
+          )}
+          {certificates.map((cert) => {
+            const busy = exporting !== null;
+            return (
+              <div key={cert._id} className="space-y-4">
+                <CertificateCard
+                  domId={`certificate-card-${cert.certificateId}`}
+                  recipientName={cert.recipientName}
+                  programName={cert.programName}
+                  certificateId={cert.certificateId}
+                  issueDate={cert.issueDate}
+                  signatureUrl={cert.signatureUrl}
+                />
+
+                {/* Owner actions: download + share */}
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <button
+                    onClick={() => downloadPng(cert)}
+                    disabled={busy}
+                    className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5 disabled:opacity-50"
+                  >
+                    <ImageDown className="w-3.5 h-3.5" />
+                    {exporting === `${cert.certificateId}:png`
+                      ? "Generating…"
+                      : "Download PNG"}
+                  </button>
+                  <button
+                    onClick={() => downloadPdf(cert)}
+                    disabled={busy}
+                    className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5 disabled:opacity-50"
+                  >
+                    <FileDown className="w-3.5 h-3.5" />
+                    {exporting === `${cert.certificateId}:pdf`
+                      ? "Generating…"
+                      : "Download PDF"}
+                  </button>
+                  <button
+                    onClick={() => copyShareLink(cert)}
+                    className="btn-secondary text-xs py-2 px-4 inline-flex items-center gap-1.5"
+                  >
+                    {copiedId === cert.certificateId ? (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        Link Copied!
+                      </>
+                    ) : (
+                      <>
+                        <Link2 className="w-3.5 h-3.5" />
+                        Copy Share Link
+                      </>
+                    )}
+                  </button>
+                  <Link
+                    href={`/certificate/${cert.certificateId}`}
+                    target="_blank"
+                    className="text-brand-700 hover:text-brand-800 text-xs font-semibold inline-flex items-center gap-1"
+                  >
+                    <span>Public Verification Page</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+
+                <div className="flex items-center justify-center gap-1.5 text-[11px] text-textMuted">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-green-600" />
+                  Issued {new Date(cert.issueDate).toLocaleDateString("en-IN")} ·
+                  ID <span className="font-mono font-bold">{cert.certificateId}</span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

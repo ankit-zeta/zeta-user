@@ -17,7 +17,20 @@ export const getUserCertificates = query({
       .withIndex("by_userId", (q) => q.eq("userId", session.userId))
       .collect();
 
-    return certificates;
+    // CEO signature image lives in Convex storage — resolve it once and
+    // attach to every certificate so the owner's dashboard renders the
+    // same signed design as the public verification page.
+    let signatureUrl: string | null = null;
+    const setting = await ctx.db
+      .query("adminSettings")
+      .withIndex("by_key", (q) => q.eq("key", "certificate"))
+      .first();
+    const sigId = setting?.value?.signatureStorageId;
+    if (sigId) {
+      signatureUrl = (await ctx.storage.getUrl(sigId as any)) || null;
+    }
+
+    return certificates.map((c) => ({ ...c, signatureUrl }));
   },
 });
 
