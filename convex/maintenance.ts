@@ -130,61 +130,9 @@ export const wipeAllUsers = internalMutation({
 });
 
 /**
- * Clean test account: verified, active, NO programs, NO wallet balance.
- * Run once: npx convex run maintenance:createCleanTestUser {}
+ * Clean test account REMOVED for security — hardcoded credentials removed from source.
+ * Use adminCreateUser mutation from admin panel instead.
  */
-export const createCleanTestUser = internalMutation({
-  args: {},
-  handler: async (ctx) => {
-    const email = "test@zeta.in";
-
-    const existing = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", email))
-      .first();
-    if (existing) {
-      return { success: true, message: "Test user already exists", userId: existing._id };
-    }
-
-    const salt = "zeta_test_salt_2026";
-    const passwordHash = await hashPassword("test@Zeta123!", salt);
-    const now = Date.now();
-
-    const userId = await ctx.db.insert("users", {
-      name: "ZetaGrow Test User",
-      email,
-      passwordHash,
-      salt,
-      role: "user",
-      status: "active",
-      referralCode: "TEST" + Math.random().toString(36).substring(2, 6).toUpperCase(),
-      emailVerified: true,
-      createdAt: now,
-      updatedAt: now,
-    });
-
-    await ctx.db.insert("wallets", {
-      userId,
-      availableBalance: 0,
-      pendingBalance: 0,
-      totalEarned: 0,
-      totalWithdrawn: 0,
-      workEarnings: 0,
-      affiliateEarnings: 0,
-      updatedAt: now,
-    });
-
-    // Intentionally NO purchases / enrollments / notifications � fresh state.
-
-    return {
-      success: true,
-      message: "Clean test user created (no programs, empty wallet)",
-      userId,
-      email,
-      password: "test@Zeta123!",
-    };
-  },
-});
 
 /**
  * TEMP simulation helper � creates a completed purchase for a user at an
