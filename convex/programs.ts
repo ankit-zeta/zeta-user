@@ -27,21 +27,10 @@ export const getPublicPrograms = query({
 
     programs.sort((a, b) => a.sortOrder - b.sortOrder);
 
-    const enriched = await Promise.all(
-      programs.map(async (p) => {
-        let thumbnailUrl: string | null = null;
-        if (p.thumbnail) {
-          try {
-            thumbnailUrl = await ctx.storage.getUrl(p.thumbnail as any);
-          } catch {
-            thumbnailUrl = null;
-          }
-        }
-        return { ...p, thumbnailUrl };
-      })
-    );
-
-    return enriched;
+    return programs.map((p) => ({
+      ...p,
+      thumbnailUrl: p.thumbnail || null,
+    }));
   },
 });
 
@@ -393,14 +382,7 @@ export const getEnrolledProgramsDetail = query({
         const prog = await ctx.db.get(pid);
         if (!prog || prog.status !== "published") return null;
 
-        let thumbnailUrl: string | null = null;
-        if (prog.thumbnail) {
-          try {
-            thumbnailUrl = await ctx.storage.getUrl(prog.thumbnail as any);
-          } catch {
-            thumbnailUrl = null;
-          }
-        }
+        const thumbnailUrl = prog.thumbnail || null;
 
         const modules = await ctx.db
           .query("programModules")

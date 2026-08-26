@@ -288,3 +288,8 @@ Validator: v.object({role: v.optional(v.string()), search: v.optional(v.string()
     at async Promise.all (index 0)all [as all] (<anonymous>)
     at async handler (../convex/programs.ts:30:32)
 
+26/8/2026, 10:10:39 pm [CONVEX Q(auth:getSessionUser)] Your request timed out performing too many system operations.
+
+26/8/2026, 10:10:51 pm [CONVEX Q(notifications:getUserNotifications)] Uncaught Error: Unauthorized
+    at handler (../convex/notifications.ts:29:19)
+

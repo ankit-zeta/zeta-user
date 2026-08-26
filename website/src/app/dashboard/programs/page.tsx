@@ -291,12 +291,10 @@ export default function MyProgramsPage() {
                   <h4 className="text-sm font-bold text-textMain leading-snug">{prog.name}</h4>
                   <p className="text-[11px] text-textMuted line-clamp-2">{prog.shortDescription}</p>
                   <div className="flex items-center justify-between pt-2 border-t border-borderSubtle">
-                    <span className="text-xs font-bold text-textMain">
-                      {prog.price === 0 ? "Free" : `₹${prog.price.toLocaleString("en-IN")}`}
-                    </span>
                     <span className="text-[11px] text-textMuted flex items-center gap-1">
                       <Clock className="w-3 h-3" /> {prog.duration}
                     </span>
+                    <span className="text-[11px] font-semibold text-brand-700">View Details →</span>
                   </div>
                 </div>
               </Link>
