@@ -641,6 +641,20 @@ export const updateUserStatus = mutation({
       }
     }
 
+    // Notify the user about the status change
+    await ctx.db.insert("notifications", {
+      userId: args.userId,
+      type: "kyc",
+      title: args.status === "suspended" ? "Account Suspended" : "Account Activated",
+      message:
+        args.status === "suspended"
+          ? `Your account has been suspended. Reason: ${args.reason}. If you believe this is a mistake, please contact support.`
+          : `Your account has been reactivated. You can now log in and access your dashboard.`,
+      read: false,
+      actionUrl: "/dashboard",
+      createdAt: Date.now(),
+    });
+
     // Log in audit log
     await ctx.db.insert("auditLogs", {
       adminUserId: admin._id,
@@ -824,6 +838,125 @@ export const updateUserCvStatus = mutation({
       newValue: args.cvStatus,
       reason: args.remarks || "CV review",
       timestamp: now,
+    });
+
+    return { success: true };
+  },
+});
+
+// ── Grant an entire plan (all its courses) to a user for free ──────────────
+// Creates a purchase record for each course in the plan, mirroring the
+// enrollment flow in processPurchaseWithAffiliate but without payment.
+export const grantPlanAccess = mutation({
+  args: {
+    token: v.string(),
+    userId: v.id("users"),
+    planId: v.id("plans"),
+    reason: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx, args.token);
+    const user = await ctx.db.get(args.userId);
+    const plan = await ctx.db.get(args.planId);
+    if (!user) throw new Error("User not found");
+    if (!plan || plan.status !== "published") throw new Error("Plan not found or not published");
+
+    const now = Date.now();
+    const paymentId = `ADMIN_PLAN_GRANT_${now}`;
+    const granted: string[] = [];
+
+    for (const pid of plan.programIds) {
+      const existing = await ctx.db
+        .query("purchases")
+        .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("programId"), pid),
+            q.eq(q.field("status"), "completed")
+          )
+        )
+        .first();
+
+      if (!existing) {
+        await ctx.db.insert("purchases", {
+          userId: args.userId,
+          programId: pid,
+          planId: plan._id,
+          amount: 0,
+          status: "completed",
+          paymentId,
+          paymentMethod: "admin_grant",
+          accessType: "admin_grant",
+          createdAt: now,
+        });
+        const prog = await ctx.db.get(pid);
+        if (prog) granted.push(prog.name);
+      }
+    }
+
+    await ctx.db.insert("notifications", {
+      userId: args.userId,
+      type: "course",
+      title: "Plan Assigned",
+      message:
+        granted.length > 0
+          ? `You have been granted access to ${granted.length} course${granted.length === 1 ? "" : "s"} in "${plan.name}" by the ZetaGrow team. Happy learning!`
+          : `You already had full access to "${plan.name}".`,
+      read: false,
+      actionUrl: "/dashboard/programs",
+      createdAt: now,
+    });
+
+    await ctx.db.insert("auditLogs", {
+      adminUserId: admin._id,
+      adminEmail: admin.email,
+      action: "MANUAL_PLAN_GRANT",
+      entityType: "purchases",
+      entityId: args.userId,
+      previousValue: "none",
+      newValue: `${plan.name} (${granted.length} courses)`,
+      reason: args.reason,
+      timestamp: now,
+    });
+
+    return { success: true, grantedCount: granted.length, granted };
+  },
+});
+
+// ── Send a notification from admin to a user ────────────────────────────────
+export const sendAdminNotification = mutation({
+  args: {
+    token: v.string(),
+    userId: v.id("users"),
+    title: v.string(),
+    message: v.string(),
+    actionUrl: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx, args.token);
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
+
+    await ctx.db.insert("notifications", {
+      userId: args.userId,
+      type: "admin",
+      title: args.title,
+      message: args.message,
+      read: false,
+      actionUrl: args.actionUrl || "/dashboard",
+      createdAt: Date.now(),
+    });
+
+    await ctx.db.insert("auditLogs", {
+      adminUserId: admin._id,
+      adminEmail: admin.email,
+      action: "ADMIN_NOTIFICATION",
+      entityType: "notifications",
+      entityId: args.userId,
+      previousValue: "none",
+      newValue: args.title,
+      reason: args.message,
+      timestamp: Date.now(),
     });
 
     return { success: true };
