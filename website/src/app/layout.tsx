@@ -72,15 +72,22 @@ const ORG_JSON_LD = {
   sameAs: [],
 };
 
-// Google Tag Manager container id — public identifier, not a secret.
-// Never push PII (emails, tokens, user ids) into dataLayer.
+// Google Tag Manager container id + Google Analytics 4 measurement id —
+// public identifiers, not secrets. Never push PII (emails, tokens, user ids)
+// into dataLayer.
 const GTM_ID = "GTM-NVKRTJ7F";
+const GA_ID = "G-K7J5K99VGY";
 
 const GTM_SNIPPET = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','${GTM_ID}');`;
+
+const GA_INIT_SNIPPET = `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_ID}');`;
 
 export default function RootLayout({
   children,
@@ -93,6 +100,14 @@ export default function RootLayout({
         {/* Google Tag Manager — loaded async, never blocks rendering */}
         <Script id="gtm-init" strategy="afterInteractive">
           {GTM_SNIPPET}
+        </Script>
+        {/* Google tag (gtag.js) — GA4 */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="ga-init" strategy="afterInteractive">
+          {GA_INIT_SNIPPET}
         </Script>
       </head>
       <body className={`${inter.className} min-h-full flex flex-col bg-bgWarm text-textMain antialiased`}>
