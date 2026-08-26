@@ -83,6 +83,15 @@ export const getAllPlansAdmin = query({
   },
 });
 
+// A Program must contain at least one course to be sellable/published.
+function assertPublishable(status: string, programIds: any[]) {
+  if (status === "published" && (!programIds || programIds.length === 0)) {
+    throw new Error(
+      "A Program needs at least one course before it can be published. Add courses or save as draft."
+    );
+  }
+}
+
 export const createPlan = mutation({
   args: {
     token: v.string(),
@@ -106,6 +115,7 @@ export const createPlan = mutation({
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .first();
     if (existing) throw new Error("A plan with this slug already exists");
+    assertPublishable(args.status || "published", args.programIds);
     const now = Date.now();
     return await ctx.db.insert("plans", {
       name: args.name,
@@ -150,6 +160,11 @@ export const updatePlan = mutation({
     for (const k of ["name", "tagline", "description", "price", "compareAtPrice", "thumbnail", "bannerImage", "programIds", "highlights", "status", "sortOrder"] as const) {
       if (args[k] !== undefined) patch[k] = args[k];
     }
+    // Validate the EFFECTIVE state after this patch (optional fields fall
+    // back to the stored plan values).
+    const effectiveStatus = patch.status || plan.status;
+    const effectiveCourses = patch.programIds || plan.programIds || [];
+    assertPublishable(effectiveStatus, effectiveCourses);
     await ctx.db.patch(args.planId, patch);
     return { success: true };
   },
