@@ -606,8 +606,13 @@ sessions: defineTable({
 
   // Razorpay payment orders (checkout bridge). Purely additive — existing
   // tables/logic are untouched. A purchase only unlocks when an order reaches
-  // status "paid" (server-verified signature) and is then marked "consumed"
-  // by the enrollment mutation.
+  // status "paid" (server-verified signature or webhook) and is then marked
+  // "consumed" by the enrollment mutation.
+  //
+  // Funnel tracking: every order records how it reached its final state so the
+  // admin dashboard can show initiated vs paid vs dropped checkouts and each
+  // row can be cross-verified against the Razorpay dashboard (order id /
+  // payment id are stored verbatim).
   paymentOrders: defineTable({
     userId: v.id("users"),
     planId: v.id("plans"),
@@ -617,10 +622,20 @@ sessions: defineTable({
     amount: v.number(), // in paise
     currency: v.string(), // "INR"
     receipt: v.string(),
-    status: v.string(), // "created" | "paid" | "consumed" | "failed" | "cancelled"
+    status: v.string(), // "created" | "paid" | "consumed" | "failed" | "cancelled" | "expired"
     createdAt: v.number(),
     updatedAt: v.number(),
+    paidAt: v.optional(v.number()),
+    cancelledAt: v.optional(v.number()),
+    // "user" (closed the Razorpay window) | "webhook" | "timeout"
+    cancelSource: v.optional(v.string()),
+    // Why an order failed / was dropped (webhook error description, user
+    // dismissal, signature mismatch, stale timeout, …)
+    failureReason: v.optional(v.string()),
+    // "client" (browser handler) | "webhook" — how the final state was learned
+    statusSource: v.optional(v.string()),
   })
     .index("by_razorpayOrderId", ["razorpayOrderId"])
-    .index("by_userId", ["userId"]),
+    .index("by_userId", ["userId"])
+    .index("by_status", ["status"]),
 });

@@ -40,4 +40,13 @@ crons.cron(
   {}
 );
 
+// Payment orders stuck in "created" for 24h+ (user never completed, no
+// webhook) are marked "expired" so the admin funnel stats stay accurate.
+crons.cron(
+  "expire-stale-payment-orders",
+  "45 4 * * *",
+  internal.paymentsData.expireStaleOrders,
+  {}
+);
+
 export default crons;

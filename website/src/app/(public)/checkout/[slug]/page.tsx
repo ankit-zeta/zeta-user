@@ -2,7 +2,7 @@
 
 import { friendlyError } from "@/lib/errors";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "convex/react";
@@ -90,6 +90,7 @@ export default function CheckoutPage() {
 
   const createOrder = useAction(api.payments.createRazorpayOrder);
   const verifyPayment = useAction(api.payments.verifyRazorpayPayment);
+  const cancelOrder = useAction(api.payments.cancelRazorpayOrder);
   const completePurchase = useMutation(
     api.affiliates.processPurchaseWithAffiliate
   );
@@ -98,6 +99,20 @@ export default function CheckoutPage() {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [stage, setStage] = useState<Stage>("review");
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Mirror of `stage` for use inside Razorpay callbacks without stale
+  // closures (the callbacks are created once per payment attempt).
+  const stageRef = useRef<Stage>("review");
+  useEffect(() => {
+    stageRef.current = stage;
+  }, [stage]);
+
+  // Recovery: a previous attempt was paid (webhook confirmed) but the browser
+  // closed before activation finished — offer one-click completion.
+  const pendingPaidOrder: any = useQuery(
+    api.paymentsData.getMyPendingPaidOrder,
+    token && plan ? { token, planId: plan._id } : "skip"
+  );
 
   useEffect(() => {
     loadRazorpayScript().catch(() => {});
@@ -154,7 +169,28 @@ export default function CheckoutPage() {
       },
       notes: { plan: plan.name },
       theme: { color: "#176B4D" },
-      modal: { confirm_close: true },
+      modal: {
+        confirm_close: true,
+        // IMPORTANT: the dismiss callback lives INSIDE `modal` as `ondismiss`.
+        // (`modal_ondismiss` is not a Razorpay option — it never fired, which
+        // left the button stuck on "Processing…" when the window was closed.)
+        ondismiss: () => {
+          // If verification already started, the money moved — don't reset.
+          if (stageRef.current !== "awaiting_payment") return;
+
+          // Record the abandonment in the payment funnel (fire-and-forget).
+          cancelOrder({
+            token,
+            razorpayOrderId: order.razorpayOrderId,
+            reason: "User closed the payment window",
+          }).catch(() => {});
+
+          setStage("review");
+          setErrorMsg(
+            "Payment was cancelled — no money was charged. You can retry whenever you're ready."
+          );
+        },
+      },
       handler: async (response: any) => {
         // 4. Server-side signature verification
         setStage("verifying");
@@ -181,14 +217,32 @@ export default function CheckoutPage() {
           setErrorMsg(friendlyError(err, "Payment could not be verified."));
         }
       },
-      modal_ondismiss: () => {
-        setStage("review");
-        setErrorMsg("Payment window was closed before completion. You can try again.");
-      },
     });
 
     rzp.open();
-  }, [token, plan, rzpConfig, user, createOrder, verifyPayment, completePurchase]);
+  }, [token, plan, rzpConfig, user, createOrder, verifyPayment, cancelOrder, completePurchase]);
+
+  // Completes activation for an order the webhook confirmed as paid but the
+  // browser never finished enrolling (user closed the tab mid-flow).
+  const resumePendingActivation = useCallback(async () => {
+    if (!token || !plan || !pendingPaidOrder) return;
+    setErrorMsg("");
+    setStage("enrolling");
+    try {
+      await completePurchase({
+        token,
+        planId: plan._id,
+        paymentMethod: "razorpay",
+        orderId: pendingPaidOrder.orderId,
+      });
+      setStage("done");
+    } catch (err: any) {
+      setStage("failed");
+      setErrorMsg(
+        friendlyError(err, "Activation failed. Please contact support with your payment id.")
+      );
+    }
+  }, [token, plan, pendingPaidOrder, completePurchase]);
 
   // ── Loading / guards ──
   if (plan === undefined || !user) {
@@ -284,6 +338,27 @@ export default function CheckoutPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mt-8">
+            {/* Recovery: paid earlier but activation didn't finish */}
+            {pendingPaidOrder && stage === "review" && (
+              <div className="lg:col-span-5 rounded-xl border border-amber-200 bg-amber-50 p-4 flex flex-col sm:flex-row sm:items-center gap-3">
+                <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
+                <div className="flex-1">
+                  <p className="text-xs font-bold text-amber-900">Payment received — activation incomplete</p>
+                  <p className="text-[11px] text-amber-800 mt-0.5 leading-relaxed">
+                    We received your payment for {plan.name}, but the activation didn't finish (the window may have closed too early).
+                    Click below to unlock your courses now — you won't be charged again.
+                  </p>
+                </div>
+                <button
+                  onClick={resumePendingActivation}
+                  disabled={busy}
+                  className="btn-primary text-xs py-2 px-4 shrink-0 disabled:opacity-50"
+                >
+                  Complete activation
+                </button>
+              </div>
+            )}
+
             {/* Left: Order summary */}
             <div className="lg:col-span-3 space-y-6">
               {/* Plan card */}

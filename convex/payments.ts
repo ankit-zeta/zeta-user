@@ -154,6 +154,8 @@ export const verifyRazorpayPayment = action({
     if (!valid) {
       await ctx.runMutation(internal.paymentsData.markOrderFailed, {
         orderId: record._id,
+        reason: "Signature verification failed",
+        source: "client",
       });
       throw new Error(
         "Payment signature verification failed. If you were charged, contact support with your payment id."
@@ -164,8 +166,36 @@ export const verifyRazorpayPayment = action({
       orderId: record._id,
       razorpayPaymentId: args.razorpayPaymentId,
       razorpaySignature: args.razorpaySignature,
+      source: "client",
     });
 
     return { ok: true, alreadyVerified: false, orderDbId: record._id };
+  },
+});
+
+// Called when the user closes the Razorpay checkout window. Records the
+// abandonment in the funnel (admin dashboard) without ever downgrading an
+// order that the webhook already confirmed as paid.
+export const cancelRazorpayOrder = action({
+  args: {
+    token: v.string(),
+    razorpayOrderId: v.string(),
+    reason: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const userId = await requireUserId(ctx, args.token);
+
+    const record: any = await ctx.runQuery(
+      internal.paymentsData.getOrderByRazorpayOrderId,
+      { razorpayOrderId: args.razorpayOrderId }
+    );
+    if (!record || record.userId !== userId) return { ok: false };
+
+    await ctx.runMutation(internal.paymentsData.markOrderCancelled, {
+      orderId: record._id,
+      source: "user",
+      reason: args.reason,
+    });
+    return { ok: true };
   },
 });

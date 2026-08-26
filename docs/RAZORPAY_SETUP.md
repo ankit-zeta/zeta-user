@@ -5,15 +5,20 @@
 Run from the project root:
 
 ```bash
-npx convex env set RAZORPAY_KEY_ID rzp_test_xxxxxxxxxxxx
+npx convex env set RAZORPAY_KEY_ID rzp_live_xxxxxxxxxxxx
 npx convex env set RAZORPAY_KEY_SECRET your_key_secret_here
+npx convex env set RAZORPAY_WEBHOOK_SECRET your_webhook_secret_here
 ```
 
-- Use **test** keys (`rzp_test_…`) while developing, **live** keys (`rzp_live_…`) for production.
-- Keys are stored inside Convex's encrypted environment — they never ship to the
-  browser bundle or the Next.js server.
+- Keys are stored inside Convex's encrypted environment — they never ship to
+  the browser bundle or the Next.js server.
 - The client only ever receives the *public* `key_id` via the
-  `payments.getRazorpayConfig` query.
+  `payments.getRazorpayConfig` query (safe — Razorpay key ids are public).
+- **Never** put key secrets in `.env.local`, `NEXT_PUBLIC_*` vars, or git.
+  The repo's `.env.local` files only ever hold Convex URLs (and are
+  gitignored anyway).
+- `RAZORPAY_WEBHOOK_SECRET` is the secret YOU generate when creating the
+  webhook (step 6) — it is separate from the API key secret.
 
 ## 2. Payment flow (how a purchase unlocks)
 
@@ -69,9 +74,68 @@ npx convex env set RAZORPAY_KEY_SECRET your_key_secret_here
    - Card: `4111 1111 1111 1111`, any future expiry, any CVV
 5. Verify: courses appear under `/dashboard/programs`, order row in the
    `paymentOrders` table is `consumed`.
+6. Close the Razorpay window mid-payment → the button must return to
+   "Pay ₹… Securely", the order row becomes `cancelled` (source: user), and
+   the admin **Payment Orders** page logs the drop-off.
 
-## 6. Optional next steps
+## 6. Webhook setup (REQUIRED for live mode)
 
-- **Webhook** (`payment.captured`) for reconciliation if the user closes the tab
-  mid-payment; currently un-captured orders simply stay `created`.
-- GST-inclusive invoice emails via Razorpay Invoices API.
+The webhook is the server-side source of truth: if a user pays but the
+browser closes before client verification runs, the webhook still records
+the payment and the checkout page offers one-click activation on the next
+visit.
+
+**Endpoint (already implemented in `convex/http.ts`):**
+
+```
+POST https://terrific-dove-836.convex.site/razorpay-webhook
+```
+
+**To create it in the Razorpay Dashboard** (Account & Settings → Webhooks →
+"+ Add New Webhook"):
+
+1. **URL**: `https://terrific-dove-836.convex.site/razorpay-webhook`
+   (use the production `CONVEX_SITE_URL`; for a local dev deployment use that
+   deployment's `*.convex.site` URL instead).
+2. **Secret**: click *Generate secret*, copy it, then run
+   `npx convex env set RAZORPAY_WEBHOOK_SECRET <that secret>`.
+3. **Active events**:
+   - `payment.captured` — money received (primary)
+   - `payment.failed` — gateway-side failure reason
+   - `order.paid` — backup for `payment.captured` (idempotent)
+4. **Alerts**: enable email alerts so you notice delivery failures.
+5. Save, then use the "Send test hook" button — the dashboard should show a
+   200 response.
+
+**How it is secured** (`convex/http.ts`):
+
+- Every request's raw body is HMAC-SHA256 verified against
+  `RAZORPAY_WEBHOOK_SECRET` with a timing-safe compare; forged requests get
+  `401`.
+- The webhook amount is cross-checked against the stored order amount before
+  marking paid.
+- All transitions are idempotent — `payment.captured` and `order.paid` may
+  both arrive; paid/consumed orders are never overwritten. A cancelled order
+  IS upgraded to paid if money was actually captured (webhook wins).
+- Nothing from the payload is logged.
+
+## 7. Funnel tracking & admin dashboard
+
+Every checkout attempt is recorded in the `paymentOrders` table with a
+lifecycle the admin dashboard (admin → **Payment Orders**) aggregates:
+
+```
+created ──▶ paid ──▶ consumed   (money received → courses unlocked)
+   │
+   ├──▶ cancelled  (user closed the Razorpay window — cancelSource: "user")
+   ├──▶ failed     (signature mismatch, gateway error, amount mismatch)
+   └──▶ expired    (cron: still "created" after 24h — cancelSource: "timeout")
+```
+
+- Cancels are recorded by `payments.cancelRazorpayOrder` (fired from the
+  checkout's `modal.ondismiss`) and can never downgrade a paid order.
+- The admin page shows per-row Razorpay order/payment ids (linked to the
+  Razorpay dashboard) so every row can be cross-verified against the gateway.
+- Stats: total attempts, in-progress, paid, completed, cancelled, failed,
+  expired, revenue, and conversion rate.
+
