@@ -269,6 +269,7 @@ export default function CertificatesPage() {
               <Link
                 href={`/certificate/${previewCert.certificateId}`}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="text-brand-700 hover:text-brand-800 text-xs font-semibold inline-flex items-center gap-1"
               >
                 Verify Online <ExternalLink className="w-3.5 h-3.5" />

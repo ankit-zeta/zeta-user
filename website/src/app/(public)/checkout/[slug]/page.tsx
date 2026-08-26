@@ -464,10 +464,10 @@ export default function CheckoutPage() {
                   />
                   <span className="text-[11px] text-textMuted leading-relaxed">
                     <strong className="text-textMain">I agree</strong> to the{" "}
-                    <Link href="/terms" target="_blank" className="text-brand-700 hover:underline font-medium">Terms of Service</Link>,{" "}
-                    <Link href="/refund-policy" target="_blank" className="text-brand-700 hover:underline font-medium">Refund Policy</Link>,{" "}
-                    <Link href="/payment-terms" target="_blank" className="text-brand-700 hover:underline font-medium">Payment Terms</Link> and{" "}
-                    <Link href="/privacy" target="_blank" className="text-brand-700 hover:underline font-medium">Privacy Policy</Link>, and consent to
+                    <Link href="/terms" target="_blank" rel="noopener noreferrer" className="text-brand-700 hover:underline font-medium">Terms of Service</Link>,{" "}
+                    <Link href="/refund-policy" target="_blank" rel="noopener noreferrer" className="text-brand-700 hover:underline font-medium">Refund Policy</Link>,{" "}
+                    <Link href="/payment-terms" target="_blank" rel="noopener noreferrer" className="text-brand-700 hover:underline font-medium">Payment Terms</Link> and{" "}
+                    <Link href="/privacy" target="_blank" rel="noopener noreferrer" className="text-brand-700 hover:underline font-medium">Privacy Policy</Link>, and consent to
                     receiving transactional emails about my purchase.
                   </span>
                 </label>
