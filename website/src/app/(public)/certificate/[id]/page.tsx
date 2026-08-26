@@ -5,7 +5,9 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
-import { Award, CheckCircle2, ShieldCheck, Printer } from "lucide-react";
+import { Award, CheckCircle2, ShieldCheck, Printer, ImageDown, FileDown } from "lucide-react";
+import { toPng } from "html-to-image";
+import { jsPDF } from "jspdf";
 import { Great_Vibes, Cormorant_Garamond } from "next/font/google";
 
 const scriptFont = Great_Vibes({ weight: "400", subsets: ["latin"], display: "swap" });
@@ -159,6 +161,62 @@ export default function CertificateVerificationPage() {
     api.certificates.verifyCertificate,
     certificateId ? { certificateId } : "skip"
   );
+
+  const [exporting, setExporting] = React.useState<"png" | "pdf" | null>(null);
+  const [exportError, setExportError] = React.useState("");
+
+  const renderCardToPng = async (): Promise<string> => {
+    const el = document.getElementById("certificate-card");
+    if (!el) throw new Error("not-ready");
+    // Two passes: the first render can miss freshly-inlined web fonts.
+    await toPng(el, { pixelRatio: 2, backgroundColor: "#0D2E22", cacheBust: true });
+    return toPng(el, { pixelRatio: 2, backgroundColor: "#0D2E22", cacheBust: true });
+  };
+
+  const fileName = (ext: string) =>
+    `ZetaGrow-Certificate-${verification?.certificateId || certificateId}.${ext}`;
+
+  const downloadPng = async () => {
+    setExporting("png");
+    setExportError("");
+    try {
+      const dataUrl = await renderCardToPng();
+      const a = document.createElement("a");
+      a.href = dataUrl;
+      a.download = fileName("png");
+      a.click();
+    } catch {
+      setExportError("Could not generate the image. Please use the Print option instead.");
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const downloadPdf = async () => {
+    setExporting("pdf");
+    setExportError("");
+    try {
+      const dataUrl = await renderCardToPng();
+      const img = new Image();
+      img.src = dataUrl;
+      await new Promise((resolve, reject) => {
+        img.onload = () => resolve(null);
+        img.onerror = reject;
+      });
+      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+      const pw = pdf.internal.pageSize.getWidth();
+      const ph = pdf.internal.pageSize.getHeight();
+      const scale = Math.min(pw / img.width, ph / img.height);
+      const w = img.width * scale;
+      const h = img.height * scale;
+      pdf.addImage(dataUrl, "PNG", (pw - w) / 2, (ph - h) / 2, w, h);
+      pdf.save(fileName("pdf"));
+    } catch {
+      setExportError("Could not generate the PDF. Please use the Print option instead.");
+    } finally {
+      setExporting(null);
+    }
+  };
 
   const issued = verification
     ? new Date(verification.issueDate).toLocaleDateString("en-IN", {
@@ -383,21 +441,41 @@ export default function CertificateVerificationPage() {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-center gap-3 no-print">
-            <button
-              onClick={() => window.print()}
-              className="btn-secondary text-xs py-2 px-4 inline-flex items-center gap-1.5"
-            >
-              <Printer className="w-3.5 h-3.5" />
-              Download / Print
-            </button>
-            <Link href="/dashboard/programs" className="btn-primary text-xs py-2 px-4 inline-flex">
-              Back to My Programs
-            </Link>
+          <div className="space-y-2 no-print">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                onClick={downloadPng}
+                disabled={exporting !== null}
+                className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <ImageDown className="w-3.5 h-3.5" />
+                {exporting === "png" ? "Generating…" : "Download PNG"}
+              </button>
+              <button
+                onClick={downloadPdf}
+                disabled={exporting !== null}
+                className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <FileDown className="w-3.5 h-3.5" />
+                {exporting === "pdf" ? "Generating…" : "Download PDF"}
+              </button>
+              <button
+                onClick={() => window.print()}
+                disabled={exporting !== null}
+                className="btn-secondary text-xs py-2 px-4 inline-flex items-center gap-1.5"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                Print
+              </button>
+            </div>
+            {exportError && (
+              <p className="text-center text-[11px] text-red-600">{exportError}</p>
+            )}
           </div>
 
           <p className="text-center text-[11px] text-textMuted no-print">
-            Issued by {verification.issuer} · Recorded on the ZetaGrow Credential Ledger
+            Issued by {verification.issuer} · Recorded on the ZetaGrow Credential Ledger ·{" "}
+            <Link href="/dashboard/programs" className="hover:underline">Back to My Programs</Link>
           </p>
         </>
       )}
