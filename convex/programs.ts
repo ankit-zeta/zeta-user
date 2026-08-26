@@ -29,9 +29,14 @@ export const getPublicPrograms = query({
 
     const enriched = await Promise.all(
       programs.map(async (p) => {
-        const thumbnailUrl = p.thumbnail
-          ? await ctx.storage.getUrl(p.thumbnail as any)
-          : null;
+        let thumbnailUrl: string | null = null;
+        if (p.thumbnail) {
+          try {
+            thumbnailUrl = await ctx.storage.getUrl(p.thumbnail as any);
+          } catch {
+            thumbnailUrl = null;
+          }
+        }
         return { ...p, thumbnailUrl };
       })
     );
@@ -388,9 +393,14 @@ export const getEnrolledProgramsDetail = query({
         const prog = await ctx.db.get(pid);
         if (!prog || prog.status !== "published") return null;
 
-        const thumbnailUrl = prog.thumbnail
-          ? await ctx.storage.getUrl(prog.thumbnail as any)
-          : null;
+        let thumbnailUrl: string | null = null;
+        if (prog.thumbnail) {
+          try {
+            thumbnailUrl = await ctx.storage.getUrl(prog.thumbnail as any);
+          } catch {
+            thumbnailUrl = null;
+          }
+        }
 
         const modules = await ctx.db
           .query("programModules")
