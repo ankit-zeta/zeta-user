@@ -1,10 +1,12 @@
-import { mutation } from "./_generated/server";
+import { internalMutation } from "./_generated/server";
 
 // Seed content scaffolding: positions, achievements, sample jobs,
 // initial admin settings and an announcement.
 // NOTE: Courses/plans are managed via Admin Panel; no user accounts are created here.
+// SECURITY: This is an internalMutation — only callable from server-side code,
+// never from any client. Prevents unauthenticated database seeding.
 
-export const seedDatabase = mutation({
+export const seedDatabase = internalMutation({
   args: {},
   handler: async (ctx) => {
     const now = Date.now();
