@@ -55,8 +55,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (token) {
       try {
         await logoutMutation({ token });
-      } catch (err) {
-        console.error("Logout error", err);
+      } catch {
+        // Logout proceeds locally regardless — never surface server details.
       }
     }
     localStorage.removeItem("zetagrow_user_token");

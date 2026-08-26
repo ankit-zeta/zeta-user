@@ -136,8 +136,8 @@ export default function CoursePlayerPage() {
         programId,
         lessonId,
       });
-    } catch (err) {
-      console.error(err);
+    } catch {
+      // Progress state re-syncs from the server on next load — stay quiet.
     } finally {
       setIsToggling(false);
     }
