@@ -293,3 +293,12 @@ Validator: v.object({role: v.optional(v.string()), search: v.optional(v.string()
 26/8/2026, 10:10:51 pm [CONVEX Q(notifications:getUserNotifications)] Uncaught Error: Unauthorized
     at handler (../convex/notifications.ts:29:19)
 
+26/8/2026, 10:58:59 pm [CONVEX Q(wallets:getUserWallet)] Uncaught Error: Unauthorized
+    at handler (../convex/wallets.ts:30:31)
+
+26/8/2026, 10:58:59 pm [CONVEX Q(notifications:getUserNotifications)] Uncaught Error: Unauthorized
+    at handler (../convex/notifications.ts:29:19)
+
+26/8/2026, 10:58:59 pm [CONVEX Q(affiliates:getUserAffiliateStats)] Uncaught Error: Unauthorized
+    at handler (../convex/affiliates.ts:32:17)
+
