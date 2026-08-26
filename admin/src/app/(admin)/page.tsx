@@ -51,8 +51,13 @@ function fmtRs(n: number, compact = false): string {
     if (Math.abs(n) >= 10000000) return `₹${(n / 10000000).toFixed(2)}Cr`;
     if (Math.abs(n) >= 100000) return `₹${(n / 100000).toFixed(2)}L`;
     if (Math.abs(n) >= 1000) return `₹${(n / 1000).toFixed(1)}k`;
+    return `₹${n.toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
   }
-  return `₹${n.toLocaleString("en-IN", { maximumFractionDigits: 0 })}`;
+  // Exact to the paisa — small/test payments must never round to ₹1.
+  return `₹${n.toLocaleString("en-IN", {
+    minimumFractionDigits: Number.isInteger(n) ? 0 : 2,
+    maximumFractionDigits: 2,
+  })}`;
 }
 
 function fmtDay(d: string): string {
@@ -201,7 +206,7 @@ export default function AdminOverviewPage() {
               accent="text-brand-600"
               sub={
                 <>
-                  {k.orders} orders · AOV {fmtRs(k.avgOrderValue)}
+                  All-time collected: <strong>{fmtRs(k.allTimeGrossRevenue)}</strong> incl. GST · {k.orders} order{k.orders === 1 ? "" : "s"} in range
                 </>
               }
               badge={<GrowthBadge pct={k.revenueGrowthPct} />}
@@ -286,12 +291,17 @@ export default function AdminOverviewPage() {
               <div>
                 <h3 className="text-base font-bold text-textMain">Revenue Growth</h3>
                 <p className="text-[11px] text-textMuted">
-                  Daily gross revenue (paid Razorpay orders) with cumulative total
+                  Daily gross revenue (paid Razorpay orders, incl. GST) with cumulative total
                 </p>
               </div>
-              <span className="text-xs text-textMuted">
-                ARPU: <strong className="text-brand-700">{fmtRs(k.arpu)}</strong>
-              </span>
+              <div className="text-right text-xs text-textMuted">
+                <p>
+                  All-time collected: <strong className="text-brand-700">{fmtRs(k.allTimeGrossRevenue)}</strong>
+                </p>
+                <p>
+                  In range: <strong className="text-textMain">{fmtRs(k.grossRevenue)}</strong> · {k.allTimeOrders} paid order{k.allTimeOrders === 1 ? "" : "s"} all-time
+                </p>
+              </div>
             </div>
             <ResponsiveContainer width="100%" height={260}>
               <ComposedChart data={s.revenue} margin={{ top: 4, right: 8, left: -4, bottom: 0 }}>

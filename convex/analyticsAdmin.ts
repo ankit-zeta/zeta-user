@@ -246,6 +246,11 @@ export const getDashboardAnalytics = query({
         signupsGrowthPct: prevSignupsGrowth,
         newToday: signups[istDayKey(now)] || 0,
         grossRevenue: grossRevenue / 100,
+        // All-time money actually collected from users (incl. GST) — matches
+        // the Payment Orders page revenue stat.
+        allTimeGrossRevenue:
+          paidOrders.reduce((s, o) => s + o.amount, 0) / 100,
+        allTimeOrders: paidOrders.length,
         revenueGrowthPct: prevRevenueGrowth,
         gstCollected: gstCollected / 100,
         netRevenue: netRevenue / 100,
