@@ -12,7 +12,8 @@ import {
   CheckCircle2, 
   Lock, 
   ArrowRight,
-  ShieldAlert
+  ShieldAlert,
+  Wallet,
 } from "lucide-react";
 
 export default function DashboardWorkPage() {
@@ -53,6 +54,16 @@ export default function DashboardWorkPage() {
     requiredAchievementName: string | undefined;
     applicationStatus: string | null;
   }> | undefined;
+
+  const wallet = useQuery(
+    api.wallets.getUserWallet,
+    token ? { token } : "skip"
+  ) as {
+    availableBalance: number;
+    workEarnings: number;
+    affiliateEarnings: number;
+    totalWithdrawn: number;
+  } | undefined;
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -107,6 +118,32 @@ export default function DashboardWorkPage() {
           <span className="btn-primary text-[11px] py-2 px-3 shrink-0">
             {(user as any).kycStatus === "pending" ? "View Status" : "Start KYC"}
           </span>
+        </Link>
+      )}
+
+      {/* Wallet summary */}
+      {wallet && (
+        <Link
+          href="/affiliate/wallet"
+          className="card-surface p-4 flex items-center gap-4 hover:border-brand-400 transition-colors group"
+        >
+          <div className="w-10 h-10 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            <Wallet className="w-5 h-5 text-brand-600" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-textMuted">
+              Work Wallet
+            </p>
+            <p className="text-lg font-extrabold text-textMain">
+              ₹{(wallet.availableBalance || 0).toLocaleString("en-IN")}
+            </p>
+            <p className="text-[11px] text-textMuted">
+              {wallet.workEarnings > 0
+                ? `₹${wallet.workEarnings.toLocaleString("en-IN")} earned from work`
+                : "Earnings from completed jobs appear here"}
+            </p>
+          </div>
+          <ArrowRight className="w-4 h-4 text-textMuted group-hover:text-brand-600 transition-colors shrink-0" />
         </Link>
       )}
 

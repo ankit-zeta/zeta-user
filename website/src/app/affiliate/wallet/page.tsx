@@ -396,6 +396,39 @@ export default function AffiliateWalletPage() {
               processed.
             </p>
           </div>
+        ) : available < minWithdrawal ? (
+          <div className="space-y-3">
+            <div className="flex items-start gap-2.5 rounded-xl border border-neutral-800 bg-neutral-900/40 p-4">
+              <Wallet className="w-4 h-4 text-neutral-400 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="text-xs text-neutral-200 font-semibold">
+                  {available === 0
+                    ? "No withdrawable balance yet"
+                    : `₹${available.toLocaleString("en-IN")} available — ₹${minWithdrawal.toLocaleString("en-IN")} minimum required`}
+                </p>
+                <p className="text-[11px] text-neutral-400 leading-relaxed">
+                  {available === 0
+                    ? "Your earnings will appear here once commissions clear the holding period (typically 7–30 days after a sale). Keep sharing your referral link to earn more."
+                    : "Keep earning to reach the minimum withdrawal threshold."}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <a
+                href="/affiliate"
+                className="text-[11px] font-semibold text-brand-400 hover:text-brand-300 transition-colors"
+              >
+                View affiliate stats →
+              </a>
+              <span className="text-neutral-700">·</span>
+              <a
+                href="/affiliate/earnings"
+                className="text-[11px] font-semibold text-brand-400 hover:text-brand-300 transition-colors"
+              >
+                Commission ledger →
+              </a>
+            </div>
+          </div>
         ) : (
           <form onSubmit={handleRequest} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
