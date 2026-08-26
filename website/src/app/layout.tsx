@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { ConvexClientProvider } from "@/lib/convex";
 
@@ -71,6 +72,16 @@ const ORG_JSON_LD = {
   sameAs: [],
 };
 
+// Google Tag Manager container id — public identifier, not a secret.
+// Never push PII (emails, tokens, user ids) into dataLayer.
+const GTM_ID = "GTM-NVKRTJ7F";
+
+const GTM_SNIPPET = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${GTM_ID}');`;
+
 export default function RootLayout({
   children,
 }: {
@@ -78,7 +89,22 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
+      <head>
+        {/* Google Tag Manager — loaded async, never blocks rendering */}
+        <Script id="gtm-init" strategy="afterInteractive">
+          {GTM_SNIPPET}
+        </Script>
+      </head>
       <body className={`${inter.className} min-h-full flex flex-col bg-bgWarm text-textMain antialiased`}>
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
