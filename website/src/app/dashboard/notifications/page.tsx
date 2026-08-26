@@ -32,13 +32,21 @@ export default function NotificationsPage() {
 
   const handleMarkAll = async () => {
     if (token) {
-      await markAllRead({ token });
+      try {
+        await markAllRead({ token });
+      } catch {
+        // Silently ignore — list re-syncs from the server
+      }
     }
   };
 
-  const handleMarkOne = async (id: any) => {
+  const handleMarkOne = async (id: string) => {
     if (token) {
-      await markSingleRead({ token, notificationId: id });
+      try {
+        await markSingleRead({ token, notificationId: id });
+      } catch {
+        // Silently ignore — list re-syncs from the server
+      }
     }
   };
 

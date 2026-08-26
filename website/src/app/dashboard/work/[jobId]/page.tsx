@@ -122,9 +122,11 @@ export default function JobApplicationDetailPage() {
       });
 
       setSuccess(true);
+      // Keep isSubmitting true so button stays disabled during redirect
       setTimeout(() => {
         router.push("/dashboard/applications");
       }, 1500);
+      return;
     } catch (err: any) {
       setError(friendlyError(err, "Failed to submit application."));
     } finally {

@@ -156,7 +156,12 @@ export default function CheckoutPage() {
 
     // 3. Open Razorpay Checkout
     setStage("awaiting_payment");
-    const rzp = new window.Razorpay!({
+    if (!window.Razorpay) {
+      setStage("failed");
+      setErrorMsg("Payment gateway failed to load. Please refresh and try again.");
+      return;
+    }
+    const rzp = new window.Razorpay({
       key: rzpConfig?.keyId,
       amount: order.amount,
       currency: order.currency,

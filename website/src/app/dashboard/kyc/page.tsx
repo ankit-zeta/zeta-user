@@ -432,7 +432,7 @@ export default function KycPage() {
             )}
             <Detail
               label="Verified On"
-              value={new Date(kyc.profile.reviewedAt!).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+              value={kyc.profile.reviewedAt ? new Date(kyc.profile.reviewedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—"}
             />
           </div>
           <div className="flex items-start gap-2 p-3 rounded-lg bg-neutral-50 border border-borderSubtle">

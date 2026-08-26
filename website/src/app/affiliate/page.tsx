@@ -30,10 +30,14 @@ export default function AffiliateOverviewPage() {
       ? `${window.location.origin}/signup?ref=${user?.referralCode}`
       : `https://zetagrow.in/signup?ref=${user?.referralCode}`;
 
-  const copyLink = () => {
-    navigator.clipboard.writeText(referralLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(referralLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard API not available or denied — fail silently
+    }
   };
 
   // KYC gate messaging — commissions accrue but stay on hold until verified
