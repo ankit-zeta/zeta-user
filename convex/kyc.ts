@@ -159,6 +159,19 @@ export const submitKyc = mutation({
       throw new ConvexError("Your KYC is already verified. Contact support for corrections.");
     }
 
+    // Already under review — one application at a time. Resubmission opens
+    // only after the current application is rejected (or verified, above).
+    // Defense-in-depth alongside the UI hiding the form for pending users.
+    const pendingProfile = await ctx.db
+      .query("kycProfiles")
+      .withIndex("by_userId", (q: any) => q.eq("userId", session.userId))
+      .first();
+    if (pendingProfile && pendingProfile.status === "pending") {
+      throw new ConvexError(
+        "Your KYC is already under review. You can resubmit only after it is verified or rejected."
+      );
+    }
+
     // ── Validation ──
     const fullName = args.fullNameAsPerPan.trim();
     if (fullName.length < 3 || fullName.length > 80) {

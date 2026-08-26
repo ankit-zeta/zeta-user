@@ -141,6 +141,20 @@ export default function KycPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.name]);
 
+  // On rejection, prefill the form with what was previously submitted so the
+  // resubmission starts from known-good values.
+  const [prefilledRejection, setPrefilledRejection] = useState(false);
+  React.useEffect(() => {
+    if (
+      !prefilledRejection &&
+      kyc?.status === "rejected" &&
+      kyc.profile?.fullNameAsPerPan
+    ) {
+      setFullName(kyc.profile.fullNameAsPerPan);
+      setPrefilledRejection(true);
+    }
+  }, [kyc?.status, kyc?.profile?.fullNameAsPerPan, prefilledRejection]);
+
   const applyDoc = (
     which: "pan" | "aadhaar",
     blob: Blob,
@@ -404,7 +418,6 @@ export default function KycPage() {
         </div>
       </div>
 
-      {/* Verified summary */}
       {kyc.status === "verified" && kyc.profile ? (
         <div className="card-surface p-6 space-y-5">
           <h2 className="text-sm font-bold text-textMain flex items-center gap-2">
@@ -412,7 +425,7 @@ export default function KycPage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-xs">
             <Detail label="Full Name (as per PAN)" value={kyc.profile.fullNameAsPerPan} />
-            <Detail label="PAN Number" value={kyc.panMasked || "—"} masked />
+            <Detail label="PAN Number" value={kyc.panMasked || "-"} masked />
             <Detail label="Aadhaar" value={`XXXX XXXX ${kyc.profile.aadhaarLast4}`} masked />
             {(kyc.profile.city || kyc.profile.state) && (
               <Detail label="City / State" value={`${kyc.profile.city ?? ""}${kyc.profile.city && kyc.profile.state ? ", " : ""}${kyc.profile.state ?? ""}`} />
@@ -425,7 +438,7 @@ export default function KycPage() {
           <div className="flex items-start gap-2 p-3 rounded-lg bg-neutral-50 border border-borderSubtle">
             <Info className="w-3.5 h-3.5 text-textMuted shrink-0 mt-0.5" />
             <p className="text-[11px] text-textMuted">
-              Need to correct something? Contact support — for security, verified details can only be changed by our team.
+              Need to correct something? Contact support - for security, verified details can only be changed by our team.
             </p>
           </div>
           <div className="flex items-start gap-2 p-3 rounded-lg bg-green-50/70 border border-green-100">
@@ -438,8 +451,65 @@ export default function KycPage() {
             </p>
           </div>
         </div>
+      ) : kyc.status === "pending" ? (
+        /* ── Under review: read-only summary of the application ── */
+        <div className="card-surface p-6 space-y-5">
+          <h2 className="text-sm font-bold text-textMain flex items-center gap-2">
+            <Clock className="w-4 h-4 text-blue-600" /> What you submitted
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-xs">
+            <Detail label="Full Name (as per PAN)" value={kyc.profile?.fullNameAsPerPan || "-"} />
+            <Detail label="PAN Number" value={kyc.panMasked || "-"} masked />
+            <Detail label="Aadhaar" value={`XXXX XXXX ${kyc.profile?.aadhaarLast4 || ""}`} masked />
+            <Detail
+              label="Submitted On"
+              value={new Date(kyc.profile!.submittedAt).toLocaleString("en-IN", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+              })}
+            />
+          </div>
+
+          {(kyc.panImageUrl || kyc.aadhaarImageUrl) && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              {kyc.panImageUrl && (
+                <div className="space-y-1.5">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
+                    <CreditCard className="w-3.5 h-3.5 text-brand-600" /> PAN Card Image
+                  </p>
+                  <div className="rounded-xl overflow-hidden border border-borderSubtle bg-neutral-50 aspect-video">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={kyc.panImageUrl} alt="Submitted PAN card" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+              )}
+              {kyc.aadhaarImageUrl && (
+                <div className="space-y-1.5">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
+                    <CreditCard className="w-3.5 h-3.5 text-brand-600" /> Aadhaar Card Image
+                  </p>
+                  <div className="rounded-xl overflow-hidden border border-borderSubtle bg-neutral-50 aspect-video">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={kyc.aadhaarImageUrl} alt="Submitted Aadhaar card" className="w-full h-full object-cover" />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="flex items-start gap-2 p-3 rounded-lg bg-blue-50/60 border border-blue-100">
+            <Lock className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+            <p className="text-[11px] text-blue-800 leading-relaxed">
+              Your application is locked for review - editing or resubmitting is disabled until our team
+              verifies it or requests changes. You&apos;ll be notified by email once a decision is made.
+            </p>
+          </div>
+        </div>
       ) : (
-        /* ── Submission form ── */
+        /* ── Submission form (not_submitted | rejected) ── */
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Identity */}
           <SectionCard
@@ -503,7 +573,7 @@ export default function KycPage() {
                 icon={CreditCard}
                 required
                 doc={panDoc}
-                serverUrl={kyc.status === "pending" || kyc.status === "rejected" ? kyc.panImageUrl : null}
+                serverUrl={kyc.status === "rejected" ? kyc.panImageUrl : null}
                 processing={processingDoc === "pan"}
                 onCamera={() => requestCamera("pan")}
                 onFile={() => panFileRef.current?.click()}
@@ -514,7 +584,7 @@ export default function KycPage() {
                 icon={CreditCard}
                 required
                 doc={aadhaarDoc}
-                serverUrl={kyc.status === "pending" || kyc.status === "rejected" ? kyc.aadhaarImageUrl : null}
+                serverUrl={kyc.status === "rejected" ? kyc.aadhaarImageUrl : null}
                 processing={processingDoc === "aadhaar"}
                 onCamera={() => requestCamera("aadhaar")}
                 onFile={() => aadhaarFileRef.current?.click()}
