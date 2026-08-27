@@ -60,6 +60,7 @@ export default function AdminFinancePage() {
   const [adjustAmount, setAdjustAmount] = useState<number>(500);
   const [adjustType, setAdjustType] = useState("CREDIT");
   const [adjustReason, setAdjustReason] = useState("");
+  const [adjustSource, setAdjustSource] = useState<"work" | "affiliate" | "">("");
 
   const handleWithdrawalAction = async (withdrawalId: any, status: string) => {
     if (!token) return;
@@ -102,11 +103,13 @@ export default function AdminFinancePage() {
         amount: Number(adjustAmount),
         type: adjustType,
         reason: adjustReason,
+        earningsSource: adjustType === "CREDIT" && adjustSource ? adjustSource : undefined,
       });
 
       setMsg("Wallet adjustment applied and recorded in audit ledger.");
       setAdjustmentModalOpen(false);
       setAdjustReason("");
+      setAdjustSource("");
     } catch (err: any) {
       setMsg(err.message || "Failed to adjust wallet.");
     } finally {
@@ -598,6 +601,32 @@ export default function AdminFinancePage() {
                   />
                 </div>
               </div>
+
+              {adjustType === "CREDIT" && (
+                <div className="space-y-1">
+                  <label className="font-semibold text-textMain">Earnings Source</label>
+                  <div className="flex gap-2">
+                    {[
+                      { value: "work", label: "Work", cls: "bg-blue-100 border-blue-300 text-blue-800" },
+                      { value: "affiliate", label: "Affiliate", cls: "bg-purple-100 border-purple-300 text-purple-800" },
+                      { value: "", label: "Unattributed", cls: "bg-neutral-100 border-neutral-300 text-neutral-800" },
+                    ].map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setAdjustSource(opt.value as any)}
+                        className={`flex-1 py-2 rounded-lg text-xs font-bold border transition-colors ${
+                          adjustSource === opt.value
+                            ? opt.cls
+                            : "border-borderSubtle text-textMuted hover:bg-neutral-50"
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-1">
                 <label className="font-semibold text-textMain">Mandatory Audit Reason *</label>

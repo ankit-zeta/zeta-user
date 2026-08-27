@@ -276,6 +276,7 @@ export default function UserProfilePage() {
   const [walletAmt, setWalletAmt] = useState("");
   const [walletType, setWalletType] = useState<"CREDIT" | "DEBIT">("CREDIT");
   const [walletReason, setWalletReason] = useState("");
+  const [walletSource, setWalletSource] = useState<"work" | "affiliate" | "">("");
   const [resetOpen, setResetOpen] = useState(false);
   const [resetPass, setResetPass] = useState("");
   const [resetReason, setResetReason] = useState("");
@@ -405,11 +406,13 @@ export default function UserProfilePage() {
         amount: amt,
         type: walletType,
         reason: walletReason,
+        earningsSource: walletType === "CREDIT" && walletSource ? walletSource : undefined,
       });
       setActionMsg(`Wallet adjusted. New balance: ${fmtINR(res.newBalance)}`);
       setWalletOpen(false);
       setWalletAmt("");
       setWalletReason("");
+      setWalletSource("");
     } catch (err: any) {
       setActionMsg(err.message || "Failed");
     } finally {
@@ -1191,6 +1194,39 @@ export default function UserProfilePage() {
               Debit (-)
             </button>
           </div>
+          {walletType === "CREDIT" && (
+            <div className="mb-3">
+              <label className="text-[10px] font-bold uppercase tracking-wider text-textMuted block mb-1">
+                Earnings Source
+              </label>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setWalletSource("work")}
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold border ${
+                    walletSource === "work" ? "bg-blue-100 border-blue-300 text-blue-800" : "border-borderSubtle text-textMuted"
+                  }`}
+                >
+                  Work
+                </button>
+                <button
+                  onClick={() => setWalletSource("affiliate")}
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold border ${
+                    walletSource === "affiliate" ? "bg-purple-100 border-purple-300 text-purple-800" : "border-borderSubtle text-textMuted"
+                  }`}
+                >
+                  Affiliate
+                </button>
+                <button
+                  onClick={() => setWalletSource("")}
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold border ${
+                    walletSource === "" ? "bg-neutral-100 border-neutral-300 text-neutral-800" : "border-borderSubtle text-textMuted"
+                  }`}
+                >
+                  Unattributed
+                </button>
+              </div>
+            </div>
+          )}
           <input
             type="number"
             value={walletAmt}

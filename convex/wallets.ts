@@ -158,6 +158,7 @@ export const adminAdjustWallet = mutation({
     amount: v.number(), // positive to credit, negative to debit
     type: v.string(), // "CREDIT" | "DEBIT"
     reason: v.string(),
+    earningsSource: v.optional(v.string()), // "work" | "affiliate" — which earnings counter to increment on credit
   },
   handler: async (ctx, args) => {
     const admin = await requireAdmin(ctx, args.token);
@@ -178,11 +179,23 @@ export const adminAdjustWallet = mutation({
     }
 
     const now = Date.now();
-    await ctx.db.patch(wallet._id, {
+
+    // Build patch: always update availableBalance + totalEarned (on credit)
+    // If earningsSource is specified on credit, also increment the matching counter
+    const patch: Record<string, any> = {
       availableBalance: newAvailable,
-      totalEarned: adjustment > 0 ? wallet.totalEarned + adjustment : wallet.totalEarned,
       updatedAt: now,
-    });
+    };
+    if (adjustment > 0) {
+      patch.totalEarned = wallet.totalEarned + adjustment;
+      if (args.earningsSource === "work") {
+        patch.workEarnings = (wallet.workEarnings || 0) + adjustment;
+      } else if (args.earningsSource === "affiliate") {
+        patch.affiliateEarnings = (wallet.affiliateEarnings || 0) + adjustment;
+      }
+    }
+
+    await ctx.db.patch(wallet._id, patch);
 
     // Ledger transaction record
     await ctx.db.insert("walletTransactions", {

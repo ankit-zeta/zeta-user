@@ -171,11 +171,11 @@ export const requestWithdrawal = mutation({
       throw new Error(`Monthly withdrawal limit of ₹${withdrawalSettings.monthlyLimit} exceeded`);
     }
 
-    // Check pending withdrawals
+    // Check pending withdrawals (requested OR processing — both are in-flight)
     const pendingWithdrawals = await ctx.db
       .query("withdrawals")
       .withIndex("by_userId", (q) => q.eq("userId", session.userId))
-      .filter((q) => q.eq(q.field("status"), "requested"))
+      .filter((q) => q.or(q.eq(q.field("status"), "requested"), q.eq(q.field("status"), "processing")))
       .collect();
 
     if (pendingWithdrawals.length > 0) {
@@ -411,6 +411,21 @@ export const updateWithdrawalStatus = mutation({
           availableBalance: restoredBalance,
           updatedAt: now,
         });
+
+        // Mark original WITHDRAWAL ledger entry as rejected (not orphaned pending)
+        const pendingTx = await ctx.db
+          .query("walletTransactions")
+          .withIndex("by_userId", (q) => q.eq("userId", withdrawal.userId))
+          .filter((q) =>
+            q.and(
+              q.eq(q.field("type"), "WITHDRAWAL"),
+              q.eq(q.field("referenceId"), args.withdrawalId)
+            )
+          )
+          .first();
+        if (pendingTx) {
+          await ctx.db.patch(pendingTx._id, { status: "rejected" });
+        }
 
         await ctx.db.insert("walletTransactions", {
           userId: withdrawal.userId,
