@@ -298,7 +298,7 @@ export const processPurchaseWithAffiliate = mutation({
                 title: "New Referral Sale!",
                 message: `Your referral purchased the "${plan.name}" plan. Commission is pending confirmation.`,
                 read: false,
-                actionUrl: "/affiliate/wallet",
+                actionUrl: "/dashboard/wallet",
                 createdAt: now,
               });
               // Affiliate commission email to referrer
@@ -570,7 +570,7 @@ export const processPurchaseWithAffiliate = mutation({
                     title: "Chain Commission Earned!",
                     message: `You earned â‚¹${chainAmount} from ${referrer.name}'s affiliate commission on ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
                     read: false,
-                    actionUrl: "/affiliate/wallet",
+                    actionUrl: "/dashboard/wallet",
                     createdAt: now,
                   });
                 }
@@ -945,7 +945,7 @@ export const autoReleaseCommissions = internalMutation({
         title: "Commission Released!",
         message: `₹${sale.commissionAmount} has been added to your available wallet balance and is ready to withdraw.`,
         read: false,
-        actionUrl: "/affiliate/wallet",
+        actionUrl: "/dashboard/wallet",
         createdAt: now,
       });
 

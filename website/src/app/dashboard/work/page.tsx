@@ -124,7 +124,7 @@ export default function DashboardWorkPage() {
       {/* Wallet summary */}
       {wallet && (
         <Link
-          href="/affiliate/wallet"
+          href="/dashboard/wallet"
           className="card-surface p-4 flex items-center gap-4 hover:border-brand-400 transition-colors group"
         >
           <div className="w-10 h-10 rounded-xl bg-brand-50 border border-brand-200 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">

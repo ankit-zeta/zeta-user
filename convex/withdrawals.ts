@@ -238,7 +238,7 @@ export const requestWithdrawal = mutation({
         tdsAmount > 0 ? `, TDS deducted: ₹${tdsAmount}` : ""
       }) has been submitted for processing.`,
       read: false,
-      actionUrl: "/affiliate/wallet",
+      actionUrl: "/dashboard/wallet",
       createdAt: now,
     });
 
@@ -434,7 +434,7 @@ export const updateWithdrawalStatus = mutation({
         args.adminNote ? `Note: ${args.adminNote}` : ""
       }`,
       read: false,
-      actionUrl: "/affiliate/wallet",
+      actionUrl: "/dashboard/wallet",
       createdAt: now,
     });
 

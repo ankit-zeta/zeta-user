@@ -893,7 +893,7 @@ export const sendKycApprovedEmail = internalAction({
       content,
       cta: true,
       ctaText: "Open Affiliate Center",
-      ctaUrl: `${SITE_URL}/affiliate/wallet`,
+      ctaUrl: `${SITE_URL}/dashboard/wallet`,
       footerNote: "KYC queries? Reply to this email and our team will help."
     });
 

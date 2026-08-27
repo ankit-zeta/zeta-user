@@ -134,7 +134,7 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
         { name: "Overview", href: "/affiliate", icon: TrendingUp },
         { name: "My Referrals", href: "/affiliate/referrals", icon: Users },
         { name: "Commission Ledger", href: "/affiliate/earnings", icon: CreditCard },
-        { name: "Wallet & Payouts", href: "/affiliate/wallet", icon: Wallet },
+        { name: "Earnings Dashboard", href: "/affiliate/wallet", icon: Wallet },
         ...(isGrowthPartner
           ? [{ name: "Partnership", href: "/affiliate/achievements", icon: Zap }]
           : []),

@@ -97,6 +97,7 @@ export default function DashboardLayout({
       items: [
         { name: "Opportunities", href: "/dashboard/work", icon: Briefcase },
         { name: "My Applications", href: "/dashboard/applications", icon: FileCheck },
+        { name: "Work Wallet", href: "/dashboard/wallet", icon: Wallet },
       ],
     },
     {

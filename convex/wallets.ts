@@ -202,7 +202,7 @@ export const adminAdjustWallet = mutation({
       title: "Wallet Adjustment",
       message: `An adjustment of ${adjustment > 0 ? "+" : ""}${adjustment} has been made to your wallet. Reason: ${args.reason}`,
       read: false,
-      actionUrl: "/affiliate/wallet",
+      actionUrl: "/dashboard/wallet",
       createdAt: now,
     });
 
