@@ -305,7 +305,7 @@ export const getKycQueueAdmin = query({
     // List view: masked identifiers only. Images resolve in the detail view.
     return Promise.all(
       profiles.map(async (p) => {
-        const u = await ctx.db.get(p.userId);
+        const u = await ctx.db.get(p.userId) as { name?: string; email?: string; phone?: string; referralCode?: string; cvStatus?: string } | null;
         return {
           _id: p._id,
           userId: p.userId,

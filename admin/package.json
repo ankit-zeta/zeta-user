@@ -6,6 +6,7 @@
     "dev": "node scripts/dev.mjs --port=3001",
     "dev:clean": "node scripts/dev.mjs --port=3001 --clean",
     "dev:force": "node scripts/dev.mjs --port=3001 --kill-all",
+    "prebuild": "node scripts/prebuild.mjs",
     "build": "next build",
     "start": "next start -p 3001",
     "lint": "next lint",

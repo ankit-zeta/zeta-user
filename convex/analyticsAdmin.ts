@@ -189,7 +189,7 @@ export const getDashboardAnalytics = query({
       entry.orders += 1;
       planTotals.set(o.planId, entry);
     }
-    const planIds = [...planTotals.keys()];
+    const planIds = Array.from(planTotals.keys());
     const planDocs = await Promise.all(planIds.map((id) => ctx.db.get(id as any)));
     const revenueByPlan = planIds
       .map((id, i) => ({

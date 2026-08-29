@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../convex/_generated/api";
 import { useAdminAuth } from "@/lib/convex";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { TrendingUp, Users, Briefcase, CheckCircle2, Clock, XCircle } from "lucide-react";
