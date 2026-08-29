@@ -366,15 +366,39 @@ export default function HomePage() {
       </section>
 
       {/* ============================================================
-         2. STATS BAND — Quick scan (matches hero stats)
+         2. STATS BAND — Inline on all devices
          ============================================================ */}
       <section className="bg-white border-b border-borderSubtle" aria-labelledby="stats-title">
         <h2 id="stats-title" className="sr-only">Platform Statistics</h2>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 lg:gap-12">
-            <StatCard icon={<BookOpen className="w-5 h-5" />} value={courseCount} label="Courses Across Learning Plans" ariaLabel={`${courseCount} courses available across learning plans`} />
-            <StatCard icon={<Briefcase className="w-5 h-5" />} value={jobs ? jobs.length : "—"} label="Open Work Opportunities" ariaLabel={`${jobs?.length ?? 0} open work opportunities`} />
-            <StatCard icon={<BadgeCheck className="w-5 h-5" />} value="Verified" label="Certificates with Public IDs" isText={true} ariaLabel="All certificates are publicly verifiable" />
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
+                <BookOpen className="w-5 h-5 text-brand-700" aria-hidden="true" />
+              </div>
+              <div className="text-left">
+                <p className="text-2xl sm:text-3xl font-extrabold text-textMain tracking-tight">56</p>
+                <p className="text-xs font-medium text-textMuted uppercase tracking-wider">Courses Across Learning Plans</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
+                <Briefcase className="w-5 h-5 text-brand-700" aria-hidden="true" />
+              </div>
+              <div className="text-left">
+                <p className="text-2xl sm:text-3xl font-extrabold text-textMain tracking-tight">112</p>
+                <p className="text-xs font-medium text-textMuted uppercase tracking-wider">Open Work Opportunities</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
+                <BadgeCheck className="w-5 h-5 text-brand-700" aria-hidden="true" />
+              </div>
+              <div className="text-left">
+                <p className="text-2xl sm:text-3xl font-extrabold text-textMain tracking-tight text-brand-700">Verified</p>
+                <p className="text-xs font-medium text-textMuted uppercase tracking-wider">Certificates with Public IDs</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
