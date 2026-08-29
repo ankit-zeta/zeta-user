@@ -25,6 +25,8 @@ import {
   Zap,
   BarChart3,
   CreditCard,
+  BookOpen,
+  BadgeCheck,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -415,6 +417,49 @@ export default function AdminOverviewPage() {
           ))}
         </div>
       </div>
+
+      {/* ── Inline Platform Stats Band (matches homepage) ─────── */}
+      {data !== undefined && (
+        <div className="bg-white border-b border-neutral-200 py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                  <BookOpen className="w-5 h-5 text-emerald-700" aria-hidden="true" />
+                </div>
+                <div className="text-left">
+                  <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
+                    {p.courses}
+                  </p>
+                  <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Courses Across Learning Plans</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                  <Briefcase className="w-5 h-5 text-emerald-700" aria-hidden="true" />
+                </div>
+                <div className="text-left">
+                  <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
+                    {p.activeJobs}
+                  </p>
+                  <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Open Work Opportunities</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
+                  <BadgeCheck className="w-5 h-5 text-emerald-700" aria-hidden="true" />
+                </div>
+                <div className="text-left">
+                  <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight text-emerald-700">
+                    Verified
+                  </p>
+                  <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Certificates with Public IDs</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Alerts ─────────────────────────────────────────── */}
       {data !== undefined && attentionItems.length > 0 && (
