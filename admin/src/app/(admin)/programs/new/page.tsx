@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useAdminAuth } from "@/lib/convex";
 import { useMutation } from "convex/react";
 import { api } from "@/lib/convex";
+import { toast } from "sonner";
+import { Tooltip } from "@/components/Tooltip";
 import { ArrowLeft, Save, Plus, Trash2 } from "lucide-react";
 
 export default function NewProgramPage() {
@@ -90,9 +92,11 @@ const [category, setCategory] = useState("Digital Skills");
         ],
       });
 
+      toast.success("Program created", { description: `"${name}" is now published.` });
       router.push("/programs");
     } catch (err: any) {
       setError(err.message || "Failed to create program.");
+      toast.error("Failed to create program", { description: err?.message || "Please try again" });
     } finally {
       setIsSubmitting(false);
     }
@@ -167,7 +171,9 @@ const [category, setCategory] = useState("Digital Skills");
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-textMain">Tuition Price (₹) *</label>
+              <Tooltip content="Price users pay to enroll in this course">
+                <label className="text-xs font-semibold text-textMain cursor-help">Tuition Price (₹) *</label>
+              </Tooltip>
               <input
                 type="number"
                 required
@@ -177,7 +183,9 @@ const [category, setCategory] = useState("Digital Skills");
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-textMain">Compare At Price (₹)</label>
+              <Tooltip content="Original price shown with strikethrough to indicate discount (leave blank to hide)">
+                <label className="text-xs font-semibold text-textMain cursor-help">Compare At Price (₹)</label>
+              </Tooltip>
               <input
                 type="number"
                 value={compareAtPrice}
@@ -186,13 +194,34 @@ const [category, setCategory] = useState("Digital Skills");
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-textMain">Sort Order</label>
+              <Tooltip content="Controls display order on storefront (lower numbers appear first)">
+                <label className="text-xs font-semibold text-textMain cursor-help">Sort Order</label>
+              </Tooltip>
               <input
                 type="number"
                 value={sortOrder}
                 onChange={(e) => setSortOrder(Number(e.target.value))}
                 className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white"
               />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Tooltip content="How long enrolled users can access the course content">
+                <label className="text-xs font-semibold text-textMain cursor-help">Access Duration</label>
+              </Tooltip>
+              <select
+                value={accessDuration}
+                onChange={(e) => setAccessDuration(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white"
+              >
+                <option value="Lifetime Access">Lifetime Access</option>
+                <option value="30 Days">30 Days</option>
+                <option value="90 Days">90 Days</option>
+                <option value="6 Months">6 Months</option>
+                <option value="1 Year">1 Year</option>
+              </select>
             </div>
           </div>
 

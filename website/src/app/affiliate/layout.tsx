@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/convex";
-import { useQuery, useMutation } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "@/lib/convex";
 import {
   TrendingUp,
@@ -33,11 +33,6 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const logoutMutation = useMutation(api.auth.logout);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  const notifsData = useQuery(
-    api.notifications.getUserNotifications,
-    token ? { token } : "skip"
-  );
 
   // Force-logout helper for affiliate ephemerality (custom redirect reason)
   const affiliateLogout = async (reason: "affiliate_refresh" | "affiliate_timeout") => {
@@ -147,10 +142,6 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
           name: "Notifications",
           href: "/dashboard/notifications",
           icon: Bell,
-          badge:
-            notifsData?.unreadCount && notifsData.unreadCount > 0
-              ? notifsData.unreadCount
-              : null,
         },
       ],
     },
@@ -224,11 +215,6 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
                       <item.icon className={`w-4 h-4 ${active ? "text-white" : ""}`} />
                       <span>{item.name}</span>
                     </div>
-                    {item.badge ? (
-                      <span className="w-4 h-4 rounded-full bg-red-600 text-white text-[10px] font-bold flex items-center justify-center">
-                        {item.badge}
-                      </span>
-                    ) : null}
                   </Link>
                 );
               })}

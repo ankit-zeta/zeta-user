@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAdminAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
+import { toast } from "sonner";
 import {
   Search,
   X,
@@ -13,6 +14,7 @@ import {
   ChevronRight,
   UserPlus,
 } from "lucide-react";
+import { Tooltip } from "@/components/Tooltip";
 
 function fmtINR(n?: number) {
   return `₹${(n || 0).toLocaleString("en-IN")}`;
@@ -27,7 +29,7 @@ function fmtDate(ts?: number) {
   });
 }
 
-function StatusBadge({ value }: { value: string }) {
+function StatusBadge({ value, tooltip }: { value: string; tooltip?: string }) {
   const tone = {
     active: "bg-green-100 text-green-800",
     suspended: "bg-red-100 text-red-800",
@@ -43,7 +45,7 @@ function StatusBadge({ value }: { value: string }) {
     rejected: "bg-red-100 text-red-800",
     cancelled: "bg-neutral-200 text-neutral-700",
   };
-  return (
+  const badge = (
     <span
       className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
         (tone as any)[value] || "bg-neutral-100 text-neutral-600"
@@ -52,6 +54,10 @@ function StatusBadge({ value }: { value: string }) {
       {value.replace(/_/g, " ")}
     </span>
   );
+  if (tooltip) {
+    return <Tooltip content={tooltip}>{badge}</Tooltip>;
+  }
+  return badge;
 }
 
 function StatCard({
@@ -173,12 +179,12 @@ export default function AdminUsersPage() {
         password: cuPassword,
         sendWelcomeEmail: cuSendEmail,
       });
-      setActionMsg(`Account created for ${cuEmail}. Share the password privately.`);
+      toast.success(`Account created for ${cuEmail}`, { description: "Share the password privately." });
       setCreateUserOpen(false);
       setCuName(""); setCuEmail(""); setCuPassword(""); setCuSendEmail(true);
     } catch (err: any) {
       const msg = err?.name === "ConvexError" && typeof err.data === "string" ? err.data : err.message;
-      setActionMsg(msg || "Failed to create user.");
+      toast.error("Failed to create user", { description: msg || "Please try again" });
     } finally {
       setIsProcessing(false);
     }
@@ -249,7 +255,7 @@ export default function AdminUsersPage() {
           >
             <option value="joined">Sort: Joined</option>
             <option value="earned">Sort: Total Earned</option>
-            <option value="enrolled">Sort: Enrolled</option>
+            <option value="enrolled"><Tooltip content="Sort by number of programs enrolled"><span>Sort: Enrolled</span></Tooltip></option>
           </select>
           <button
             onClick={() => setSortDir(sortDir === "desc" ? "asc" : "desc")}
@@ -295,7 +301,7 @@ export default function AdminUsersPage() {
                   <th className="py-3 px-4 font-semibold">User</th>
                   <th className="py-3 px-4 font-semibold">Role</th>
                   <th className="py-3 px-4 font-semibold">Referral Code</th>
-                  <th className="py-3 px-4 font-semibold">Enrolled</th>
+                  <th className="py-3 px-4 font-semibold"><Tooltip content="Number of programs the user is enrolled in"><span>Enrolled</span></Tooltip></th>
                   <th className="py-3 px-4 font-semibold">Total Earned</th>
                   <th className="py-3 px-4 font-semibold">Joined</th>
                   <th className="py-3 px-4 font-semibold">Wallet</th>
@@ -333,7 +339,7 @@ export default function AdminUsersPage() {
                       {fmtINR(u.availableBalance)}
                     </td>
                     <td className="py-3 px-4">
-                      <StatusBadge value={u.status} />
+                      <StatusBadge value={u.status} tooltip={u.status === "qualifying" ? "User is meeting criteria for a position upgrade" : undefined} />
                     </td>
                     <td className="py-3 px-4 text-right">
                       <button

@@ -123,6 +123,12 @@ export const createWallet = internalMutation({
     updatedAt: v.number(),
   },
   handler: async (ctx, args) => {
+    // Guard against duplicate wallet creation (e.g., retry, admin-created + signup)
+    const existing = await ctx.db
+      .query("wallets")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .first();
+    if (existing) return existing._id;
     return await ctx.db.insert("wallets", args);
   },
 });
@@ -192,7 +198,6 @@ export const signup = action({
     phone: v.optional(v.string()),
     website: v.optional(v.string()),
     formStartedAt: v.optional(v.number()),
-    testMode: v.optional(v.boolean()),
   },
   handler: async (ctx, args): Promise<{
     token: string;
@@ -212,13 +217,8 @@ export const signup = action({
       throw new Error("Invalid email address");
     }
 
-    const testModeAllowed = process.env.ALLOW_TEST_MODE === "1";
-    const skipRateLimit = testModeAllowed && args.testMode === true;
-
-    if (!skipRateLimit) {
-      await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `signup:email:${email}`, max: 3, windowMs: 60 * 60 * 1000 });
-      await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: "signup:global", max: 30, windowMs: 5 * 60 * 1000 });
-    }
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `signup:email:${email}`, max: 3, windowMs: 60 * 60 * 1000 });
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: "signup:global", max: 20, windowMs: 5 * 60 * 1000 });
 
     // Server-side honeypot check
     if (args.website) {
@@ -403,25 +403,31 @@ export const login: RegisteredAction<
   handler: async (ctx, args) => {
     const email = args.email.trim().toLowerCase();
 
-    // Rate limiting on login: per-email 10/15min + global 100/5min
-    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `login:email:${email}`, max: 10, windowMs: 15 * 60 * 1000 });
-    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: "login:global", max: 100, windowMs: 5 * 60 * 1000 });
+    // Rate limiting on login: per-email 5/15min + global 30/5min + per-IP 20/5min
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `login:email:${email}`, max: 5, windowMs: 15 * 60 * 1000 });
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: "login:global", max: 30, windowMs: 5 * 60 * 1000 });
+    if (args.ip) {
+      await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `login:ip:${args.ip}`, max: 20, windowMs: 5 * 60 * 1000 });
+    }
 
     const user = await ctx.runQuery(internal.auth.getUserForLogin, { email });
 
+    // Always return the same generic error — prevents email enumeration
     if (!user) {
       throw new Error("Invalid email or password");
     }
 
+    // Suspension check — same error message to avoid leaking account existence
     if (user.status === "suspended") {
-      throw new Error("Your account has been suspended. Please contact support.");
+      throw new Error("Invalid email or password");
     }
 
+    // Unverified — same error message to avoid leaking
     if (user.status === "unverified" || user.emailVerified === false) {
-      throw new Error("Please verify your email address before signing in. Check your inbox for the verification link.");
+      throw new Error("Invalid email or password");
     }
 
-    // Brute-force lockout: 8 failed attempts -> locked for 15 minutes
+    // Brute-force lockout: 5 failed attempts -> locked for 30 minutes
     const now = Date.now();
     if (user.lockedUntil && user.lockedUntil > now) {
       throw new Error("Invalid email or password");
@@ -440,10 +446,8 @@ export const login: RegisteredAction<
       await ctx.runMutation(internal.auth.updateUserPassword, { userId: user._id, passwordHash: newHash, salt: newSalt, updatedAt: now });
     }
 
-    // Successful login resets the failure counter
-    if (user.failedLoginCount || user.lockedUntil) {
-      await ctx.runMutation(internal.auth.resetLoginCounters, { userId: user._id });
-    }
+    // Successful login — always reset failure counters defensively
+    await ctx.runMutation(internal.auth.resetLoginCounters, { userId: user._id });
 
     const token = generateToken();
     const expiresAt = now + 30 * 24 * 60 * 60 * 1000;
@@ -477,10 +481,25 @@ export const login: RegisteredAction<
 export const getUserForLogin = internalQuery({
   args: { email: v.string() },
   handler: async (ctx, args) => {
-    return await ctx.db
+    const user = await ctx.db
       .query("users")
       .withIndex("by_email", (q) => q.eq("email", args.email))
       .first();
+    if (!user) return null;
+    return {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      passwordHash: user.passwordHash,
+      salt: user.salt,
+      role: user.role,
+      status: user.status,
+      referralCode: user.referralCode,
+      avatarUrl: user.avatarUrl,
+      failedLoginCount: user.failedLoginCount,
+      lockedUntil: user.lockedUntil,
+      emailVerified: user.emailVerified,
+    };
   },
 });
 
@@ -500,8 +519,8 @@ export const recordFailedLogin = internalMutation({
     const user = await ctx.db.get(args.userId);
     if (!user) return;
 
-    const LOCK_THRESHOLD = 8;
-    const LOCK_WINDOW_MS = 15 * 60 * 1000;
+    const LOCK_THRESHOLD = 5;
+    const LOCK_WINDOW_MS = 30 * 60 * 1000;
     const now = Date.now();
 
     const failures = (user.failedLoginCount || 0) + 1;
@@ -510,7 +529,7 @@ export const recordFailedLogin = internalMutation({
       patch.lockedUntil = now + LOCK_WINDOW_MS;
       patch.failedLoginCount = 0;
     }
-    await ctx.db.patch(user._id, patch);
+    await ctx.db.patch(args.userId, patch);
   },
 });
 
@@ -945,6 +964,8 @@ export const applyPasswordReset = internalMutation({
       salt: args.salt,
       passwordResetToken: undefined,
       passwordResetExpiresAt: undefined,
+      failedLoginCount: 0,
+      lockedUntil: 0,
       updatedAt: args.updatedAt,
     });
 
@@ -1031,6 +1052,11 @@ export const resendVerificationEmail = action({
   args: { email: v.string() },
   handler: async (ctx, args) => {
     const email = args.email.trim().toLowerCase();
+
+    // Rate limit: 3 resends per email per hour, 20 global per 5 min
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `verifyEmail:email:${email}`, max: 3, windowMs: 60 * 60 * 1000 });
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: "verifyEmail:global", max: 20, windowMs: 5 * 60 * 1000 });
+
     const user = await ctx.runQuery(internal.auth.getUserForLogin, { email });
 
     if (!user) {
@@ -1072,6 +1098,11 @@ export const requestPasswordReset = action({
   args: { email: v.string() },
   handler: async (ctx, args) => {
     const email = args.email.trim().toLowerCase();
+
+    // Rate limit: 3 reset requests per email per hour, 20 global per 5 min
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `passwordReset:email:${email}`, max: 3, windowMs: 60 * 60 * 1000 });
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: "passwordReset:global", max: 20, windowMs: 5 * 60 * 1000 });
+
     const user = await ctx.runQuery(internal.auth.getUserForLogin, { email });
 
     // Always return success to prevent email enumeration

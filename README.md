@@ -44,18 +44,9 @@ npm run dev:admin
 
 ---
 
-## 🔐 Demo Accounts (Pre-Seeded)
+## 🔐 Admin Access
 
-### Super Administrator
-- **Portal URL**: `http://localhost:3001/login`
-- **Email**: `admin@zetagrow.com`
-- **Password**: `AdminPassword123!`
-
-### Demo User / Contractor
-- **Portal URL**: `http://localhost:3000/login`
-- **Email**: `demo@zetagrow.com`
-- **Password**: `DemoPassword123!`
-- **Referral Code**: `DEMO123`
+The admin portal requires a super_admin account. Create one via the Convex dashboard or contact the project owner for credentials. Never commit credentials to source control.
 
 ---
 
@@ -78,4 +69,12 @@ npm run dev:admin
 
 ## 📋 Documentation
 
-- `docs/admin-audit-report.md` — Full admin panel audit, API test cases, and verification report (Aug 2026).
+- `docs/admin-audit-report.md` — Full admin panel audit, API test cases, and verification report
+- `docs/auth-test-report.md` — Authentication flow test report
+- `docs/payouts-test-report.md` — Payouts and withdrawal test report
+- `docs/RAZORPAY_SETUP.md` — Razorpay integration setup guide
+- `docs/security-audit-report.md` — Security audit and remediation report
+- `docs/SEO-STRATEGY.md` — SEO strategy and implementation plan
+- `docs/support-ticket-test-report.md` — Support ticket system test report
+- `docs/todo-future-work.md` — Future work and roadmap
+- `docs/work-test-report.md` — Work marketplace test report

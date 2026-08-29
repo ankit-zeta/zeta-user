@@ -51,23 +51,25 @@ export default function CertificatesPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  const renderCardToPng = async (domId: string): Promise<string> => {
-    const el = document.getElementById(domId);
+  const renderCardToPng = async (domId: string, innerDomId?: string): Promise<string> => {
+    const el = document.getElementById(innerDomId || domId);
     if (!el) throw new Error("not-ready");
-    await toPng(el, { pixelRatio: 2, backgroundColor: "#0D2E22", cacheBust: true });
-    return toPng(el, { pixelRatio: 2, backgroundColor: "#0D2E22", cacheBust: true });
+    return toPng(el, { pixelRatio: 2, backgroundColor: "#FDFDFB", cacheBust: true });
   };
 
   const downloadPng = async (cert: Cert) => {
-    const domId = `cert-preview-${cert.certificateId}`;
+    const domId = `cert-display-${cert.certificateId}`;
+    const innerDomId = `cert-display-${cert.certificateId}-inner`;
     setExporting(`${cert.certificateId}:png`);
     setExportError("");
     try {
-      const dataUrl = await renderCardToPng(domId);
+      const dataUrl = await renderCardToPng(domId, innerDomId);
       const a = document.createElement("a");
       a.href = dataUrl;
       a.download = `ZetaGrow-Certificate-${cert.certificateId}.png`;
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
     } catch {
       setExportError("Could not generate the image. Please try again.");
     } finally {
@@ -76,24 +78,25 @@ export default function CertificatesPage() {
   };
 
   const downloadPdf = async (cert: Cert) => {
-    const domId = `cert-preview-${cert.certificateId}`;
+    const domId = `cert-display-${cert.certificateId}`;
+    const innerDomId = `cert-display-${cert.certificateId}-inner`;
     setExporting(`${cert.certificateId}:pdf`);
     setExportError("");
     try {
-      const dataUrl = await renderCardToPng(domId);
+      const dataUrl = await renderCardToPng(domId, innerDomId);
       const img = new Image();
       img.src = dataUrl;
       await new Promise((resolve, reject) => {
         img.onload = () => resolve(null);
         img.onerror = reject;
       });
-      const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-      const pw = pdf.internal.pageSize.getWidth();
-      const ph = pdf.internal.pageSize.getHeight();
-      const scale = Math.min(pw / img.width, ph / img.height);
-      const w = img.width * scale;
-      const h = img.height * scale;
-      pdf.addImage(dataUrl, "PNG", (pw - w) / 2, (ph - h) / 2, w, h);
+      // Use image dimensions for PDF page size to avoid white space
+      const pdf = new jsPDF({
+        orientation: img.width > img.height ? "landscape" : "portrait",
+        unit: "px",
+        format: [img.width, img.height],
+      });
+      pdf.addImage(dataUrl, "PNG", 0, 0, img.width, img.height);
       pdf.save(`ZetaGrow-Certificate-${cert.certificateId}.pdf`);
     } catch {
       setExportError("Could not generate the PDF. Please try again.");
@@ -200,28 +203,19 @@ export default function CertificatesPage() {
               <X className="w-4 h-4" />
             </button>
 
-            {/* Certificate render (hidden but used for export) */}
-            <div className="hidden">
-              <CertificateCard
-                domId={`cert-preview-${previewCert.certificateId}`}
-                recipientName={previewCert.recipientName}
-                programName={previewCert.programName}
-                certificateId={previewCert.certificateId}
-                issueDate={previewCert.issueDate}
-                signatureUrl={previewCert.signatureUrl}
-              />
-            </div>
-
             {/* Visible certificate preview */}
             <div className="p-4 sm:p-6">
-              <CertificateCard
-                domId={`cert-display-${previewCert.certificateId}`}
-                recipientName={previewCert.recipientName}
-                programName={previewCert.programName}
-                certificateId={previewCert.certificateId}
-                issueDate={previewCert.issueDate}
-                signatureUrl={previewCert.signatureUrl}
-              />
+              <div className="cert-landscape-wrap">
+                <CertificateCard
+                  domId={`cert-display-${previewCert.certificateId}`}
+                  innerDomId={`cert-display-${previewCert.certificateId}-inner`}
+                  recipientName={previewCert.recipientName}
+                  programName={previewCert.programName}
+                  certificateId={previewCert.certificateId}
+                  issueDate={previewCert.issueDate}
+                  signatureUrl={previewCert.signatureUrl}
+                />
+              </div>
             </div>
 
             {/* Actions bar */}

@@ -5,6 +5,9 @@ import Link from "next/link";
 import { useAdminAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
+import { toast } from "sonner";
+import { Tooltip } from "@/components/Tooltip";
+import { ApplicationAnalytics } from "@/components/ApplicationAnalytics";
 import { 
   Briefcase, 
   Plus, 
@@ -17,7 +20,12 @@ import {
   UploadCloud,
   ShieldCheck,
   ShieldX,
-  BadgeCheck
+  BadgeCheck,
+  BarChart3,
+  List,
+  Database,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
 
 export default function AdminWorkPage() {
@@ -33,6 +41,8 @@ export default function AdminWorkPage() {
 
   const updateAppStatusMutation = useMutation(api.applications.updateApplicationStatus);
   const updateCvStatusMutation = useMutation(api.users.updateUserCvStatus);
+  const deleteJobMutation = useMutation(api.jobs.deleteJob);
+  const seedAllMutation = useMutation(api.seedJobs.seedAll);
 
   const [selectedApp, setSelectedApp] = useState<any | null>(null);
   const [newStatus, setNewStatus] = useState("under_review");
@@ -43,6 +53,40 @@ export default function AdminWorkPage() {
   const [cvUserId, setCvUserId] = useState<string | null>(null);
   const [cvAction, setCvAction] = useState<"verified" | "rejected">("verified");
   const [cvRemarks, setCvRemarks] = useState("");
+  const [view, setView] = useState<"list" | "analytics">("list");
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [deletingJobId, setDeletingJobId] = useState<string | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<{ open: boolean; jobId: string | null; jobTitle: string }>({ open: false, jobId: null, jobTitle: "" });
+
+  const handleSeedJobs = async () => {
+    if (!token) return;
+    setIsSeeding(true);
+    setMsg("");
+    try {
+      const result = await seedAllMutation({ token });
+      setMsg(`Seeded ${result.created} jobs (${result.skipped} skipped, ${result.total} total).`);
+      toast.success(`Seeded ${result.created} jobs`);
+    } catch (err: any) {
+      setMsg(err.message || "Seeding failed.");
+      toast.error(err.message || "Seeding failed");
+    } finally {
+      setIsSeeding(false);
+    }
+  };
+
+  const handleDeleteJob = async () => {
+    if (!token || !deleteConfirm.jobId) return;
+    setIsProcessing(true);
+    try {
+      await deleteJobMutation({ token, jobId: deleteConfirm.jobId as any });
+      toast.success("Job deleted");
+      setDeleteConfirm({ open: false, jobId: null, jobTitle: "" });
+    } catch (err: any) {
+      toast.error(err.message || "Delete failed");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const handleCvAction = async () => {
     if (!token || !cvUserId) return;
@@ -55,11 +99,11 @@ export default function AdminWorkPage() {
         cvStatus: cvAction,
         remarks: cvRemarks || undefined,
       });
-      setMsg(`CV marked as ${cvAction.toUpperCase()} — applicant notified.`);
+      toast.success(`CV marked as ${cvAction.toUpperCase()}`, { description: "Applicant notified." });
       setCvUserId(null);
       setCvRemarks("");
     } catch (err: any) {
-      setMsg(err.message || "Failed to update CV status.");
+      toast.error("Failed to update CV status", { description: err?.message || "Please try again" });
     } finally {
       setIsProcessing(false);
     }
@@ -81,11 +125,11 @@ export default function AdminWorkPage() {
         payoutAmount: newStatus === "completed" ? (payoutAmount || selectedApp.job?.payment || 0) : undefined,
       });
 
-      setMsg(`Application updated to "${newStatus.toUpperCase()}".`);
+      toast.success(`Application updated to ${newStatus.toUpperCase()}`, { description: "Status saved successfully." });
       setSelectedApp(null);
       setAdminNotes("");
     } catch (err: any) {
-      setMsg(err.message || "Failed to update application status.");
+      toast.error("Failed to update application status", { description: err?.message || "Please try again" });
     } finally {
       setIsProcessing(false);
     }
@@ -104,10 +148,46 @@ export default function AdminWorkPage() {
           </p>
         </div>
 
-        <Link href="/work/new" className="btn-primary text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-sm">
-          <Plus className="w-4 h-4" />
-          <span>Post New Opportunity</span>
-        </Link>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleSeedJobs}
+            disabled={isSeeding}
+            className="btn-secondary text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-sm disabled:opacity-50"
+          >
+            <Database className={`w-4 h-4 ${isSeeding ? "animate-spin" : ""}`} />
+            <span>{isSeeding ? "Seeding..." : "Seed 100 Jobs"}</span>
+          </button>
+          <Link href="/work/new" className="btn-primary text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-sm">
+            <Plus className="w-4 h-4" />
+            <span>Post New Opportunity</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* View Toggle */}
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => setView("list")}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+            view === "list"
+              ? "bg-brand-600 text-white"
+              : "bg-neutral-100 text-textMuted hover:bg-neutral-200"
+          }`}
+        >
+          <List className="w-3.5 h-3.5" />
+          Job Listings
+        </button>
+        <button
+          onClick={() => setView("analytics")}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+            view === "analytics"
+              ? "bg-brand-600 text-white"
+              : "bg-neutral-100 text-textMuted hover:bg-neutral-200"
+          }`}
+        >
+          <BarChart3 className="w-3.5 h-3.5" />
+          Analytics
+        </button>
       </div>
 
       {msg && (
@@ -116,6 +196,10 @@ export default function AdminWorkPage() {
         </div>
       )}
 
+      {view === "analytics" ? (
+        <ApplicationAnalytics />
+      ) : (
+      <>
       {/* Posted Jobs Grid */}
       <div className="space-y-4">
         <h2 className="text-base font-bold text-textMain">Active Job Listings</h2>
@@ -159,6 +243,22 @@ export default function AdminWorkPage() {
                     <span>Accepted: <strong className="text-textMain">{job.acceptedCount}</strong></span>
                     <span>Openings: <strong className="text-textMain">{job.openings}</strong></span>
                   </div>
+
+                  <div className="flex items-center gap-2 pt-2">
+                    <Link
+                      href={`/work/${job._id}/edit`}
+                      className="flex-1 text-center py-1.5 rounded-lg bg-brand-50 text-brand-700 text-xs font-semibold hover:bg-brand-100 transition-colors border border-brand-200"
+                    >
+                      Edit
+                    </Link>
+                    <button
+                      onClick={() => setDeleteConfirm({ open: true, jobId: job._id, jobTitle: job.title })}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-red-50 text-red-700 text-xs font-semibold hover:bg-red-100 transition-colors border border-red-200"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
@@ -185,7 +285,11 @@ export default function AdminWorkPage() {
                 <tr className="border-b border-borderSubtle text-textMuted bg-neutral-50">
                   <th className="py-3 px-3 font-semibold">Applicant</th>
                   <th className="py-3 px-3 font-semibold">Opportunity</th>
-                  <th className="py-3 px-3 font-semibold">Submitted Deliverable</th>
+                  <th className="py-3 px-3 font-semibold">
+                    <Tooltip content="The file or link submitted by the applicant for review">
+                      <span className="cursor-help">Submitted Deliverable</span>
+                    </Tooltip>
+                  </th>
                   <th className="py-3 px-3 font-semibold">Status</th>
                   <th className="py-3 px-3 font-semibold">Date</th>
                   <th className="py-3 px-3 font-semibold text-right">Action</th>
@@ -235,7 +339,23 @@ export default function AdminWorkPage() {
                           ? "bg-amber-100 text-amber-800"
                           : "bg-neutral-100 text-neutral-700"
                       }`}>
-                        {app.status}
+                        {(() => {
+                          const statusTooltips: Record<string, string> = {
+                            submitted: "Applicant has submitted their work",
+                            under_review: "Admin is reviewing the submission",
+                            shortlisted: "Applicant has been shortlisted for the job",
+                            accepted: "Applicant has been accepted and is working",
+                            revision_required: "Admin has requested changes before completion",
+                          };
+                          const tip = statusTooltips[app.status];
+                          return tip ? (
+                            <Tooltip content={tip}>
+                              <span>{app.status}</span>
+                            </Tooltip>
+                          ) : (
+                            <span>{app.status}</span>
+                          );
+                        })()}
                       </span>
                       {app.paymentStatus === "paid" && (
                         <span className="ml-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase bg-emerald-100 text-emerald-800">
@@ -453,7 +573,9 @@ export default function AdminWorkPage() {
               {newStatus === "completed" && (
                 <div className="space-y-1 p-3 bg-green-50 border border-green-200 rounded-lg">
                   <label className="font-semibold text-green-900 block">
-                    Release Milestone Payout (₹)
+                    <Tooltip content="Amount credited to the contractor's wallet upon work completion">
+                      <span className="cursor-help">Release Milestone Payout (₹)</span>
+                    </Tooltip>
                   </label>
                   <input
                     type="number"
@@ -496,6 +618,43 @@ export default function AdminWorkPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm.open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="card-surface p-6 max-w-md w-full space-y-4 bg-white shadow-2xl">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-red-100 rounded-lg">
+                <AlertTriangle className="w-5 h-5 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-textMain">Delete Job</h3>
+                <p className="text-xs text-textMuted">This action cannot be undone.</p>
+              </div>
+            </div>
+            <p className="text-xs text-textMuted">
+              Are you sure you want to delete <strong className="text-textMain">"{deleteConfirm.jobTitle}"</strong>? All associated applications will also be deleted.
+            </p>
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setDeleteConfirm({ open: false, jobId: null, jobTitle: "" })}
+                className="btn-secondary py-1.5 px-3"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteJob}
+                disabled={isProcessing}
+                className="py-1.5 px-4 bg-red-600 text-white rounded-lg font-bold hover:bg-red-700 disabled:opacity-50"
+              >
+                {isProcessing ? "Deleting..." : "Delete Job"}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -543,6 +702,8 @@ export default function AdminWorkPage() {
             </div>
           </div>
         </div>
+      )}
+      </>
       )}
     </div>
   );

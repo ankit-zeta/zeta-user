@@ -69,8 +69,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="space-y-4 sm:pr-6">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold text-base shadow-sm">Z</div>
-              <span className="text-xl font-bold tracking-tight text-white">ZetaGrow</span>
+              <img src="/zetagrow logo no bg.png" alt="ZetaGrow" className="h-8 w-auto" />
             </div>
             <p className="text-neutral-400 text-[13px] leading-relaxed">
               Certificate courses in digital marketing, e-commerce, coding, AI tools and communication.

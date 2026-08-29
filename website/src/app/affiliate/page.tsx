@@ -16,6 +16,7 @@ import {
   ArrowRight,
   ShieldAlert,
   ShieldCheck,
+  Crown
 } from "lucide-react";
 
 export default function AffiliateOverviewPage() {
@@ -24,6 +25,16 @@ export default function AffiliateOverviewPage() {
 
   const stats = useQuery(api.affiliates.getUserAffiliateStats, token ? { token } : "skip");
   const walletData = useQuery(api.wallets.getUserWallet, token ? { token } : "skip");
+
+  // Check if user is a Growth Partner
+  const isGrowthPartner = !!(user as any)?.partnerTier;
+
+  const partnerProfile = useQuery(
+    api.partners.getMyPartnerProfile,
+    token && isGrowthPartner ? { token } : "skip"
+  ) as
+    | { isPartner: boolean; tierName: string | null; chainPct: number; partnerSince: number | null }
+    | undefined;
 
   const referralLink =
     typeof window !== "undefined"
@@ -218,32 +229,36 @@ export default function AffiliateOverviewPage() {
           )}
         </div>
 
-        {/* Chain earnings + milestones teaser */}
-        <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold">Chain Earnings</h3>
-            <Link
-              href="/affiliate/achievements"
-              className="text-[11px] font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1"
-            >
-              Milestones <ArrowRight className="w-3 h-3" />
-            </Link>
+        {/* Chain earnings + milestones teaser — Growth Partners only */}
+        {isGrowthPartner && partnerProfile?.isPartner && (
+          <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <Crown className="w-4 h-4 text-amber-400" /> Chain Earnings
+              </h3>
+              <Link
+                href="/affiliate/achievements"
+                className="text-[11px] font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1"
+              >
+                Milestones <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <MiniStat
+                label="Chain earnings"
+                value={`₹${(stats?.chainEarnings ?? 0).toLocaleString("en-IN")}`}
+              />
+              <MiniStat
+                label="Pending chain"
+                value={`₹${(stats?.pendingChainCommissions ?? 0).toLocaleString("en-IN")}`}
+              />
+            </div>
+            <p className="text-[11px] text-neutral-500 leading-relaxed pt-2 border-t border-neutral-800">
+              Earn extra % when your referred partners make their own sales — unlock higher chain
+              levels through milestone achievements. Your chain commission rate: {partnerProfile.chainPct}%.
+            </p>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <MiniStat
-              label="Chain earnings"
-              value={`₹${(stats?.chainEarnings ?? 0).toLocaleString("en-IN")}`}
-            />
-            <MiniStat
-              label="Pending chain"
-              value={`₹${(stats?.pendingChainCommissions ?? 0).toLocaleString("en-IN")}`}
-            />
-          </div>
-          <p className="text-[11px] text-neutral-500 leading-relaxed pt-2 border-t border-neutral-800">
-            Earn extra % when your referred partners make their own sales — unlock higher chain
-            levels through milestone achievements.
-          </p>
-        </div>
+        )}
       </div>
     </div>
   );

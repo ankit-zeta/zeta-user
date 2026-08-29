@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAdminAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
+import { toast } from "sonner";
 import {
   ShieldCheck,
   Clock,
@@ -100,12 +101,10 @@ export default function AdminKycPage() {
   const handleDecision = async (decision: "verified" | "rejected") => {
     if (!token || !selectedId) return;
     if (decision === "rejected" && !rejectReason.trim()) {
-      setMsg("A rejection reason is required.");
+      toast.error("Rejection reason required", { description: "A rejection reason is required." });
       return;
     }
-    if (!window.confirm(`Are you sure you want to mark this KYC as ${decision.toUpperCase()}? The member will be notified by email.`)) {
-      return;
-    }
+    toast.info(`KYC review: ${decision.toUpperCase()}`, { description: "The member will be notified by email." });
     setIsProcessing(true);
     setMsg("");
     try {
@@ -115,12 +114,12 @@ export default function AdminKycPage() {
         decision,
         reason: decision === "rejected" ? rejectReason.trim() : undefined,
       });
-      setMsg(`KYC marked as ${decision}.`);
+      toast.success(`KYC marked as ${decision}`, { description: "Decision saved successfully." });
       setSelectedId(null);
       setRejectOpen(false);
       setRejectReason("");
     } catch (err: any) {
-      setMsg(err.message || "Failed to update KYC status.");
+      toast.error("Failed to update KYC status", { description: err?.message || "Please try again" });
     } finally {
       setIsProcessing(false);
     }

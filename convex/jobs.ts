@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query, action } from "./_generated/server";
+import { mutation, query, action, internalMutation } from "./_generated/server";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -32,6 +32,13 @@ async function hasCompletedProgram(ctx: any, userId: any, programId: any): Promi
     .filter((q: any) => q.eq(q.field("programId"), programId))
     .first();
   return !!cert;
+}
+
+async function hasCompletedAnyProgram(ctx: any, userId: any, programIds: any[]): Promise<boolean> {
+  for (const pid of programIds) {
+    if (await hasCompletedProgram(ctx, userId, pid)) return true;
+  }
+  return false;
 }
 
 export const generateJobCoverUploadUrl = action({
@@ -105,14 +112,32 @@ export const getJobsWithEligibility = query({
         let isEligible = true;
         const missingRequirements: string[] = [];
 
+        // Multi-certificate support: requiredProgramIds (OR logic — need ANY one)
+        let requiredProgramNames: string[] = [];
+        const effectiveProgramIds = job.requiredProgramIds?.length
+          ? job.requiredProgramIds
+          : job.requiredProgramId
+          ? [job.requiredProgramId]
+          : [];
+
+        if (effectiveProgramIds.length > 0) {
+          for (const pid of effectiveProgramIds) {
+            const prog = await ctx.db.get(pid);
+            if (prog) requiredProgramNames.push(prog.name);
+          }
+          if (user && !(await hasCompletedAnyProgram(ctx, user._id, effectiveProgramIds))) {
+            isEligible = false;
+            missingRequirements.push(
+              `Requires completing one of: ${requiredProgramNames.join(", ")}`
+            );
+          }
+        }
+
+        // Legacy single requiredProgramId support
         let requiredProgramName = undefined;
-        if (job.requiredProgramId) {
+        if (job.requiredProgramId && effectiveProgramIds.length <= 1) {
           const reqProg = await ctx.db.get(job.requiredProgramId);
           requiredProgramName = reqProg?.name;
-          if (user && !(await hasCompletedProgram(ctx, user._id, job.requiredProgramId))) {
-            isEligible = false;
-            missingRequirements.push(`Requires completing ${reqProg?.name || "Required Program"}`);
-          }
         }
 
         let requiredAchievementName = undefined;
@@ -127,14 +152,23 @@ export const getJobsWithEligibility = query({
 
         const applicationStatus = userApplications.get(job._id.toString()) || null;
 
+        // Applicant count
+        const apps = await ctx.db
+          .query("jobApplications")
+          .withIndex("by_jobId", (q) => q.eq("jobId", job._id))
+          .collect();
+        const applicantCount = apps.length;
+
         return {
           ...job,
           coverImageUrl: await resolveCover(ctx, job.coverImageStorageId),
-          isEligible: user ? isEligible : true, // guests see jobs
+          isEligible: user ? isEligible : true,
           missingRequirements,
           requiredProgramName,
+          requiredProgramNames: requiredProgramNames.length > 1 ? requiredProgramNames : undefined,
           requiredAchievementName,
           applicationStatus,
+          applicantCount,
         };
       })
     );
@@ -156,6 +190,20 @@ export const getJobBySlug = query({
     let requiredProgram = null;
     if (job.requiredProgramId) {
       requiredProgram = await ctx.db.get(job.requiredProgramId);
+    }
+
+    // Multi-certificate support
+    let requiredPrograms: any[] = [];
+    const effectiveProgramIds = job.requiredProgramIds?.length
+      ? job.requiredProgramIds
+      : job.requiredProgramId
+      ? [job.requiredProgramId]
+      : [];
+    if (effectiveProgramIds.length > 0) {
+      for (const pid of effectiveProgramIds) {
+        const prog = await ctx.db.get(pid);
+        if (prog) requiredPrograms.push(prog);
+      }
     }
 
     let requiredAchievement = null;
@@ -187,9 +235,12 @@ export const getJobBySlug = query({
           .collect();
         const unlockedAchievementIds = new Set(userAch.map((a) => a.achievementId.toString()));
 
-        if (job.requiredProgramId && !(await hasCompletedProgram(ctx, session.userId, job.requiredProgramId))) {
+        // Multi-certificate eligibility check
+        if (effectiveProgramIds.length > 0 && !(await hasCompletedAnyProgram(ctx, session.userId, effectiveProgramIds))) {
           isEligible = false;
-          missingRequirements.push(`Requires completing ${requiredProgram?.name || "Program"}`);
+          missingRequirements.push(
+            `Requires completing one of: ${requiredPrograms.map((p) => p.name).join(", ")}`
+          );
         }
 
         if (job.requiredAchievementId && !unlockedAchievementIds.has(job.requiredAchievementId.toString())) {
@@ -205,14 +256,22 @@ export const getJobBySlug = query({
       }
     }
 
+    // Applicant count
+    const appCount = await ctx.db
+      .query("jobApplications")
+      .withIndex("by_jobId", (q) => q.eq("jobId", job._id))
+      .collect();
+
     return {
       ...job,
       coverImageUrl: await resolveCover(ctx, job.coverImageStorageId),
       requiredProgram,
+      requiredPrograms: requiredPrograms.length > 1 ? requiredPrograms : undefined,
       requiredAchievement,
       isEligible,
       missingRequirements,
       existingApplication,
+      applicantCount: appCount.length,
     };
   },
 });
@@ -255,6 +314,7 @@ export const createJob = mutation({
     skills: v.array(v.string()),
     requirements: v.array(v.string()),
     requiredProgramId: v.optional(v.id("programs")),
+    requiredProgramIds: v.optional(v.array(v.id("programs"))),
     requiredAchievementId: v.optional(v.id("achievements")),
     payment: v.number(),
     paymentType: v.string(),
@@ -282,6 +342,7 @@ export const createJob = mutation({
       skills: args.skills,
       requirements: args.requirements,
       requiredProgramId: args.requiredProgramId,
+      requiredProgramIds: args.requiredProgramIds,
       requiredAchievementId: args.requiredAchievementId,
       payment: args.payment,
       paymentType: args.paymentType,
@@ -326,6 +387,7 @@ export const updateJob = mutation({
     skills: v.array(v.string()),
     requirements: v.array(v.string()),
     requiredProgramId: v.optional(v.id("programs")),
+    requiredProgramIds: v.optional(v.array(v.id("programs"))),
     requiredAchievementId: v.optional(v.id("achievements")),
     payment: v.number(),
     paymentType: v.string(),
@@ -354,6 +416,7 @@ export const updateJob = mutation({
       skills: args.skills,
       requirements: args.requirements,
       requiredProgramId: args.requiredProgramId,
+      requiredProgramIds: args.requiredProgramIds,
       requiredAchievementId: args.requiredAchievementId,
       payment: args.payment,
       paymentType: args.paymentType,
@@ -414,5 +477,32 @@ export const deleteJob = mutation({
     await ctx.db.delete(args.jobId);
 
     return { success: true };
+  },
+});
+
+// ── Auto-close expired jobs (called by cron) ────────────────────────────────
+
+export const autoCloseExpiredJobs = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const now = Date.now();
+    const publishedJobs = await ctx.db
+      .query("jobs")
+      .withIndex("by_status", (q) => q.eq("status", "published"))
+      .collect();
+
+    let closedCount = 0;
+    for (const job of publishedJobs) {
+      const deadlineTime = new Date(job.deadline).getTime();
+      if (deadlineTime > 0 && deadlineTime < now) {
+        await ctx.db.patch(job._id, {
+          status: "closed",
+          updatedAt: now,
+        });
+        closedCount++;
+      }
+    }
+
+    return { closedCount };
   },
 });

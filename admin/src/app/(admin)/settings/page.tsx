@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useAdminAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
+import { toast } from "sonner";
 import {
   Settings,
   Save,
@@ -21,16 +22,19 @@ import {
   Users,
   TrendingUp,
   Landmark,
+  Globe,
 } from "lucide-react";
+import { Tooltip } from "@/components/Tooltip";
 
 // ── Tab config ──────────────────────────────────────────────────────────────
 
-type TabKey = "general" | "withdrawals" | "tax" | "work" | "affiliate" | "dividends";
+type TabKey = "general" | "withdrawals" | "tax" | "work" | "workportal" | "affiliate" | "dividends";
 
 const TABS: { key: TabKey; label: string; icon: React.ElementType; desc: string }[] = [
   { key: "general", label: "General & Brand", icon: Store, desc: "Brand identity, support contacts" },
   { key: "withdrawals", label: "Withdrawals", icon: Wallet, desc: "Limits, fees, payout methods" },
   { key: "tax", label: "Tax (GST)", icon: Receipt, desc: "GST on program sales" },
+  { key: "workportal", label: "Work Portal", icon: Globe, desc: "Enable/disable work portal, requirements" },
   { key: "work", label: "Work Payouts", icon: Briefcase, desc: "Job earning caps & multipliers" },
   { key: "affiliate", label: "Affiliate", icon: Share2, desc: "Commission caps, chain levels" },
   { key: "dividends", label: "Dividends", icon: LineChart, desc: "Future dividend engine config" },
@@ -45,7 +49,7 @@ function Field({
   hint,
   children,
 }: {
-  label: string;
+  label: React.ReactNode;
   hint?: string;
   children: React.ReactNode;
 }) {
@@ -117,7 +121,7 @@ function Toggle({
 }: {
   checked: boolean;
   onChange: (v: boolean) => void;
-  label: string;
+  label: React.ReactNode;
   desc?: string;
 }) {
   return (
@@ -143,7 +147,7 @@ function Toggle({
   );
 }
 
-function SectionDivider({ label }: { label: string }) {
+function SectionDivider({ label }: { label: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 pt-2">
       <h4 className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">
@@ -212,6 +216,13 @@ export default function AdminSettingsPage() {
   const [divPeriod, setDivPeriod] = useState("monthly");
   const [divMinBalance, setDivMinBalance] = useState(1000);
 
+  // ── Work Portal ──
+  const [wpEnabled, setWpEnabled] = useState(true);
+  const [wpRequireKyc, setWpRequireKyc] = useState(true);
+  const [wpRequireCv, setWpRequireCv] = useState(true);
+  const [wpMaxApps, setWpMaxApps] = useState(0);
+  const [wpAllowFree, setWpAllowFree] = useState(true);
+
   // Load settings
   useEffect(() => {
     if (!allSettings) return;
@@ -260,6 +271,14 @@ export default function AdminSettingsPage() {
       setDivRate(dv.rate ?? 0);
       setDivPeriod(dv.period || "monthly");
       setDivMinBalance(dv.minBalance ?? 1000);
+    }
+    const wp = allSettings.workPortal;
+    if (wp) {
+      setWpEnabled(wp.enabled !== false);
+      setWpRequireKyc(wp.requireKyc !== false);
+      setWpRequireCv(wp.requireCv !== false);
+      setWpMaxApps(wp.maxApplicationsPerJob ?? 0);
+      setWpAllowFree(wp.allowFreeApply !== false);
     }
   }, [allSettings]);
 
@@ -321,6 +340,19 @@ export default function AdminSettingsPage() {
             },
             reason: "Work payout limits update",
           });
+        } else if (tab === "workportal") {
+          await updateSetting({
+            token,
+            key: "workPortal",
+            value: {
+              enabled: wpEnabled,
+              requireKyc: wpRequireKyc,
+              requireCv: wpRequireCv,
+              maxApplicationsPerJob: Number(wpMaxApps),
+              allowFreeApply: wpAllowFree,
+            },
+            reason: "Work portal settings update",
+          });
         } else if (tab === "affiliate") {
           await updateSetting({
             token,
@@ -357,9 +389,10 @@ export default function AdminSettingsPage() {
           });
         }
         setSavedTab(tab);
+        toast.success("Settings saved", { description: "Configuration updated successfully" });
         setTimeout(() => setSavedTab(null), 3000);
       } catch (err: any) {
-        alert(err.message || "Failed to save");
+        toast.error("Save failed", { description: err?.message || "Please try again" });
       } finally {
         setSavingTab(null);
       }
@@ -369,6 +402,7 @@ export default function AdminSettingsPage() {
       brandName, tagline, supportEmail, supportPhone,
       minWithdrawal, maxWithdrawal, dailyLimit, monthlyLimit, feePercentage, fixedFee, maxFee, allowedMethods,
       gstEnabled, gstRate,
+      wpEnabled, wpRequireKyc, wpRequireCv, wpMaxApps, wpAllowFree,
       workDailyCap, workMonthlyCap, workPerJobCap, workMultipliers,
       affPerSaleCap, affDailyCap, affMonthlyCap, affMultipliers, affChainEnabled, affChainLevels,
       divEnabled, divRate, divPeriod, divMinBalance,
@@ -407,7 +441,13 @@ export default function AdminSettingsPage() {
                 />
                 <div>
                   <p className={`text-[12px] font-semibold ${active ? "text-emerald-900" : ""}`}>
-                    {tab.label}
+                    {tab.key === "dividends" ? (
+                      <Tooltip content="Coming soon — distribute platform earnings to eligible users by position">
+                        <span>{tab.label}</span>
+                      </Tooltip>
+                    ) : (
+                      tab.label
+                    )}
                   </p>
                   <p className="text-[10px] text-neutral-400 mt-0.5">{tab.desc}</p>
                 </div>
@@ -517,7 +557,14 @@ export default function AdminSettingsPage() {
                   <Field label="Fixed Fee" hint="Flat fee per request">
                     <Input value={fixedFee} onChange={setFixedFee} type="number" prefix="₹" min={0} />
                   </Field>
-                  <Field label="Max Fee Cap" hint="Maximum total fee (0 = no cap)">
+                  <Field
+                    label={
+                      <Tooltip content="Maximum platform fee charged per transaction">
+                        <span>Max Fee Cap</span>
+                      </Tooltip>
+                    }
+                    hint="Maximum total fee (0 = no cap)"
+                  >
                     <Input value={maxFee} onChange={setMaxFee} type="number" prefix="₹" min={0} />
                   </Field>
                 </div>
@@ -603,7 +650,13 @@ export default function AdminSettingsPage() {
 
                 {positions && positions.length > 0 && (
                   <>
-                    <SectionDivider label="Position Multipliers" />
+                    <SectionDivider
+                      label={
+                        <Tooltip content="Your tier/rank in the platform hierarchy determines commission caps and limits (e.g., Senior = 2x base limit)">
+                          <span>Position Multipliers</span>
+                        </Tooltip>
+                      }
+                    />
                     <p className="text-[11px] text-neutral-400 -mt-4">
                       Each position level gets cap × multiplier. A user with "Senior" (2x) gets double the base cap.
                     </p>
@@ -634,6 +687,66 @@ export default function AdminSettingsPage() {
               </div>
             )}
 
+            {/* ── WORK PORTAL ──────────────────────────── */}
+            {activeTab === "workportal" && (
+              <div className="card-surface p-6 space-y-6">
+                <SectionDivider label="Work Portal Access" />
+                <div className="max-w-md space-y-4">
+                  <Toggle
+                    checked={wpEnabled}
+                    onChange={setWpEnabled}
+                    label="Enable Work Portal"
+                    desc="When disabled, users cannot see or apply for work opportunities. The /work page shows a 'temporarily unavailable' message."
+                  />
+                </div>
+
+                <SectionDivider label="Application Requirements" />
+                <p className="text-[11px] text-neutral-400 -mt-4">
+                  Control what users must complete before they can apply for jobs.
+                </p>
+                <div className="max-w-md space-y-4">
+                  <Toggle
+                    checked={wpRequireKyc}
+                    onChange={setWpRequireKyc}
+                    label="Require KYC Verification"
+                    desc="Users must have verified PAN & Aadhaar before applying. Required for TDS-compliant payouts."
+                  />
+                  <Toggle
+                    checked={wpRequireCv}
+                    onChange={setWpRequireCv}
+                    label="Require Complete CV Profile"
+                    desc="Users must fill in overview, experience, education, and at least 3 skills before applying."
+                  />
+                  <Toggle
+                    checked={wpAllowFree}
+                    onChange={setWpAllowFree}
+                    label="Allow Free-Apply Jobs"
+                    desc="When enabled, jobs without certificate requirements are open to all eligible users. When disabled, every job requires at least one certificate."
+                  />
+                  <Field
+                    label="Max Applications per Job (0 = unlimited)"
+                    hint="Limit how many applications a single job can receive"
+                  >
+                    <Input
+                      value={wpMaxApps}
+                      onChange={setWpMaxApps}
+                      type="number"
+                      min={0}
+                    />
+                  </Field>
+                </div>
+
+                <div className="p-4 rounded-xl bg-blue-50 border border-blue-100 text-[11px] text-blue-800">
+                  <p className="font-semibold mb-1">How it works</p>
+                  <p className="leading-relaxed">
+                    These settings are checked when a user tries to apply for work.
+                    KYC and CV requirements are enforced both client-side (banner notification) and server-side (application rejection).
+                    Certificate requirements are set per-job in the job creation form.
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* ── AFFILIATE ────────────────────────────── */}
             {activeTab === "affiliate" && (
               <div className="card-surface p-6 space-y-6">
@@ -655,7 +768,13 @@ export default function AdminSettingsPage() {
 
                 {positions && positions.length > 0 && (
                   <>
-                    <SectionDivider label="Position Multipliers" />
+                    <SectionDivider
+                      label={
+                        <Tooltip content="Your tier/rank in the platform hierarchy determines commission caps and limits (e.g., Senior = 2x base limit)">
+                          <span>Position Multipliers</span>
+                        </Tooltip>
+                      }
+                    />
                     <p className="text-[11px] text-neutral-400 -mt-4">
                       Higher positions unlock higher commission caps.
                     </p>
@@ -689,7 +808,11 @@ export default function AdminSettingsPage() {
                   <Toggle
                     checked={affChainEnabled}
                     onChange={setAffChainEnabled}
-                    label="Enable Chain Commission"
+                    label={
+                      <Tooltip content="When your referral earns commission, you earn a percentage of that commission (multi-level referral)">
+                        <span>Enable Chain Commission</span>
+                      </Tooltip>
+                    }
                     desc="When your referral earns a commission, you earn a % of that commission. Needs the corresponding position to be eligible."
                   />
                   {affChainEnabled && positions && positions.length > 0 && (
@@ -733,7 +856,14 @@ export default function AdminSettingsPage() {
                     desc="Configure now — the engine will consume these settings when enabled. Dividends distribute to users by position on a schedule."
                   />
                   <div className="grid grid-cols-2 gap-4">
-                    <Field label="Distribution Rate" hint="% of wallet earnings distributed">
+                    <Field
+                      label={
+                        <Tooltip content="Percentage of platform profits distributed to eligible users">
+                          <span>Distribution Rate</span>
+                        </Tooltip>
+                      }
+                      hint="% of wallet earnings distributed"
+                    >
                       <Input value={divRate} onChange={setDivRate} type="number" suffix="%" min={0} max={100} disabled={!divEnabled} />
                     </Field>
                     <Field label="Distribution Period">
@@ -748,7 +878,14 @@ export default function AdminSettingsPage() {
                         <option value="monthly">Monthly</option>
                       </select>
                     </Field>
-                    <Field label="Min Wallet Balance" hint="Minimum balance to be eligible">
+                    <Field
+                      label={
+                        <Tooltip content="Minimum wallet balance required to receive dividend payouts">
+                          <span>Min Wallet Balance</span>
+                        </Tooltip>
+                      }
+                      hint="Minimum balance to be eligible"
+                    >
                       <Input value={divMinBalance} onChange={setDivMinBalance} type="number" prefix="₹" min={0} disabled={!divEnabled} />
                     </Field>
                   </div>

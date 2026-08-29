@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { toast } from "sonner";
 import { useAdminAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { ConvexHttpClient } from "convex/browser";
@@ -22,6 +23,7 @@ import {
   IndianRupee,
   Download,
 } from "lucide-react";
+import { Tooltip } from "@/components/Tooltip";
 
 type Tab = "withdrawals" | "wallets" | "tds" | "report";
 
@@ -52,7 +54,6 @@ export default function AdminFinancePage() {
   const [selectedWithdrawal, setSelectedWithdrawal] = useState<any | null>(null);
   const [withdrawalNote, setWithdrawalNote] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [msg, setMsg] = useState("");
   const [qrView, setQrView] = useState<any | null>(null);
 
   const [adjustmentModalOpen, setAdjustmentModalOpen] = useState(false);
@@ -64,12 +65,8 @@ export default function AdminFinancePage() {
 
   const handleWithdrawalAction = async (withdrawalId: any, status: string) => {
     if (!token) return;
-    const actionLabel = status === "processing" ? "approve" : status === "completed" ? "mark as PAID" : "reject";
-    if (!window.confirm(`Are you sure you want to ${actionLabel} this withdrawal? This affects the member's wallet.`)) {
-      return;
-    }
+    toast.info("Processing withdrawal...");
     setIsProcessing(true);
-    setMsg("");
 
     try {
       await updateWithdrawalStatus({
@@ -79,11 +76,11 @@ export default function AdminFinancePage() {
         adminNote: withdrawalNote || undefined,
       });
 
-      setMsg(`Withdrawal marked as ${status.toUpperCase()}.`);
+      toast.success("Withdrawal updated", { description: `Withdrawal marked as ${status.toUpperCase()}.` });
       setSelectedWithdrawal(null);
       setWithdrawalNote("");
     } catch (err: any) {
-      setMsg(err.message || "Failed to process withdrawal.");
+      toast.error("Failed to process withdrawal", { description: err.message || "Please try again." });
     } finally {
       setIsProcessing(false);
     }
@@ -93,8 +90,8 @@ export default function AdminFinancePage() {
     e.preventDefault();
     if (!token || !adjustUserId || !adjustReason) return;
 
+    toast.info("Applying adjustment...");
     setIsProcessing(true);
-    setMsg("");
 
     try {
       await adminAdjustWallet({
@@ -106,12 +103,12 @@ export default function AdminFinancePage() {
         earningsSource: adjustType === "CREDIT" && adjustSource ? adjustSource : undefined,
       });
 
-      setMsg("Wallet adjustment applied and recorded in audit ledger.");
+      toast.success("Wallet adjustment applied", { description: "Recorded in audit ledger." });
       setAdjustmentModalOpen(false);
       setAdjustReason("");
       setAdjustSource("");
     } catch (err: any) {
-      setMsg(err.message || "Failed to adjust wallet.");
+      toast.error("Failed to adjust wallet", { description: err.message || "Please try again." });
     } finally {
       setIsProcessing(false);
     }
@@ -201,9 +198,9 @@ export default function AdminFinancePage() {
           [
             ["withdrawals", "Withdrawals", Wallet],
             ["wallets", "Wallet Overview", Users],
-            ["tds", "TDS", IndianRupee],
+            ["tds", <Tooltip content="Tax Deducted at Source — Indian withholding tax on commissions (Section 194H) and professional fees (Section 194J)"><span>TDS</span></Tooltip>, IndianRupee],
             ["report", "Payout Report", FileBarChart],
-          ] as [Tab, string, any][]
+          ] as [Tab, React.ReactNode, any][]
         ).map(([key, label, Icon]) => (
           <button
             key={key}
@@ -220,23 +217,20 @@ export default function AdminFinancePage() {
         ))}
       </div>
 
-      {msg && (
-        <div className="p-3 bg-brand-50 border border-brand-200 rounded-lg text-xs text-brand-800">
-          {msg}
-        </div>
-      )}
-
       {/* ============ TAB: WITHDRAWALS ============ */}
       {tab === "withdrawals" && (
         <div className="card-surface p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-bold text-textMain">Withdrawal Requests Queue</h3>
-            <input
-              value={withdrawalNote}
-              onChange={(e) => setWithdrawalNote(e.target.value)}
-              placeholder="Optional note / UTR for this batch..."
-              className="px-3 py-1.5 rounded-lg border border-borderSubtle text-xs bg-white w-64"
-            />
+            <div className="flex items-center gap-2">
+              <input
+                value={withdrawalNote}
+                onChange={(e) => setWithdrawalNote(e.target.value)}
+                placeholder="Optional note / UTR for this batch..."
+                className="px-3 py-1.5 rounded-lg border border-borderSubtle text-xs bg-white w-64"
+              />
+              <Tooltip content="Unique Transaction Reference — bank transfer reference number for tracking"><span className="text-[10px] text-textMuted cursor-help">UTR ℹ</span></Tooltip>
+            </div>
           </div>
 
           {withdrawals === undefined ? (
@@ -254,8 +248,8 @@ export default function AdminFinancePage() {
                   <tr className="border-b border-borderSubtle text-textMuted bg-neutral-50">
                     <th className="py-3 px-3 font-semibold">User</th>
                     <th className="py-3 px-3 font-semibold">Amount</th>
-                    <th className="py-3 px-3 font-semibold">Fee</th>
-                    <th className="py-3 px-3 font-semibold">Net Payout</th>
+                    <th className="py-3 px-3 font-semibold"><Tooltip content="Platform processing fee deducted from the withdrawal"><span>Fee</span></Tooltip></th>
+                    <th className="py-3 px-3 font-semibold"><Tooltip content="Amount the user receives after platform fee is deducted"><span>Net Payout</span></Tooltip></th>
                     <th className="py-3 px-3 font-semibold">Method & Payout Info</th>
                     <th className="py-3 px-3 font-semibold">Status</th>
                     <th className="py-3 px-3 font-semibold">Requested At</th>
@@ -360,8 +354,8 @@ export default function AdminFinancePage() {
                   <tr className="border-b border-borderSubtle text-textMuted bg-neutral-50">
                     <th className="py-3 px-3 font-semibold">Member</th>
                     <th className="py-3 px-3 font-semibold text-right">Available</th>
-                    <th className="py-3 px-3 font-semibold text-right">Work Earnings</th>
-                    <th className="py-3 px-3 font-semibold text-right">Affiliate Earnings</th>
+                    <th className="py-3 px-3 font-semibold text-right"><Tooltip content="Earnings from completing work tasks and deliverables"><span>Work Earnings</span></Tooltip></th>
+                    <th className="py-3 px-3 font-semibold text-right"><Tooltip content="Earnings from referral commissions"><span>Affiliate Earnings</span></Tooltip></th>
                     <th className="py-3 px-3 font-semibold text-right">Total Earned</th>
                     <th className="py-3 px-3 font-semibold text-right">Withdrawn</th>
                     <th className="py-3 px-3 font-semibold text-center">Txns</th>
@@ -702,7 +696,6 @@ function AdminTdsTab({ token }: { token: string | null }) {
   const [rateWork, setRateWork] = useState<string>("");
   const [thrAff, setThrAff] = useState<string>("");
   const [thrWork, setThrWork] = useState<string>("");
-  const [cfgMsg, setCfgMsg] = useState("");
 
   // Export rows (fetched on demand)
   const [exporting, setExporting] = useState(false);
@@ -721,7 +714,7 @@ function AdminTdsTab({ token }: { token: string | null }) {
         grandTotal: number;
       };
       if (!data.lines.length) {
-        window.alert("No TDS records for this financial year yet.");
+        toast.info("No TDS records", { description: "No TDS records for this financial year yet." });
         return;
       }
       const header = [
@@ -745,7 +738,7 @@ function AdminTdsTab({ token }: { token: string | null }) {
       a.click();
       URL.revokeObjectURL(url);
     } catch (err: any) {
-      window.alert(err.message || "Export failed");
+      toast.error("Export failed", { description: err.message || "Please try again." });
     } finally {
       setExporting(false);
     }
@@ -767,18 +760,13 @@ function AdminTdsTab({ token }: { token: string | null }) {
         label: cfg.work.label,
       },
     };
-    if (
-      !window.confirm(
-        `Save TDS config? Affiliate ${next.affiliate.rate}% above ₹${next.affiliate.threshold}, Work ${next.work.rate}% above ₹${next.work.threshold}.`
-      )
-    )
-      return;
+    toast.info("Saving TDS configuration...");
     try {
       await updateSetting({ token, key: "tds", value: next });
-      setCfgMsg("Saved. Applies to new withdrawal requests immediately.");
+      toast.success("TDS configuration saved", { description: "Applies to new withdrawal requests immediately." });
       setRateAff(""); setRateWork(""); setThrAff(""); setThrWork("");
     } catch (err: any) {
-      setCfgMsg(err.message || "Failed to save");
+      toast.error("Failed to save TDS config", { description: err.message || "Please try again." });
     }
   };
 
@@ -807,7 +795,7 @@ function AdminTdsTab({ token }: { token: string | null }) {
           </select>
           <button onClick={exportCsv} disabled={exporting} className="btn-secondary text-xs py-2 px-3 flex items-center gap-1.5 disabled:opacity-50">
             <Download className="w-3.5 h-3.5" />
-            {exporting ? "Preparing…" : "Export CSV (26Q-ready)"}
+            <Tooltip content="Exports TDS data in format suitable for Indian quarterly tax filing (Form 26Q)"><span className="flex items-center gap-1.5">{exporting ? "Preparing…" : "Export CSV (26Q-ready)"}</span></Tooltip>
           </button>
         </div>
       </div>
@@ -815,9 +803,9 @@ function AdminTdsTab({ token }: { token: string | null }) {
       {/* Totals */}
       {summary && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <StatBox label={`Affiliate Gross (${summary.config.affiliate.label})`} value={`₹${summary.totals.affiliateGross.toLocaleString("en-IN")}`} />
+          <StatBox label={<><Tooltip content="Total affiliate commission subject to 2% TDS under Section 194H (above ₹15,000/year)"><span>{`Affiliate Gross (${summary.config.affiliate.label})`}</span></Tooltip></>} value={`₹${summary.totals.affiliateGross.toLocaleString("en-IN")}`} />
           <StatBox label={`Affiliate TDS @${summary.config.affiliate.rate}%`} value={`₹${summary.totals.affiliateTds.toLocaleString("en-IN")}`} accent />
-          <StatBox label={`Work Gross (${summary.config.work.label})`} value={`₹${summary.totals.workGross.toLocaleString("en-IN")}`} />
+          <StatBox label={<><Tooltip content="Total professional fees subject to 10% TDS under Section 194J (above ₹30,000/year)"><span>{`Work Gross (${summary.config.work.label})`}</span></Tooltip></>} value={`₹${summary.totals.workGross.toLocaleString("en-IN")}`} />
           <StatBox label={`Work TDS @${summary.config.work.rate}%`} value={`₹${summary.totals.workTds.toLocaleString("en-IN")}`} accent />
         </div>
       )}
@@ -886,7 +874,7 @@ function AdminTdsTab({ token }: { token: string | null }) {
         <div className="card-surface p-6 space-y-3">
           <h4 className="text-sm font-bold text-textMain">TDS Rates &amp; Thresholds</h4>
           <p className="text-[11px] text-textMuted -mt-1">
-            Defaults follow Income Tax rules (194H: 2% over ₹20K · 194J: 10% over ₹50K). Adjust only on your CA's advice.
+            Defaults follow Income Tax rules (<Tooltip content="TDS rates: 194H (commission) = 2% above ₹20,000/year; 194J (professional) = 10% above ₹50,000/year"><span className="cursor-help border-b border-dashed border-textMuted">194H: 2% over ₹20K · 194J: 10% over ₹50K</span></Tooltip>). Adjust only on your CA's advice.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <ConfigInput label="Affiliate rate %" placeholder={String(summary.config.affiliate.rate)} value={rateAff} onChange={setRateAff} />
@@ -895,14 +883,13 @@ function AdminTdsTab({ token }: { token: string | null }) {
             <ConfigInput label="Work threshold ₹" placeholder={String(summary.config.work.threshold)} value={thrWork} onChange={setThrWork} />
           </div>
           <button onClick={saveRates} className="btn-primary text-xs py-2 px-4">Save Configuration</button>
-          {cfgMsg && <p className="text-[11px] text-brand-700">{cfgMsg}</p>}
         </div>
       )}
     </div>
   );
 }
 
-function StatBox({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
+function StatBox({ label, value, accent }: { label: React.ReactNode; value: string; accent?: boolean }) {
   return (
     <div className={`card-surface p-4 ${accent ? "border-brand-200 bg-brand-50/40" : ""}`}>
       <p className="text-[10px] font-bold uppercase tracking-wider text-textMuted">{label}</p>

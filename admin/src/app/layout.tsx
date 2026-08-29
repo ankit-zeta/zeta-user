@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AdminConvexClientProvider } from "@/lib/convex";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className={`${inter.className} min-h-full flex flex-col bg-bgWarm text-textMain antialiased`}>
         <AdminConvexClientProvider>
           {children}
+          <Toaster position="top-right" richColors closeButton />
         </AdminConvexClientProvider>
       </body>
     </html>

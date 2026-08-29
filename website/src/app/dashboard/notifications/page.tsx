@@ -7,7 +7,38 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
 import { Bell, CheckCheck, BookOpen, Briefcase, Award, TrendingUp, ShieldCheck } from "lucide-react";
 
-export default function NotificationsPage() {
+class NotificationPageErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="max-w-4xl mx-auto space-y-8">
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold tracking-tight text-textMain">Notifications Center</h1>
+            <p className="text-xs text-textMuted">Notifications are temporarily unavailable. Please try again later.</p>
+          </div>
+          <div className="card-surface text-center py-12 space-y-3">
+            <Bell className="w-10 h-10 text-neutral-300 mx-auto" />
+            <h3 className="text-sm font-semibold text-textMain">Service Temporarily Unavailable</h3>
+            <p className="text-xs text-textMuted">We couldn't load your notifications right now.</p>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function NotificationsContent() {
   const { token } = useAuth();
   const notifsData = useQuery(
     api.notifications.getUserNotifications,
@@ -138,5 +169,13 @@ export default function NotificationsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function NotificationsPage() {
+  return (
+    <NotificationPageErrorBoundary>
+      <NotificationsContent />
+    </NotificationPageErrorBoundary>
   );
 }

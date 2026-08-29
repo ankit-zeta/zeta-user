@@ -86,6 +86,9 @@ export default function ProgramDetailPage() {
     ? Math.round(((parentPlan.compareAtPrice - parentPlan.price) / parentPlan.compareAtPrice) * 100)
     : 0;
 
+  const [imgError, setImgError] = useState(false);
+  const hasImage = !imgError && (program.thumbnail || program.bannerImage);
+
   return (
     <div className="pb-24 lg:pb-8">
       {/* ─── Hero Section ──────────────────────────────────────────── */}
@@ -96,13 +99,14 @@ export default function ProgramDetailPage() {
             <div className="lg:col-span-3 space-y-6">
               {/* Cover Image */}
               <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-borderSubtle bg-neutral-100 shadow-sm">
-                {program.thumbnail || program.bannerImage ? (
+                {hasImage ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={program.thumbnail || program.bannerImage}
                     alt={program.name}
                     loading="eager"
                     className="absolute inset-0 h-full w-full object-cover"
+                    onError={() => setImgError(true)}
                   />
                 ) : (
                   <div className="absolute inset-0 bg-gradient-to-br from-brand-600 to-brand-900 flex items-center justify-center">

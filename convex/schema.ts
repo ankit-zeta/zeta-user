@@ -270,6 +270,7 @@ sessions: defineTable({
     skills: v.array(v.string()),
     requirements: v.array(v.string()),
     requiredProgramId: v.optional(v.id("programs")),
+    requiredProgramIds: v.optional(v.array(v.id("programs"))), // multi-certificate: user needs ANY one of these
     requiredAchievementId: v.optional(v.id("achievements")),
     payment: v.number(),
     paymentType: v.string(), // "fixed" | "hourly" | "milestone"
@@ -315,6 +316,28 @@ sessions: defineTable({
     .index("by_userId", ["userId"])
     .index("by_status", ["status"]),
 
+  // Saved / Bookmarked Jobs
+  savedJobs: defineTable({
+    userId: v.id("users"),
+    jobId: v.id("jobs"),
+    savedAt: v.number(),
+  })
+    .index("by_userId", ["userId"])
+    .index("by_user_job", ["userId", "jobId"]),
+
+  // Job Ratings (after work completion)
+  jobRatings: defineTable({
+    jobId: v.id("jobs"),
+    applicationId: v.id("jobApplications"),
+    userId: v.id("users"),
+    rating: v.number(), // 1-5
+    review: v.optional(v.string()),
+    createdAt: v.number(),
+  })
+    .index("by_jobId", ["jobId"])
+    .index("by_userId", ["userId"])
+    .index("by_applicationId", ["applicationId"]),
+
   // Referrals
   referrals: defineTable({
     referrerUserId: v.id("users"),
@@ -328,7 +351,7 @@ sessions: defineTable({
 
   // Affiliate Sales & Commissions (kind "direct" = standard referral, "chain" = upline % of downline's commission)
   affiliateSales: defineTable({
-    purchaseId: v.id("purchases"),
+    purchaseId: v.optional(v.id("purchases")),
     buyerUserId: v.id("users"),
     referrerUserId: v.id("users"),
     programId: v.id("programs"),
@@ -673,4 +696,17 @@ sessions: defineTable({
   })
     .index("by_categoryId", ["categoryId"])
     .index("by_date", ["date"]),
+
+  // Cookie Consent
+  cookieConsent: defineTable({
+    userId: v.optional(v.id("users")),
+    fingerprint: v.string(), // anonymous browser fingerprint (hashed)
+    essential: v.boolean(),
+    analytics: v.boolean(),
+    marketing: v.boolean(),
+    consentedAt: v.number(),
+    updatedAt: v.number(),
+    ipAddress: v.optional(v.string()),
+    userAgent: v.optional(v.string()),
+  }).index("by_fingerprint", ["fingerprint"]),
 });

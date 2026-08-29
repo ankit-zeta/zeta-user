@@ -15,7 +15,8 @@ import {
   Send, 
   UploadCloud, 
   ExternalLink,
-  ChevronRight
+  ChevronRight,
+  Star,
 } from "lucide-react";
 
 export default function MyApplicationsPage() {
@@ -69,12 +70,20 @@ export default function MyApplicationsPage() {
   }> | undefined;
 
   const submitDeliverable = useMutation(api.applications.submitWorkDeliverable);
+  const submitJobRating = useMutation(api.workPortal.submitJobRating);
 
   const [activeDeliverableAppId, setActiveDeliverableAppId] = useState<string | null>(null);
   const [deliverableUrl, setDeliverableUrl] = useState("");
   const [deliverableNotes, setDeliverableNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [msg, setMsg] = useState("");
+
+  // Rating state
+  const [ratingAppId, setRatingAppId] = useState<string | null>(null);
+  const [ratingJobId, setRatingJobId] = useState<string | null>(null);
+  const [ratingValue, setRatingValue] = useState(5);
+  const [ratingReview, setRatingReview] = useState("");
+  const [isRating, setIsRating] = useState(false);
 
   const handleDeliverableSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,6 +107,29 @@ export default function MyApplicationsPage() {
       setMsg(friendlyError(err, "Failed to submit deliverable."));
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleRatingSubmit = async () => {
+    if (!token || !ratingAppId || !ratingJobId) return;
+    setIsRating(true);
+    try {
+      await submitJobRating({
+        token,
+        applicationId: ratingAppId as any,
+        jobId: ratingJobId as any,
+        rating: ratingValue,
+        review: ratingReview || undefined,
+      });
+      setMsg("Thank you for rating this work experience!");
+      setRatingAppId(null);
+      setRatingJobId(null);
+      setRatingValue(5);
+      setRatingReview("");
+    } catch (err: any) {
+      setMsg(friendlyError(err, "Failed to submit rating."));
+    } finally {
+      setIsRating(false);
     }
   };
 
@@ -186,6 +218,69 @@ export default function MyApplicationsPage() {
         </div>
       )}
 
+      {/* Rating Modal */}
+      {ratingAppId && (
+        <div className="card-surface p-6 border-amber-300 bg-amber-50/20 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-textMain flex items-center gap-2">
+              <Star className="w-4 h-4 text-amber-500" />
+              <span>Rate Your Work Experience</span>
+            </h3>
+            <button
+              onClick={() => { setRatingAppId(null); setRatingJobId(null); }}
+              className="text-xs text-textMuted hover:text-textMain"
+            >
+              Cancel
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-textMain">Rating *</label>
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setRatingValue(star)}
+                    className="p-0.5"
+                  >
+                    <Star
+                      className={`w-6 h-6 transition-colors ${
+                        star <= ratingValue
+                          ? "text-amber-500 fill-amber-500"
+                          : "text-neutral-300"
+                      }`}
+                    />
+                  </button>
+                ))}
+                <span className="text-xs font-bold text-textMain ml-2">{ratingValue}/5</span>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-textMain">Review (Optional)</label>
+              <textarea
+                rows={3}
+                value={ratingReview}
+                onChange={(e) => setRatingReview(e.target.value)}
+                placeholder="Share your experience working on this project..."
+                className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white focus:outline-none focus:ring-1 focus:ring-amber-500"
+              />
+            </div>
+
+            <button
+              onClick={handleRatingSubmit}
+              disabled={isRating}
+              className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5 bg-amber-600 hover:bg-amber-700"
+            >
+              <Star className="w-3.5 h-3.5" />
+              <span>{isRating ? "Submitting..." : "Submit Rating"}</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Applications List */}
       <div className="space-y-4">
         {applications === undefined ? (
@@ -260,6 +355,22 @@ export default function MyApplicationsPage() {
                   >
                     <UploadCloud className="w-3.5 h-3.5" />
                     <span>{app.submissionWorkUrl ? "Update Deliverable" : "Submit Deliverable"}</span>
+                  </button>
+                </div>
+              )}
+              {app.status === "completed" && (
+                <div className="pt-2 flex justify-end">
+                  <button
+                    onClick={() => {
+                      setRatingAppId(app._id.toString());
+                      setRatingJobId(app.jobId.toString());
+                      setRatingValue(5);
+                      setRatingReview("");
+                    }}
+                    className="text-xs font-medium px-3 py-1.5 rounded-lg border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 flex items-center gap-1.5"
+                  >
+                    <Star className="w-3.5 h-3.5" />
+                    Rate Work Experience
                   </button>
                 </div>
               )}

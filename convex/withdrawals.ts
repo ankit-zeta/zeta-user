@@ -73,9 +73,16 @@ export const requestWithdrawal = mutation({
       throw new Error("Invalid payout method");
     }
 
+    if (!Number.isFinite(args.amount) || args.amount <= 0) {
+      throw new Error("Invalid withdrawal amount");
+    }
+
     if (args.payoutMethod === "upi") {
       if (!args.payoutDetails.upiId || !args.payoutDetails.upiId.includes("@")) {
         throw new Error("A valid UPI ID is required for UPI payouts");
+      }
+      if (args.payoutDetails.upiId.length < 5 || args.payoutDetails.upiId.length > 50) {
+        throw new Error("UPI ID must be between 5 and 50 characters");
       }
     } else if (args.payoutMethod === "bank_transfer") {
       if (
@@ -85,6 +92,12 @@ export const requestWithdrawal = mutation({
         !args.payoutDetails.bankName
       ) {
         throw new Error("All bank details are required for bank payouts");
+      }
+      if (!/^\d{9,18}$/.test(args.payoutDetails.accountNumber)) {
+        throw new Error("Account number must be 9-18 digits");
+      }
+      if (!/^[A-Za-z0-9]{11}$/.test(args.payoutDetails.ifscCode)) {
+        throw new Error("IFSC code must be exactly 11 alphanumeric characters");
       }
     } else if (args.payoutMethod === "upi_qr") {
       if (
@@ -146,6 +159,28 @@ export const requestWithdrawal = mutation({
         : ["upi", "bank_transfer", "upi_qr", "paypal"];
     if (!allowedMethods.includes(args.payoutMethod)) {
       throw new Error("This payout method is not currently supported");
+    }
+
+    // Validate payout details based on method
+    const pd = args.payoutDetails;
+    if (args.payoutMethod === "bank_transfer") {
+      if (!pd.accountNumber || !/^\d{9,18}$/.test(pd.accountNumber)) {
+        throw new Error("Invalid bank account number (9-18 digits required)");
+      }
+      if (!pd.ifscCode || !/^[A-Z]{4}0[A-Z0-9]{6}$/.test(pd.ifscCode)) {
+        throw new Error("Invalid IFSC code (e.g., ABCD0123456)");
+      }
+      if (!pd.accountHolderName || pd.accountHolderName.trim().length < 2) {
+        throw new Error("Account holder name is required");
+      }
+    } else if (args.payoutMethod === "upi" || args.payoutMethod === "upi_qr") {
+      if (!pd.upiId || !pd.upiId.includes("@") || pd.upiId.length > 50) {
+        throw new Error("Invalid UPI ID (must contain @ and be under 50 chars)");
+      }
+    } else if (args.payoutMethod === "paypal") {
+      if (!pd.paypalEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(pd.paypalEmail)) {
+        throw new Error("Invalid PayPal email address");
+      }
     }
 
     // Enforce daily and monthly withdrawal limits from settings
@@ -384,60 +419,62 @@ export const updateWithdrawalStatus = mutation({
       .withIndex("by_userId", (q) => q.eq("userId", withdrawal.userId))
       .first();
 
-    if (wallet) {
-      if (args.status === "completed") {
-        // Mark ledger entry completed
-        const pendingTx = await ctx.db
-          .query("walletTransactions")
-          .withIndex("by_userId", (q) => q.eq("userId", withdrawal.userId))
-          .filter((q) =>
-            q.and(
-              q.eq(q.field("type"), "WITHDRAWAL"),
-              q.eq(q.field("referenceId"), args.withdrawalId)
-            )
-          )
-          .first();
-        if (pendingTx) {
-          await ctx.db.patch(pendingTx._id, { status: "completed" });
-        }
-        await ctx.db.patch(wallet._id, {
-          totalWithdrawn: wallet.totalWithdrawn + withdrawal.amount,
-          updatedAt: now,
-        });
-      } else if (args.status === "rejected") {
-        // Refund amount back to available balance
-        const restoredBalance = wallet.availableBalance + withdrawal.amount;
-        await ctx.db.patch(wallet._id, {
-          availableBalance: restoredBalance,
-          updatedAt: now,
-        });
+    if (!wallet) {
+      throw new Error("User wallet not found — cannot process withdrawal. Contact support.");
+    }
 
-        // Mark original WITHDRAWAL ledger entry as rejected (not orphaned pending)
-        const pendingTx = await ctx.db
-          .query("walletTransactions")
-          .withIndex("by_userId", (q) => q.eq("userId", withdrawal.userId))
-          .filter((q) =>
-            q.and(
-              q.eq(q.field("type"), "WITHDRAWAL"),
-              q.eq(q.field("referenceId"), args.withdrawalId)
-            )
+    if (args.status === "completed") {
+      // Mark ledger entry completed
+      const pendingTx = await ctx.db
+        .query("walletTransactions")
+        .withIndex("by_userId", (q) => q.eq("userId", withdrawal.userId))
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("type"), "WITHDRAWAL"),
+            q.eq(q.field("referenceId"), args.withdrawalId)
           )
-          .first();
-        if (pendingTx) {
-          await ctx.db.patch(pendingTx._id, { status: "rejected" });
-        }
-
-        await ctx.db.insert("walletTransactions", {
-          userId: withdrawal.userId,
-          type: "REFUND",
-          amount: withdrawal.amount,
-          balanceAfter: restoredBalance,
-          referenceId: args.withdrawalId,
-          description: `Withdrawal rejected & refunded: ₹${withdrawal.amount}. Note: ${args.adminNote || "N/A"}`,
-          status: "completed",
-          createdAt: now,
-        });
+        )
+        .first();
+      if (pendingTx) {
+        await ctx.db.patch(pendingTx._id, { status: "completed" });
       }
+      await ctx.db.patch(wallet._id, {
+        totalWithdrawn: wallet.totalWithdrawn + withdrawal.amount,
+        updatedAt: now,
+      });
+    } else if (args.status === "rejected") {
+      // Refund amount back to available balance
+      const restoredBalance = wallet.availableBalance + withdrawal.amount;
+      await ctx.db.patch(wallet._id, {
+        availableBalance: restoredBalance,
+        updatedAt: now,
+      });
+
+      // Mark original WITHDRAWAL ledger entry as rejected (not orphaned pending)
+      const pendingTx = await ctx.db
+        .query("walletTransactions")
+        .withIndex("by_userId", (q) => q.eq("userId", withdrawal.userId))
+        .filter((q) =>
+          q.and(
+            q.eq(q.field("type"), "WITHDRAWAL"),
+            q.eq(q.field("referenceId"), args.withdrawalId)
+          )
+        )
+        .first();
+      if (pendingTx) {
+        await ctx.db.patch(pendingTx._id, { status: "rejected" });
+      }
+
+      await ctx.db.insert("walletTransactions", {
+        userId: withdrawal.userId,
+        type: "REFUND",
+        amount: withdrawal.amount,
+        balanceAfter: restoredBalance,
+        referenceId: args.withdrawalId,
+        description: `Withdrawal rejected & refunded: ₹${withdrawal.amount}. Note: ${args.adminNote || "N/A"}`,
+        status: "completed",
+        createdAt: now,
+      });
     }
 
     // Notify user

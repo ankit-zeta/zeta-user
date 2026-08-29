@@ -49,4 +49,12 @@ crons.cron(
   {}
 );
 
+// Auto-close published jobs past their deadline
+crons.cron(
+  "auto-close-expired-jobs",
+  "0 * * * *",
+  internal.jobs.autoCloseExpiredJobs,
+  {}
+);
+
 export default crons;

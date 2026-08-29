@@ -45,13 +45,13 @@ export default function AffiliateWalletPage() {
   return (
     <div className="space-y-8 text-neutral-100">
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight">Affiliate Earnings</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Referral Earnings</h1>
         <p className="text-xs text-neutral-400">
-          Your referral performance and commission history. Withdrawals are managed from your Work Wallet.
+          Your referral performance and earnings history. Withdrawals are managed from your Wallet.
         </p>
       </div>
 
-      {/* Info banner */}
+      {/* Withdraw CTA */}
       <a
         href="/dashboard/wallet"
         className="flex items-center gap-3 rounded-xl border border-brand-700 bg-brand-950/40 p-4 hover:bg-brand-950/60 transition-colors group"
@@ -61,13 +61,15 @@ export default function AffiliateWalletPage() {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs font-bold text-brand-200">
-            Withdrawals &amp; payment methods are in your Work Wallet
+            Withdraw Your Earnings
           </p>
           <p className="text-[11px] text-brand-300/70 mt-0.5">
-            Your combined balance (work + affiliate) is available for withdrawal there.
+            Combined balance (work + referrals) is available for withdrawal. Add UPI, bank, or QR code to get started.
           </p>
         </div>
-        <ExternalLink className="w-4 h-4 text-brand-400 shrink-0 group-hover:translate-x-0.5 transition-transform" />
+        <span className="text-[11px] font-bold text-brand-300 bg-brand-900 px-3 py-1.5 rounded-lg group-hover:bg-brand-800 transition-colors">
+          Withdraw →
+        </span>
       </a>
 
       {/* Stat cards */}
@@ -79,7 +81,7 @@ export default function AffiliateWalletPage() {
           <p className="text-2xl font-extrabold">
             ₹{affiliateEarnings.toLocaleString("en-IN")}
           </p>
-          <span className="text-[11px] text-neutral-500 block">Lifetime affiliate commissions</span>
+          <span className="text-[11px] text-neutral-500 block">Lifetime referral earnings</span>
         </div>
         <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-5 space-y-2">
           <span className="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 text-neutral-400">
@@ -88,7 +90,7 @@ export default function AffiliateWalletPage() {
           <p className="text-2xl font-extrabold">
             ₹{pendingCommission.toLocaleString("en-IN")}
           </p>
-          <span className="text-[11px] text-neutral-500 block">In holding period</span>
+          <span className="text-[11px] text-neutral-500 block">Awaiting verification</span>
         </div>
         <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-5 space-y-2">
           <span className="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 text-neutral-400">
@@ -106,7 +108,7 @@ export default function AffiliateWalletPage() {
           <p className="text-2xl font-extrabold">
             ₹{chainEarnings.toLocaleString("en-IN")}
           </p>
-          <span className="text-[11px] text-neutral-500 block">Upline commissions</span>
+          <span className="text-[11px] text-neutral-500 block">From your network</span>
         </div>
       </div>
 
@@ -118,9 +120,9 @@ export default function AffiliateWalletPage() {
             <div className="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center mx-auto mb-3">
               <Users className="w-6 h-6 text-neutral-600" />
             </div>
-            <p className="text-xs text-neutral-500 mb-1">No affiliate sales yet</p>
+            <p className="text-xs text-neutral-500 mb-1">No referral earnings yet</p>
             <p className="text-[10px] text-neutral-600">
-              Share your referral link to start earning commissions.
+              Share your referral link to start earning.
             </p>
           </div>
         ) : (
@@ -163,7 +165,7 @@ export default function AffiliateWalletPage() {
 
       {/* How it works */}
       <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-6 space-y-3">
-        <h3 className="text-sm font-bold">How Affiliate Earnings Work</h3>
+        <h3 className="text-sm font-bold">How Referral Earnings Work</h3>
         <div className="space-y-2 text-[11px] text-neutral-400 leading-relaxed">
           <p>
             <strong className="text-neutral-200">1. Share your referral link</strong> — friends sign up using your unique link.
@@ -178,7 +180,7 @@ export default function AffiliateWalletPage() {
             <strong className="text-neutral-200">4. Auto-release</strong> — once cleared, funds move to your available balance automatically.
           </p>
           <p>
-            <strong className="text-neutral-200">5. Withdraw</strong> — request a payout from your <a href="/dashboard/wallet" className="text-brand-400 hover:text-brand-300 font-semibold">Work Wallet</a>.
+            <strong className="text-neutral-200">5. Withdraw</strong> — request a payout from your <a href="/dashboard/wallet" className="text-brand-400 hover:text-brand-300 font-semibold">Wallet</a>.
           </p>
         </div>
       </div>

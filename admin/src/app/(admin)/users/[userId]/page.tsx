@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import { toast } from "sonner";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAdminAuth } from "@/lib/convex";
@@ -44,6 +45,8 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -51,7 +54,9 @@ import {
   PieChart,
   Pie,
   Cell,
+  Legend,
 } from "recharts";
+import { Tooltip as InfoTooltip } from "@/components/Tooltip";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -175,17 +180,19 @@ function StatCard({
   value,
   icon: Icon,
   accent,
+  tooltip,
 }: {
   label: string;
   value: string;
   icon?: any;
   accent?: string;
+  tooltip?: string;
 }) {
   return (
     <div className="p-3 bg-neutral-50 rounded-lg border border-borderSubtle space-y-1">
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">
-          {label}
+          {tooltip ? <InfoTooltip content={tooltip}><span>{label}</span></InfoTooltip> : label}
         </span>
         {Icon && <Icon className="w-3.5 h-3.5 text-neutral-400" />}
       </div>
@@ -330,6 +337,174 @@ export default function UserProfilePage() {
     return Object.entries(counts).map(([name, value]) => ({ name, value }));
   }, [data?.referralDetails]);
 
+  // ── Earnings growth over time (cumulative) ─────────────────────────────
+  const earningsGrowthData = useMemo(() => {
+    const txns = data?.walletTransactions || [];
+    if (txns.length === 0) return [];
+    const sorted = [...txns]
+      .filter((t: any) => t.type === "credit" && t.amount > 0)
+      .sort((a: any, b: any) => a.createdAt - b.createdAt);
+    let cumulative = 0;
+    const byDate: Record<string, number> = {};
+    for (const t of sorted) {
+      const day = new Date(t.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
+      cumulative += t.amount || 0;
+      byDate[day] = cumulative;
+    }
+    return Object.entries(byDate).map(([date, total]) => ({ date, total }));
+  }, [data?.walletTransactions]);
+
+  // ── Referral funnel ────────────────────────────────────────────────────
+  const referralFunnelData = useMemo(() => {
+    const details = data?.referralDetails || [];
+    const total = details.length;
+    const signedUp = details.length;
+    const purchased = details.filter((r: any) => r.hasPurchase).length;
+    const active = details.filter((r: any) => r.status === "active").length;
+    return [
+      { stage: "Referred", count: total, fill: "#176B4D" },
+      { stage: "Signed Up", count: signedUp, fill: "#2563EB" },
+      { stage: "Purchased", count: purchased, fill: "#D97706" },
+      { stage: "Active", count: active, fill: "#7C3AED" },
+    ];
+  }, [data?.referralDetails]);
+
+  // ── Monthly earnings bar (work + affiliate stacked) ────────────────────
+  const monthlyEarningsData = useMemo(() => {
+    const txns = data?.walletTransactions || [];
+    const byMonth: Record<string, { work: number; affiliate: number; total: number }> = {};
+    for (const t of txns) {
+      if (t.type !== "credit" || !t.amount) continue;
+      const month = new Date(t.createdAt).toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
+      if (!byMonth[month]) byMonth[month] = { work: 0, affiliate: 0, total: 0 };
+      const isAffiliate = t.earningsSource === "affiliate" || t.description?.toLowerCase().includes("affiliate");
+      if (isAffiliate) {
+        byMonth[month].affiliate += t.amount;
+      } else {
+        byMonth[month].work += t.amount;
+      }
+      byMonth[month].total += t.amount;
+    }
+    return Object.entries(byMonth)
+      .map(([month, v]) => ({ month, ...v }))
+      .slice(-8);
+  }, [data?.walletTransactions]);
+
+  // ── MoM Growth metrics ─────────────────────────────────────────────
+  const growthMetrics = useMemo(() => {
+    const txns = data?.walletTransactions || [];
+    const referrals = data?.referralDetails || [];
+    const affiliateSales = data?.affiliateSales || [];
+
+    const now = new Date();
+    const thisMonth = now.toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
+    const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonth = lastMonthDate.toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
+
+    // Earnings by month
+    let thisMonthEarnings = 0, lastMonthEarnings = 0;
+    let thisMonthWork = 0, lastMonthWork = 0;
+    let thisMonthAffiliate = 0, lastMonthAffiliate = 0;
+    for (const t of txns) {
+      if (t.type !== "credit" || !t.amount) continue;
+      const m = new Date(t.createdAt).toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
+      const isAffiliate = t.earningsSource === "affiliate" || t.description?.toLowerCase().includes("affiliate");
+      if (m === thisMonth) {
+        thisMonthEarnings += t.amount;
+        if (isAffiliate) thisMonthAffiliate += t.amount;
+        else thisMonthWork += t.amount;
+      } else if (m === lastMonth) {
+        lastMonthEarnings += t.amount;
+        if (isAffiliate) lastMonthAffiliate += t.amount;
+        else lastMonthWork += t.amount;
+      }
+    }
+
+    // Referrals by month
+    let thisMonthReferrals = 0, lastMonthReferrals = 0;
+    for (const r of referrals) {
+      const m = new Date(r.createdAt).toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
+      if (m === thisMonth) thisMonthReferrals++;
+      else if (m === lastMonth) lastMonthReferrals++;
+    }
+
+    // Affiliate sales by month
+    let thisMonthSales = 0, lastMonthSales = 0;
+    let thisMonthCommission = 0, lastMonthCommission = 0;
+    for (const s of affiliateSales) {
+      const m = new Date(s._creationTime).toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
+      if (m === thisMonth) {
+        thisMonthSales++;
+        thisMonthCommission += s.commissionAmount || 0;
+      } else if (m === lastMonth) {
+        lastMonthSales++;
+        lastMonthCommission += s.commissionAmount || 0;
+      }
+    }
+
+    const pctChange = (curr: number, prev: number) => {
+      if (prev === 0 && curr === 0) return null;
+      if (prev === 0) return 100;
+      return Math.round(((curr - prev) / prev) * 100);
+    };
+
+    return {
+      earnings: { current: thisMonthEarnings, previous: lastMonthEarnings, change: pctChange(thisMonthEarnings, lastMonthEarnings) },
+      work: { current: thisMonthWork, previous: lastMonthWork, change: pctChange(thisMonthWork, lastMonthWork) },
+      affiliate: { current: thisMonthAffiliate, previous: lastMonthAffiliate, change: pctChange(thisMonthAffiliate, lastMonthAffiliate) },
+      referrals: { current: thisMonthReferrals, previous: lastMonthReferrals, change: pctChange(thisMonthReferrals, lastMonthReferrals) },
+      sales: { current: thisMonthSales, previous: lastMonthSales, change: pctChange(thisMonthSales, lastMonthSales) },
+      commission: { current: thisMonthCommission, previous: lastMonthCommission, change: pctChange(thisMonthCommission, lastMonthCommission) },
+    };
+  }, [data?.walletTransactions, data?.referralDetails, data?.affiliateSales]);
+
+  // ── Monthly signups from referrals ─────────────────────────────────
+  const monthlySignupsData = useMemo(() => {
+    const referrals = data?.referralDetails || [];
+    const byMonth: Record<string, number> = {};
+    for (const r of referrals) {
+      const m = new Date(r.createdAt).toLocaleDateString("en-IN", { month: "short", year: "2-digit" });
+      byMonth[m] = (byMonth[m] || 0) + 1;
+    }
+    return Object.entries(byMonth)
+      .map(([month, count]) => ({ month, signups: count }))
+      .slice(-8);
+  }, [data?.referralDetails]);
+
+  // ── Affiliate Performance Score ─────────────────────────────────────
+  const affiliateScore = useMemo(() => {
+    const stats = data?.affiliateStats;
+    const referrals = data?.referralDetails || [];
+    const sales = data?.affiliateSales || [];
+    if (!stats && referrals.length === 0) return null;
+
+    let score = 0;
+    // Conversion rate (0-30 pts)
+    const conv = stats?.conversionRate || 0;
+    score += Math.min(30, Math.round(conv * 0.6));
+    // Total referrals (0-20 pts)
+    score += Math.min(20, referrals.length * 2);
+    // Total sales (0-25 pts)
+    score += Math.min(25, sales.length * 5);
+    // Commission earned (0-25 pts)
+    const comm = stats?.commissionEarned || 0;
+    if (comm >= 10000) score += 25;
+    else if (comm >= 5000) score += 20;
+    else if (comm >= 2000) score += 15;
+    else if (comm >= 500) score += 10;
+    else score += Math.min(5, Math.round(comm / 100));
+
+    let grade = "D";
+    let color = "text-red-600";
+    let bgColor = "bg-red-50 border-red-200";
+    if (score >= 80) { grade = "A+"; color = "text-green-700"; bgColor = "bg-green-50 border-green-200"; }
+    else if (score >= 60) { grade = "A"; color = "text-green-600"; bgColor = "bg-green-50 border-green-200"; }
+    else if (score >= 45) { grade = "B"; color = "text-blue-600"; bgColor = "bg-blue-50 border-blue-200"; }
+    else if (score >= 30) { grade = "C"; color = "text-amber-600"; bgColor = "bg-amber-50 border-amber-200"; }
+
+    return { score, grade, color, bgColor };
+  }, [data?.affiliateStats, data?.referralDetails, data?.affiliateSales]);
+
   // ── Action handlers ──────────────────────────────────────────────────
 
   const handleSuspend = async () => {
@@ -346,8 +521,10 @@ export default function UserProfilePage() {
       setActionMsg(`Account ${newStatus}. User has been notified.`);
       setSuspendOpen(false);
       setSuspendReason("");
+      toast.success(`Account ${newStatus}`, { description: "User has been notified." });
     } catch (err: any) {
       setActionMsg(err.message || "Failed");
+      toast.error("Failed to update status", { description: err?.message || "Please try again" });
     } finally {
       setIsProcessing(false);
     }
@@ -366,8 +543,10 @@ export default function UserProfilePage() {
       setActionMsg(`Granted ${res.grantedCount} courses. User has been notified.`);
       setGrantPlanOpen(false);
       setGrantReason("");
+      toast.success("Plan granted", { description: `Access to ${res.grantedCount} courses granted. User notified.` });
     } catch (err: any) {
       setActionMsg(err.message || "Failed");
+      toast.error("Failed to grant plan", { description: err?.message || "Please try again" });
     } finally {
       setIsProcessing(false);
     }
@@ -387,8 +566,10 @@ export default function UserProfilePage() {
       setNotifyOpen(false);
       setNotifyTitle("");
       setNotifyMsg("");
+      toast.success("Notification sent", { description: "User has been notified." });
     } catch (err: any) {
       setActionMsg(err.message || "Failed");
+      toast.error("Failed to send notification", { description: err?.message || "Please try again" });
     } finally {
       setIsProcessing(false);
     }
@@ -413,8 +594,10 @@ export default function UserProfilePage() {
       setWalletAmt("");
       setWalletReason("");
       setWalletSource("");
+      toast.success("Wallet adjusted", { description: `New balance: ${fmtINR(res.newBalance)}` });
     } catch (err: any) {
       setActionMsg(err.message || "Failed");
+      toast.error("Failed to adjust wallet", { description: err?.message || "Please try again" });
     } finally {
       setIsProcessing(false);
     }
@@ -422,6 +605,10 @@ export default function UserProfilePage() {
 
   const handleReset = async () => {
     if (!token || !userId || !resetPass || !resetReason) return;
+    if (resetPass.length < 8) {
+      toast.error("Password too short", { description: "Password must be at least 8 characters" });
+      return;
+    }
     setIsProcessing(true);
     try {
       await resetPassword({
@@ -434,8 +621,10 @@ export default function UserProfilePage() {
       setResetOpen(false);
       setResetPass("");
       setResetReason("");
+      toast.success("Password reset", { description: "All active sessions have been invalidated." });
     } catch (err: any) {
       setActionMsg(err.message || "Failed");
+      toast.error("Failed to reset password", { description: err?.message || "Please try again" });
     } finally {
       setIsProcessing(false);
     }
@@ -456,8 +645,10 @@ export default function UserProfilePage() {
       setRevokeProgramId("");
       setRevokeProgramName("");
       setRevokeReason("");
+      toast.success("Access revoked", { description: `Access to "${revokeProgramName}" has been revoked.` });
     } catch (err: any) {
       setActionMsg(err.message || "Failed");
+      toast.error("Failed to revoke access", { description: err?.message || "Please try again" });
     } finally {
       setIsProcessing(false);
     }
@@ -649,7 +840,7 @@ export default function UserProfilePage() {
               <Mail className="w-3.5 h-3.5" /> {u.email}
             </div>
             <div className="flex items-center gap-2 text-xs text-textMuted">
-              <Target className="w-3.5 h-3.5" /> Code: <strong className="font-mono">{u.referralCode}</strong>
+              <Target className="w-3.5 h-3.5" /> <InfoTooltip content="Unique code users share to earn referral commissions"><span>Code:</span></InfoTooltip> <strong className="font-mono">{u.referralCode}</strong>
             </div>
           </div>
 
@@ -662,7 +853,7 @@ export default function UserProfilePage() {
               onClick={() => setGrantPlanOpen(true)}
               className="w-full btn-primary text-[11px] py-2 flex items-center justify-center gap-1.5"
             >
-              <Layers className="w-3.5 h-3.5" /> Assign Plan
+              <Layers className="w-3.5 h-3.5" /> <InfoTooltip content="Plans bundle multiple Programs (courses) into a single purchase. Granting a plan gives access to all included programs."><span>Assign Plan</span></InfoTooltip>
             </button>
             <button
               onClick={() => setNotifyOpen(true)}
@@ -720,22 +911,199 @@ export default function UserProfilePage() {
           {/* ── Tab content ────────────────────────────────────── */}
           <div className="card-surface p-6">
             {activeTab === "overview" && (
-              <div className="space-y-5">
+              <div className="space-y-6">
                 <h2 className="text-sm font-bold text-textMain">Account Overview</h2>
+
+                {/* ── Stat cards ──────────────────────────────────── */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <StatCard label="Wallet Balance" value={fmtINR(data.wallet?.availableBalance)} accent="text-brand-700" />
                   <StatCard label="Total Earned" value={fmtINR(data.wallet?.totalEarned)} accent="text-brand-700" />
                   <StatCard label="Affiliate Commission" value={fmtINR(data.affiliateStats?.commissionEarned)} accent="text-brand-700" />
-                  <StatCard label="Pending Commission" value={fmtINR(data.affiliateStats?.pendingCommission)} accent="text-amber-600" />
+                  <StatCard label="Pending Commission" value={fmtINR(data.affiliateStats?.pendingCommission)} accent="text-amber-600" tooltip="Affiliate commission in holding period, not yet available for withdrawal" />
                   <StatCard label="Enrolled Programs" value={`${data.enrolledPrograms.length}`} />
                   <StatCard label="Certificates" value={`${data.certificates.length}`} />
                   <StatCard label="Referrals" value={`${data.referralsCount}`} />
                   <StatCard label="Conversion Rate" value={`${data.affiliateStats?.conversionRate || 0}%`} />
                 </div>
 
+                {/* ── Growth Analytics ────────────────────────────── */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-xs font-bold text-textMain">Growth Analytics</h3>
+                    <InfoTooltip content="Month-over-month comparison showing how this user's performance is trending"><span><span className="sr-only">Info</span></span></InfoTooltip>
+                  </div>
+
+                  {/* MoM Growth Cards */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {[
+                      { label: "Earnings", current: growthMetrics.earnings.current, previous: growthMetrics.earnings.previous, change: growthMetrics.earnings.change, format: fmtINR },
+                      { label: "Work Income", current: growthMetrics.work.current, previous: growthMetrics.work.previous, change: growthMetrics.work.change, format: fmtINR },
+                      { label: "Affiliate Earnings", current: growthMetrics.affiliate.current, previous: growthMetrics.affiliate.previous, change: growthMetrics.affiliate.change, format: fmtINR },
+                      { label: "Referrals Added", current: growthMetrics.referrals.current, previous: growthMetrics.referrals.previous, change: growthMetrics.referrals.change, format: (v: number) => `${v}` },
+                      { label: "Affiliate Sales", current: growthMetrics.sales.current, previous: growthMetrics.sales.previous, change: growthMetrics.sales.change, format: (v: number) => `${v}` },
+                      { label: "Commission Earned", current: growthMetrics.commission.current, previous: growthMetrics.commission.previous, change: growthMetrics.commission.change, format: fmtINR },
+                    ].map((item, i) => (
+                      <div key={i} className="p-3 bg-neutral-50 rounded-lg border border-borderSubtle">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-textMuted mb-1">{item.label}</p>
+                        <p className="text-sm font-extrabold text-textMain">{item.format(item.current)}</p>
+                        <div className="flex items-center gap-1 mt-1">
+                          {item.change !== null ? (
+                            <>
+                              <span className={`text-[10px] font-bold ${item.change >= 0 ? "text-green-600" : "text-red-600"}`}>
+                                {item.change >= 0 ? "↑" : "↓"} {Math.abs(item.change)}%
+                              </span>
+                              <span className="text-[9px] text-textMuted">vs last month</span>
+                            </>
+                          ) : (
+                            <span className="text-[9px] text-textMuted">No prior data</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Affiliate Score + Monthly Signups */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Affiliate Performance Score */}
+                    {affiliateScore && (
+                      <div className={`p-4 rounded-lg border ${affiliateScore.bgColor}`}>
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-textMuted mb-2">Affiliate Performance</p>
+                        <div className="flex items-center gap-3">
+                          <div className={`text-3xl font-extrabold ${affiliateScore.color}`}>
+                            {affiliateScore.grade}
+                          </div>
+                          <div className="space-y-1">
+                            <p className="text-xs font-bold text-textMain">Score: {affiliateScore.score}/100</p>
+                            <div className="w-24 h-1.5 bg-neutral-200 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full rounded-full ${affiliateScore.score >= 60 ? "bg-green-500" : affiliateScore.score >= 30 ? "bg-amber-500" : "bg-red-500"}`}
+                                style={{ width: `${affiliateScore.score}%` }}
+                              />
+                            </div>
+                            <p className="text-[9px] text-textMuted">
+                              {affiliateScore.score >= 80 ? "Outstanding affiliate performer" :
+                               affiliateScore.score >= 60 ? "Strong affiliate activity" :
+                               affiliateScore.score >= 45 ? "Good potential, room to grow" :
+                               affiliateScore.score >= 30 ? "Building momentum" :
+                               "Early stage — needs nurturing"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Monthly Signups from Referrals */}
+                    {monthlySignupsData.length > 0 && (
+                      <div className="p-4 bg-neutral-50 rounded-lg border border-borderSubtle">
+                        <p className="text-[10px] font-bold uppercase tracking-wider text-textMuted mb-2">People Added to Platform</p>
+                        <ResponsiveContainer width="100%" height={100}>
+                          <BarChart data={monthlySignupsData} margin={{ top: 4, right: 8, left: -12, bottom: 0 }}>
+                            <CartesianGrid stroke="#E5E5E5" strokeDasharray="3 3" vertical={false} />
+                            <XAxis dataKey="month" tick={{ fontSize: 9, fill: "#737373" }} />
+                            <YAxis tick={{ fontSize: 9, fill: "#737373" }} allowDecimals={false} />
+                            <Tooltip contentStyle={{ fontSize: 10, borderRadius: 8 }} />
+                            <Bar dataKey="signups" name="Signups" fill="#176B4D" radius={[3, 3, 0, 0]} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                        <p className="text-[10px] text-textMuted mt-1">
+                          Total: <strong className="text-textMain">{data.referralsCount}</strong> people brought to platform
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* ── Earnings Growth Chart ───────────────────────── */}
+                {earningsGrowthData.length > 1 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xs font-bold text-textMain">Earnings Growth</h3>
+                      <InfoTooltip content="Cumulative earnings over time — shows how the user's total earnings have grown"><span><span className="sr-only">Info</span></span></InfoTooltip>
+                    </div>
+                    <div className="p-4 bg-neutral-50 rounded-lg border border-borderSubtle">
+                      <ResponsiveContainer width="100%" height={200}>
+                        <AreaChart data={earningsGrowthData} margin={{ top: 4, right: 8, left: -12, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="earningsGrad" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#176B4D" stopOpacity={0.3} />
+                              <stop offset="100%" stopColor="#176B4D" stopOpacity={0.02} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid stroke="#E5E5E5" strokeDasharray="3 3" vertical={false} />
+                          <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#737373" }} />
+                          <YAxis tick={{ fontSize: 10, fill: "#737373" }} />
+                          <Tooltip formatter={(v: any) => fmtINR(v)} contentStyle={{ fontSize: 11, borderRadius: 8 }} />
+                          <Area type="monotone" dataKey="total" name="Total Earned" stroke="#176B4D" strokeWidth={2} fill="url(#earningsGrad)" />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Work vs Affiliate Earnings ──────────────────── */}
+                {monthlyEarningsData.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xs font-bold text-textMain">Work vs Affiliate Earnings</h3>
+                      <InfoTooltip content="Breakdown of earnings source — green is work income, amber is affiliate commission"><span><span className="sr-only">Info</span></span></InfoTooltip>
+                    </div>
+                    <div className="p-4 bg-neutral-50 rounded-lg border border-borderSubtle">
+                      <ResponsiveContainer width="100%" height={200}>
+                        <BarChart data={monthlyEarningsData} margin={{ top: 4, right: 8, left: -12, bottom: 0 }}>
+                          <CartesianGrid stroke="#E5E5E5" strokeDasharray="3 3" vertical={false} />
+                          <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#737373" }} />
+                          <YAxis tick={{ fontSize: 10, fill: "#737373" }} />
+                          <Tooltip formatter={(v: any) => fmtINR(v)} contentStyle={{ fontSize: 11, borderRadius: 8 }} />
+                          <Legend wrapperStyle={{ fontSize: 10 }} />
+                          <Bar dataKey="work" name="Work Earnings" stackId="a" fill="#176B4D" radius={[0, 0, 0, 0]} />
+                          <Bar dataKey="affiliate" name="Affiliate Earnings" stackId="a" fill="#D97706" radius={[3, 3, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── Referral Funnel ─────────────────────────────── */}
+                {referralFunnelData.length > 0 && referralFunnelData[0].count > 0 && (
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xs font-bold text-textMain">Referral Funnel</h3>
+                      <InfoTooltip content="How many referrals converted from sign-up to active paying users"><span><span className="sr-only">Info</span></span></InfoTooltip>
+                    </div>
+                    <div className="p-4 bg-neutral-50 rounded-lg border border-borderSubtle">
+                      <div className="flex flex-col sm:flex-row items-stretch gap-2">
+                        {referralFunnelData.map((step, i) => {
+                          const maxCount = referralFunnelData[0].count || 1;
+                          const pct = Math.round((step.count / maxCount) * 100);
+                          return (
+                            <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                              <div className="w-full relative h-8 rounded-lg overflow-hidden bg-neutral-100">
+                                <div
+                                  className="absolute inset-y-0 left-0 rounded-lg transition-all duration-500"
+                                  style={{ width: `${pct}%`, background: step.fill }}
+                                />
+                                <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-textMain">
+                                  {step.count}
+                                </span>
+                              </div>
+                              <span className="text-[10px] text-textMuted font-semibold">{step.stage}</span>
+                              {i < referralFunnelData.length - 1 && (
+                                <span className="hidden sm:block text-[10px] text-neutral-300">
+                                  {step.count > 0 && referralFunnelData[i + 1].count > 0 ? `${Math.round((referralFunnelData[i + 1].count / step.count) * 100)}% →` : "0% →"}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ── CV + Skills ─────────────────────────────────── */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                   <div className="p-3 bg-neutral-50 rounded-lg border border-borderSubtle space-y-1">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">CV Status</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted"><InfoTooltip content="Resume/CV verification status — must be verified before work eligibility"><span>CV Status</span></InfoTooltip></span>
                     <StatusBadge value={u.cvStatus} />
                     {u.cvRemarks && <p className="text-textMuted mt-1">{u.cvRemarks}</p>}
                   </div>
@@ -745,7 +1113,7 @@ export default function UserProfilePage() {
                   </div>
                 </div>
 
-                {/* Recent activity */}
+                {/* ── Recent activity ─────────────────────────────── */}
                 <div className="space-y-2">
                   <h3 className="text-xs font-bold text-textMain">Recent Activity</h3>
                   {(data.auditLogs || []).slice(0, 5).map((log: any, i: number) => (
@@ -792,9 +1160,8 @@ export default function UserProfilePage() {
                                 setRevokeOpen(true);
                               }}
                               className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
-                              title="Revoke access"
                             >
-                              <Ban size={14} />
+                              <InfoTooltip content="Remove the user's access to a specific program. They will no longer be able to view its content."><span><Ban size={14} /></span></InfoTooltip>
                             </button>
                           )}
                         </div>
@@ -1002,7 +1369,7 @@ export default function UserProfilePage() {
                 <h2 className="text-sm font-bold text-textMain">KYC Information</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
                   <div className="p-3 bg-neutral-50 rounded-lg border border-borderSubtle">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">CV Status</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted"><InfoTooltip content="Resume/CV verification status — must be verified before work eligibility"><span>CV Status</span></InfoTooltip></span>
                     <div className="mt-1"><StatusBadge value={u.cvStatus} /></div>
                   </div>
                   {u.cvReviewedAt && (
@@ -1259,7 +1626,8 @@ export default function UserProfilePage() {
             type="password"
             value={resetPass}
             onChange={(e) => setResetPass(e.target.value)}
-            placeholder="New password"
+            placeholder="New password (min 8 characters)"
+            minLength={8}
             className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white mb-3"
           />
           <textarea

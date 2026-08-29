@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAdminAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
+import { toast } from "sonner";
 import { Zap, Plus, Award, CheckCircle2, Layers, Pencil, Trash2, Play, Pause, XCircle } from "lucide-react";
 
 export default function AdminAchievementsPage() {
@@ -23,9 +24,9 @@ export default function AdminAchievementsPage() {
     const next = currentStatus === "active" ? "draft" : "active";
     try {
       await toggleStatusMutation({ token, achievementId: achId as any, status: next });
-      setMsg(`${currentStatus === "active" ? "Deactivated" : "Activated"} rule successfully.`);
+      toast.success(`${currentStatus === "active" ? "Deactivated" : "Activated"} rule`, { description: "Status updated successfully." });
     } catch (err: any) {
-      setMsg(err.message || "Failed to update status.");
+      toast.error("Failed to update status", { description: err?.message || "Please try again" });
     }
   };
 
@@ -33,10 +34,10 @@ export default function AdminAchievementsPage() {
     if (!token) return;
     try {
       await deleteMutation({ token, achievementId: achId as any });
-      setMsg("Achievement rule deleted (user unlocks removed).");
+      toast.success("Achievement deleted", { description: "Rule deleted (user unlocks removed)." });
       setConfirmDelete(null);
     } catch (err: any) {
-      setMsg(err.message || "Failed to delete.");
+      toast.error("Failed to delete", { description: err?.message || "Please try again" });
     }
   };
 

@@ -4,8 +4,8 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/convex";
-import { useQuery } from "convex/react";
-import { api } from "@/lib/convex";
+import { NotificationBadge } from "@/components/NotificationBadge";
+import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import {
   LayoutDashboard,
   BookOpen,
@@ -22,7 +22,8 @@ import {
   X,
   Wallet,
   LifeBuoy,
-  ShieldCheck
+  ShieldCheck,
+  Bookmark,
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -34,11 +35,6 @@ export default function DashboardLayout({
   const router = useRouter();
   const { user, token, isLoading, logout } = useAuth();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-
-  const notifsData = useQuery(
-    api.notifications.getUserNotifications,
-    token ? { token } : "skip"
-  );
 
   useEffect(() => {
     if (!isLoading && !token) {
@@ -96,6 +92,7 @@ export default function DashboardLayout({
       title: "Work Portal",
       items: [
         { name: "Opportunities", href: "/dashboard/work", icon: Briefcase },
+        { name: "Saved Jobs", href: "/dashboard/saved-jobs", icon: Bookmark },
         { name: "My Applications", href: "/dashboard/applications", icon: FileCheck },
         { name: "Work Wallet", href: "/dashboard/wallet", icon: Wallet },
       ],
@@ -122,7 +119,6 @@ export default function DashboardLayout({
           name: "Notifications",
           href: "/dashboard/notifications",
           icon: Bell,
-          badge: notifsData?.unreadCount && notifsData.unreadCount > 0 ? notifsData.unreadCount : null
         },
         { name: "Profile", href: "/dashboard/profile", icon: User },
         { name: "Settings", href: "/dashboard/settings", icon: Settings },
@@ -189,11 +185,7 @@ export default function DashboardLayout({
                       <item.icon className={`w-4 h-4 ${active ? "text-brand-600" : "text-neutral-400"}`} />
                       <span>{item.name}</span>
                     </div>
-                    {item.badge ? (
-                      <span className="w-4 h-4 rounded-full bg-red-600 text-white text-[10px] font-bold flex items-center justify-center">
-                        {item.badge}
-                      </span>
-                    ) : (item as any).badgeDot ? (
+                    {(item as any).badgeDot ? (
                       <span className={`w-2 h-2 rounded-full ${(item as any).badgeDot}`} />
                     ) : null}
                   </Link>
@@ -241,20 +233,13 @@ export default function DashboardLayout({
             )}
 
             {/* Notifications icon */}
-            <Link
-              href="/dashboard/notifications"
-              className="relative p-2 rounded-lg text-textMuted hover:bg-neutral-100 transition-colors"
-            >
-              <Bell className="w-4 h-4" />
-              {notifsData?.unreadCount && notifsData.unreadCount > 0 ? (
-                <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-600"></span>
-              ) : null}
-            </Link>
+            <NotificationBadge token={token} />
           </div>
         </header>
 
         {/* Page Children */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+          <AnnouncementBanner />
           {children}
         </main>
       </div>

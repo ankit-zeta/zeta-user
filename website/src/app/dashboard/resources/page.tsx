@@ -6,7 +6,6 @@ import { useAuth } from "@/lib/convex";
 import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
 import {
-  Lock,
   Download,
   X,
   ExternalLink,
@@ -18,13 +17,10 @@ import {
   LayoutTemplate,
   Video,
   Link2,
-  FolderDown,
   Folder,
   FolderOpen,
   Search,
   Layers,
-  CheckCircle2,
-  LockKeyhole,
   ArrowRight,
   DownloadCloud,
 } from "lucide-react";
@@ -120,7 +116,6 @@ export default function ResourcesPage() {
   const [previewTitle, setPreviewTitle] = useState("");
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [showLocked, setShowLocked] = useState(true);
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
 
   const grouped = useMemo(() => {
@@ -148,15 +143,9 @@ export default function ResourcesPage() {
       folders.get(key)!.push(r);
     }
 
-    const programKey = (r: any) => r.programId?.toString() ?? "general";
-    const programOrder = (key: string) => {
-      if (key === "general") return 1;
-      const prog = resources.find((r) => programKey(r) === key);
-      return prog ? (prog.hasAccess ? 0 : 2) : 2;
-    };
-
     const sortedKeys = Array.from(folders.keys()).sort((a, b) => {
-      if (programOrder(a) !== programOrder(b)) return programOrder(a) - programOrder(b);
+      if (a === "general") return 1;
+      if (b === "general") return -1;
       const nameA = folders.get(a)![0]?.programName || "General Library";
       const nameB = folders.get(b)![0]?.programName || "General Library";
       return nameA.localeCompare(nameB);
@@ -165,15 +154,12 @@ export default function ResourcesPage() {
     return sortedKeys.map((key) => {
       const items = folders.get(key)!;
       const first = items[0];
-      const unlocked = items.filter((i) => i.hasAccess).length;
       return {
         key,
         name: first.programName || "General Library",
         slug: first.programSlug,
         resources: items,
         total: items.length,
-        unlocked,
-        locked: items.length - unlocked,
         isGeneral: key === "general",
       };
     });
@@ -181,14 +167,10 @@ export default function ResourcesPage() {
 
   const stats = useMemo(() => {
     if (!resources) return null;
-    const total = resources.length;
-    const unlocked = resources.filter((r) => r.hasAccess).length;
-    return { total, unlocked, locked: total - unlocked };
+    return { total: resources.length };
   }, [resources]);
 
-  const hasEnrollments = (user?.enrolledProgramIds?.length || 0) > 0;
-  const noUnlockedResources =
-    stats !== null && stats.total > 0 && stats.unlocked === 0;
+  const isEmpty = stats !== null && stats.total === 0;
 
   const toggleFolder = (key: string) => {
     setExpandedFolders((prev) => {
@@ -214,13 +196,13 @@ export default function ResourcesPage() {
           Resource Library & Toolkits
         </h1>
         <p className="text-xs text-textMuted">
-          Resources are organized by program. Open a folder to view, preview, and download the assets you have access to.
+          Resources for your enrolled programs. Open a folder to view, preview, and download assets.
         </p>
       </div>
 
-      {/* Stats row — hidden when nothing is unlocked (empty state below takes over) */}
-      {stats && !noUnlockedResources && (
-        <div className="grid grid-cols-3 gap-4">
+      {/* Stats row */}
+      {stats && !isEmpty && (
+        <div className="grid grid-cols-2 gap-4 max-w-md">
           <div className="card-surface p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-brand-50 text-brand-700 flex items-center justify-center">
               <Layers className="w-5 h-5" />
@@ -234,23 +216,12 @@ export default function ResourcesPage() {
           </div>
           <div className="card-surface p-4 flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
-              <CheckCircle2 className="w-5 h-5" />
+              <FolderOpen className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xl font-bold text-textMain">{stats.unlocked}</p>
+              <p className="text-xl font-bold text-textMain">{grouped?.length || 0}</p>
               <p className="text-[10px] font-semibold uppercase tracking-wide text-textMuted">
-                Available to You
-              </p>
-            </div>
-          </div>
-          <div className="card-surface p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-              <LockKeyhole className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-xl font-bold text-textMain">{stats.locked}</p>
-              <p className="text-[10px] font-semibold uppercase tracking-wide text-textMuted">
-                Locked / Needs Enrollment
+                Program Folders
               </p>
             </div>
           </div>
@@ -258,7 +229,7 @@ export default function ResourcesPage() {
       )}
 
       {/* Controls */}
-      {!noUnlockedResources && (
+      {!isEmpty && (
         <div className="card-surface p-4 flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
@@ -281,15 +252,6 @@ export default function ResourcesPage() {
             </option>
           ))}
         </select>
-        <label className="flex items-center gap-2 text-xs font-medium text-textMuted cursor-pointer select-none">
-          <input
-            type="checkbox"
-            checked={showLocked}
-            onChange={(e) => setShowLocked(e.target.checked)}
-            className="accent-brand-600"
-          />
-          Show locked
-        </label>
         <div className="flex gap-2">
           <button
             onClick={expandAll}
@@ -308,19 +270,18 @@ export default function ResourcesPage() {
       )}
 
       {/* Program folders */}
-      {noUnlockedResources ? (
+      {isEmpty ? (
         <div className="card-surface p-12 text-center space-y-4">
           <div className="w-14 h-14 mx-auto rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
-            <LockKeyhole className="w-7 h-7" />
+            <Folder className="w-7 h-7" />
           </div>
           <div className="space-y-1.5">
             <h2 className="text-base font-bold text-textMain">
-              {hasEnrollments ? "No resources available yet" : "No resources unlocked yet"}
+              No resources available yet
             </h2>
             <p className="text-xs text-textMuted max-w-md mx-auto leading-relaxed">
-              {hasEnrollments
-                ? "Your enrolled programs don't have downloadable resources published yet. Check back soon — new toolkits are added regularly."
-                : "Resource libraries and toolkits are included with every program. Enroll in a program and your downloads will appear here."}
+              Enroll in a program to access its resource library and toolkits.
+              New resources are added regularly.
             </p>
           </div>
           <div className="flex items-center justify-center gap-3 pt-1">
@@ -348,35 +309,19 @@ export default function ResourcesPage() {
       ) : (
         <div className="space-y-6">
           {grouped.map((folder) => {
-            const visibleItems = showLocked
-              ? folder.resources
-              : folder.resources.filter((r) => r.hasAccess);
-            if (visibleItems.length === 0) return null;
-
-            const isOpen = expandedFolders.has(folder.key) || !folder.isGeneral;
-            const pct = folder.total > 0 ? Math.round((folder.unlocked / folder.total) * 100) : 0;
+            const isOpen = expandedFolders.has(folder.key);
 
             return (
               <div
                 key={folder.key}
-                className={`card-surface overflow-hidden ${
-                  folder.isGeneral ? "" : folder.locked > 0 && folder.unlocked === 0 ? "border-amber-200" : ""
-                }`}
+                className="card-surface overflow-hidden"
               >
                 {/* Folder header */}
                 <div
                   className="flex items-center gap-3 px-5 py-4 border-b border-borderSubtle bg-warm cursor-pointer hover:bg-brand-50/40 transition-colors"
                   onClick={() => toggleFolder(folder.key)}
                 >
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                      folder.isGeneral
-                        ? "bg-neutral-200 text-neutral-600"
-                        : folder.unlocked > 0
-                          ? "bg-brand-600 text-white"
-                          : "bg-amber-100 text-amber-700"
-                    }`}
-                  >
+                  <div className="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center shrink-0">
                     {isOpen ? <FolderOpen className="w-5 h-5" /> : <Folder className="w-5 h-5" />}
                   </div>
 
@@ -384,17 +329,8 @@ export default function ResourcesPage() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="text-sm font-bold text-textMain truncate">{folder.name}</h3>
                       <span className="text-[10px] font-bold text-brand-700 bg-brand-50 border border-brand-100 px-2 py-0.5 rounded uppercase shrink-0">
-                        {folder.unlocked}/{folder.total} unlocked
+                        {folder.total} resources
                       </span>
-                    </div>
-                    <div className="flex items-center gap-3 mt-1.5">
-                      <div className="flex-1 max-w-xs h-1.5 bg-neutral-200 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full rounded-full ${folder.unlocked > 0 ? "bg-brand-600" : "bg-amber-400"}`}
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <span className="text-[10px] text-textMuted shrink-0">{pct}% available</span>
                     </div>
                   </div>
 
@@ -408,27 +344,18 @@ export default function ResourcesPage() {
                         View Program <ArrowRight className="w-3 h-3" />
                       </Link>
                     )}
-                    {folder.locked > 0 && (
-                      <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
-                        <Lock className="w-3 h-3" /> {folder.locked} locked
-                      </span>
-                    )}
                   </div>
                 </div>
 
                 {/* Folder body */}
                 {isOpen && (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
-                    {visibleItems.map((r) => {
+                    {folder.resources.map((r) => {
                       const style = fileStyle(r.fileType);
                       return (
                         <div
                           key={r._id}
-                          className={`rounded-xl border p-4 flex flex-col justify-between transition-all ${
-                            !r.hasAccess
-                              ? "bg-neutral-50/70 border-dashed"
-                              : "bg-white border-borderSubtle hover:border-brand-300 hover:shadow-sm"
-                          }`}
+                          className="rounded-xl border p-4 flex flex-col justify-between transition-all bg-white border-borderSubtle hover:border-brand-300 hover:shadow-sm"
                         >
                           <div className="space-y-2.5">
                             <div className="flex items-start justify-between gap-2">
@@ -440,9 +367,6 @@ export default function ResourcesPage() {
                                   {r.fileType}
                                 </span>
                               </div>
-                              {!r.hasAccess && (
-                                <Lock className="w-4 h-4 text-amber-600 shrink-0" />
-                              )}
                             </div>
 
                             <h4 className="text-xs font-bold text-textMain leading-snug">{r.title}</h4>
@@ -459,16 +383,10 @@ export default function ResourcesPage() {
                                 <span>· {r.downloadCount} downloads</span>
                               )}
                             </div>
-
-                            {!r.hasAccess && r.lockReason && (
-                              <div className="p-2 bg-amber-50 border border-amber-200 rounded-lg text-[10px] text-amber-800 font-medium leading-snug">
-                                {r.lockReason}
-                              </div>
-                            )}
                           </div>
 
                           <div className="pt-3 mt-3 border-t border-borderSubtle flex gap-2">
-                            {r.hasAccess && r.fileUrl ? (
+                            {r.fileUrl ? (
                               <>
                                 {r.fileType === "pdf" ? (
                                   <button
@@ -502,12 +420,7 @@ export default function ResourcesPage() {
                                 </a>
                               </>
                             ) : (
-                              <Link
-                                href="/dashboard/programs"
-                                className="btn-secondary flex-1 justify-center text-[11px] py-1.5 text-textMuted hover:text-textMain"
-                              >
-                                Enroll to Unlock
-                              </Link>
+                              <span className="text-[11px] text-textMuted">File not available</span>
                             )}
                           </div>
                         </div>
@@ -533,7 +446,7 @@ export default function ResourcesPage() {
           >
             <div className="flex items-center justify-between gap-3 px-5 py-3.5 border-b border-borderSubtle bg-warm">
               <div className="flex items-center gap-2.5 min-w-0">
-                <FolderDown className="w-4 h-4 text-brand-600 shrink-0" />
+                <Folder className="w-4 h-4 text-brand-600 shrink-0" />
                 <h3 className="text-sm font-bold text-textMain truncate">{previewTitle}</h3>
               </div>
               <div className="flex items-center gap-2 shrink-0">

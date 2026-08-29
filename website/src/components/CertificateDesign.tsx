@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useId } from "react";
 import { Great_Vibes, Cormorant_Garamond } from "next/font/google";
 import { ShieldCheck } from "lucide-react";
 
@@ -19,14 +19,15 @@ const GREEN = "#10382A";
 
 // Laurel wreath (two mirrored branches) used in the ribbon badge and seal.
 function LaurelWreath({ size = 64, color = GOLD }: { size?: number; color?: string }) {
+  const r2 = (v: number) => Math.round(v * 100) / 100;
   const leaves = [];
   for (let side = 0; side < 2; side++) {
     for (let i = 0; i < 6; i++) {
       const t = 0.28 + i * 0.115; // position along the arc
       const angle = side === 0 ? 200 - t * 160 : -20 + t * 160;
       const rad = (angle * Math.PI) / 180;
-      const cx = 50 + 34 * Math.cos(rad);
-      const cy = 40 + 30 * Math.sin(rad);
+      const cx = r2(50 + 34 * Math.cos(rad));
+      const cy = r2(40 + 30 * Math.sin(rad));
       leaves.push(
         <ellipse
           key={`${side}-${i}`}
@@ -50,19 +51,25 @@ function LaurelWreath({ size = 64, color = GOLD }: { size?: number; color?: stri
 
 // Scalloped gold seal with green core, embossed Z and inner laurel.
 function GoldSeal({ size = 150 }: { size?: number }) {
+  // useId() guarantees unique gradient IDs across the entire document,
+  // even when multiple GoldSeal instances exist (e.g. hidden export + visible preview).
+  const reactId = useId();
+  const uid = `seal${reactId}`;
   // Smooth scalloped edge: outward arcs between valley points (bottle-cap style).
   const n = 24;
   const cx = 75, cy = 75, rValley = 58;
+  // Round to 2 decimal places to prevent SSR/client floating-point hydration mismatch
+  const r2 = (v: number) => Math.round(v * 100) / 100;
   const pt = (i: number, r: number) => {
     const a = (i / n) * Math.PI * 2 - Math.PI / 2;
-    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+    return [r2(cx + r * Math.cos(a)), r2(cy + r * Math.sin(a))];
   };
   let d = `M ${pt(0, rValley).join(" ")} `;
   for (let i = 0; i < n; i++) {
     const [vx, vy] = pt(i, rValley);
     const [wx, wy] = pt(i + 1, rValley);
     const chord = Math.hypot(wx - vx, wy - vy);
-    const r = (chord / 2) * 1.18;
+    const r = r2((chord / 2) * 1.18);
     d += `A ${r} ${r} 0 0 1 ${wx} ${wy} `;
   }
   d += "Z";
@@ -74,8 +81,8 @@ function GoldSeal({ size = 150 }: { size?: number }) {
       const t = 0.15 + i * 0.2;
       const angle = side === 0 ? 150 - t * 120 : 30 + t * 120;
       const rad = (angle * Math.PI) / 180;
-      const lx = 75 + 33 * Math.cos(rad);
-      const ly = 78 + 26 * Math.sin(rad);
+      const lx = r2(75 + 33 * Math.cos(rad));
+      const ly = r2(78 + 26 * Math.sin(rad));
       sprigLeaves.push(
         <ellipse
           key={`${side}-${i}`}
@@ -100,38 +107,38 @@ function GoldSeal({ size = 150 }: { size?: number }) {
   );
 
   return (
-    <svg width={size} height={size} viewBox="0 0 150 150" aria-hidden>
+    <svg width={size} height={size} viewBox="0 0 150 150" aria-hidden suppressHydrationWarning>
       <defs>
-        <linearGradient id="sealGoldEdge" x1="0" y1="0" x2="1" y2="1">
+        <linearGradient id={`${uid}-edge`} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#7a5c0e" />
           <stop offset="30%" stopColor="#D4AF37" />
           <stop offset="55%" stopColor="#F7EBB4" />
           <stop offset="80%" stopColor="#C9A227" />
           <stop offset="100%" stopColor="#8a680f" />
         </linearGradient>
-        <linearGradient id="sealGoldFace" x1="0" y1="0" x2="0.8" y2="1">
+        <linearGradient id={`${uid}-face`} x1="0" y1="0" x2="0.8" y2="1">
           <stop offset="0%" stopColor="#F7EBB4" />
           <stop offset="40%" stopColor="#E3C25C" />
           <stop offset="70%" stopColor="#C9A227" />
           <stop offset="100%" stopColor="#9c7a15" />
         </linearGradient>
-        <radialGradient id="sealGreen" cx="0.38" cy="0.32" r="1">
+        <radialGradient id={`${uid}-green`} cx="0.38" cy="0.32" r="1">
           <stop offset="0%" stopColor="#1E6144" />
           <stop offset="70%" stopColor="#10382A" />
           <stop offset="100%" stopColor="#0A2A1E" />
         </radialGradient>
-        <filter id="sealShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <filter id={`${uid}-shadow`} x="-20%" y="-20%" width="140%" height="140%">
           <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#3a2c05" floodOpacity="0.35" />
         </filter>
       </defs>
 
       {/* Scalloped rim */}
-      <path d={d} fill="url(#sealGoldEdge)" stroke="#6e520b" strokeWidth={0.8} filter="url(#sealShadow)" />
+      <path d={d} fill={`url(#${uid}-edge)`} stroke="#6e520b" strokeWidth={0.8} filter={`url(#${uid}-shadow)`} suppressHydrationWarning />
       {/* Gold face */}
-      <circle cx="75" cy="75" r="56" fill="url(#sealGoldFace)" stroke="#8a680f" strokeWidth={0.8} />
+      <circle cx="75" cy="75" r="56" fill={`url(#${uid}-face)`} stroke="#8a680f" strokeWidth={0.8} />
       <circle cx="75" cy="75" r="50.5" fill="none" stroke="#FBF3D0" strokeWidth={1.3} strokeDasharray="2.6 2.2" opacity={0.95} />
       {/* Green core */}
-      <circle cx="75" cy="75" r="45" fill="url(#sealGreen)" stroke="#E3C25C" strokeWidth={1.6} />
+      <circle cx="75" cy="75" r="45" fill={`url(#${uid}-green)`} stroke="#E3C25C" strokeWidth={1.6} />
       <circle cx="75" cy="75" r="41.5" fill="none" stroke="#C9A227" strokeWidth={0.7} opacity={0.65} />
       {/* Inner laurel + stars + embossed Z */}
       {sprigLeaves}
@@ -151,6 +158,7 @@ function GoldSeal({ size = 150 }: { size?: number }) {
 
 export function CertificateCard({
   domId,
+  innerDomId,
   recipientName,
   programName,
   certificateId,
@@ -158,6 +166,7 @@ export function CertificateCard({
   signatureUrl,
 }: {
   domId: string;
+  innerDomId?: string;
   recipientName: string;
   programName: string;
   certificateId: string;
@@ -198,7 +207,9 @@ export function CertificateCard({
       <div className="relative m-3 sm:m-4 rounded-lg bg-[#FDFDFB] p-[6px]"
         style={{ boxShadow: "inset 0 0 0 1.5px #D4AF37, 0 0 0 1px rgba(212,175,55,0.4)" }}
       >
-        <div className="relative rounded-md bg-white px-6 sm:px-12 pt-10 sm:pt-12 pb-24 sm:pb-20"
+        <div
+          id={innerDomId}
+          className="relative rounded-md bg-white px-6 sm:px-12 pt-10 sm:pt-12 pb-24 sm:pb-20"
           style={{ boxShadow: "inset 0 0 0 1px rgba(201,162,39,0.55)" }}
         >
           {/* Corner accents */}
@@ -209,25 +220,58 @@ export function CertificateCard({
             </svg>
           ))}
 
-          {/* Ribbon badge (top-left) */}
+          {/* Ribbon badge (top-left) — trophy/shield shape */}
           <div className="absolute -top-0 left-8 sm:left-12 -translate-y-2">
-            <div
-              className="relative w-[92px] sm:w-[104px] pt-4 pb-7 flex flex-col items-center gap-1"
-              style={{
-                background: `linear-gradient(170deg, #1C5A40, ${GREEN})`,
-                clipPath: "polygon(0 0, 100% 0, 100% 100%, 50% 86%, 0 100%)",
-                boxShadow: "inset 0 0 0 1.5px rgba(212,175,55,0.8), 0 4px 10px rgba(0,0,0,0.25)",
-              }}
+            <svg
+              width="92"
+              height="112"
+              viewBox="0 0 92 112"
+              className="sm:w-[104px] sm:h-[126px]"
+              aria-hidden="true"
+              style={{ filter: "drop-shadow(0 4px 10px rgba(0,0,0,0.25))" }}
             >
-              <LaurelWreath size={54} />
-              <div className="text-center leading-tight mt-0.5" style={{ color: GOLD_LIGHT }}>
-                {["COMMITMENT", "LEARNING", "GROWTH"].map((w) => (
-                  <div key={w} className="text-[6px] sm:text-[6.5px] font-bold tracking-[0.18em]">
-                    {w}
-                  </div>
-                ))}
-              </div>
-            </div>
+              <defs>
+                <linearGradient id="ribbon-bg" x1="0" y1="0" x2="0.3" y2="1">
+                  <stop offset="0%" stopColor="#1C5A40" />
+                  <stop offset="100%" stopColor={GREEN} />
+                </linearGradient>
+                <linearGradient id="ribbon-gold" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#8f6b12" />
+                  <stop offset="40%" stopColor="#D4AF37" />
+                  <stop offset="60%" stopColor="#F5E6A8" />
+                  <stop offset="100%" stopColor="#8f6b12" />
+                </linearGradient>
+              </defs>
+              {/* Shield body with curved sides and pointed bottom */}
+              <path
+                d="M4 0 L88 0 Q92 0 92 4 L92 72 Q92 85 78 95 L50 110 Q46 112 42 110 L14 95 Q0 85 0 72 L0 4 Q0 0 4 0 Z"
+                fill="url(#ribbon-bg)"
+                stroke="url(#ribbon-gold)"
+                strokeWidth="2"
+              />
+              {/* Inner gold border */}
+              <path
+                d="M8 4 L84 4 Q87 4 87 7 L87 70 Q87 81 75 90 L50 104 Q46 106 42 104 L17 90 Q5 81 5 70 L5 7 Q5 4 8 4 Z"
+                fill="none"
+                stroke={GOLD}
+                strokeWidth="0.8"
+                opacity="0.5"
+              />
+              {/* Laurel wreath at top */}
+              <g transform="translate(46, 28) scale(0.55)">
+                <LaurelWreath size={48} />
+              </g>
+              {/* Text */}
+              <text x="46" y="56" textAnchor="middle" fill={GOLD_LIGHT} fontSize="6" fontWeight="700" letterSpacing="0.18em" fontFamily="system-ui, sans-serif">
+                COMMITMENT
+              </text>
+              <text x="46" y="65" textAnchor="middle" fill={GOLD_LIGHT} fontSize="6" fontWeight="700" letterSpacing="0.18em" fontFamily="system-ui, sans-serif">
+                LEARNING
+              </text>
+              <text x="46" y="74" textAnchor="middle" fill={GOLD_LIGHT} fontSize="6" fontWeight="700" letterSpacing="0.18em" fontFamily="system-ui, sans-serif">
+                GROWTH
+              </text>
+            </svg>
           </div>
 
           {/* Header: logo + wordmark */}
@@ -286,21 +330,15 @@ export function CertificateCard({
           {/* Signature / seal / date row */}
           <div className="mt-8 sm:mt-10 grid grid-cols-3 items-end gap-2 sm:gap-6">
             <div className="text-center">
-              {signatureUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={signatureUrl}
-                  alt="CEO signature"
-                  className="h-12 sm:h-16 w-auto object-contain mx-auto"
-                />
-              ) : (
-                <p className={`${scriptFont.className} text-2xl sm:text-[34px] leading-none text-neutral-800`}>
-                  Ankit Kumar
-                </p>
-              )}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/kunal-singh-signature.png"
+                alt="CEO signature"
+                className="h-12 sm:h-16 w-auto object-contain mx-auto"
+              />
               <div className="h-px bg-neutral-400 mt-1.5 mx-2 sm:mx-6" />
               <p className="text-[9px] sm:text-[11px] font-extrabold tracking-wider mt-1.5" style={{ color: GREEN }}>
-                ANKIT KUMAR
+                KUNAL SINGH
               </p>
               <p className="text-[8px] sm:text-[10px] text-neutral-500">CEO, ZetaGrow</p>
             </div>

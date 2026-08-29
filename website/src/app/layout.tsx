@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { ConvexClientProvider } from "@/lib/convex";
+import CookieConsent from "@/components/CookieConsent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -47,12 +48,21 @@ export const metadata: Metadata = {
     title: "ZetaGrow — Learn Job-Ready Digital Skills, Get Verified Certificates",
     description:
       "Text-based, self-paced courses across sales, e-commerce, marketing, coding and AI — each ending in a verifiable certificate. Plus a curated work portal for qualified learners.",
+    images: [
+      {
+        url: "/zetagrow logo no bg.png",
+        width: 1200,
+        height: 630,
+        alt: "ZetaGrow — Online Courses with Verified Certificates & Real Work Opportunities",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "ZetaGrow — Learn. Work. Grow.",
     description:
       "Online certificate courses in digital marketing, e-commerce, coding and AI + real work opportunities for verified learners in India.",
+    images: ["/zetagrow logo no bg.png"],
   },
   robots: {
     index: true,
@@ -66,10 +76,25 @@ const ORG_JSON_LD = {
   "@type": "EducationalOrganization",
   name: "ZetaGrow",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://zetagrow.in",
+  logo: `${process.env.NEXT_PUBLIC_SITE_URL || "https://zetagrow.in"}/zetagrow logo no bg.png`,
   description:
     "Online learning platform offering certificate courses in digital marketing, e-commerce, coding, AI tools, sales and communication, with a curated work marketplace for qualified learners.",
   areaServed: { "@type": "Country", name: "India" },
-  sameAs: [],
+};
+
+const WEBSITE_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "ZetaGrow",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://zetagrow.in",
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${process.env.NEXT_PUBLIC_SITE_URL || "https://zetagrow.in"}/programs?q={search_term_string}`,
+    },
+    "query-input": "required name=search_term_string",
+  },
 };
 
 // Google Tag Manager container id + Google Analytics 4 measurement id —
@@ -124,8 +149,13 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(WEBSITE_JSON_LD) }}
+        />
         <ConvexClientProvider>
           {children}
+          <CookieConsent />
         </ConvexClientProvider>
       </body>
     </html>

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useAdminAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
+import { toast } from "sonner";
+import { Tooltip } from "@/components/Tooltip";
 import { 
   BookOpen, 
   Plus, 
@@ -120,7 +122,7 @@ export default function AdminProgramsPage() {
 
   const handleArchive = async (programId: any, name: string) => {
     if (!token) return;
-    if (!confirm(`Are you sure you want to archive "${name}"?`)) return;
+    toast.info(`Archiving "${name}"…`);
 
     try {
       await deleteProgramMutation({
@@ -128,9 +130,9 @@ export default function AdminProgramsPage() {
         programId,
         reason: `Archived via Admin Panel`,
       });
-      setMsg(`Program "${name}" archived.`);
+      toast.success("Program archived", { description: `"${name}" has been archived.` });
     } catch (err: any) {
-      setMsg(err.message || "Failed to archive program.");
+      toast.error("Failed to archive program", { description: err?.message || "Please try again" });
     }
   };
 
@@ -143,7 +145,11 @@ export default function AdminProgramsPage() {
           </h1>
           <p className="text-xs text-textMuted">
             Individual topic courses with modules and lessons. Courses can live
-            standalone or be linked into sellable Programs (see the Programs page).
+            standalone or be linked into sellable{" "}
+            <Tooltip content="Plans > Programs > Courses. A Plan bundles Programs, a Program bundles Courses.">
+              <span className="underline decoration-dotted cursor-help">Programs</span>
+            </Tooltip>{" "}
+            (see the Programs page).
           </p>
         </div>
 
@@ -218,17 +224,23 @@ export default function AdminProgramsPage() {
                 ["archived", "Archived"],
               ] as [StatusFilter, string][]
             ).map(([key, label]) => (
-              <button
-                key={key}
-                onClick={() => setStatusFilter(key)}
-                className={`px-3 py-1.5 text-xs font-bold rounded-full border transition-colors ${
-                  statusFilter === key
-                    ? "bg-brand-600 text-white border-brand-600"
-                    : "bg-white text-textMuted border-borderSubtle hover:text-textMain"
-                }`}
-              >
-                {label}
-              </button>
+                <button
+                  key={key}
+                  onClick={() => setStatusFilter(key)}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-full border transition-colors ${
+                    statusFilter === key
+                      ? "bg-brand-600 text-white border-brand-600"
+                      : "bg-white text-textMuted border-borderSubtle hover:text-textMain"
+                  }`}
+                >
+                  {key === "archived" ? (
+                    <Tooltip content="Hidden from storefront, not purchasable but existing enrollments remain active">
+                      <span>{label}</span>
+                    </Tooltip>
+                  ) : (
+                    label
+                  )}
+                </button>
             ))}
           </div>
           <div className="flex items-center gap-3 text-xs text-textMuted">

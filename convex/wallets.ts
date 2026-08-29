@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { requirePurchasedUser } from "./entitlements";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -27,8 +26,6 @@ export const getUserWallet = query({
     if (!session || session.expiresAt < Date.now()) {
       throw new Error("Unauthorized");
     }
-
-    await requirePurchasedUser(ctx, args.token);
 
     const wallet = await ctx.db
       .query("wallets")
@@ -173,6 +170,9 @@ export const adminAdjustWallet = mutation({
     if (!wallet) throw new Error("Wallet not found");
 
     const adjustment = args.type === "DEBIT" ? -Math.abs(args.amount) : Math.abs(args.amount);
+    if (!Number.isFinite(adjustment) || adjustment === 0) {
+      throw new Error("Invalid adjustment amount");
+    }
     const newAvailable = wallet.availableBalance + adjustment;
     if (newAvailable < 0) {
       throw new Error("Insufficient available balance for debit adjustment");

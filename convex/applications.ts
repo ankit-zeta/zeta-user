@@ -36,6 +36,13 @@ export const submitApplication = mutation({
       throw new Error("Unauthorized");
     }
 
+    // Rate limit: 10 applications per hour per user
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, {
+      key: `application:${session.userId}`,
+      max: 10,
+      windowMs: 60 * 60 * 1000,
+    });
+
     const job = await ctx.db.get(args.jobId);
     if (!job || job.status !== "published") {
       throw new Error("This opportunity is no longer open for applications");
@@ -44,8 +51,30 @@ export const submitApplication = mutation({
     const user = await ctx.db.get(session.userId);
     const isRegularUser = user?.role === "user";
 
+    // Load work portal settings
+    const settingsDoc = await ctx.db
+      .query("adminSettings")
+      .withIndex("by_key", (q) => q.eq("key", "workPortal"))
+      .first();
+    const settings = (settingsDoc?.value as any) || {};
+    const requireKyc = settings.requireKyc !== false;
+    const requireCv = settings.requireCv !== false;
+    const maxApplicationsPerJob = settings.maxApplicationsPerJob || 0;
+
+    // Max applications per job check
+    if (maxApplicationsPerJob > 0 && isRegularUser) {
+      const userAppsForJob = await ctx.db
+        .query("jobApplications")
+        .withIndex("by_userId", (q) => q.eq("userId", session.userId))
+        .filter((q) => q.eq(q.field("jobId"), args.jobId))
+        .collect();
+      if (userAppsForJob.length >= maxApplicationsPerJob) {
+        throw new Error(`You have reached the maximum of ${maxApplicationsPerJob} application(s) for this job`);
+      }
+    }
+
     // CV completeness gate (structured profile — not file uploads)
-    if (isRegularUser) {
+    if (isRegularUser && requireCv) {
       const cv = await ctx.db
         .query("cvProfiles")
         .withIndex("by_userId", (q: any) => q.eq("userId", session.userId))
@@ -60,19 +89,20 @@ export const submitApplication = mutation({
           "Complete your CV profile (overview, experience, education and at least 3 skills) before applying for work"
         );
       }
-      // TDS compliance: work earnings require verified KYC before starting
-      if (((user as any).kycStatus || "not_submitted") !== "verified") {
-        const state =
-          ((user as any).kycStatus === "pending")
-            ? "is under review — you can apply once it's approved"
-            : ((user as any).kycStatus === "rejected")
-              ? "was rejected — please resubmit your documents"
-              : "is not submitted yet";
-        // ConvexError so the message reaches the client (plain Errors are masked on prod)
-        throw new ConvexError(
-          `Complete your KYC verification before applying for work. Your KYC ${state}`
-        );
-      }
+    }
+
+    // TDS compliance: work earnings require verified KYC before starting
+    if (isRegularUser && requireKyc && ((user as any).kycStatus || "not_submitted") !== "verified") {
+      const state =
+        ((user as any).kycStatus === "pending")
+          ? "is under review — you can apply once it's approved"
+          : ((user as any).kycStatus === "rejected")
+            ? "was rejected — please resubmit your documents"
+            : "is not submitted yet";
+      // ConvexError so the message reaches the client (plain Errors are masked on prod)
+      throw new ConvexError(
+        `Complete your KYC verification before applying for work. Your KYC ${state}`
+      );
     }
 
     // Check existing
@@ -87,14 +117,35 @@ export const submitApplication = mutation({
     }
 
     // Server-side eligibility check: program requirement = PROGRAM COMPLETED (certificate issued)
-    if (job.requiredProgramId) {
-      const cert = await ctx.db
-        .query("certificates")
-        .withIndex("by_userId", (q) => q.eq("userId", session.userId))
-        .filter((q) => q.eq(q.field("programId"), job.requiredProgramId))
-        .first();
-      if (!cert && isRegularUser) {
-        throw new Error("You must complete the required program before applying for this opportunity");
+    // Supports both single requiredProgramId and multi-certificate requiredProgramIds (OR logic)
+    const effectiveProgramIds = job.requiredProgramIds?.length
+      ? job.requiredProgramIds
+      : job.requiredProgramId
+      ? [job.requiredProgramId]
+      : [];
+
+    if (effectiveProgramIds.length > 0 && isRegularUser) {
+      let hasCert = false;
+      for (const pid of effectiveProgramIds) {
+        const cert = await ctx.db
+          .query("certificates")
+          .withIndex("by_userId", (q) => q.eq("userId", session.userId))
+          .filter((q) => q.eq(q.field("programId"), pid))
+          .first();
+        if (cert) {
+          hasCert = true;
+          break;
+        }
+      }
+      if (!hasCert) {
+        const progNames: string[] = [];
+        for (const pid of effectiveProgramIds) {
+          const p = await ctx.db.get(pid);
+          if (p) progNames.push(p.name);
+        }
+        throw new Error(
+          `You must complete one of the required programs (${progNames.join(", ")}) before applying`
+        );
       }
     }
 
@@ -341,11 +392,17 @@ export const updateApplicationStatus = mutation({
     if (args.status === "completed") {
       const payout = args.payoutAmount && args.payoutAmount > 0 ? args.payoutAmount : 0;
       if (payout > 0) {
+        if (!Number.isFinite(payout)) {
+          throw new Error("Invalid payout amount");
+        }
         if (app.paymentStatus === "paid") {
           throw new Error("Payout already released for this application");
         }
         if (job && payout > job.payment) {
           throw new Error(`Payout cannot exceed the job payment of ₹${job.payment}`);
+        }
+        if (!job) {
+          throw new Error("Cannot release payout — the associated job has been deleted");
         }
       }
       if (payout === 0) {

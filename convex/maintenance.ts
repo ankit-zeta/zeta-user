@@ -134,24 +134,4 @@ export const wipeAllUsers = internalMutation({
  * Use adminCreateUser mutation from admin panel instead.
  */
 
-/**
- * TEMP simulation helper � creates a completed purchase for a user at an
- * arbitrary createdAt so the affiliate cooling-window logic can be verified.
- * Remove after testing. Run: npx convex run maintenance:simPurchase
- * '{"userId":"...","hoursAgo":2}'
- */
-export const simPurchase = internalMutation({
-  args: { userId: v.id("users"), hoursAgo: v.number() },
-  handler: async (ctx, args) => {
-    const pid = await ctx.db.insert("purchases", {
-      userId: args.userId,
-      programId: await ctx.db.query("programs").first().then((p) => p!._id),
-      amount: 2000,
-      status: "completed",
-      paymentMethod: "sim",
-      paymentId: "sim_" + Date.now(),
-      createdAt: Date.now() - args.hoursAgo * 60 * 60 * 1000,
-    });
-    return { purchaseId: pid };
-  },
-});
+

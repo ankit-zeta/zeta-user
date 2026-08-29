@@ -1,4 +1,23 @@
 /** @type {import('next').NextConfig} */
+const isDev = process.env.NODE_ENV === "development";
+
+const cspScriptSrc = isDev
+  ? "'self' 'unsafe-inline' 'unsafe-eval' https://checkout.razorpay.com https://*.razorpay.com https://www.googletagmanager.com"
+  : "'self' 'unsafe-inline' https://checkout.razorpay.com https://*.razorpay.com https://www.googletagmanager.com";
+
+const csp = [
+  "default-src 'self'",
+  `script-src ${cspScriptSrc}`,
+  "style-src 'self' 'unsafe-inline' https://*.razorpay.com",
+  "img-src 'self' data: blob: https: https://*.razorpay.com https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com",
+  "font-src 'self' data: https://*.razorpay.com",
+  "connect-src 'self' https://*.convex.cloud wss://*.convex.cloud https://api.razorpay.com https://*.razorpay.com https://lumberjack.razorpay.com https://lumberjack-cx.razorpay.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com",
+  "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://*.razorpay.com https://www.googletagmanager.com",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+].join("; ");
+
 const nextConfig = {
   reactStrictMode: true,
   images: {
@@ -19,6 +38,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'avatars.githubusercontent.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'api.dicebear.com',
+      },
     ],
   },
   async headers() {
@@ -33,7 +56,7 @@ const nextConfig = {
           { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' https://checkout.razorpay.com https://*.razorpay.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://*.razorpay.com; img-src 'self' data: blob: https: https://*.razorpay.com https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; font-src 'self' data: https://*.razorpay.com; connect-src 'self' https://*.convex.cloud wss://*.convex.cloud https://api.razorpay.com https://*.razorpay.com https://lumberjack.razorpay.com https://lumberjack-cx.razorpay.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com; frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://*.razorpay.com https://www.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+            value: csp,
           },
         ],
       },

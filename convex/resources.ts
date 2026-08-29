@@ -60,8 +60,19 @@ export const getResourcesForUser = query({
     const allResources = await ctx.db.query("resources").collect();
     allResources.sort((a, b) => a.sortOrder - b.sortOrder);
 
+    const visibleResources = allResources.filter((r) => {
+      if (session.role !== "user" || r.accessType === "public") return true;
+      if (r.accessType === "enrolled" && r.programId) {
+        return enrolledProgramIds.has(r.programId);
+      }
+      if (r.accessType === "achievement_locked" && r.minAchievementId) {
+        return unlockedAchievementIds.has(r.minAchievementId);
+      }
+      return false;
+    });
+
     const resourcesWithAccess = await Promise.all(
-      allResources.map(async (r) => {
+      visibleResources.map(async (r) => {
         let hasAccess = false;
         let lockReason = "";
 
@@ -69,16 +80,8 @@ export const getResourcesForUser = query({
           hasAccess = true;
         } else if (r.accessType === "enrolled" && r.programId) {
           hasAccess = enrolledProgramIds.has(r.programId);
-          if (!hasAccess) {
-            const prog = await ctx.db.get(r.programId);
-            lockReason = `Requires enrollment in ${prog?.name || "Program"}`;
-          }
         } else if (r.accessType === "achievement_locked" && r.minAchievementId) {
           hasAccess = unlockedAchievementIds.has(r.minAchievementId);
-          if (!hasAccess) {
-            const ach = await ctx.db.get(r.minAchievementId);
-            lockReason = `Requires unlocking ${ach?.name || "Achievement"}`;
-          }
         }
 
         let programName = undefined;

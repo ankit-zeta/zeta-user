@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useAdminAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
+import { toast } from "sonner";
 import {
   Plus,
   Pencil,
@@ -187,14 +188,16 @@ export default function AdminPlansPage() {
       }
       if (editingId) {
         await updatePlan({ token, planId: editingId as any, ...payload });
-        setMsg("Program updated.");
+        toast.success("Program updated", { description: `"${form.name}" saved successfully.` });
       } else {
         await createPlan({ token, ...payload });
-        setMsg("Program created.");
+        toast.success("Program created", { description: `"${form.name}" is now live.` });
       }
+      setMsg(editingId ? "Program updated." : "Program created.");
       setEditorOpen(false);
     } catch (err: any) {
       setMsg(err.message || "Failed to save program.");
+      toast.error("Failed to save program", { description: err?.message || "Please try again" });
     } finally {
       setBusy(false);
     }
@@ -205,10 +208,12 @@ export default function AdminPlansPage() {
     setBusy(true);
     try {
       await deletePlan({ token, planId: deleteTarget._id as any });
+      toast.success("Program deleted", { description: `"${deleteTarget.name}" has been removed.` });
       setMsg(`Program "${deleteTarget.name}" deleted.`);
       setDeleteTarget(null);
     } catch (err: any) {
       setMsg(err.message || "Failed to delete program.");
+      toast.error("Failed to delete program", { description: err?.message || "Please try again" });
     } finally {
       setBusy(false);
     }

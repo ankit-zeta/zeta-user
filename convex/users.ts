@@ -84,6 +84,10 @@ export const adminCreateUser = mutation({
   },
   handler: async (ctx, args) => {
     const admin = await requireAdmin(ctx, args.token);
+    // SECURITY: Only super_admin and admin can create user accounts
+    if (!["super_admin", "admin"].includes(admin.role)) {
+      throw new Error("Forbidden: Only super_admin or admin can create user accounts");
+    }
 
     const name = sanitizeName(args.name);
     if (!name || name.length < 2) {
@@ -182,7 +186,7 @@ export const updateProfile = mutation({
     }
 
     const updates: Record<string, any> = { updatedAt: Date.now() };
-    if (args.name !== undefined) updates.name = args.name.trim();
+    if (args.name !== undefined) updates.name = sanitizeName(args.name);
     if (args.phone !== undefined) updates.phone = args.phone.trim();
     if (args.bio !== undefined) updates.bio = args.bio.trim();
     if (args.skills !== undefined) updates.skills = args.skills;
@@ -552,6 +556,10 @@ export const adminResetPassword = mutation({
   },
   handler: async (ctx, args) => {
     const admin = await requireAdmin(ctx, args.token);
+    // SECURITY: Only super_admin and admin can reset passwords
+    if (!["super_admin", "admin"].includes(admin.role)) {
+      throw new Error("Forbidden: Only super_admin or admin can reset passwords");
+    }
     const user = await ctx.db.get(args.userId);
     if (!user) throw new Error("User not found");
     if (args.newPassword.length < 8) {
@@ -599,6 +607,45 @@ export const adminResetPassword = mutation({
     });
 
     return { success: true };
+  },
+});
+
+export const adminUnlockAccount = mutation({
+  args: {
+    token: v.string(),
+    userId: v.id("users"),
+    reason: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx, args.token);
+    if (!["super_admin", "admin"].includes(admin.role)) {
+      throw new Error("Forbidden: Only super_admin or admin can unlock accounts");
+    }
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
+
+    const wasLocked = (user as any).lockedUntil && (user as any).lockedUntil > Date.now();
+    const failures = (user as any).failedLoginCount || 0;
+
+    await ctx.db.patch(args.userId, {
+      failedLoginCount: 0,
+      lockedUntil: 0,
+    } as any);
+
+    const now = Date.now();
+    await ctx.db.insert("auditLogs", {
+      adminUserId: admin._id,
+      adminEmail: admin.email,
+      action: "ADMIN_UNLOCK_ACCOUNT",
+      entityType: "users",
+      entityId: args.userId,
+      previousValue: wasLocked ? `locked, ${failures} failures` : "not locked",
+      newValue: "unlocked",
+      reason: args.reason,
+      timestamp: now,
+    });
+
+    return { success: true, wasLocked };
   },
 });
 

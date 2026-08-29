@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { isValidEmail } from "./auth";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -26,6 +27,10 @@ export const submitContactInquiry = mutation({
   },
   handler: async (ctx, args) => {
     const email = args.email.trim().toLowerCase();
+
+    if (!isValidEmail(email)) {
+      throw new Error("Please enter a valid email address");
+    }
 
     // Rate limit: 3/day per email + 10/day global
     await ctx.runMutation(internal.rateLimit.enforceRateLimit, { key: `contact:email:${email}`, max: 3, windowMs: 24 * 60 * 60 * 1000 });

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAdminAuth } from "@/lib/convex";
 import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/lib/convex";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   Plus,
@@ -271,9 +272,13 @@ export default function AdminProgramDetailPage() {
                     <button
                       onClick={async () => {
                         if (!token) return;
-                        if (!confirm(`Delete module "${mod.title}" and all its lessons?`)) return;
-                        await deleteModuleM({ token, moduleId: mod._id });
-                        flash(`Module "${mod.title}" deleted.`);
+                        toast.info(`Deleting module "${mod.title}"…`);
+                        try {
+                          await deleteModuleM({ token, moduleId: mod._id });
+                          toast.success("Module deleted", { description: `"${mod.title}" has been removed.` });
+                        } catch (err: any) {
+                          toast.error("Failed to delete module", { description: err?.message || "Please try again" });
+                        }
                       }}
                       className="p-1.5 text-neutral-400 hover:text-red-600 rounded-lg hover:bg-red-50"
                       title="Delete Module"
@@ -344,9 +349,13 @@ export default function AdminProgramDetailPage() {
                           <button
                             onClick={async () => {
                               if (!token) return;
-                              if (!confirm(`Delete lesson "${lesson.title}"?`)) return;
-                              await deleteLessonM({ token, lessonId: lesson._id });
-                              flash(`Lesson "${lesson.title}" deleted.`);
+                              toast.info(`Deleting lesson "${lesson.title}"…`);
+                              try {
+                                await deleteLessonM({ token, lessonId: lesson._id });
+                                toast.success("Lesson deleted", { description: `"${lesson.title}" has been removed.` });
+                              } catch (err: any) {
+                                toast.error("Failed to delete lesson", { description: err?.message || "Please try again" });
+                              }
                             }}
                             className="p-1.5 text-neutral-400 hover:text-red-600 rounded-lg hover:bg-red-50"
                             title="Delete Lesson"
@@ -403,7 +412,7 @@ export default function AdminProgramDetailPage() {
                       <p className="text-xs font-bold text-textMain truncate">{r.title}</p>
                       <p className="text-[11px] text-textMuted line-clamp-2">{r.description}</p>
                       <p className="text-[10px] text-textMuted">
-                        {r.fileType} • {r.fileSize} • {r.accessType} • sort {r.sortOrder}
+                        {r.fileType} • {r.fileSize} • {r.accessType === "enrolled" ? "Students Only" : r.accessType === "public" ? "Public" : "Achievement Gated"} • sort {r.sortOrder}
                       </p>
                     </div>
                   </div>
@@ -418,9 +427,13 @@ export default function AdminProgramDetailPage() {
                     <button
                       onClick={async () => {
                         if (!token) return;
-                        if (!confirm(`Delete resource "${r.title}"?`)) return;
-                        await deleteResourceM({ token, resourceId: r._id });
-                        flash(`Resource "${r.title}" deleted.`);
+                        toast.info(`Deleting resource "${r.title}"…`);
+                        try {
+                          await deleteResourceM({ token, resourceId: r._id });
+                          toast.success("Resource deleted", { description: `"${r.title}" has been removed.` });
+                        } catch (err: any) {
+                          toast.error("Failed to delete resource", { description: err?.message || "Please try again" });
+                        }
                       }}
                       className="p-1.5 text-neutral-400 hover:text-red-600 rounded-lg hover:bg-red-50"
                       title="Delete Resource"
@@ -597,9 +610,11 @@ const [category, setCategory] = useState(initial?.category ?? "Digital Skills");
         outcomes: outcomes.filter(Boolean),
         faqs: faqs.filter((f) => f.question.trim()),
       });
+      toast.success("Program updated", { description: "Program details saved successfully." });
       onSaved("Program details updated.");
     } catch (err: any) {
       setError(err.message || "Failed to save program.");
+      toast.error("Failed to save program", { description: err?.message || "Please try again" });
     } finally {
       setSaving(false);
     }
@@ -646,7 +661,7 @@ const [category, setCategory] = useState(initial?.category ?? "Digital Skills");
         <Field label="Duration">
           <input value={duration} onChange={(e) => setDuration(e.target.value)} className="input" placeholder="e.g. 6.5 Hours" />
         </Field>
-        <Field label="Access Duration">
+        <Field label="Access Duration" hint="How long enrolled users can access this course">
           <input value={accessDuration} onChange={(e) => setAccessDuration(e.target.value)} className="input" />
         </Field>
       </div>
@@ -790,12 +805,15 @@ function ModuleForm({
     try {
       if (initial?._id) {
         await updateModuleM({ token, moduleId: initial._id, title, description, sortOrder: Number(sortOrder) });
+        toast.success("Module updated", { description: `"${title}" saved successfully.` });
       } else {
         await createModuleM({ token, programId, title, description, sortOrder: Number(sortOrder) });
+        toast.success("Module created", { description: `"${title}" added to curriculum.` });
       }
       onSaved(initial?._id ? "Module updated." : "Module created.");
     } catch (err: any) {
       setError(err.message || "Failed to save module.");
+      toast.error("Failed to save module", { description: err?.message || "Please try again" });
     } finally {
       setSaving(false);
     }
@@ -860,12 +878,15 @@ function LessonForm({ initial, programId, onSaved, createLessonM, updateLessonM,
       };
       if (initial?._id) {
         await updateLessonM({ token, lessonId: initial._id, ...base });
+        toast.success("Lesson updated", { description: `"${title}" saved successfully.` });
       } else {
         await createLessonM({ token, programId, moduleId: initial.moduleId, ...base });
+        toast.success("Lesson created", { description: `"${title}" added to module.` });
       }
       onSaved(initial?._id ? "Lesson updated." : "Lesson created.");
     } catch (err: any) {
       setError(err.message || "Failed to save lesson.");
+      toast.error("Failed to save lesson", { description: err?.message || "Please try again" });
     } finally {
       setSaving(false);
     }
@@ -999,12 +1020,15 @@ function ResourceForm({
       };
       if (initial?._id) {
         await updateResourceM({ token, resourceId: initial._id, ...base });
+        toast.success("Resource updated", { description: `"${title}" saved successfully.` });
       } else {
         await createResourceM({ token, ...base });
+        toast.success("Resource created", { description: `"${title}" added to program.` });
       }
       onSaved(initial?._id ? "Resource updated." : "Resource created.");
     } catch (err: any) {
       setError(err.message || "Failed to save resource.");
+      toast.error("Failed to save resource", { description: err?.message || "Please try again" });
     } finally {
       setSaving(false);
     }
@@ -1064,11 +1088,11 @@ function ResourceForm({
             ))}
           </select>
         </Field>
-        <Field label="Access">
+        <Field label="Access" hint="Who can see this resource: enrolled = course students only, public = everyone, achievement = after unlocking a specific achievement">
           <select value={accessType} onChange={(e) => setAccessType(e.target.value)} className="input">
-            <option value="enrolled">Enrolled</option>
-            <option value="public">Public</option>
-            <option value="achievement_locked">Achievement</option>
+            <option value="enrolled">Enrolled Students Only</option>
+            <option value="public">Public (Everyone)</option>
+            <option value="achievement_locked">Achievement Gated</option>
           </select>
         </Field>
         <Field label="Sort">

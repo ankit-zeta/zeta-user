@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useAuth } from "@/lib/convex";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/lib/convex";
 import {
   Wallet,
@@ -16,6 +16,11 @@ import {
   FileBarChart,
   Briefcase,
   Users,
+  QrCode,
+  Upload,
+  Trash2,
+  Star,
+  ExternalLink,
 } from "lucide-react";
 
 type SavedMethod = {
@@ -28,8 +33,10 @@ type SavedMethod = {
     bankName?: string;
     accountHolderName?: string;
     upiId?: string;
+    qrImageUrl?: string;
   };
   isDefault?: boolean;
+  qrImageUrl?: string | null;
 };
 
 function txnSourceLabel(tx: { type: string; description: string }) {
@@ -70,6 +77,9 @@ export default function DashboardWalletPage() {
 
   const requestMutation = useMutation(api.withdrawals.requestWithdrawal);
   const upsertMethodMutation = useMutation(api.payoutMethods.upsertPayoutMethod);
+  const deleteMethodMutation = useMutation(api.payoutMethods.deletePayoutMethod);
+  const setDefaultMutation = useMutation(api.payoutMethods.setDefaultPayoutMethod);
+  const generateQrUploadUrl = useAction(api.payoutMethods.generatePayoutMethodQrUploadUrl);
 
   const minWithdrawal = withdrawalSettings?.minimumWithdrawal ?? 1000;
 
@@ -97,6 +107,10 @@ export default function DashboardWalletPage() {
   const [ifscCode, setIfscCode] = useState("");
   const [accountHolderName, setAccountHolderName] = useState("");
   const [methodMsg, setMethodMsg] = useState("");
+  const [activeMethodTab, setActiveMethodTab] = useState<"upi" | "bank" | "qr">("upi");
+  const [qrUploading, setQrUploading] = useState(false);
+  const [qrStorageId, setQrStorageId] = useState<string>("");
+  const [qrPreview, setQrPreview] = useState<string>("");
 
   if (walletData === undefined || withdrawals === undefined || methods === undefined) {
     return (
@@ -120,9 +134,10 @@ export default function DashboardWalletPage() {
   const kycStatus = (user as any)?.kycStatus || "not_submitted";
   const kycVerified = kycStatus === "verified";
 
-  const upiMethods = methods.filter((m) => m.type === "upi" || m.type === "upi_qr");
+  const upiMethods = methods.filter((m) => m.type === "upi");
   const bankMethods = methods.filter((m) => m.type === "bank_transfer");
-  const payoutReady = upiMethods.length > 0 && bankMethods.length > 0;
+  const qrMethods = methods.filter((m) => m.type === "upi_qr");
+  const payoutReady = methods.length > 0;
   const withdrawableMethods = methods.filter(
     (m) => m.type === "upi" || m.type === "upi_qr" || m.type === "bank_transfer"
   );
@@ -168,6 +183,68 @@ export default function DashboardWalletPage() {
     }
   };
 
+  const handleQrUpload = async (file: File) => {
+    if (!token || !file) return;
+    setQrUploading(true);
+    setMethodMsg("");
+    try {
+      const url = await generateQrUploadUrl();
+      const resp = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      if (!resp.ok) throw new Error("Upload failed");
+      const { storageId } = JSON.parse(await resp.text());
+      setQrStorageId(storageId);
+      setQrPreview(URL.createObjectURL(file));
+    } catch (err: any) {
+      setMethodMsg(err.message || "QR upload failed");
+    } finally {
+      setQrUploading(false);
+    }
+  };
+
+  const handleSaveQr = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!token || !qrStorageId) return;
+    setMethodMsg("");
+    try {
+      await upsertMethodMutation({
+        token,
+        type: "upi_qr",
+        name: `UPI QR · ${accountHolderName || "My QR"}`,
+        details: { qrImageUrl: qrStorageId, accountHolderName },
+      });
+      setQrStorageId("");
+      setQrPreview("");
+      setAccountHolderName("");
+      setMethodMsg("QR code saved.");
+    } catch (err: any) {
+      setMethodMsg(err.message || "Failed to save QR code.");
+    }
+  };
+
+  const handleDeleteMethod = async (methodId: string) => {
+    if (!token) return;
+    try {
+      await deleteMethodMutation({ token, id: methodId as any });
+      setMethodMsg("Payment method removed.");
+    } catch (err: any) {
+      setMethodMsg(err.message || "Failed to delete method.");
+    }
+  };
+
+  const handleSetDefault = async (methodId: string) => {
+    if (!token) return;
+    try {
+      await setDefaultMutation({ token, id: methodId as any });
+      setMethodMsg("Default method updated.");
+    } catch (err: any) {
+      setMethodMsg(err.message || "Failed to update default.");
+    }
+  };
+
   const handleRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
@@ -207,9 +284,9 @@ export default function DashboardWalletPage() {
   return (
     <div className="space-y-8">
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight text-textMain">Work Wallet</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-textMain">My Wallet</h1>
         <p className="text-xs text-textMuted">
-          Your combined earnings from work and affiliate activities. Withdraw funds, manage payment methods, and view full transaction history.
+          Your combined earnings from work and referrals. Withdraw funds, manage payment methods, and view full transaction history.
         </p>
       </div>
 
@@ -235,12 +312,12 @@ export default function DashboardWalletPage() {
         </div>
         <div className="card-surface p-5 space-y-2">
           <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
-            <Users className="w-3.5 h-3.5" /> Affiliate Earnings
+            <Users className="w-3.5 h-3.5" /> Referral Earnings
           </span>
           <p className="text-2xl font-extrabold text-textMain">
             ₹{affiliateEarnings.toLocaleString("en-IN")}
           </p>
-          <span className="text-[11px] text-textMuted block">From referral commissions</span>
+          <span className="text-[11px] text-textMuted block">From referrals</span>
         </div>
         <div className="card-surface p-5 space-y-2">
           <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
@@ -267,14 +344,14 @@ export default function DashboardWalletPage() {
           {taxSummary.totalTds === 0 ? (
             <p className="text-[11px] text-textMuted">
               No TDS deducted yet this financial year. TDS applies only on payouts above your yearly
-              threshold — 2% on affiliate commissions above ₹20,000, 10% on work earnings above ₹50,000.
+              threshold — 2% on referral earnings above ₹20,000, 10% on work earnings above ₹50,000.
             </p>
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="rounded-xl border border-borderSubtle bg-white p-3">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-textMuted">
-                    Affiliate ({taxSummary.affiliate.label} · {taxSummary.affiliate.rate}%)
+                    Referral ({taxSummary.affiliate.label} · {taxSummary.affiliate.rate}%)
                   </p>
                   <div className="flex items-baseline justify-between mt-1">
                     <span className="text-sm font-bold text-textMain">₹{taxSummary.affiliate.gross.toLocaleString("en-IN")}</span>
@@ -345,73 +422,195 @@ export default function DashboardWalletPage() {
             <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 p-4">
               <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <p className="text-xs text-amber-800 leading-relaxed">
-                To enable withdrawals, please save <strong>both</strong> your UPI details{" "}
-                <strong>and</strong> your bank account details below. All details must belong to the same person.
+                Add at least <strong>one</strong> payout method below to enable withdrawals. You can add UPI, bank account, or UPI QR code.
                 Payouts are sent manually by our team after admin confirmation.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <form onSubmit={handleSaveUpi} className="space-y-3 rounded-xl border border-borderSubtle p-4">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
-                  <Smartphone className="w-3.5 h-3.5" /> Add UPI Details
-                  {upiMethods.length > 0 && (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 ml-auto" />
-                  )}
-                </span>
-                <input
-                  value={upiId}
-                  onChange={(e) => setUpiId(e.target.value)}
-                  placeholder="yourname@upi"
-                  required
-                  className="w-full border border-borderSubtle rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600"
-                />
-                <button type="submit" className="btn-primary text-xs py-2 px-4 w-full">
-                  Save UPI
-                </button>
-              </form>
+            {/* Saved methods */}
+            {methods.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Saved Methods</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {methods.map((m) => (
+                    <div key={m._id} className="flex items-center gap-3 p-3 rounded-lg border border-borderSubtle bg-white">
+                      {m.type === "upi_qr" && m.qrImageUrl && (
+                        <img src={m.qrImageUrl} alt="UPI QR" className="w-10 h-10 rounded object-cover border" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-textMain truncate">
+                          {m.type === "bank_transfer"
+                            ? `${m.details.bankName || "Bank"} ••${(m.details.accountNumber || "").slice(-4)}`
+                            : m.type === "upi_qr"
+                            ? `UPI QR · ${m.details.accountHolderName || ""}`
+                            : `UPI · ${m.details.upiId || ""}`}
+                        </p>
+                        <p className="text-[10px] text-textMuted capitalize">{m.type.replace("_", " ")}</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        {!m.isDefault && (
+                          <button onClick={() => handleSetDefault(m._id)} className="p-1 rounded hover:bg-neutral-100" title="Set as default">
+                            <Star className="w-3.5 h-3.5 text-neutral-400" />
+                          </button>
+                        )}
+                        {m.isDefault && (
+                          <span className="text-[9px] font-bold text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded">DEFAULT</span>
+                        )}
+                        <button onClick={() => handleDeleteMethod(m._id)} className="p-1 rounded hover:bg-red-50" title="Remove">
+                          <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
-              <form onSubmit={handleSaveBank} className="space-y-3 rounded-xl border border-borderSubtle p-4">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
-                  <Landmark className="w-3.5 h-3.5" /> Add Bank Details
-                  {bankMethods.length > 0 && (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 ml-auto" />
-                  )}
-                </span>
-                <div className="grid grid-cols-2 gap-2">
+            {/* Add new method tabs */}
+            <div className="space-y-3">
+              <div className="flex gap-1 p-1 bg-neutral-100 rounded-lg">
+                {([
+                  { key: "upi" as const, label: "UPI ID", icon: Smartphone },
+                  { key: "bank" as const, label: "Bank Account", icon: Landmark },
+                  { key: "qr" as const, label: "UPI QR Code", icon: QrCode },
+                ]).map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setActiveMethodTab(tab.key)}
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-[11px] font-semibold transition-colors ${
+                      activeMethodTab === tab.key
+                        ? "bg-white text-textMain shadow-sm"
+                        : "text-textMuted hover:text-textMain"
+                    }`}
+                  >
+                    <tab.icon className="w-3.5 h-3.5" />
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* UPI form */}
+              {activeMethodTab === "upi" && (
+                <form onSubmit={handleSaveUpi} className="space-y-3 rounded-xl border border-borderSubtle p-4">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
+                    <Smartphone className="w-3.5 h-3.5" /> Add UPI Details
+                    {upiMethods.length > 0 && (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-green-500 ml-auto" />
+                    )}
+                  </span>
                   <input
-                    value={bankName}
-                    onChange={(e) => setBankName(e.target.value)}
-                    placeholder="Bank name"
+                    value={upiId}
+                    onChange={(e) => setUpiId(e.target.value)}
+                    placeholder="yourname@upi"
                     required
-                    className="border border-borderSubtle rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600 col-span-2"
+                    className="w-full border border-borderSubtle rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600"
                   />
-                  <input
-                    value={accountNumber}
-                    onChange={(e) => setAccountNumber(e.target.value)}
-                    placeholder="Account number"
-                    required
-                    className="border border-borderSubtle rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600 col-span-2"
-                  />
-                  <input
-                    value={ifscCode}
-                    onChange={(e) => setIfscCode(e.target.value.toUpperCase())}
-                    placeholder="IFSC code"
-                    required
-                    className="border border-borderSubtle rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600"
-                  />
+                  <button type="submit" className="btn-primary text-xs py-2 px-4 w-full">
+                    Save UPI
+                  </button>
+                </form>
+              )}
+
+              {/* Bank form */}
+              {activeMethodTab === "bank" && (
+                <form onSubmit={handleSaveBank} className="space-y-3 rounded-xl border border-borderSubtle p-4">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
+                    <Landmark className="w-3.5 h-3.5" /> Add Bank Details
+                    {bankMethods.length > 0 && (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-green-500 ml-auto" />
+                    )}
+                  </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      value={bankName}
+                      onChange={(e) => setBankName(e.target.value)}
+                      placeholder="Bank name"
+                      required
+                      className="border border-borderSubtle rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600 col-span-2"
+                    />
+                    <input
+                      value={accountNumber}
+                      onChange={(e) => setAccountNumber(e.target.value)}
+                      placeholder="Account number"
+                      required
+                      className="border border-borderSubtle rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600 col-span-2"
+                    />
+                    <input
+                      value={ifscCode}
+                      onChange={(e) => setIfscCode(e.target.value.toUpperCase())}
+                      placeholder="IFSC code"
+                      required
+                      className="border border-borderSubtle rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600"
+                    />
+                    <input
+                      value={accountHolderName}
+                      onChange={(e) => setAccountHolderName(e.target.value)}
+                      placeholder="Account holder name"
+                      required
+                      className="border border-borderSubtle rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600"
+                    />
+                  </div>
+                  <button type="submit" className="btn-primary text-xs py-2 px-4 w-full">
+                    Save Bank Details
+                  </button>
+                </form>
+              )}
+
+              {/* QR code form */}
+              {activeMethodTab === "qr" && (
+                <form onSubmit={handleSaveQr} className="space-y-3 rounded-xl border border-borderSubtle p-4">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
+                    <QrCode className="w-3.5 h-3.5" /> Upload UPI QR Code
+                    {qrMethods.length > 0 && (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-green-500 ml-auto" />
+                    )}
+                  </span>
+                  <p className="text-[10px] text-textMuted">
+                    Upload a screenshot of your UPI QR code. Admin will scan it to send your payout.
+                  </p>
                   <input
                     value={accountHolderName}
                     onChange={(e) => setAccountHolderName(e.target.value)}
-                    placeholder="Account holder name"
+                    placeholder="Account holder name (must match your profile)"
                     required
-                    className="border border-borderSubtle rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600"
+                    className="w-full border border-borderSubtle rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600"
                   />
-                </div>
-                <button type="submit" className="btn-primary text-xs py-2 px-4 w-full">
-                  Save Bank Details
-                </button>
-              </form>
+                  <div className="space-y-2">
+                    {qrPreview ? (
+                      <div className="relative">
+                        <img src={qrPreview} alt="QR preview" className="w-full max-h-48 object-contain rounded-lg border border-borderSubtle" />
+                        <button
+                          type="button"
+                          onClick={() => { setQrPreview(""); setQrStorageId(""); }}
+                          className="absolute top-2 right-2 p-1 bg-white rounded-full shadow"
+                        >
+                          <Trash2 className="w-3 h-3 text-red-500" />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex flex-col items-center gap-2 p-6 border-2 border-dashed border-borderSubtle rounded-lg cursor-pointer hover:border-brand-400 transition-colors">
+                        <Upload className="w-6 h-6 text-textMuted" />
+                        <span className="text-[11px] text-textMuted font-medium">
+                          {qrUploading ? "Uploading..." : "Click to upload QR image"}
+                        </span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          disabled={qrUploading}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleQrUpload(file);
+                          }}
+                        />
+                      </label>
+                    )}
+                  </div>
+                  <button type="submit" disabled={!qrStorageId || !accountHolderName} className="btn-primary text-xs py-2 px-4 w-full disabled:opacity-40">
+                    Save QR Code
+                  </button>
+                </form>
+              )}
             </div>
             {methodMsg && (
               <p className="text-[11px] text-brand-600">{methodMsg}</p>
@@ -437,7 +636,7 @@ export default function DashboardWalletPage() {
                 </p>
                 <p className="text-[11px] text-textMuted leading-relaxed">
                   {available === 0
-                    ? "Your earnings will appear here once work is approved or affiliate commissions clear the holding period. Keep applying for work opportunities."
+                    ? "Your earnings will appear here once work is approved or referral commissions clear the holding period. Keep applying for work opportunities."
                     : "Keep earning to reach the minimum withdrawal threshold."}
                 </p>
               </div>
@@ -454,7 +653,7 @@ export default function DashboardWalletPage() {
                 href="/affiliate"
                 className="text-[11px] font-semibold text-brand-600 hover:text-brand-700 transition-colors"
               >
-                View affiliate stats →
+                View referral stats →
               </a>
             </div>
           </div>
@@ -522,13 +721,15 @@ export default function DashboardWalletPage() {
                   value={selectedMethodId}
                   onChange={(e) => setSelectedMethodId(e.target.value)}
                   required
-                  className="w-full border border-borderSubtle rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600 capitalize"
+                  className="w-full border border-borderSubtle rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-brand-600"
                 >
                   <option value="">Select method…</option>
                   {withdrawableMethods.map((m) => (
                     <option key={m._id} value={m._id}>
                       {m.type === "bank_transfer"
-                        ? `${m.details.bankName || "Bank"} ••${(m.details.accountNumber || "").slice(-4)}`
+                        ? `Bank · ${m.details.bankName || ""} ••${(m.details.accountNumber || "").slice(-4)}`
+                        : m.type === "upi_qr"
+                        ? `UPI QR · ${m.details.accountHolderName || ""}`
                         : `UPI · ${m.details.upiId || ""}`}
                       {m.isDefault ? " (default)" : ""}
                     </option>
@@ -561,7 +762,7 @@ export default function DashboardWalletPage() {
         <h3 className="text-sm font-bold text-textMain">Payout Requests</h3>
         {withdrawals.length === 0 ? (
           <p className="text-xs text-textMuted py-6 text-center">
-            No payout requests yet. Complete work or earn commissions to build your balance.
+            No payout requests yet. Complete work or earn referral bonuses to build your balance.
           </p>
         ) : (
           <div className="overflow-x-auto">

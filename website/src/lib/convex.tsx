@@ -30,6 +30,7 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("zetagrow_user_token");
@@ -64,17 +65,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = "/login";
   };
 
+  const refetchUser = () => {
+    setRefreshKey((k) => k + 1);
+  };
+
   const isLoading = !isInitialized || (token !== null && userState.status === "pending");
 
   return (
     <AuthContext.Provider
+      key={refreshKey}
       value={{
         token,
         user: user || null,
         isLoading,
         login: handleLogin,
         logout: handleLogout,
-        refetchUser: () => {},
+        refetchUser,
       }}
     >
       {children}

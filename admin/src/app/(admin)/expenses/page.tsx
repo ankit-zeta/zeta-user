@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import { useAdminAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
+import { toast } from "sonner";
 import {
   Receipt,
   Plus,
@@ -51,7 +52,7 @@ export default function AdminExpensesPage() {
     api.expensesAdmin.getExpenseDataAdmin,
     token ? { token } : "skip"
   );
-  const financeSetting: any = useQuery(api.settings.getSetting, { key: "finance" });
+  const financeSetting: any = useQuery(api.settings.getSettingAdmin, token ? { token, key: "finance" } : "skip");
 
   const addCategory = useMutation(api.expensesAdmin.addExpenseCategory);
   const deleteCategory = useMutation(api.expensesAdmin.deleteExpenseCategory);
@@ -126,9 +127,9 @@ export default function AdminExpensesPage() {
       });
       setCatName("");
       setCatDesc("");
-      setMsg("Category added.");
+      toast.success("Category added", { description: "New expense category created." });
     } catch (err: any) {
-      setMsg(err.message || "Failed to add category");
+      toast.error("Failed to add category", { description: err?.message || "Please try again" });
     } finally {
       setBusy(false);
     }
@@ -140,14 +141,14 @@ export default function AdminExpensesPage() {
       cat.usageCount > 0
         ? `"${cat.name}" has ${cat.usageCount} expenses. It will be archived (history preserved). Continue?`
         : `Delete category "${cat.name}"?`;
-    if (!window.confirm(confirmMsg)) return;
+    toast.info(confirmMsg, { description: "Category action" });
     setBusy(true);
     setMsg("");
     try {
       await deleteCategory({ token, categoryId: cat._id });
-      setMsg(cat.usageCount > 0 ? "Category archived." : "Category deleted.");
+      toast.success(cat.usageCount > 0 ? "Category archived" : "Category deleted", { description: "Category action completed." });
     } catch (err: any) {
-      setMsg(err.message || "Failed to delete category");
+      toast.error("Failed to delete category", { description: err?.message || "Please try again" });
     } finally {
       setBusy(false);
     }
@@ -173,9 +174,9 @@ export default function AdminExpensesPage() {
       setExpVendor("");
       setExpNotes("");
       setExpRecurring(false);
-      setMsg("Expense recorded.");
+      toast.success("Expense recorded", { description: "New expense entry saved." });
     } catch (err: any) {
-      setMsg(err.message || "Failed to record expense");
+      toast.error("Failed to record expense", { description: err?.message || "Please try again" });
     } finally {
       setBusy(false);
     }
@@ -211,9 +212,9 @@ export default function AdminExpensesPage() {
         recurring: editing.recurring || undefined,
       });
       setEditing(null);
-      setMsg("Expense updated.");
+      toast.success("Expense updated", { description: "Changes saved successfully." });
     } catch (err: any) {
-      setMsg(err.message || "Failed to update expense");
+      toast.error("Failed to update expense", { description: err?.message || "Please try again" });
     } finally {
       setBusy(false);
     }
@@ -221,14 +222,14 @@ export default function AdminExpensesPage() {
 
   const handleDeleteExpense = async (e: any) => {
     if (!token) return;
-    if (!window.confirm(`Delete expense "${e.description}" (${fmt(e.amount)})?`)) return;
+    toast.info(`Delete expense "${e.description}" (${fmt(e.amount)})?`, { description: "This action cannot be undone." });
     setBusy(true);
     setMsg("");
     try {
       await deleteExpense({ token, expenseId: e._id });
-      setMsg("Expense deleted.");
+      toast.success("Expense deleted", { description: "Expense entry removed." });
     } catch (err: any) {
-      setMsg(err.message || "Failed to delete expense");
+      toast.error("Failed to delete expense", { description: err?.message || "Please try again" });
     } finally {
       setBusy(false);
     }
@@ -248,9 +249,9 @@ export default function AdminExpensesPage() {
       setTaxRate("");
       setTaxSaved(true);
       setTimeout(() => setTaxSaved(false), 3000);
-      setMsg("");
+      toast.success("Tax rate saved", { description: "Profit tax rate updated." });
     } catch (err: any) {
-      setMsg(err.message || "Failed to save tax rate");
+      toast.error("Failed to save tax rate", { description: err?.message || "Please try again" });
     } finally {
       setBusy(false);
     }

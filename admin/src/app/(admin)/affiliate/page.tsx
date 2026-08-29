@@ -12,15 +12,19 @@ import {
   XCircle, 
   RotateCcw, 
   ShieldCheck,
-  Save
+  Save,
+  UserPlus,
+  UserMinus,
+  Crown
 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function AdminAffiliatePage() {
   const { token } = useAdminAuth();
 
   const affiliateSettings = useQuery(
-    api.settings.getSetting,
-    { key: "affiliate" }
+    api.settings.getSettingAdmin,
+    token ? { token, key: "affiliate" } : "skip"
   );
 
   const sales = useQuery(
@@ -62,10 +66,50 @@ export default function AdminAffiliatePage() {
     referred: { _id: string; name: string; email: string } | null;
   }> | undefined;
 
+  const partners = useQuery(
+    api.partners.getPartnerDirectoryAdmin,
+    token ? { token } : "skip"
+  ) as Array<{
+    _id: string;
+    name: string;
+    email: string;
+    referralCode: string;
+    positionName: string | null;
+    chainPct: number;
+    partnerSince: number | null;
+  }> | undefined;
+
+  const positions = useQuery(
+    api.positions.getPositions,
+    token ? { token } : "skip"
+  ) as Array<{
+    _id: string;
+    name: string;
+    badgeColor: string;
+    sortOrder: number;
+  }> | undefined;
+
+  const allUsers = useQuery(
+    api.users.getUsers,
+    token ? { token } : "skip"
+  ) as Array<{
+    _id: string;
+    name: string;
+    email: string;
+    referralCode: string;
+    partnerTier: string | undefined;
+    positionId: string | undefined;
+    status: string;
+  }> | undefined;
+
   const updateSettingMutation = useMutation(api.settings.updateSetting);
   const updateCommissionStatusMutation = useMutation(api.affiliates.updateCommissionStatus);
+  const addPartnerMutation = useMutation(api.partners.addPartner);
+  const removePartnerMutation = useMutation(api.partners.removePartner);
 
-  const [activeTab, setActiveTab] = useState<"sales" | "referrals" | "settings">("sales");
+  const [activeTab, setActiveTab] = useState<"sales" | "referrals" | "partners" | "settings">("sales");
+  const [partnerSearch, setPartnerSearch] = useState("");
+  const [partnerMsg, setPartnerMsg] = useState("");
 
   // Settings form state
   const [enabled, setEnabled] = useState(true);
@@ -73,6 +117,8 @@ export default function AdminAffiliatePage() {
   const [defaultPercentage, setDefaultPercentage] = useState<number>(50);
   const [holdingPeriodDays, setHoldingPeriodDays] = useState<number>(7);
   const [minimumPurchaseAmount, setMinimumPurchaseAmount] = useState<number>(2000);
+  const [chainEnabled, setChainEnabled] = useState(false);
+  const [chainLevels, setChainLevels] = useState<Record<string, number>>({});
   const [settingsMsg, setSettingsMsg] = useState("");
   const [isSavingSettings, setIsSavingSettings] = useState(false);
 
@@ -84,6 +130,8 @@ export default function AdminAffiliatePage() {
       setDefaultPercentage(affiliateSettings.defaultPercentage ?? 50);
       setHoldingPeriodDays(affiliateSettings.holdingPeriodDays ?? 7);
       setMinimumPurchaseAmount(affiliateSettings.minimumPurchaseAmount ?? 2000);
+      setChainEnabled(!!affiliateSettings.chainEnabled);
+      setChainLevels(affiliateSettings.chainLevels || {});
     }
   }, [affiliateSettings]);
 
@@ -104,14 +152,39 @@ export default function AdminAffiliatePage() {
           defaultPercentage: Number(defaultPercentage),
           holdingPeriodDays: Number(holdingPeriodDays),
           minimumPurchaseAmount: Number(minimumPurchaseAmount),
+          chainEnabled,
+          chainLevels,
         },
         reason: "Admin affiliate settings modification",
       });
       setSettingsMsg("Affiliate engine settings saved successfully!");
     } catch (err: any) {
       setSettingsMsg(err.message || "Failed to update settings.");
-    } finally {
-      setIsSavingSettings(false);
+} finally {
+        setIsSavingSettings(false);
+      }
+  };
+
+  const handleAddPartner = async (e: React.FormEvent, userId: string) => {
+    e.preventDefault();
+    if (!token) return;
+    setPartnerMsg("");
+    try {
+      await addPartnerMutation({ token, userId });
+      setPartnerMsg("Growth Partner added successfully!");
+    } catch (err: any) {
+      setPartnerMsg(err.message || "Failed to add partner.");
+    }
+  };
+
+  const handleRemovePartner = async (userId: string) => {
+    if (!token) return;
+    setPartnerMsg("");
+    try {
+      await removePartnerMutation({ token, userId });
+      setPartnerMsg("Growth Partner removed.");
+    } catch (err: any) {
+      setPartnerMsg(err.message || "Failed to remove partner.");
     }
   };
 
@@ -124,8 +197,9 @@ export default function AdminAffiliatePage() {
         status,
         reason,
       });
+      toast.success(`Commission ${status}`, { description: `Sale record updated to "${status}".` });
     } catch {
-      // List re-syncs from the server — stay quiet, no internals in console.
+      toast.error("Action failed", { description: "Could not update commission status. Please try again." });
     }
   };
 
@@ -163,6 +237,17 @@ export default function AdminAffiliatePage() {
           }`}
         >
           Referral Network ({referrals?.length || 0})
+        </button>
+
+        <button
+          onClick={() => setActiveTab("partners")}
+          className={`px-4 py-2 rounded-lg transition-colors ${
+            activeTab === "partners"
+              ? "bg-brand-600 text-white shadow-sm"
+              : "text-textMuted hover:bg-neutral-100 hover:text-textMain"
+          }`}
+        >
+          Growth Partners ({partners?.length || 0})
         </button>
 
         <button
@@ -407,6 +492,57 @@ export default function AdminAffiliatePage() {
               />
             </div>
 
+            <div className="space-y-1">
+              <label className="flex items-center gap-2 font-semibold text-textMain">
+                <input
+                  type="checkbox"
+                  checked={chainEnabled}
+                  onChange={(e) => setChainEnabled(e.target.checked)}
+                  className="rounded border-borderSubtle text-brand-600"
+                />
+                <span>Enable Chain Commissions (Upline Earnings)</span>
+              </label>
+              <p className="text-[10px] text-textMuted">
+                Allow Growth Partners to earn a percentage of their downline's affiliate commissions.
+              </p>
+            </div>
+
+            {chainEnabled && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <label className="font-semibold text-textMain">Chain Levels (% per Position)</label>
+                  <p className="text-[10px] text-textMuted">Set the chain commission % for each position. Only Growth Partners with these positions earn chain commissions.</p>
+                </div>
+                {positions && positions.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {positions.map((p) => (
+                      <div key={p._id} className="p-3 rounded-xl border border-neutral-200 bg-neutral-50 space-y-1">
+                        <label className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+                          {p.name}
+                        </label>
+                        <div className="flex items-center gap-1">
+                          <input
+                            type="number"
+                            step="1"
+                            min={0}
+                            max={100}
+                            value={chainLevels[p._id] ?? 0}
+                            onChange={(e) =>
+                              setChainLevels((prev) => ({ ...prev, [p._id]: Number(e.target.value) }))
+                            }
+                            className="w-full px-2 py-1.5 rounded-lg border border-neutral-200 bg-white text-sm font-bold text-center"
+                          />
+                          <span className="text-[10px] font-bold text-neutral-400">%</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-textMuted">No positions configured yet.</p>
+                )}
+              </div>
+            )}
+
             <div className="pt-3">
               <button
                 type="submit"
@@ -418,6 +554,133 @@ export default function AdminAffiliatePage() {
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {/* TAB 3: Growth Partners */}
+      {activeTab === "partners" && (
+        <div className="card-surface p-6 space-y-6">
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-bold text-textMain flex items-center gap-2">
+                <Crown className="w-4 h-4 text-amber-500" /> Growth Partner Management
+              </h3>
+            </div>
+            <p className="text-xs text-textMuted">
+              Growth Partners unlock exclusive chain commission levels and the Partnership section in the Affiliate Center.
+              Invite users who have demonstrated consistent impact and trustworthiness.
+            </p>
+          </div>
+
+          {partnerMsg && (
+            <div className="p-3 rounded-lg bg-brand-50 border border-brand-200 text-xs text-brand-700">
+              {partnerMsg}
+            </div>
+          )}
+
+          {/* Current Growth Partners */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold text-textMain">Current Growth Partners ({partners?.length || 0})</h4>
+            {partners && partners.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-borderSubtle text-textMuted">
+                      <th className="py-2.5 px-3 font-semibold">Name</th>
+                      <th className="py-2.5 px-3 font-semibold">Email</th>
+                      <th className="py-2.5 px-3 font-semibold">Referral Code</th>
+                      <th className="py-2.5 px-3 font-semibold">Position</th>
+                      <th className="py-2.5 px-3 font-semibold">Chain %</th>
+                      <th className="py-2.5 px-3 font-semibold">Partner Since</th>
+                      <th className="py-2.5 px-3 font-semibold">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-borderSubtle">
+                    {partners.map((p) => (
+                      <tr key={p._id}>
+                        <td className="py-3 px-3 font-bold text-textMain">{p.name}</td>
+                        <td className="py-3 px-3 text-textMuted">{p.email}</td>
+                        <td className="py-3 px-3 font-mono font-bold text-brand-700">{p.referralCode}</td>
+                        <td className="py-3 px-3 text-textMuted">{p.positionName || "—"}</td>
+                        <td className="py-3 px-3 font-bold text-brand-600">{p.chainPct}%</td>
+                        <td className="py-3 px-3 text-textMuted">
+                          {p.partnerSince ? new Date(p.partnerSince).toLocaleDateString("en-IN") : "—"}
+                        </td>
+                        <td className="py-3 px-3">
+                          <button
+                            onClick={() => handleRemovePartner(p._id)}
+                            className="text-red-600 hover:text-red-800 text-xs font-semibold"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="text-center py-8 text-xs text-textMuted">No Growth Partners yet.</p>
+            )}
+          </div>
+
+          {/* Add New Growth Partner */}
+          <div className="border-t border-borderSubtle pt-6">
+            <h4 className="text-sm font-bold text-textMain mb-4 flex items-center gap-2">
+              <UserPlus className="w-4 h-4" /> Invite New Growth Partner
+            </h4>
+            <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1 space-y-1">
+                  <label className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Search User</label>
+                  <input
+                    type="text"
+                    value={partnerSearch}
+                    onChange={(e) => setPartnerSearch(e.target.value)}
+                    placeholder="Search by name, email, or referral code..."
+                    className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white text-xs focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  />
+                </div>
+              </div>
+
+              {allUsers && allUsers.length > 0 && (
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {allUsers
+                    .filter((u) =>
+                      u.name.toLowerCase().includes(partnerSearch.toLowerCase()) ||
+                      u.email.toLowerCase().includes(partnerSearch.toLowerCase()) ||
+                      u.referralCode.toLowerCase().includes(partnerSearch.toLowerCase())
+                    )
+                    .filter((u) => u.status === "active" && !(partners?.some((p) => p._id === u._id)))
+                    .map((u) => (
+                      <div key={u._id} className="flex items-center justify-between p-3 rounded-lg border border-borderSubtle bg-white">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-sm shrink-0">
+                            {u.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-textMain truncate">{u.name}</p>
+                            <p className="text-[10px] text-textMuted truncate">{u.email}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="text-[10px] font-mono font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded">{u.referralCode}</span>
+                          <button
+                            onClick={(e) => { e.preventDefault(); handleAddPartner(e, u._id); }}
+                            className="btn-primary text-[11px] py-1.5 px-3"
+                          >
+                            Add as Partner
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+              {allUsers && allUsers.filter((u) => u.status === "active" && !(partners?.some((p) => p._id === u._id))).length === 0 && (
+                <p className="text-center py-4 text-xs text-textMuted">No eligible users found.</p>
+              )}
+            </form>
+          </div>
         </div>
       )}
     </div>

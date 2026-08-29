@@ -40,7 +40,8 @@ Copy `.env.example` to `.env.local` and fill in:
 
 ```env
 NEXT_PUBLIC_CONVEX_URL=your_convex_deployment_url
-CONVEX_DEPLOY_URL=your_convex_deployment_url
+CONVEX_DEPLOYMENT=your_convex_deployment_id
+NEXT_PUBLIC_SITE_URL=https://admin.yourdomain.com
 ```
 
 ### Development

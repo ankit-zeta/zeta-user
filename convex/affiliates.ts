@@ -32,7 +32,6 @@ export const getUserAffiliateStats = query({
 
     const user = await ctx.db.get(session.userId);
     if (!user) throw new Error("User not found");
-    await requirePurchasedUser(ctx, args.token);
 
     const directReferrals = await ctx.db
       .query("referrals")
@@ -140,11 +139,31 @@ export const processPurchaseWithAffiliate = mutation({
       throw new Error("Unauthorized");
     }
 
+    // Rate limit: 5 purchases per hour per user
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, {
+      key: `purchase:${session.userId}`,
+      max: 5,
+      windowMs: 60 * 60 * 1000,
+    });
+
     const buyer = await ctx.db.get(session.userId);
     if (!buyer) throw new Error("Buyer not found");
 
+    // Rate limit: 5 purchases per hour per user
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, {
+      key: `purchase:${session.userId}`,
+      max: 5,
+      windowMs: 60 * 60 * 1000,
+    });
+
+    // SECURITY: Only Razorpay-verified payments are accepted here.
+    // Admin grants must use grantProgramAccess or grantPlanAccess mutations.
+    const validPaymentMethods = ["razorpay"];
+    if (!validPaymentMethods.includes(args.paymentMethod)) {
+      throw new Error("Invalid payment method. Only razorpay is accepted for purchases.");
+    }
+
     // Razorpay checkouts must point at a server-verified "paid" order.
-    // Any other paymentMethod keeps legacy behavior (admin grants, demos).
     let paidOrder: any = null;
     if (args.paymentMethod === "razorpay") {
       if (!args.orderId) {
@@ -466,10 +485,25 @@ export const processPurchaseWithAffiliate = mutation({
             });
 
             // Update referrer pending balance
-            const referrerWallet = await ctx.db
+            let referrerWallet = await ctx.db
               .query("wallets")
               .withIndex("by_userId", (q) => q.eq("userId", referrer._id))
               .first();
+
+            if (!referrerWallet) {
+              // Auto-create wallet if missing (edge case: wallet deleted or never created)
+              const walletId = await ctx.runMutation(internal.auth.createWallet, {
+                userId: referrer._id,
+                availableBalance: 0,
+                pendingBalance: 0,
+                totalEarned: 0,
+                totalWithdrawn: 0,
+                workEarnings: 0,
+                affiliateEarnings: 0,
+                updatedAt: now,
+              });
+              referrerWallet = await ctx.db.get(walletId);
+            }
 
             if (referrerWallet) {
               await ctx.db.patch(referrerWallet._id, {
@@ -517,7 +551,6 @@ export const processPurchaseWithAffiliate = mutation({
                 upline._id.toString() !== referrer._id.toString() &&
                 upline._id.toString() !== buyer._id.toString() &&
                 upline.status === "active" &&
-                (upline as any).partnerTier === "growth_partner" && // Growth Partner Program: chain earnings are invite-only
                 chainPct > 0
               ) {
                 let chainAmount = Math.round((commissionAmount * chainPct) / 100);
@@ -553,10 +586,25 @@ export const processPurchaseWithAffiliate = mutation({
                     baseCommissionAmount: commissionAmount,
                   });
 
-                  const uplineWallet = await ctx.db
+                  let uplineWallet = await ctx.db
                     .query("wallets")
                     .withIndex("by_userId", (q) => q.eq("userId", upline._id))
                     .first();
+
+                  if (!uplineWallet) {
+                    const walletId = await ctx.runMutation(internal.auth.createWallet, {
+                      userId: upline._id,
+                      availableBalance: 0,
+                      pendingBalance: 0,
+                      totalEarned: 0,
+                      totalWithdrawn: 0,
+                      workEarnings: 0,
+                      affiliateEarnings: 0,
+                      updatedAt: now,
+                    });
+                    uplineWallet = await ctx.db.get(walletId);
+                  }
+
                   if (uplineWallet) {
                     await ctx.db.patch(uplineWallet._id, {
                       pendingBalance: uplineWallet.pendingBalance + chainAmount,

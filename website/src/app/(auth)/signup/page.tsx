@@ -239,6 +239,7 @@ function SignupForm() {
                   <input
                     type={showPassword ? "text" : "password"}
                     required
+                    minLength={8}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     placeholder="Min 8 chars"
@@ -262,6 +263,7 @@ function SignupForm() {
                   <input
                     type={showPassword ? "text" : "password"}
                     required
+                    minLength={8}
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     placeholder="Repeat password"

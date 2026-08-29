@@ -24,7 +24,8 @@ import {
   Menu, 
   X,
   Lock,
-  ShieldCheck
+  ShieldCheck,
+  Cookie
 } from "lucide-react";
 
 export default function AdminDashboardLayout({
@@ -69,6 +70,7 @@ export default function AdminDashboardLayout({
     { name: "Expenses", href: "/expenses", icon: Receipt },
     { name: "Communications", href: "/communications", icon: MessageSquare },
     { name: "Platform Settings", href: "/settings", icon: Settings },
+    { name: "Cookie Consent", href: "/cookie-consent", icon: Cookie },
     { name: "Audit Trail", href: "/audit-logs", icon: FileText },
   ];
 

@@ -27,7 +27,6 @@ export const getUserReferrals = query({
     if (!session || session.expiresAt < Date.now()) {
       throw new Error("Unauthorized");
     }
-    await requirePurchasedUser(ctx, args.token);
 
     const referrals = await ctx.db
       .query("referrals")

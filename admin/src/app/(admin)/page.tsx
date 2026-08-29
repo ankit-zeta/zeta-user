@@ -44,6 +44,7 @@ import {
   ComposedChart,
   Bar,
 } from "recharts";
+import { Tooltip as InfoTooltip } from "@/components/Tooltip";
 
 // ── Color system ────────────────────────────────────────────────────────────
 
@@ -148,8 +149,8 @@ function KpiCard({
   sub,
   badge,
 }: {
-  label: string;
-  value: string;
+  label: React.ReactNode;
+  value: React.ReactNode;
   icon: any;
   sub?: React.ReactNode;
   badge?: React.ReactNode;
@@ -199,7 +200,7 @@ function ChartCard({
   stats,
   className = "",
 }: {
-  title: string;
+  title: React.ReactNode;
   subtitle?: string;
   children: React.ReactNode;
   stats?: React.ReactNode;
@@ -291,6 +292,17 @@ function PrecisionTooltip({
         </div>
       ))}
     </div>
+  );
+}
+
+function RupeeDisplay({ value, compact = false }: { value: number; compact?: boolean }) {
+  const formatted = fmtRs(value, compact);
+  const hasIndianNotation = /Cr|L\b/.test(formatted);
+  if (!hasIndianNotation) return <>{formatted}</>;
+  return (
+    <InfoTooltip content="Indian numbering: Cr = Crore (10 million), L = Lakh (100 thousand)">
+      <span>{formatted}</span>
+    </InfoTooltip>
   );
 }
 
@@ -468,7 +480,7 @@ export default function AdminOverviewPage() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <KpiCard
                 label="Gross Collected"
-                value={fmtRs(k.grossRevenue)}
+                value={<RupeeDisplay value={k.grossRevenue} />}
                 icon={IndianRupee}
                 badge={<GrowthBadge pct={k.revenueGrowthPct} />}
                 sub={
@@ -479,8 +491,8 @@ export default function AdminOverviewPage() {
                 }
               />
               <KpiCard
-                label="Net of GST"
-                value={fmtRs(k.netRevenue)}
+                label={<InfoTooltip content="Revenue after removing Goods and Services Tax (India's value-added tax at 18%)"><span>Net of GST</span></InfoTooltip>}
+                value={<RupeeDisplay value={k.netRevenue} />}
                 icon={Percent}
                 sub={
                   <>
@@ -491,7 +503,7 @@ export default function AdminOverviewPage() {
               />
               <KpiCard
                 label="Operating Expenses"
-                value={fmtRs(k.expenses)}
+                value={<RupeeDisplay value={k.expenses} />}
                 icon={Receipt}
                 sub={
                   <Link href="/expenses" className="text-emerald-600 hover:underline font-semibold">
@@ -501,9 +513,9 @@ export default function AdminOverviewPage() {
               />
               <KpiCard
                 label="Net Profit"
-                value={fmtRs(k.profitAfterTax)}
+                value={<RupeeDisplay value={k.profitAfterTax} />}
                 icon={Wallet}
-                sub={<>after {data.taxRatePct}% tax on PBT ₹{k.profitBeforeTax.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</>}
+                sub={<>after {data.taxRatePct}% tax on <InfoTooltip content="Profit Before Tax — revenue minus all expenses, before income tax is applied"><span>PBT</span></InfoTooltip> ₹{k.profitBeforeTax.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</>}
               />
             </div>
           </section>
@@ -530,13 +542,13 @@ export default function AdminOverviewPage() {
               />
               <KpiCard
                 label="Avg Order Value"
-                value={fmtRs(k.avgOrderValue || 0)}
+                value={<RupeeDisplay value={k.avgOrderValue || 0} />}
                 icon={ShoppingCart}
                 sub={<>per paid order, incl. GST</>}
               />
               <KpiCard
-                label="Revenue Per User"
-                value={fmtRs(k.arpu || 0)}
+                label={<InfoTooltip content="Average Revenue Per User — total revenue divided by total registered users"><span>Revenue Per User</span></InfoTooltip>}
+                value={<RupeeDisplay value={k.arpu || 0} />}
                 icon={UserPlus}
                 sub={<>all-time collected / all users</>}
               />
@@ -924,7 +936,7 @@ export default function AdminOverviewPage() {
 
           {/* Checkout Funnel — full width precision */}
           <ChartCard
-            title="Checkout Funnel"
+            title={<InfoTooltip content="Tracks user journey from checkout page visit to successful payment"><span>Checkout Funnel</span></InfoTooltip>}
             subtitle={`${days}d · from Razorpay`}
             stats={
               <div className="w-8 h-8 rounded-lg bg-neutral-50 flex items-center justify-center">
@@ -951,7 +963,7 @@ export default function AdminOverviewPage() {
                   <div>
                     <p className="text-[11px] font-semibold text-neutral-700">{item.label}</p>
                     <p className="text-[10px] text-neutral-400">
-                      {funnelMax > 0 ? ((item.value / funnelMax) * 100).toFixed(0) : 0}%
+                      <InfoTooltip content="Percentage of users who reached this stage"><span>{funnelMax > 0 ? ((item.value / funnelMax) * 100).toFixed(0) : 0}%</span></InfoTooltip>
                     </p>
                   </div>
                 </div>

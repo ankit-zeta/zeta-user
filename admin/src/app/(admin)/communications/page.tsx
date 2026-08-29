@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   X,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const CATEGORY_LABELS: Record<string, string> = {
   courses: "Courses & Programs",
@@ -620,8 +621,9 @@ function ContactInquiriesTable() {
     if (!token) return;
     try {
       await updateInquiryStatusMutation({ token, inquiryId: id, status: "resolved" });
+      toast.success("Inquiry resolved", { description: "The contact inquiry has been marked as resolved." });
     } catch {
-      // List re-syncs from the server — stay quiet, no internals in console.
+      toast.error("Action failed", { description: "Could not resolve inquiry. Please try again." });
     }
   };
 
