@@ -80,7 +80,7 @@ export default function AdminAffiliatePage() {
   }> | undefined;
 
   const positions = useQuery(
-    api.positions.getPositions,
+    api.positions.getAllPositions,
     token ? { token } : "skip"
   ) as Array<{
     _id: string;
@@ -90,7 +90,7 @@ export default function AdminAffiliatePage() {
   }> | undefined;
 
   const allUsers = useQuery(
-    api.users.getUsers,
+    api.users.getAllUsers,
     token ? { token } : "skip"
   ) as Array<{
     _id: string;
