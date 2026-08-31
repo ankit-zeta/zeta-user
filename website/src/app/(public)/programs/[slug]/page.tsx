@@ -31,6 +31,14 @@ import {
 const CONVEX_URL = process.env.NEXT_PUBLIC_CONVEX_URL || "https://terrific-dove-836.convex.cloud";
 const getStorageUrl = (storageId: string) => `${CONVEX_URL}/api/storage/${storageId}`;
 
+// Helper to resolve image URL - handles local paths (/covers/...), Convex storage IDs, and external URLs
+const resolveImageUrl = (path: string) => {
+  if (!path) return null;
+  if (path.startsWith("/")) return path; // local path from public folder
+  if (path.startsWith("http://") || path.startsWith("https://")) return path; // external URL
+  return getStorageUrl(path); // Convex storage ID
+};
+
 export default function ProgramDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
@@ -65,7 +73,7 @@ export default function ProgramDetailPage() {
     : 0;
 
   const hasImage = !imgError && (program?.thumbnail || program?.bannerImage);
-  const imageUrl = hasImage ? getStorageUrl(program.thumbnail || program.bannerImage!) : null;
+  const imageUrl = hasImage ? resolveImageUrl(program.thumbnail || program.bannerImage!) : null;
 
   const handleEnrollment = () => {
     if (!token) {
