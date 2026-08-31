@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Interpretation Cheat Sheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .cheat-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .cheat-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .cheat-item p { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Cheat Sheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Analytics & Tracking Setup</div>
+      <h1>Data Interpretation Cheat Sheet</h1>
+      <p class="subtitle">Reading acquisition reports, understanding engagement metrics, funnel drop-off analysis, cohort analysis basics, anomaly detection</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Acquisition Reports — What to Look For</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Traffic Acquisition (Session-scoped)</h4><p>Where NEW sessions come from. Use for: Channel mix, campaign performance, new user acquisition cost. Compare: Sessions, Engaged sessions, Engagement rate, Conversions.</p></div>
+        <div class="cheat-item"><h4>User Acquisition (User-scoped)</h4><p>Where NEW USERS first came from. Use for: LTV by channel, long-term channel value, cohort analysis. First user source/medium/campaign never changes.</p></div>
+        <div class="cheat-item"><h4>Channel Grouping Issues</h4><p>"Unassigned" = missing UTM or cross-domain gap. "(direct)" = bookmarks, typed, dark social, email clients. "Cross-network" = Performance Max / Smart Shopping where Google hides network.</p></div>
+        <div class="cheat-item"><h4>Benchmark Flags</h4><p>Organic Search > 40% = healthy SEO. Paid Search > 30% = heavy paid dependence. Email < 5% = underutilized owned channel. Referral < 10% = weak partnerships/backlinks.</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Engagement Metrics Deep Dive</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Engagement Rate vs Bounce Rate</h4><p>Engagement Rate = Engaged Sessions / Sessions. Engaged = >10s OR 1+ conversion OR 2+ pageviews. Inverse of old Bounce Rate. Higher = better. Target: >50% (content), >60% (product), >40% (blog).</p></div>
+        <div class="cheat-item"><h4>Average Engagement Time</h4><p>Total engagement time / Active Users. Only counts when tab is VISIBLE (not background). More accurate than UA's Avg Session Duration. Segment by page: Blog > 2min, Product > 1min, Landing < 30s.</p></div>
+        <div class="cheat-item"><h4>Events per Session</h4><p>Total Events / Sessions. Measures interaction depth. E-commerce: >5 = healthy. Content: >3 = good. Low (<2) = tracking gaps or poor UX.</p></div>
+        <div class="cheat-item"><h4>Pages/Screens per Session</h4><p>Pageviews / Sessions. Navigation depth. High + low engagement time = confused users. Low + high engagement time = single-page app or great landing page.</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Funnel Drop-Off Analysis</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Identify Biggest Leaks</h4><p>Funnel Exploration → Look for largest % drop between steps. Typical e-commerce: View Item (100%) → Add to Cart (15%) → Begin Checkout (8%) → Purchase (3%). Biggest leak: View → Cart (85% drop).</p></div>
+        <div class="cheat-item"><h4>Segment Funnel by Dimension</h4><p>Break down funnel: Device (mobile vs desktop), Source (paid vs organic), New vs Returning, Country. Mobile often 2x drop-off at checkout. Paid traffic drops earlier than organic.</p></div>
+        <div class="cheat-item"><h4>Time Lag Analysis</h4><p>Advertising → Conversion Paths → Time Lag. How many days from first touch to conversion? B2B: 30-60 days. E-com: 1-3 days. If time lag increasing → nurture sequence needed.</p></div>
+        <div class="cheat-item"><h4>Path Exploration</h4><p>Path Exploration → Start: Landing Page → End: Purchase. Look for: Loops (users stuck), Dead ends (404/exit), Unexpected detours (support pages before purchase = friction).</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Cohort Analysis Basics</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Cohort Definition</h4><p>Group of users sharing a characteristic in a timeframe. Default: Acquisition cohort (first session week). Retention = % of cohort active in subsequent weeks.</p></div>
+        <div class="cheat-item"><h4>Retention Curve Shapes</h4><p>Flat (good) = product-market fit. Steep drop week 1 = onboarding failure. Smile curve (dip then rise) = habit formation. Cliff at week 4 = trial expiry.</p></div>
+        <div class="cheat-item"><h4>Cohort Breakdowns</h4><p>By: First user medium (organic vs paid cohorts), First user campaign, Device, Country, Content topic (first article read). Paid cohorts often retain worse than organic.</p></div>
+        <div class="cheat-item"><h4>Predictive Cohorts (GA4)</h4><p>Likely 7-day purchasers, Likely 7-day churners, Predicted 28-day revenue top 10%. Requires 1000+ purchasers/churners in 28 days. Export to Ads for targeting.</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Anomaly Detection</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Traffic Spikes</h4><p>Check: Bot traffic (low engagement, high bounce, single page), Referral spam (unknown domains), Campaign launch (expected), Viral content (check social), Tracking duplicate (double fire).</p></div>
+        <div class="cheat-item"><h4>Traffic Drops</h4><p>Check: GA4/GTM implementation broken, Site down / redirect loop, Google algorithm update (organic), Ad disapproval / budget exhausted (paid), Seasonal (holidays, weekends), Cookie consent changes.</p></div>
+        <div class="cheat-item"><h4>Conversion Rate Drops</h4><p>Check: Landing page changed, Form broken, Payment gateway down, Offer expired, Audience quality shifted (broad match expansion), Attribution window change, Consent mode blocking.</p></div>
+        <div class="cheat-item"><h4>Revenue Discrepancies</h4><p>GA4 vs Backend: GA4 misses offline, duplicates, refunds not deducted, currency conversion, test orders included. Reconcile weekly. Tolerance: ±5%.</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Quick Diagnostic Questions</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>"Why did conversions drop?"</h4><p>1. Check Realtime → any firing? 2. Check Traffic Acquisition → which channel dropped? 3. Check Funnel → which step dropped? 4. Check Events → specific event broken? 5. Check source: site change, ad change, seasonality?</p></div>
+        <div class="cheat-item"><h4>"Why is engagement rate low?"</h4><p>1. Landing page mismatch (ad promises X, page delivers Y) 2. Slow load (LCP > 4s) 3. Poor mobile UX 4. Wrong audience (broad targeting) 5. Content not scannable 6. Tracking missing (scroll, video not firing)</p></div>
+        <div class="cheat-item"><h4>"Why is ROAS declining?"</h4><p>1. CPA up (check: CPC up, CVR down) 2. AOV down (check: discounting, product mix) 3. Attribution loss (iOS 14, consent mode) 4. Creative fatigue (frequency > 3) 5. Audience saturation (reach > 80%)</p></div>
+        <div class="cheat-item"><h4>"Why don't GA4 and Ads match?"</h4><p>1. Attribution model diff (Ads: last click / DDA; GA4: DDA) 2. Conversion window diff (Ads: 30d click; GA4: 30d DDA) 3. Cross-device (Ads better) 4. View-through (Ads counts; GA4 doesn't) 5. Offline import missing in GA4</p></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Bookmark: GA4 Dimensions & Metrics Explorer (ga-dev-tools.web.app/ga4/dimensions-metrics-explorer). When in doubt, check if the dimension/metric exists and what scope it has (user/session/event).</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

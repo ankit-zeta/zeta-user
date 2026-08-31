@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Ads Glossary — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .glossary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .glossary-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .glossary-term { font-size: 14px; font-weight: 600; color: #176B4D; margin-bottom: 4px; }
+    .glossary-def { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Glossary</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Google Ads Essentials</div>
+      <h1>Google Ads Glossary</h1>
+      <p class="subtitle">Essential terminology for Search, Display, Shopping, Video, and Performance Max campaigns</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Core Metrics</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">CPC</div><div class="glossary-def">Cost Per Click. Amount paid for each click. Average CPC = Total Cost ÷ Clicks.</div></div>
+        <div class="glossary-item"><div class="glossary-term">CPM</div><div class="glossary-def">Cost Per Mille (thousand impressions). Used for Display/Video awareness campaigns.</div></div>
+        <div class="glossary-item"><div class="glossary-term">CTR</div><div class="glossary-def">Click-Through Rate. Clicks ÷ Impressions × 100. Search benchmark: 2-5%; Display: 0.5-1%.</div></div>
+        <div class="glossary-item"><div class="glossary-term">CPA / CPL</div><div class="glossary-def">Cost Per Acquisition / Cost Per Lead. Cost ÷ Conversions. Primary efficiency metric.</div></div>
+        <div class="glossary-item"><div class="glossary-term">ROAS</div><div class="glossary-def">Return on Ad Spend. Conversion Value ÷ Cost. Expressed as ratio (4.0 = 4:1) or %. E-commerce primary KPI.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Conversion Rate</div><div class="glossary-def">Conversions ÷ Clicks × 100. Post-click performance. Search avg: 3-5%; Display: 0.5-1%.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Impression Share</div><div class="glossary-def">Impressions received ÷ Impressions eligible for. Lost IS (Budget) vs Lost IS (Rank).</div></div>
+        <div class="glossary-item"><div class="glossary-term">Quality Score</div><div class="glossary-def">1-10 rating per keyword: Expected CTR, Ad Relevance, Landing Page Experience. Higher = lower CPC.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Campaign & Structure Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Campaign</div><div class="glossary-def">Top level: budget, location, language, networks, bidding strategy. Contains ad groups.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Ad Group</div><div class="glossary-def">Container for keywords and ads sharing theme. 15-20 keywords max. Shared bids (legacy) or ad-level.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Keyword</div><div class="glossary-def">Word/phrase triggering ads. Match types: Broad, Phrase, Exact, Negative.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Search Query / Search Term</div><div class="glossary-def">Actual user query that triggered ad. Review in Search Terms Report. Add as keyword or negative.</div></div>
+        <div class="glossary-item"><div class="glossary-term">RSA (Responsive Search Ad)</div><div class="glossary-def">Default ad format. 15 headlines, 4 descriptions. Google mixes/matches. Replaces Expanded Text Ads.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Ad Strength</div><div class="glossary-def">RSA quality indicator: Poor → Average → Good → Excellent. Based on uniqueness, relevance, quantity.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Asset</div><div class="glossary-def">Individual component: headline, description, image, video, sitelink. Used in RSA, PMax, Demand Gen.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Bidding & Budget Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Smart Bidding</div><div class="glossary-def">ML-powered automated bidding: Target CPA, Target ROAS, Maximize Conversions, Maximize Value.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Portfolio Bid Strategy</div><div class="glossary-def">Shared bid strategy across multiple campaigns. Centralized management, shared learning.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Learning Period</div><div class="glossary-def">~7 days after launch/major change. Performance unstable. Avoid edits. "Learning" label in UI.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Daily Budget</div><div class="glossary-def">Average daily spend. Google may spend 2x daily (averages over month). Not a hard cap.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Shared Budget</div><div class="glossary-def">Single budget across multiple campaigns. Google allocates to best performers.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Bid Adjustment</div><div class="glossary-def">% increase/decrease for device, location, ad schedule, audience. -90% to +900%.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Enhanced CPC (eCPC)</div><div class="glossary-def">Manual CPC + automatic bid adjustments for likely conversions. Semi-automated.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Tracking & Measurement</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Conversion</div><div class="glossary-def">Valuable action: purchase, lead, sign-up, call, store visit. Defined in Conversions settings.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Conversion Action</div><div class="glossary-def">Specific conversion type with settings: category, value, count (one/every), window, attribution.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Conversion Window</div><div class="glossary-def">Time after click to count conversion: 1-90 days (Search), 1-30 days (Display/Video). Default 30d.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Attribution Model</div><div class="glossary-def">How credit assigned: Data-Driven (default), Last Click, First Click, Linear, Time Decay, Position-Based.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Google Tag (gtag.js)</div><div class="glossary-def">Unified tag for Google Ads, GA4, Floodlight. Replaces separate conversion tags.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Enhanced Conversions</div><div class="glossary-def">Hashes first-party data (email, phone, name) for better matching. Required for accurate measurement.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Offline Conversion Import</div><div class="glossary-def">Upload offline conversions (CRM, POS) via GCLID. Critical for B2B, long sales cycles.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Campaign Types & Features</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Performance Max (PMax)</div><div class="glossary-def">Goal-based campaign across ALL Google inventory. Asset groups + audience signals. Automated everything.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Demand Gen</div><div class="glossary-def">Visual-first campaign: YouTube Shorts/In-stream, Discover, Gmail. Social-style creative. Replaces Discovery.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Shopping / Merchant Center</div><div class="glossary-def">Product feed (XML/CSV/API) → Shopping ads. Requires GTIN/MPN, images, prices, availability.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Local Campaigns</div><div class="glossary-def">Drive store visits. Links to Google Business Profile. Optimizes for "Get Directions" / calls.</div></div>
+        <div class="glossary-item"><div class="glossary-term">App Campaigns</div><div class="glossary-def">Automated across Search, Play, Display, YouTube. Optimize for installs or in-app actions.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Video Action Campaigns</div><div class="glossary-def">YouTube drives conversions (not just views). CTA button, headline, sitelinks. Replaced by Demand Gen.</div></div>
+        <div class="glossary-item"><div class="glossary-term">RLSA (Remarketing Lists for Search Ads)</div><div class="glossary-def">Bid adjustments for past visitors on Search. "Bid +50% for cart abandoners searching brand terms."</div></div>
+        <div class="glossary-item"><div class="glossary-term">Dynamic Search Ads (DSA)</div><div class="glossary-def">Auto-generates headlines/landing pages from website content. Good for large inventories, gap filling.</div></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Bookmark Google Ads Help (support.google.com/google-ads) and the Google Ads API docs. When platform changes break something, official docs have the answer before blogs do.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

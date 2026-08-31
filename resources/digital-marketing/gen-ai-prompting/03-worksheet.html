@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Prompting Worksheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .worksheet { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+    .worksheet h3 { font-size: 14px; font-weight: 600; color: #176B4D; margin-bottom: 12px; }
+    .worksheet-row { display: flex; gap: 12px; margin-bottom: 10px; align-items: flex-start; }
+    .worksheet-label { font-size: 13px; font-weight: 500; color: #4b5563; min-width: 140px; }
+    .worksheet-input { flex: 1; border-bottom: 1px solid #d1d5db; min-height: 24px; font-size: 13px; color: #9ca3af; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .worksheet-input { border-bottom: 1px solid #333; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Worksheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Gen AI & Prompting Mastery</div>
+      <h1>AI Prompting Worksheet</h1>
+      <p class="subtitle">Practice crafting effective prompts for different use cases</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Prompt Building Framework</h2>
+      <div class="worksheet">
+        <h3>CRISPE Framework Practice</h3>
+        <div class="worksheet-row"><span class="worksheet-label">Task Type:</span><div class="worksheet-input">Content writing / Analysis / Code / Research</div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Capacity (Role):</span><div class="worksheet-input">e.g., "Senior copywriter with 10 years experience"</div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Insight (Context):</span><div class="worksheet-input">e.g., "B2B SaaS startup, Series A, targeting CTOs"</div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Statement (Goal):</span><div class="worksheet-input">e.g., "Write 5 email subject lines for product launch"</div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Personality (Tone):</span><div class="worksheet-input">e.g., "Professional but approachable, data-driven"</div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Experiment (Variations):</span><div class="worksheet-input">e.g., "Give me 3 versions: curious, urgent, value-focused"</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Email Subject Line Prompts</h2>
+      <div class="worksheet">
+        <h3>Your Email Campaign</h3>
+        <div class="worksheet-row"><span class="worksheet-label">Product/Offer:</span><div class="worksheet-input"></div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Target Audience:</span><div class="worksheet-input"></div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Campaign Goal:</span><div class="worksheet-input">Open / Click / Conversion</div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Urgency Level:</span><div class="worksheet-input">None / Low / Medium / High</div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Prompt Template:</span><div class="worksheet-input">Write 10 email subject lines for [offer]. Audience is [who]. Goal is [action]. Keep under 50 characters. Include power words like: exclusive, limited, proven, free, new.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Social Media Prompts</h2>
+      <div class="worksheet">
+        <h3>Your Social Content</h3>
+        <div class="worksheet-row"><span class="worksheet-label">Platform:</span><div class="worksheet-input">Twitter / LinkedIn / Instagram / TikTok</div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Topic:</span><div class="worksheet-input"></div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Audience Pain Point:</span><div class="worksheet-input"></div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Content Format:</span><div class="worksheet-input">Thread / Single post / Carousel / Video script</div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Prompt Template:</span><div class="worksheet-input">Write a [format] about [topic] for [platform]. Audience: [who]. Hook in first line. Value in middle. CTA at end. Tone: [casual/professional].</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Ad Copy Prompts</h2>
+      <div class="worksheet">
+        <h3>Your Ad Campaign</h3>
+        <div class="worksheet-row"><span class="worksheet-label">Platform:</span><div class="worksheet-input">Meta / Google / LinkedIn / Twitter</div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Product/Service:</span><div class="worksheet-input"></div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Main Benefit:</span><div class="worksheet-input"></div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Target Audience:</span><div class="worksheet-input"></div></div>
+        <div class="worksheet-row"><span class="worksheet-label">Prompt Template:</span><div class="worksheet-input">Write [platform] ad copy for [product]. Headline: under 40 chars. Primary text: under 125 chars. CTA: [action]. Focus on [benefit]. Audience: [who].</div></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>After generating content, rate it 1-5 on: relevance, creativity, accuracy, tone. Then refine your prompt and regenerate. Track which prompt patterns give the best results for your specific use case.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

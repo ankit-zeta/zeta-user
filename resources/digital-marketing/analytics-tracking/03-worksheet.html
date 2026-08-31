@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tracking Setup Worksheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .worksheet { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .worksheet h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .worksheet p { color: #4b5563; margin-bottom: 12px; }
+    .worksheet label { display: block; font-weight: 600; margin-bottom: 6px; color: #374151; }
+    .worksheet input, .worksheet textarea, .worksheet select { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; font-size: 14px; margin-bottom: 16px; background: white; }
+    .worksheet textarea { min-height: 80px; resize: vertical; }
+    .worksheet-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .worksheet-table th, .worksheet-table td { border: 1px solid #e5e7eb; padding: 10px 12px; text-align: left; }
+    .worksheet-table th { background: #176B4D; color: white; font-weight: 600; font-size: 13px; }
+    .worksheet-table td { font-size: 13px; color: #374151; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .worksheet { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Worksheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Analytics & Tracking Setup</div>
+      <h1>Tracking Setup Worksheet</h1>
+      <p class="subtitle">GA4 property setup, event naming convention, conversion definition, custom dimensions plan, UTM strategy, dashboard KPI selection</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 1: GA4 Property Configuration</h2>
+      <div class="worksheet">
+        <h3>Property Settings</h3>
+        <table class="worksheet-table">
+          <tr><th>Setting</th><th>Your Value</th><th>Notes</th></tr>
+          <tr><td>Property Name</td><td><input type="text" placeholder="ZetaGrow Production"></td><td>Clear, identifiable</td></tr>
+          <tr><td>Time Zone</td><td><input type="text" placeholder="America/New_York"></td><td>Match business operations</td></tr>
+          <tr><td>Currency</td><td><input type="text" placeholder="USD"></td><td>ISO 4217; affects monetization reports</td></tr>
+          <tr><td>Data Retention</td><td><select><option>14 months (default)</option><option>26 months</option><option>50 months</option></select></td><td>Max for Explore reports</td></tr>
+          <tr><td>Enhanced Measurement</td><td><input type="checkbox" checked> Enabled</td><td>Auto: scroll, video, download, form, search</td></tr>
+          <tr><td>Google Signals</td><td><input type="checkbox" checked> Enabled</td><td>Demographics, cross-device, remarketing</td></tr>
+          <tr><td>User ID Tracking</td><td><input type="checkbox"> Enabled</td><td>Requires CRM integration; enables cross-device</td></tr>
+          <tr><td>BigQuery Link</td><td><input type="checkbox"> Linked</td><td>Project ID: __________</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 2: Data Stream Setup</h2>
+      <div class="worksheet">
+        <h3>Web Stream Configuration</h3>
+        <table class="worksheet-table">
+          <tr><th>Field</th><th>Your Value</th></tr>
+          <tr><td>Stream Name</td><td><input type="text" placeholder="Website - Production"></td></tr>
+          <tr><td>Website URL</td><td><input type="text" placeholder="https://zetagrow.in"></td></tr>
+          <tr><td>Enhanced Measurement</td><td><textarea placeholder="☐ Scroll (90%)
+☐ Video Plays
+☐ File Downloads
+☐ Form Interactions
+☐ Site Search
+☐ Outbound Clicks"></textarea></td></tr>
+          <tr><td>Measurement ID</td><td><input type="text" placeholder="G-XXXXXXXXXX"></td></tr>
+          <tr><td>Cross-Domain Domains</td><td><input type="text" placeholder="zetagrow.in, app.zetagrow.in, shop.zetagrow.in"></td></tr>
+          <tr><td>Internal Traffic Filter</td><td><input type="text" placeholder="Office IP: 192.168.1.0/24; Home IPs: ..."></td></tr>
+          <tr><td>Developer Traffic Filter</td><td><input type="text" placeholder="Staging: staging.zetagrow.in"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 3: Event Naming Convention</h2>
+      <div class="worksheet">
+        <h3>Standardize event names (snake_case, past tense)</h3>
+        <table class="worksheet-table">
+          <tr><th>Category</th><th>Event Name</th><th>Parameters</th><th>Conversion?</th></tr>
+          <tr><td>Navigation</td><td>page_view (auto)</td><td>page_location, page_title, page_referrer</td><td>No</td></tr>
+          <tr><td>Engagement</td><td>scroll (auto)</td><td>page_location, percent_scrolled</td><td>No</td></tr>
+          <tr><td>Engagement</td><td>video_play (auto)</td><td>video_url, video_title, video_provider</td><td>No</td></tr>
+          <tr><td>Engagement</td><td>file_download (auto)</td><td>file_extension, file_name, link_url</td><td>No</td></tr>
+          <tr><td>Form</td><td>form_submit (auto/custom)</td><td>form_id, form_name, form_type, lead_source</td><td>Yes (generate_lead)</td></tr>
+          <tr><td>CTA</td><td>button_click</td><td>button_text, button_location, destination_url</td><td>No</td></tr>
+          <tr><td>Navigation</td><td>menu_click</td><td>menu_item, menu_location</td><td>No</td></tr>
+          <tr><td>Search</td><td>search (auto)</td><td>search_term, results_count</td><td>No</td></tr>
+          <tr><td>E-commerce</td><td>view_item</td><td>item_id, item_name, price, category, brand</td><td>No</td></tr>
+          <tr><td>E-commerce</td><td>add_to_cart</td><td>item_id, item_name, price, quantity, cart_value</td><td>No</td></tr>
+          <tr><td>E-commerce</td><td>begin_checkout</td><td>value, currency, items[], coupon</td><td>No</td></tr>
+          <tr><td>E-commerce</td><td>purchase</td><td>transaction_id, value, currency, items[], shipping, tax</td><td>Yes</td></tr>
+          <tr><td>Account</td><td>sign_up</td><td>method, plan_type, user_type</td><td>Yes</td></tr>
+          <tr><td>Account</td><td>login</td><td>method, user_type</td><td>No</td></tr>
+          <tr><td>Custom</td><td>__________________</td><td>__________________</td><td>☐</td></tr>
+        </table>
+        <p style="font-size: 13px; color: #666; margin-top: 12px;">Rule: snake_case, past tense, object_action (view_item not item_view). Max 25 params/event. 500 event names/property.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 4: Conversion Definitions</h2>
+      <div class="worksheet">
+        <h3>Mark key events as conversions</h3>
+        <table class="worksheet-table">
+          <tr><th>Event Name</th><th>Conversion Name</th><th>Count Method</th><th>Value</th><th>Marketing Use</th></tr>
+          <tr><td>purchase</td><td>Purchase</td><td><select><option>Once per event</option><option>Once per session</option></select></td><td>Dynamic (event value)</td><td>ROAS, Revenue, ROAS bidding</td></tr>
+          <tr><td>generate_lead</td><td>Lead</td><td><select><option>Once per session</option><option>Once per event</option></select></td><td>Static: $_____</td><td>Target CPA, Lead gen bidding</td></tr>
+          <tr><td>sign_up</td><td>Sign Up</td><td><select><option>Once per event</option><option>Once per session</option></select></td><td>Static: $_____</td><td>Trial start, CAC tracking</td></tr>
+          <tr><td>begin_checkout</td><td>Begin Checkout</td><td><select><option>Once per session</option><option>Once per event</option></select></td><td>Dynamic</td><td>Funnel analysis, retargeting</td></tr>
+          <tr><td>add_to_cart</td><td>Add to Cart</td><td><select><option>Once per event</option><option>Once per session</option></select></td><td>Static: $_____</td><td>Intent signal, retargeting</td></tr>
+          <tr><td>__________________</td><td><input type="text"></td><td><select><option>Once per session</option><option>Once per event</option></select></td><td><input type="text"></td><td><input type="text"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 5: Custom Dimensions & Metrics</h2>
+      <div class="worksheet">
+        <h3>Register event-scoped custom dimensions (max 50)</h3>
+        <table class="worksheet-table">
+          <tr><th>Parameter Name</th><th>Dimension Name</th><th>Scope</th><th>Description</th></tr>
+          <tr><td>form_type</td><td>Form Type</td><td>Event</td><td>contact, demo, newsletter, quote, support</td></tr>
+          <tr><td>lead_source</td><td>Lead Source</td><td>Event</td><td>organic, paid, referral, email, direct</td></tr>
+          <tr><td>button_location</td><td>Button Location</td><td>Event</td><td>header, hero, sidebar, footer, popup</td></tr>
+          <tr><td>plan_type</td><td>Plan Type</td><td>Event</td><td>free, starter, pro, enterprise, trial</td></tr>
+          <tr><td>user_type</td><td>User Type</td><td>Event</td><td>new, returning, customer, trial, admin</td></tr>
+          <tr><td>item_category</td><td>Item Category</td><td>Event</td><td>product category hierarchy</td></tr>
+          <tr><td>coupon_code</td><td>Coupon Code</td><td>Event</td><td>promo code used at checkout</td></tr>
+          <tr><td>__________________</td><td><input type="text"></td><td>Event</td><td><input type="text"></td></tr>
+        </table>
+        <h4 style="margin-top: 16px; color: #176B4D;">User-Scoped Custom Dimensions (max 25)</h4>
+        <table class="worksheet-table">
+          <tr><th>Parameter</th><th>Dimension Name</th><th>Source</th></tr>
+          <tr><td>user_id</td><td>CRM User ID</td><td>GTM Variable → CRM</td></tr>
+          <tr><td>customer_tier</td><td>Customer Tier</td><td>GTM Variable → CRM</td></tr>
+          <tr><td>lifetime_value</td><td>LTV Bucket</td><td>GTM Variable → CRM</td></tr>
+          <tr><td>__________________</td><td><input type="text"></td><td><input type="text"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 6: UTM Strategy & Governance</h2>
+      <div class="worksheet">
+        <h3>Standardize campaign tracking</h3>
+        <table class="worksheet-table">
+          <tr><th>Channel</th><th>utm_source</th><th>utm_medium</th><th>utm_campaign Pattern</th><th>utm_content</th></tr>
+          <tr><td>Google Search</td><td>google</td><td>cpc</td><td>[product]_[matchtype]_[geo]_[date]</td><td>{creative_id}</td></tr>
+          <tr><td>Meta Ads</td><td>facebook</td><td>cpc</td><td>[objective]_[product]_[audience]_[date]</td><td>{ad_id}</td></tr>
+          <tr><td>LinkedIn Ads</td><td>linkedin</td><td>cpc</td><td>[objective]_[product]_[audience]_[date]</td><td>{creative_id}</td></tr>
+          <tr><td>Email Marketing</td><td>newsletter</td><td>email</td><td>[type]_[topic]_[date]</td><td>[email_id]</td></tr>
+          <tr><td>Organic Social</td><td>instagram|twitter|linkedin</td><td>organic</td><td>[campaign]_[content_type]</td><td>[post_id]</td></tr>
+          <tr><td>Affiliate</td><td>[partner_name]</td><td>affiliate</td><td>[offer]_[date]</td><td>[affiliate_id]</td></tr>
+          <tr><td>Referral</td><td>[referring_domain]</td><td>referral</td><td>(auto)</td><td>(auto)</td></tr>
+        </table>
+        <h4 style="margin-top: 16px; color: #176B4D;">Governance Rules</h4>
+        <ul>
+          <li><input type="checkbox"> All lowercase, underscores only (no spaces, caps, special chars)</li>
+          <li><input type="checkbox"> Document in shared "UTM Master Sheet" (Google Sheets)</li>
+          <li><input type="checkbox"> Use URL Builder tool for every link (ga-dev-tools.web.app/campaign-url-builder)</li>
+          <li><input type="checkbox"> Auto-tagging ON for Google Ads (gclid)</li>
+          <li><input type="checkbox"> Quarterly audit: filter GA4 by utm_source → check consistency</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 7: Dashboard KPI Selection</h2>
+      <div class="worksheet">
+        <h3>Choose 8-12 KPIs for executive dashboard</h3>
+        <table class="worksheet-table">
+          <tr><th>KPI</th><th>GA4 Source</th><th>Target</th><th>Frequency</th><th>Owner</th></tr>
+          <tr><td>Total Users</td><td>Home / Realtime</td><td><input type="text" placeholder="10K/mo"></td><td>Daily</td><td><input type="text"></td></tr>
+          <tr><td>Engagement Rate</td><td>Engagement → Overview</td><td><input type="text" placeholder="> 55%"></td><td>Weekly</td><td><input type="text"></td></tr>
+          <tr><td>Sessions by Channel</td><td>Acquisition → Traffic</td><td><input type="text" placeholder="Mix targets"></td><td>Weekly</td><td><input type="text"></td></tr>
+          <tr><td>Conversion Rate</td><td>Engagement → Conversions</td><td><input type="text" placeholder="> 3%"></td><td>Weekly</td><td><input type="text"></td></tr>
+          <tr><td>Total Revenue</td><td>Monetization → Overview</td><td><input type="text" placeholder="$100K/mo"></td><td>Daily</td><td><input type="text"></td></tr>
+          <tr><td>ROAS</td><td>Advertising → Overview</td><td><input type="text" placeholder="> 4:1"></td><td>Weekly</td><td><input type="text"></td></tr>
+          <tr><td>Avg Order Value</td><td>Monetization → Ecommerce</td><td><input type="text" placeholder="$65"></td><td>Monthly</td><td><input type="text"></td></tr>
+          <tr><td>Cart Abandonment Rate</td><td>Explore → Funnel</td><td><input type="text" placeholder="< 70%"></td><td>Weekly</td><td><input type="text"></td></tr>
+          <tr><td>Form Conversion Rate</td><td>Events → form_submit</td><td><input type="text" placeholder="> 5%"></td><td>Weekly</td><td><input type="text"></td></tr>
+          <tr><td>Top Landing Pages</td><td>Engagement → Landing Page</td><td><input type="text" placeholder="Top 10"></td><td>Monthly</td><td><input type="text"></td></tr>
+          <tr><td>__________________</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Complete this worksheet with stakeholders BEFORE implementation. Get sign-off on event names, conversions, and KPIs. Changes later = broken historical data. Store in Notion/Confluence with version control.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

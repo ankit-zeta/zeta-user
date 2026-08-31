@@ -1,7 +1,7 @@
 export const BRAND = {
   name: "ZetaGrow",
   tagline: "Learn. Work. Grow.",
-  supportEmail: "support@zetagrow.com",
+  supportEmail: "hey@zetagrow.in",
   defaultCurrency: "INR",
   currencySymbol: "₹",
 };

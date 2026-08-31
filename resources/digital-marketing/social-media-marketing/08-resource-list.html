@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Media Tools — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .resource-list { list-style: none; }
+    .resource-list li { padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
+    .resource-list li:last-child { border-bottom: none; }
+    .resource-name { font-weight: 600; color: #1a1a1a; font-size: 15px; margin-bottom: 4px; }
+    .resource-desc { font-size: 13px; color: #666; margin-bottom: 6px; }
+    .resource-link { font-size: 13px; color: #176B4D; text-decoration: none; font-weight: 500; }
+    .resource-link:hover { text-decoration: underline; }
+    .resource-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag { background: #ecfdf5; color: #176B4D; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Resource List</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Social Media Marketing Systems</div>
+      <h1>Social Media Tools</h1>
+      <p class="subtitle">Curated tools for scheduling, design, analytics, link-in-bio, hashtags, and content creation</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Scheduling & Management</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Buffer</div>
+          <div class="resource-desc">Clean, simple scheduler for 10+ platforms. Free plan: 10 posts/channel. Paid from $6/mo. Best for individuals/small teams.</div>
+          <a href="https://buffer.com" class="resource-link" target="_blank">buffer.com →</a>
+          <div class="resource-tags"><span class="tag">Free Tier</span><span class="tag">Simple</span><span class="tag">Multi-platform</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Later</div>
+          <div class="resource-desc">Visual planner with Instagram-first design. Drag-drop calendar, hashtag suggestions, best time to post. Free plan available.</div>
+          <a href="https://later.com" class="resource-link" target="_blank">later.com →</a>
+          <div class="resource-tags"><span class="tag">Visual</span><span class="tag">IG-Focused</span><span class="tag">Free Tier</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Hootsuite</div>
+          <div class="resource-desc">Enterprise-grade: scheduling, monitoring, analytics, team workflows, ad management. From $99/mo. For agencies/large teams.</div>
+          <a href="https://hootsuite.com" class="resource-link" target="_blank">hootsuite.com →</a>
+          <div class="resource-tags"><span class="tag">Enterprise</span><span class="tag">Analytics</span><span class="tag">Team</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Metricool</div>
+          <div class="resource-desc">All-in-one: scheduling, analytics, competitor analysis, hashtag tracker, link-in-bio. Generous free plan. Great value.</div>
+          <a href="https://metricool.com" class="resource-link" target="_blank">metricool.com →</a>
+          <div class="resource-tags"><span class="tag">Analytics</span><span class="tag">Competitor</span><span class="tag">Free Tier</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Typefully</div>
+          <div class="resource-desc">Twitter/X & LinkedIn specialist. Clean writing experience, thread builder, auto-DM, analytics. From $12.50/mo.</div>
+          <a href="https://typefully.com" class="resource-link" target="_blank">typefully.com →</a>
+          <div class="resource-tags"><span class="tag">Twitter</span><span class="tag">LinkedIn</span><span class="tag">Threads</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Meta Business Suite</div>
+          <div class="resource-desc">Free native tool for FB + IG. Scheduling, insights, inbox, ads, shop. Required for some IG features (product tagging).</div>
+          <a href="https://business.facebook.com" class="resource-link" target="_blank">business.facebook.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Native</span><span class="tag">FB+IG</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Design & Content Creation</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Canva</div>
+          <div class="resource-desc">Templates for every platform/format. Brand kit, team collaboration, video editing, content planner. Free tier generous; Pro $12.99/mo.</div>
+          <a href="https://canva.com" class="resource-link" target="_blank">canva.com →</a>
+          <div class="resource-tags"><span class="tag">Templates</span><span class="tag">Video</span><span class="tag">Free Tier</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Adobe Express</div>
+          <div class="resource-desc">Quick design with Adobe fonts/assets. Animate from audio, remove background, resize for platforms. Free + Premium.</div>
+          <a href="https://adobe.com/express" class="resource-link" target="_blank">adobe.com/express →</a>
+          <div class="resource-tags"><span class="tag">Adobe</span><span class="tag">Animation</span><span class="tag">Resize</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Figma</div>
+          <div class="resource-desc">Collaborative design tool. Create custom templates, design systems, handoff to devs. Free for individuals.</div>
+          <a href="https://figma.com" class="resource-link" target="_blank">figma.com →</a>
+          <div class="resource-tags"><span class="tag">Design Systems</span><span class="tag">Collaborative</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">CapCut</div>
+          <div class="resource-desc">Mobile/desktop video editor. Templates, auto-captions, trending effects, keyframes. Free; Pro removes watermark.</div>
+          <a href="https://capcut.com" class="resource-link" target="_blank">capcut.com →</a>
+          <div class="resource-tags"><span class="tag">Video</span><span class="tag">Mobile</span><span class="tag">Trending</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Descript</div>
+          <div class="resource-desc">Edit video by editing text transcript. Overdub (AI voice), remove filler words, eye contact correction. From $12/mo.</div>
+          <a href="https://descript.com" class="resource-link" target="_blank">descript.com →</a>
+          <div class="resource-tags"><span class="tag">AI</span><span class="tag">Transcript</span><span class="tag">Video</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Analytics & Insights</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Meta Business Suite Insights</div>
+          <div class="resource-desc">Native FB/IG analytics. Audience demographics, content performance, benchmarking, ad results. Free.</div>
+          <a href="https://business.facebook.com/insights" class="resource-link" target="_blank">business.facebook.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Native</span></div>
+        </li>
+        <li>
+          <div class="resource-name">LinkedIn Analytics</div>
+          <div class="resource-desc">Page analytics: visitors, updates, followers, demographics. Post-level: impressions, clicks, engagement, demographics.</div>
+          <a href="https://linkedin.com/analytics" class="resource-link" target="_blank">linkedin.com/analytics →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">B2B</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Twitter/X Analytics</div>
+          <div class="resource-desc">Tweet activity, follower growth, audience interests, top media, conversion tracking. Free for all accounts.</div>
+          <a href="https://analytics.twitter.com" class="resource-link" target="_blank">analytics.twitter.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Detailed</span></div>
+        </li>
+        <li>
+          <div class="resource-name">TikTok Analytics</div>
+          <div class="resource-desc">Pro account required (free). Video views, profile views, followers, traffic sources, audience territories, sounds.</div>
+          <a href="https://tiktok.com/analytics" class="resource-link" target="_blank">tiktok.com/analytics →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Pro Account</span></div>
+        </li>
+        <li>
+          <div class="resource-name">YouTube Studio</div>
+          <div class="resource-desc">Comprehensive: views, watch time, subscribers, revenue, traffic sources, audience, engagement, real-time.</div>
+          <a href="https://studio.youtube.com" class="resource-link" target="_blank">studio.youtube.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Comprehensive</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Social Blade</div>
+          <div class="resource-desc">Track any public account's growth history, future projections, estimated earnings. Free + premium.</div>
+          <a href="https://socialblade.com" class="resource-link" target="_blank">socialblade.com →</a>
+          <div class="resource-tags"><span class="tag">Tracking</span><span class="tag">Competitors</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Link-in-Bio & Funnel Tools</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Linktree</div>
+          <div class="resource-desc">Original link-in-bio. Unlimited links, analytics, integrations, monetization. Free; Pro $5/mo for branding.</div>
+          <a href="https://linktr.ee" class="resource-link" target="_blank">linktr.ee →</a>
+          <div class="resource-tags"><span class="tag">Popular</span><span class="tag">Free Tier</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Beacons</div>
+          <div class="resource-desc">Creator-focused: store, media kit, email capture, analytics, custom domains. Free tier feature-rich.</div>
+          <a href="https://beacons.ai" class="resource-link" target="_blank">beacons.ai →</a>
+          <div class="resource-tags"><span class="tag">Creator</span><span class="tag">Store</span><span class="tag">Free Tier</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Stan Store</div>
+          <div class="resource-desc">Digital product store in bio. Courses, downloads, bookings, memberships. 0% transaction fee (paid plan).</div>
+          <a href="https://stanstore.co" class="resource-link" target="_blank">stanstore.co →</a>
+          <div class="resource-tags"><span class="tag">Digital Products</span><span class="tag">Monetize</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Milkshake</div>
+          <div class="resource-desc">Mobile-first card-based bio site. Beautiful templates, free. Great for personal brands.</div>
+          <a href="https://milkshake.app" class="resource-link" target="_blank">milkshake.app →</a>
+          <div class="resource-tags"><span class="tag">Mobile</span><span class="tag">Free</span><span class="tag">Personal Brand</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Hashtag & Keyword Research</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Flick</div>
+          <div class="resource-desc">Hashtag search, collections, analytics, banned checker. AI suggestions. From £11/mo. Best for Instagram.</div>
+          <a href="https://flick.social" class="resource-link" target="_blank">flick.social →</a>
+          <div class="resource-tags"><span class="tag">IG</span><span class="tag">AI</span><span class="tag">Analytics</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Hashtagify</div>
+          <div class="resource-desc">Hashtag popularity, trends, related tags, top influencers. Free basic; Pro from $19/mo.</div>
+          <a href="https://hashtagify.me" class="resource-link" target="_blank">hashtagify.me →</a>
+          <div class="resource-tags"><span class="tag">Trends</span><span class="tag">Influencers</span></div>
+        </li>
+        <li>
+          <div class="resource-name">RiteTag</div>
+          <div class="resource-desc">Real-time hashtag suggestions for images/text. Color-coded: green=good now, blue=good long-term, red=avoid.</div>
+          <a href="https://ritetag.com" class="resource-link" target="_blank">ritetag.com →</a>
+          <div class="resource-tags"><span class="tag">Real-time</span><span class="tag">Browser Extension</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Display Purposes</div>
+          <div class="resource-desc">Free hashtag generator. Input a tag → get related, filtered for relevance and popularity. No spam tags.</div>
+          <a href="https://displaypurposes.com" class="resource-link" target="_blank">displaypurposes.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Simple</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Stock Photos, Videos & Audio</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Unsplash / Pexels / Pixabay</div>
+          <div class="resource-desc">Free high-quality photos & videos. Commercial use OK. APIs available for automation.</div>
+          <a href="https://unsplash.com" class="resource-link" target="_blank">unsplash.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Commercial</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Coverr / Mazwai / Pexels Videos</div>
+          <div class="resource-desc">Free stock video footage. Loops, backgrounds, b-roll. Check license per clip.</div>
+          <a href="https://coverr.co" class="resource-link" target="_blank">coverr.co →</a>
+          <div class="resource-tags"><span class="tag">Free Video</span><span class="tag">Loops</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Epidemic Sound / Artlist</div>
+          <div class="resource-desc">Royalty-free music & SFX for social. Subscription model. Covers all platforms. Essential for Reels/TikTok.</div>
+          <a href="https://epidemicsound.com" class="resource-link" target="_blank">epidemicsound.com →</a>
+          <div class="resource-tags"><span class="tag">Music</span><span class="tag">SFX</span><span class="tag">Licensed</span></div>
+        </li>
+        <li>
+          <div class="resource-name">YouTube Audio Library</div>
+          <div class="resource-desc">Free music & SFX in YouTube Studio. Filter by genre, mood, duration, attribution required.</div>
+          <a href="https://youtube.com/audiolibrary" class="resource-link" target="_blank">YouTube Audio Library →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">YouTube</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Learning & Communities</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Social Media Examiner</div>
+          <div class="resource-desc">Industry-leading blog, podcast, conference. Platform updates, strategy, case studies. Free content + paid society.</div>
+          <a href="https://socialmediaexaminer.com" class="resource-link" target="_blank">socialmediaexaminer.com →</a>
+          <div class="resource-tags"><span class="tag">News</span><span class="tag">Strategy</span><span class="tag">Podcast</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Matt Navarra / Geekout Newsletter</div>
+          <div class="resource-desc">Weekly platform updates, feature launches, algorithm changes. Essential for staying current.</div>
+          <a href="https://geekout.news" class="resource-link" target="_blank">geekout.news →</a>
+          <div class="resource-tags"><span class="tag">Newsletter</span><span class="tag">Updates</span></div>
+        </li>
+        <li>
+          <div class="resource-name">r/socialmedia / r/marketing</div>
+          <div class="resource-desc">Reddit communities for questions, case studies, tool discussions, career advice. Active moderation.</div>
+          <a href="https://reddit.com/r/socialmedia" class="resource-link" target="_blank">reddit.com/r/socialmedia →</a>
+          <div class="resource-tags"><span class="tag">Community</span><span class="tag">Q&A</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Women in Social / Social Media Club</div>
+          <div class="resource-desc">Professional communities for networking, job boards, mentorship, events. Local chapters worldwide.</div>
+          <a href="https://socialmediaclub.org" class="resource-link" target="_blank">socialmediaclub.org →</a>
+          <div class="resource-tags"><span class="tag">Networking</span><span class="tag">Career</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Start with free native tools (Meta Business Suite, LinkedIn Analytics) + Canva + Buffer free tier. Upgrade only when you hit limits. Avoid tool overload.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

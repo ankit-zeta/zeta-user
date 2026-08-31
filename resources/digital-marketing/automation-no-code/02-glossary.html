@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>No-Code Glossary — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .glossary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .glossary-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .glossary-term { font-size: 14px; font-weight: 600; color: #176B4D; margin-bottom: 4px; }
+    .glossary-def { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Glossary</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Automation & No-Code Tools</div>
+      <h1>No-Code Glossary</h1>
+      <p class="subtitle">Essential terminology for workflow automation, databases, app builders, and AI-powered development</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Automation Core Concepts</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Workflow</div><div class="glossary-def">A defined sequence of automated steps connecting triggers to actions across apps. Also called: Zap, Scenario, Flow.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Trigger</div><div class="glossary-def">Event that starts a workflow: new form submission, webhook received, scheduled time, new database record.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Action</div><div class="glossary-def">Task performed by workflow: create record, send email, update database, call API, transform data.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Webhook</div><div class="glossary-def">HTTP callback: app POSTs data to a URL when event occurs. Real-time, no polling. Payload = event data.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Polling</div><div class="glossary-def">Workflow checks for new data at intervals (e.g., every 5 min). Used when webhooks unavailable.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Data Mapping</div><div class="glossary-def">Connecting output fields from one step to input fields of next. Transform: format dates, split names, calculate values.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Filter / Condition</div><div class="glossary-def">Logic to continue only if criteria met: "Only proceed if email contains @company.com" or "Status = Paid".</div></div>
+        <div class="glossary-item"><div class="glossary-term">Router / Branch</div><div class="glossary-def">Split workflow into multiple paths based on conditions. Each path can have different actions.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Make (Integromat) Specific Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Scenario</div><div class="glossary-def">Make's term for a workflow. Visual flowchart with modules connected by links.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Module</div><div class="glossary-def">Single step in a scenario: app action, tool (router, iterator, aggregator), or custom function.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Iterator</div><div class="glossary-def">Loops through array items, running subsequent modules for each item. Essential for batch processing.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Aggregator</div><div class="glossary-def">Combines multiple bundles into one array or text. Use after Iterator to collect results.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Data Store</div><div class="glossary-def">Built-in key-value storage within Make. Persist data between scenario runs. 5MB free.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Break / Resume</div><div class="glossary-def">Error handling: Break stops scenario; Resume continues from error handler module.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Incomplete Executions</div><div class="glossary-def">Failed runs stored for review. Can be resolved manually and re-run from failure point.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Database & Backend Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Base / Workspace</div><div class="glossary-def">Top-level container (Airtable: Base, Notion: Workspace, Supabase: Project). Contains tables/databases.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Table / Collection</div><div class="glossary-def">Structured data container with defined fields (columns). Records = rows.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Field / Column / Property</div><div class="glossary-def">Single data attribute: Text, Number, Date, Select, Multi-select, Attachment, Formula, Relation, Rollup.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Record / Row / Item</div><div class="glossary-def">Single entry in a table. Unique ID. Contains values for each field.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Relation / Link</div><div class="glossary-def">Connection between tables. One-to-Many, Many-to-Many. Enables lookups, rollups, joins.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Rollup</div><div class="glossary-def">Aggregates data from linked records: Count, Sum, Average, Concatenate, Show unique values.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Formula</div><div class="glossary-def">Computed field: IF, DATEADD, CONCATENATE, REGEX, logical operators. Updates automatically.</div></div>
+        <div class="glossary-item"><div class="glossary-term">View</div><div class="glossary-def">Saved perspective: Grid, Kanban, Calendar, Gallery, Timeline, Form. Filters, sorts, groups, field visibility.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">App Builder Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Component</div><div class="glossary-def">UI building block: Button, Input, Container, List, Chart, Map. Composable, reusable, configurable.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Page / Screen</div><div class="glossary-def">Route/URL in app. Contains components. Parameters in URL for dynamic pages.</div></div>
+        <div class="glossary-item"><div class="glossary-term">State / Variable</div><div class="glossary-def">Data that changes: User input, API response, toggle, counter. Local (component) or Global (app-wide).</div></div>
+        <div class="glossary-item"><div class="glossary-term">Action / Workflow (in builder)</div><div class="glossary-def">Logic triggered by events: On Click, On Load, On Change. Steps: API call, Set State, Navigate, Show Toast.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Auth / Authentication</div><div class="glossary-def">User management: Sign up, Login, Password reset, Social providers (Google, GitHub), JWT, Sessions, Roles.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Backend / Database Connection</div><div class="glossary-def">Connect frontend to data: REST API, GraphQL, Supabase, Firebase, Xano, Airtable. CRUD operations.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Responsive Design</div><div class="glossary-def">Layout adapts: Desktop, Tablet, Mobile. Breakpoints, flex/grid, visibility conditions per device.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Deploy / Publish</div><div class="glossary-def">Make app live: Custom domain, SSL, CDN, Environment variables, Version history, Rollback.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">AI-Powered Development Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">LLM / Foundation Model</div><div class="glossary-def">Large Language Model: GPT-4, Claude, Gemini, Llama. Trained on code + text. Powers code generation.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Prompt Engineering</div><div class="glossary-def">Crafting inputs for optimal AI output: Context, Task, Format, Constraints, Examples (few-shot).</div></div>
+        <div class="glossary-item"><div class="glossary-term">Context Window</div><div class="glossary-def">Max tokens model can process at once. GPT-4: 128k, Claude: 200k. Affects file size you can feed.</div></div>
+        <div class="glossary-item"><div class="glossary-term">RAG (Retrieval-Augmented Generation)</div><div class="glossary-def">Fetch relevant docs → inject into prompt → generate answer. Reduces hallucination. Vector DB + Embeddings.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Agent / Autonomous AI</div><div class="glossary-def">AI that plans, acts, observes, loops: Devin, Cursor Agent, Replit Agent. Multi-step problem solving.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Vibe Coding</div><div class="glossary-def">Describe what you want in natural language → AI builds it. Iterative refinement via chat.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Code Generation</div><div class="glossary-def">AI writes: React components, API routes, SQL, tests, docs, configs. Human reviews, integrates, deploys.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Hallucination</div><div class="glossary-def">AI confidently generates false info: fake APIs, wrong syntax, non-existent libraries. Always verify.</div></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Create a personal "No-Code Dictionary" in Notion. Add new terms weekly. Understanding terminology = faster tool evaluation + better communication with developers.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

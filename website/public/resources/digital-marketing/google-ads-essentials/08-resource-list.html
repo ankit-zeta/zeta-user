@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Ads Tools — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .resource-list { list-style: none; }
+    .resource-list li { padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
+    .resource-list li:last-child { border-bottom: none; }
+    .resource-name { font-weight: 600; color: #1a1a1a; font-size: 15px; margin-bottom: 4px; }
+    .resource-desc { font-size: 13px; color: #666; margin-bottom: 6px; }
+    .resource-link { font-size: 13px; color: #176B4D; text-decoration: none; font-weight: 500; }
+    .resource-link:hover { text-decoration: underline; }
+    .resource-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag { background: #ecfdf5; color: #176B4D; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Resource List</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Google Ads Essentials</div>
+      <h1>Google Ads Tools</h1>
+      <p class="subtitle">Keyword Planner, Google Trends, landing page builders, call tracking, conversion tracking, Analytics integration, competitor tools</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Official Google Tools</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Google Keyword Planner</div>
+          <div class="resource-desc">Free keyword research: search volume, competition, CPC estimates, forecasts, seasonal trends. Requires Google Ads account.</div>
+          <a href="https://ads.google.com/aw/keywordplanner" class="resource-link" target="_blank">Keyword Planner →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Official</span><span class="tag">Essential</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Google Trends</div>
+          <div class="resource-desc">Search interest over time, related topics/queries, geographic interest, real-time trends. Great for seasonality and content planning.</div>
+          <a href="https://trends.google.com" class="resource-link" target="_blank">trends.google.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Trends</span><span class="tag">Seasonality</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Google Ads Editor</div>
+          <div class="resource-desc">Desktop app for bulk editing, offline work, copy/paste across accounts, advanced search/replace. Essential for scale.</div>
+          <a href="https://ads.google.com/intl/en_aw/home/tools/ads-editor" class="resource-link" target="_blank">Google Ads Editor →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Bulk Edit</span><span class="tag">Offline</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Google Tag Manager (GTM)</div>
+          <div class="resource-desc">Tag management without code changes. Deploy Google Ads, GA4, conversion pixels, custom events. Version control, preview mode.</div>
+          <a href="https://tagmanager.google.com" class="resource-link" target="_blank">tagmanager.google.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Tag Management</span><span class="tag">Essential</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Google Merchant Center</div>
+          <div class="resource-desc">Product feed management for Shopping ads. Feed rules, diagnostics, performance, promotions, local inventory.</div>
+          <a href="https://merchants.google.com" class="resource-link" target="_blank">merchants.google.com →</a>
+          <div class="resource-tags"><span class="tag">Shopping</span><span class="tag">Feed</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Looker Studio (Data Studio)</div>
+          <div class="resource-desc">Free dashboards. Connect Google Ads, GA4, Sheets, BigQuery, SQL. Automated client reporting. Templates available.</div>
+          <a href="https://lookerstudio.google.com" class="resource-link" target="_blank">lookerstudio.google.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Dashboards</span><span class="tag">Automation</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Keyword Research & Competitor Tools</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Semrush</div>
+          <div class="resource-desc">Keyword research, competitor PPC analysis, position tracking, ad history, keyword gap, ad copy insights. From $129/mo.</div>
+          <a href="https://semrush.com" class="resource-link" target="_blank">semrush.com →</a>
+          <div class="resource-tags"><span class="tag">Competitor</span><span class="tag">PPC</span><span class="tag">Comprehensive</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Ahrefs</div>
+          <div class="resource-desc">Keywords Explorer (PPC data), Site Explorer (competitor paid traffic), Content Gap, Alerts. From $99/mo.</div>
+          <a href="https://ahrefs.com" class="resource-link" target="_blank">ahrefs.com →</a>
+          <div class="resource-tags"><span class="tag">Competitor</span><span class="tag">Keywords</span><span class="tag">SEO+PPC</span></div>
+        </li>
+        <li>
+          <div class="resource-name">SpyFu</div>
+          <div class="resource-desc">Competitor PPC specialist: historical keywords, ad copy, spend estimates, keyword groups. From $39/mo. Best value for PPC intel.</div>
+          <a href="https://spyfu.com" class="resource-link" target="_blank">spyfu.com →</a>
+          <div class="resource-tags"><span class="tag">PPC Focus</span><span class="tag">Historical</span><span class="tag">Value</span></div>
+        </li>
+        <li>
+          <div class="resource-name">iSpionage</div>
+          <div class="resource-desc">Competitor PPC/SEO. Keyword monitoring, ad copy history, landing page analysis. From $59/mo.</div>
+          <a href="https://ispionage.com" class="resource-link" target="_blank">ispionage.com →</a>
+          <div class="resource-tags"><span class="tag">PPC</span><span class="tag">Landing Pages</span></div>
+        </li>
+        <li>
+          <resource-name>Keywords Everywhere</resource-name>
+          <div class="resource-desc">Browser extension: search volume, CPC, competition on Google, YouTube, Amazon, more. Pay-per-credit (very cheap).</div>
+          <a href="https://keywordseverywhere.com" class="resource-link" target="_blank">keywordseverywhere.com →</a>
+          <div class="resource-tags"><span class="tag">Extension</span><span class="tag">Cheap</span><span class="tag">Everywhere</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Landing Page Builders & CRO</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Unbounce</div>
+          <div class="resource-desc">Landing pages + AI copy + A/B testing + popups + sticky bars. Smart Traffic (AI routing). From $99/mo.</div>
+          <a href="https://unbounce.com" class="resource-link" target="_blank">unbounce.com →</a>
+          <div class="resource-tags"><span class="tag">A/B Testing</span><span class="tag">AI Copy</span><span class="tag">Smart Traffic</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Instapage</div>
+          <div class="resource-desc">Post-click optimization. Heatmaps, A/B testing, personalization, AMP, collaboration. Enterprise. From $199/mo.</div>
+          <a href="https://instapage.com" class="resource-link" target="_blank">instapage.com →</a>
+          <div class="resource-tags"><span class="tag">Enterprise</span><span class="tag">Heatmaps</span><span class="tag">Personalization</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Carrd</div>
+          <div class="resource-desc">Simple one-page sites. $19/year Pro. Forms, Stripe, embeds. Great for lead magnets, simple funnels.</div>
+          <a href="https://carrd.co" class="resource-link" target="_blank">carrd.co →</a>
+          <div class="resource-tags"><span class="tag">Cheap</span><span class="tag">Simple</span><span class="tag">Fast</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Webflow</div>
+          <div class="resource-desc">Visual development. CMS, interactions, clean code. Steeper learning curve. From $14/mo.</div>
+          <a href="https://webflow.com" class="resource-link" target="_blank">webflow.com →</a>
+          <div class="resource-tags"><span class="tag">Design Freedom</span><span class="tag">CMS</span><span class="tag">Clean Code</span></div>
+        </li>
+        <li>
+          <div class="resource-name">VWO / Google Optimize</div>
+          <div class="resource-desc">A/B testing, personalization, heatmaps, recordings. VWO from $200/mo; Optimize free (sunsetting).</div>
+          <a href="https://vwo.com" class="resource-link" target="_blank">vwo.com →</a>
+          <div class="resource-tags"><span class="tag">A/B Testing</span><span class="tag">CRO</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Call Tracking & Attribution</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">CallRail</div>
+          <div class="resource-desc">Dynamic number insertion, call recording, keyword-level attribution, form tracking, GA4/Ads integration. From $45/mo.</div>
+          <a href="https://callrail.com" class="resource-link" target="_blank">callrail.com →</a>
+          <div class="resource-tags"><span class="tag">DNI</span><span class="tag">Attribution</span><span class="tag">Integrations</span></div>
+        </li>
+        <li>
+          <div class="resource-name">CallTrackingMetrics</div>
+          <div class="resource-desc">Similar to CallRail + conversation analytics, IVR, SMS. From $49/mo.</div>
+          <a href="https://calltrackingmetrics.com" class="resource-link" target="_blank">calltrackingmetrics.com →</a>
+          <div class="resource-tags"><span class="tag">Analytics</span><span class="tag">IVR</span><span class="tag">SMS</span></div>
+        </li>
+        <li>
+          <div class="resource-name">WhatConverts</div>
+          <div class="resource-desc">Lead tracking: calls, forms, chats, e-commerce. Marketing attribution, CRM integration. From $30/mo.</div>
+          <a href="https://whatconverts.com" class="resource-link" target="_blank">whatconverts.com →</a>
+          <div class="resource-tags"><span class="tag">Lead Tracking</span><span class="tag">CRM</span><span class="tag">Attribution</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Conversion Tracking & Analytics</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Google Analytics 4 (GA4)</div>
+          <div class="resource-desc">Free web/app analytics. Events, conversions, audiences, funnels, pathing, predictive metrics. Link to Google Ads.</div>
+          <a href="https://analytics.google.com" class="resource-link" target="_blank">analytics.google.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Essential</span><span class="tag">Link to Ads</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Supermetrics</div>
+          <div class="resource-desc">Data connector: Google Ads, GA4, FB, LinkedIn → Sheets, Looker Studio, Excel, BigQuery, API. From $69/mo.</div>
+          <a href="https://supermetrics.com" class="resource-link" target="_blank">supermetrics.com →</a>
+          <div class="resource-tags"><span class="tag">Automation</span><span class="tag">Connectors</span><span class="tag">Reporting</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Funnel.io</div>
+          <div class="resource-desc">Marketing data hub. 500+ connectors. Transform, blend, export to any destination. From €119/mo.</div>
+          <a href="https://funnel.io" class="resource-link" target="_blank">funnel.io →</a>
+          <div class="resource-tags"><span class="tag">Data Hub</span><span class="tag">500+ Connectors</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Northbeam / Triple Whale</div>
+          <div class="resource-desc">Multi-touch attribution for e-commerce. True ROAS across channels. From $500-1000/mo.</div>
+          <a href="https://northbeam.io" class="resource-link" target="_blank">northbeam.io →</a>
+          <div class="resource-tags"><span class="tag">Attribution</span><span class="tag">E-commerce</span><span class="tag">True ROAS</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Automation & Scripts</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Google Ads Scripts</div>
+          <div class="resource-desc">JavaScript automation in Ads: bid rules, budget pacing, quality score alerts, negative keyword cleanup, reporting. Free.</div>
+          <a href="https://developers.google.com/google-ads/scripts" class="resource-link" target="_blank">Google Ads Scripts →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Automation</span><span class="tag">JavaScript</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Optmyzr</div>
+          <div class="resource-desc">PPC management suite: rules, scripts, audits, shopping, reporting, experiments. From $249/mo. Saves hours/week.</div>
+          <a href="https://optmyzr.com" class="resource-link" target="_blank">optmyzr.com →</a>
+          <div class="resource-tags"><span class="tag">Management</span><span class="tag">Rules</span><span class="tag">Time Saver</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Adalysis</div>
+          <div class="resource-desc">Ad testing automation, quality score alerts, n-gram analysis, search term mining. From $97/mo.</div>
+          <a href="https://adalysis.com" class="resource-link" target="_blank">adalysis.com →</a>
+          <div class="resource-tags"><span class="tag">Ad Testing</span><span class="tag">Automation</span><span class="tag">N-gram</span></div>
+        </li>
+        <li>
+          <div class="resource-name">PPC Samurai / Shape</div>
+          <div class="resource-desc">Bid management, budget pacing, automated rules, reporting. Agency-focused. From $100-300/mo.</div>
+          <a href="https://ppcsamurai.com" class="resource-link" target="_blank">ppcsamurai.com →</a>
+          <div class="resource-tags"><span class="tag">Bid Management</span><span class="tag">Agency</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Learning & Communities</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Google Ads Help Center</div>
+          <div class="resource-desc">Official documentation. Search any feature. Always current. Start here before third-party sources.</div>
+          <a href="https://support.google.com/google-ads" class="resource-link" target="_blank">support.google.com/google-ads →</a>
+          <div class="resource-tags"><span class="tag">Official</span><span class="tag">Reference</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Skillshop (Google Ads Certifications)</div>
+          <div class="resource-desc">Free certifications: Search, Display, Video, Shopping, Apps, Measurement, Creative. Industry-recognized.</div>
+          <a href="https://skillshop.withgoogle.com" class="resource-link" target="_blank">skillshop.withgoogle.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Certification</span><span class="tag">Official</span></div>
+        </li>
+        <li>
+          <div class="resource-name">PPCChat (Twitter/X / Slack)</div>
+          <div class="resource-desc">Weekly Twitter chat (#PPCChat), Slack community. Practitioners sharing tactics, troubleshooting, news.</div>
+          <a href="https://ppcchat.com" class="resource-link" target="_blank">ppcchat.com →</a>
+          <div class="resource-tags"><span class="tag">Community</span><span class="tag">Weekly Chat</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">r/PPC / r/GoogleAds</div>
+          <div class="resource-desc">Reddit communities. Case studies, tool discussions, policy updates, career advice. Active moderation.</div>
+          <a href="https://reddit.com/r/PPC" class="resource-link" target="_blank">reddit.com/r/PPC →</a>
+          <div class="resource-tags"><span class="tag">Community</span><span class="tag">Q&A</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Takeoff by Demand Curve</div>
+          <div class="resource-desc">Growth marketing training. PPC module: structure, creative, bidding, scaling. Cohort-based. Paid.</div>
+          <a href="https://demandcurve.com/takeoff" class="resource-link" target="_blank">demandcurve.com/takeoff →</a>
+          <div class="resource-tags"><span class="tag">Training</span><span class="tag">Structured</span><span class="tag">Paid</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Start free: Keyword Planner + GA4 + GTM + Google Ads Editor + Looker Studio. Add Semrush/SpyFu for competitor intel. Add CallRail if calls matter. Scripts/Automation only when manual work > 5 hrs/week.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

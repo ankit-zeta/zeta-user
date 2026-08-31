@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{TITLE}} — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1a1a1a;
+      line-height: 1.6;
+      background: #ffffff;
+    }
+    
+    .page {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+    
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #176B4D;
+      margin-bottom: 30px;
+    }
+    
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      color: #176B4D;
+      letter-spacing: -0.5px;
+    }
+    
+    .logo span { color: #1a1a1a; }
+    
+    .badge {
+      background: #176B4D;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Title Section */
+    .title-section {
+      margin-bottom: 30px;
+    }
+    
+    .resource-type {
+      font-size: 12px;
+      font-weight: 600;
+      color: #176B4D;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: #1a1a1a;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    
+    .subtitle {
+      font-size: 16px;
+      color: #666;
+      line-height: 1.5;
+    }
+    
+    /* Content Sections */
+    .section {
+      margin-bottom: 30px;
+    }
+    
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #176B4D;
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    /* Checklist */
+    .checklist {
+      list-style: none;
+    }
+    
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    
+    .checklist li:last-child { border-bottom: none; }
+    
+    .checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #d1d5db;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    
+    .checklist-content {
+      flex: 1;
+    }
+    
+    .checklist-title {
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+    
+    .checklist-desc {
+      font-size: 14px;
+      color: #666;
+    }
+    
+    /* Template Card */
+    .template-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+    
+    .template-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 10px;
+    }
+    
+    .template-content {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 15px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #374151;
+      white-space: pre-wrap;
+    }
+    
+    /* Cheat Sheet Grid */
+    .cheat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    
+    .cheat-item {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 15px;
+    }
+    
+    .cheat-item h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #176B4D;
+      margin-bottom: 8px;
+    }
+    
+    .cheat-item p {
+      font-size: 13px;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+    
+    /* Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    
+    .data-table th {
+      background: #176B4D;
+      color: white;
+      padding: 12px 15px;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    
+    .data-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 13px;
+    }
+    
+    .data-table tr:nth-child(even) { background: #f9fafb; }
+    
+    /* Tip Box */
+    .tip-box {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-left: 4px solid #176B4D;
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin: 20px 0;
+    }
+    
+    .tip-box h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #176B4D;
+      margin-bottom: 8px;
+    }
+    
+    .tip-box p {
+      font-size: 13px;
+      color: #065f46;
+      line-height: 1.5;
+    }
+    
+    /* Warning Box */
+    .warning-box {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-left: 4px solid #f59e0b;
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin: 20px 0;
+    }
+    
+    .warning-box h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #92400e;
+      margin-bottom: 8px;
+    }
+    
+    .warning-box p {
+      font-size: 13px;
+      color: #78350f;
+      line-height: 1.5;
+    }
+    
+    /* Footer */
+    .footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 2px solid #e5e7eb;
+      text-align: center;
+    }
+    
+    .footer-text {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    
+    .footer-link {
+      color: #176B4D;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    /* Print Styles */
+    @media print {
+      .page { padding: 20px; }
+      .template-card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">{{RESOURCE_TYPE}}</div>
+    </div>
+    
+    <!-- Title Section -->
+    <div class="title-section">
+      <div class="resource-type">{{COURSE_NAME}}</div>
+      <h1>{{TITLE}}</h1>
+      <p class="subtitle">{{SUBTITLE}}</p>
+    </div>
+    
+    <!-- Content -->
+    {{CONTENT}}
+    
+    <!-- Footer -->
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

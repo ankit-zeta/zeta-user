@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/convex";
 import { useQuery, useMutation } from "convex/react";
@@ -19,10 +19,11 @@ import {
   Award,
   Users,
   Calendar,
+  ChevronLeft,
   ChevronRight,
   Bookmark,
   BookmarkCheck,
- Construction,
+  Construction,
 } from "lucide-react";
 
 export default function DashboardWorkPage() {
@@ -101,6 +102,8 @@ export default function DashboardWorkPage() {
   const [sortBy, setSortBy] = useState("newest");
   const [dismissedKycBar, setDismissedKycBar] = useState(false);
   const [savingJobId, setSavingJobId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PER_PAGE = 15;
 
   const categories = [
     "all",
@@ -113,33 +116,66 @@ export default function DashboardWorkPage() {
     "Operations",
   ];
 
-  const filteredJobs = jobs?.filter((job) => {
-    const matchesCat = selectedCategory === "all" || job.category === selectedCategory;
-    const matchesSearch =
-      job.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      job.skills.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesPayment =
-      paymentFilter === "all" ||
-      (paymentFilter === "under1k" && job.payment < 1000) ||
-      (paymentFilter === "1k-5k" && job.payment >= 1000 && job.payment <= 5000) ||
-      (paymentFilter === "5k-10k" && job.payment > 5000 && job.payment <= 10000) ||
-      (paymentFilter === "10k+" && job.payment > 10000);
-    const matchesCert =
-      certFilter === "all" ||
-      (certFilter === "free" && !job.requiredProgramName && !job.requiredProgramNames) ||
-      (certFilter === "cert" && (job.requiredProgramName || job.requiredProgramNames));
-    const matchesDifficulty =
-      difficultyFilter === "all" || job.difficulty === difficultyFilter;
-    return matchesCat && matchesSearch && matchesPayment && matchesCert && matchesDifficulty;
-  });
+  const filteredJobs = useMemo(() => {
+    if (!jobs) return [];
+    return jobs.filter((job) => {
+      const matchesCat = selectedCategory === "all" || job.category === selectedCategory;
+      const matchesSearch = !searchQuery.trim() || (() => {
+        const q = searchQuery.toLowerCase();
+        return (
+          job.title.toLowerCase().includes(q) ||
+          job.shortDescription.toLowerCase().includes(q) ||
+          job.skills.some((s) => s.toLowerCase().includes(q)) ||
+          (job.company || "").toLowerCase().includes(q)
+        );
+      })();
+      const matchesPayment =
+        paymentFilter === "all" ||
+        (paymentFilter === "under1k" && job.payment < 1000) ||
+        (paymentFilter === "1k-5k" && job.payment >= 1000 && job.payment <= 5000) ||
+        (paymentFilter === "5k-10k" && job.payment > 5000 && job.payment <= 10000) ||
+        (paymentFilter === "10k+" && job.payment > 10000);
+      const matchesCert =
+        certFilter === "all" ||
+        (certFilter === "free" && !job.requiredProgramName && !job.requiredProgramNames) ||
+        (certFilter === "cert" && (job.requiredProgramName || job.requiredProgramNames));
+      const matchesDifficulty =
+        difficultyFilter === "all" || job.difficulty === difficultyFilter;
+      return matchesCat && matchesSearch && matchesPayment && matchesCert && matchesDifficulty;
+    });
+  }, [jobs, selectedCategory, searchQuery, paymentFilter, certFilter, difficultyFilter]);
 
-  const sortedJobs = [...(filteredJobs || [])].sort((a, b) => {
-    if (sortBy === "newest") return b._creationTime - a._creationTime;
-    if (sortBy === "highest") return b.payment - a.payment;
-    if (sortBy === "openings") return b.openings - a.openings;
-    if (sortBy === "deadline") return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
-    return 0;
-  });
+  const sortedJobs = useMemo(() => {
+    const list = [...filteredJobs].sort((a, b) => {
+      if (sortBy === "newest") return b._creationTime - a._creationTime;
+      if (sortBy === "highest") return b.payment - a.payment;
+      if (sortBy === "lowest") return a.payment - b.payment;
+      if (sortBy === "applicants") return (b.applicantCount || 0) - (a.applicantCount || 0);
+      if (sortBy === "openings") return b.openings - a.openings;
+      if (sortBy === "deadline") return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+      return 0;
+    });
+    return list;
+  }, [filteredJobs, sortBy]);
+
+  const totalPages = Math.ceil(sortedJobs.length / PER_PAGE);
+  const paginatedJobs = sortedJobs.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+  const pageNumbers = useMemo(() => {
+    const pages: (number | "...")[] = [];
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (currentPage > 3) pages.push("...");
+      for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+        pages.push(i);
+      }
+      if (currentPage < totalPages - 2) pages.push("...");
+      pages.push(totalPages);
+    }
+    return pages;
+  }, [totalPages, currentPage]);
 
   const activeFilterCount = [paymentFilter, certFilter, difficultyFilter].filter((f) => f !== "all").length;
 
@@ -314,7 +350,7 @@ export default function DashboardWorkPage() {
             {categories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => { setSelectedCategory(cat); setCurrentPage(1); }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   selectedCategory === cat
                     ? "bg-brand-600 text-white font-semibold"
@@ -328,13 +364,13 @@ export default function DashboardWorkPage() {
 
           <div className="relative w-full md:w-64">
             <Search className="w-4 h-4 text-textMuted absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search jobs, skills..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-borderSubtle text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-600"
-            />
+              <input
+                type="text"
+                placeholder="Search jobs, skills, company..."
+                value={searchQuery}
+                onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-borderSubtle text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-600"
+              />
           </div>
         </div>
 
@@ -342,7 +378,7 @@ export default function DashboardWorkPage() {
         <div className="flex flex-wrap items-center gap-2">
           <select
             value={paymentFilter}
-            onChange={(e) => setPaymentFilter(e.target.value)}
+            onChange={(e) => { setPaymentFilter(e.target.value); setCurrentPage(1); }}
             className="px-2.5 py-1.5 rounded-lg border border-borderSubtle text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-600"
           >
             <option value="all">Any Payment</option>
@@ -354,7 +390,7 @@ export default function DashboardWorkPage() {
 
           <select
             value={certFilter}
-            onChange={(e) => setCertFilter(e.target.value)}
+            onChange={(e) => { setCertFilter(e.target.value); setCurrentPage(1); }}
             className="px-2.5 py-1.5 rounded-lg border border-borderSubtle text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-600"
           >
             <option value="all">All Types</option>
@@ -364,7 +400,7 @@ export default function DashboardWorkPage() {
 
           <select
             value={difficultyFilter}
-            onChange={(e) => setDifficultyFilter(e.target.value)}
+            onChange={(e) => { setDifficultyFilter(e.target.value); setCurrentPage(1); }}
             className="px-2.5 py-1.5 rounded-lg border border-borderSubtle text-xs bg-white focus:outline-none focus:ring-1 focus:ring-brand-600"
           >
             <option value="all">Any Difficulty</option>
@@ -380,13 +416,15 @@ export default function DashboardWorkPage() {
           >
             <option value="newest">Newest First</option>
             <option value="highest">Highest Paying</option>
+            <option value="lowest">Lowest Paying</option>
+            <option value="applicants">Most Applicants</option>
             <option value="openings">Most Openings</option>
             <option value="deadline">Deadline Soonest</option>
           </select>
 
           {activeFilterCount > 0 && (
             <button
-              onClick={() => { setPaymentFilter("all"); setCertFilter("all"); setDifficultyFilter("all"); }}
+              onClick={() => { setPaymentFilter("all"); setCertFilter("all"); setDifficultyFilter("all"); setCurrentPage(1); }}
               className="text-[11px] text-brand-600 hover:text-brand-800 font-medium flex items-center gap-1"
             >
               Clear filters ({activeFilterCount})
@@ -394,7 +432,7 @@ export default function DashboardWorkPage() {
           )}
 
           <span className="text-[11px] text-textMuted ml-auto">
-            {sortedJobs?.length || 0} jobs found
+            Showing {paginatedJobs.length} of {sortedJobs.length} jobs
           </span>
         </div>
       </div>
@@ -410,12 +448,14 @@ export default function DashboardWorkPage() {
               <div className="h-3 bg-neutral-200 rounded w-full"></div>
             </div>
           ))
-        ) : sortedJobs.length === 0 ? (
+        ) : paginatedJobs.length === 0 ? (
           <div className="col-span-2 card-surface p-10 text-center text-sm text-textMuted">
-            No opportunities match your filter selection.
+            {sortedJobs.length === 0
+              ? "No opportunities match your filter selection."
+              : "No opportunities on this page. Try adjusting filters."}
           </div>
         ) : (
-          sortedJobs.map((job) => {
+          paginatedJobs.map((job) => {
             const hasRequirements = job.requiredProgramName || job.requiredProgramNames || job.requiredAchievementName;
             const isFreeApply = !hasRequirements;
             const missingReqs = job.missingRequirements || [];
@@ -610,6 +650,45 @@ export default function DashboardWorkPage() {
           })
         )}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-1.5">
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            disabled={currentPage === 1}
+            className="w-9 h-9 rounded-lg border border-borderSubtle flex items-center justify-center text-sm text-textMuted hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          {pageNumbers.map((p, i) =>
+            p === "..." ? (
+              <span key={`dots-${i}`} className="w-9 h-9 flex items-center justify-center text-xs text-textMuted">
+                ...
+              </span>
+            ) : (
+              <button
+                key={p}
+                onClick={() => setCurrentPage(p as number)}
+                className={`w-9 h-9 rounded-lg text-xs font-semibold transition-all ${
+                  currentPage === p
+                    ? "bg-brand-600 text-white shadow-sm"
+                    : "border border-borderSubtle text-textMuted hover:bg-neutral-50"
+                }`}
+              >
+                {p}
+              </button>
+            )
+          )}
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            disabled={currentPage === totalPages}
+            className="w-9 h-9 rounded-lg border border-borderSubtle flex items-center justify-center text-sm text-textMuted hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
         </>
       )}
     </div>

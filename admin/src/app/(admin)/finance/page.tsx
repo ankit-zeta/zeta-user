@@ -706,8 +706,7 @@ function AdminTdsTab({ token }: { token: string | null }) {
     try {
       const fyYear = fy ?? parseInt(summary.fyLabel.replace("FY ", "").split("-")[0]);
       const client = new ConvexHttpClient(
-        (process.env.NEXT_PUBLIC_CONVEX_URL || "https://terrific-dove-836.convex.cloud").trim(),
-        { skipConvexDeploymentUrlCheck: true }
+        (process.env.NEXT_PUBLIC_CONVEX_URL || "https://terrific-dove-836.convex.cloud").trim()
       );
       const data = (await client.query(api.tds.getTdsExportAdmin, { token, fyStartYear: fyYear })) as {
         lines: any[];

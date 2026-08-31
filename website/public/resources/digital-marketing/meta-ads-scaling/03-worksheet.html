@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meta Ads Scaling Worksheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .worksheet { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .worksheet h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .worksheet p { color: #4b5563; margin-bottom: 12px; }
+    .worksheet label { display: block; font-weight: 600; margin-bottom: 6px; color: #374151; }
+    .worksheet input, .worksheet textarea, .worksheet select { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; font-size: 14px; margin-bottom: 16px; background: white; }
+    .worksheet textarea { min-height: 80px; resize: vertical; }
+    .worksheet-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .worksheet-table th, .worksheet-table td { border: 1px solid #e5e7eb; padding: 10px 12px; text-align: left; }
+    .worksheet-table th { background: #176B4D; color: white; font-weight: 600; font-size: 13px; }
+    .worksheet-table td { font-size: 13px; color: #374151; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .worksheet { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Worksheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Meta Ads Scaling Strategies</div>
+      <h1>Meta Ads Scaling Worksheet</h1>
+      <p class="subtitle">Templates for: campaign structure planning, budget allocation, audience testing matrix, creative testing tracker, performance benchmarks</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Campaign Structure Planning</h2>
+      <div class="worksheet">
+        <h3>Map your scaling architecture</h3>
+        <table class="worksheet-table">
+          <tr><th>Campaign Name</th><th>Objective</th><th>Audience Type</th><th>Daily Budget</th><th>Target CPA</th><th>Target ROAS</th><th>Status</th></tr>
+          <tr><td><input type="text" placeholder="CONV_Prosp_LAL1%_Jan24"></td><td><select><option>Sales</option><option>Leads</option><option>Traffic</option></select></td><td><select><option>Lookalike 1%</option><option>Lookalike 2-3%</option><option>Interest</option><option>Broad</option><option>Advantage+</option></select></td><td><input type="text" placeholder="$100"></td><td><input type="text" placeholder="$30"></td><td><input type="text" placeholder="3.0"></td><td><select><option>Active</option><option>Scaling</option><option>Paused</option><option>Testing</option></select></td></tr>
+          <tr><td><input type="text" placeholder="CONV_Prosp_Broad_Jan24"></td><td><select><option>Sales</option><option>Leads</option><option>Traffic</option></select></td><td><select><option>Lookalike 1%</option><option>Lookalike 2-3%</option><option>Interest</option><option>Broad</option><option>Advantage+</option></select></td><td><input type="text" placeholder="$75"></td><td><input type="text" placeholder="$35"></td><td><input type="text" placeholder="2.5"></td><td><select><option>Active</option><option>Scaling</option><option>Paused</option><option>Testing</option></select></td></tr>
+          <tr><td><input type="text" placeholder="CONV_Retarget_Web30d_Jan24"></td><td><select><option>Sales</option><option>Leads</option><option>Traffic</option></select></td><td><select><option>Custom - Website</option><option>Custom - Engagement</option><option>Custom - Customer List</option></select></td><td><input type="text" placeholder="$50"></td><td><input type="text" placeholder="$20"></td><td><input type="text" placeholder="5.0"></td><td><select><option>Active</option><option>Scaling</option><option>Paused</option><option>Testing</option></select></td></tr>
+          <tr><td><input type="text" placeholder="ASC_Shop_Jan24"></td><td><select><option>Sales</option><option>Leads</option><option>Traffic</option></select></td><td><select><option>Advantage+ Shopping</option><option>Advantage+ Catalog</option></select></td><td><input type="text" placeholder="$200"></td><td><input type="text" placeholder="$25"></td><td><input type="text" placeholder="4.0"></td><td><select><option>Active</option><option>Scaling</option><option>Paused</option><option>Testing</option></select></td></tr>
+          <tr><td><input type="text" placeholder="CONV_NewGeo_UK_Feb24"></td><td><select><option>Sales</option><option>Leads</option><option>Traffic</option></select></td><td><select><option>Lookalike 1%</option><option>Broad</option><option>Advantage+</option></select></td><td><input type="text" placeholder="$50"></td><td><input type="text" placeholder="$40"></td><td><input type="text" placeholder="2.0"></td><td><select><option>Active</option><option>Scaling</option><option>Paused</option><option>Testing</option></select></td></tr>
+        </table>
+        <p style="font-size: 13px; color: #666;">Rule: Max 5-7 campaigns active at once. Each campaign should have a distinct purpose (prospecting, retargeting, new geo, new product).</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Budget Allocation Planning</h2>
+      <div class="worksheet">
+        <h3>Monthly budget distribution</h3>
+        <table class="worksheet-table">
+          <tr><th>Category</th><th>% of Total</th><th>Monthly $</th><th>Daily $</th><th>Notes</th></tr>
+          <tr><td>Total Ad Budget</td><td>100%</td><td><input type="text" placeholder="$15,000"></td><td>$500</td><td>Overall monthly cap</td></tr>
+          <tr><td>TOF Prospecting (Cold)</td><td><input type="text" value="50%"></td><td><input type="text" placeholder="$7,500"></td><td><input type="text" placeholder="$250"></td><td>Lookalikes, Interest, Broad</td></tr>
+          <tr><td>MOF Warm (Engaged)</td><td><input type="text" value="20%"></td><td><input type="text" placeholder="$3,000"></td><td><input type="text" placeholder="$100"></td><td>Video viewers, Engagers, Page fans</td></tr>
+          <tr><td>BOF Retargeting (Hot)</td><td><input type="text" value="20%"></td><td><input type="text" placeholder="$3,000"></td><td><input type="text" placeholder="$100"></td><td>Website visitors, Cart abandoners</td></tr>
+          <tr><td>Testing & New Channels</td><td><input type="text" value="10%"></td><td><input type="text" placeholder="$1,500"></td><td><input type="text" placeholder="$50"></td><td>New creatives, geos, products</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Audience Testing Matrix</h2>
+      <div class="worksheet">
+        <h3>Track which audiences you're testing</h3>
+        <table class="worksheet-table">
+          <tr><th>Audience</th><th>Source</th><th>Size</th><th>Days Tested</th><th>Conv.</th><th>CPA</th><th>ROAS</th><th>Verdict</th></tr>
+          <tr><td><input type="text" placeholder="LAL 1% Purchasers"></td><td><input type="text" placeholder="Purchasers 180d"></td><td><input type="text" placeholder="2.1M"></td><td><input type="text" placeholder="14"></td><td><input type="text" placeholder="85"></td><td><input type="text" placeholder="$28"></td><td><input type="text" placeholder="3.2"></td><td><select><option>Scale</option><option>Optimize</option><option>Kill</option><option>Testing</option></select></td></tr>
+          <tr><td><input type="text" placeholder="LAL 2% Purchasers"></td><td><input type="text" placeholder="Purchasers 180d"></td><td><input type="text" placeholder="4.2M"></td><td><input type="text" placeholder="14"></td><td><input type="text" placeholder="62"></td><td><input type="text" placeholder="$35"></td><td><input type="text" placeholder="2.6"></td><td><select><option>Scale</option><option>Optimize</option><option>Kill</option><option>Testing</option></select></td></tr>
+          <tr><td><input type="text" placeholder="LAL 1% Leads"></td><td><input type="text" placeholder="Leads 180d"></td><td><input type="text" placeholder="1.8M"></td><td><input type="text" placeholder="14"></td><td><input type="text" placeholder="45"></td><td><input type="text" placeholder="$42"></td><td><input type="text" placeholder="1.8"></td><td><select><option>Scale</option><option>Optimize</option><option>Kill</option><option>Testing</option></select></td></tr>
+          <tr><td><input type="text" placeholder="Interest: Fitness+Health"></td><td><input type="text" placeholder="Manual Interest"></td><td><input type="text" placeholder="8.5M"></td><td><input type="text" placeholder="7"></td><td><input type="text" placeholder="28"></td><td><input type="text" placeholder="$38"></td><td><input type="text" placeholder="2.1"></td><td><select><option>Scale</option><option>Optimize</option><option>Kill</option><option>Testing</option></select></td></tr>
+          <tr><td><input type="text" placeholder="Broad (No Interests)"></td><td><input type="text" placeholder="Advantage+"></td><td><input type="text" placeholder="50M+"></td><td><input type="text" placeholder="7"></td><td><input type="text" placeholder="35"></td><td><input type="text" placeholder="$32"></td><td><input type="text" placeholder="2.8"></td><td><select><option>Scale</option><option>Optimize</option><option>Kill</option><option>Testing</option></select></td></tr>
+          <tr><td><input type="text" placeholder="Retarget: Web 30d"></td><td><input type="text" placeholder="Pixel"></td><td><input type="text" placeholder="15K"></td><td><input type="text" placeholder="14"></td><td><input type="text" placeholder="52"></td><td><input type="text" placeholder="$18"></td><td><input type="text" placeholder="6.5"></td><td><select><option>Scale</option><option>Optimize</option><option>Kill</option><option>Testing</option></select></td></tr>
+        </table>
+        <p style="font-size: 13px; color: #666;">Verdict: Scale = increase budget / Optimize = tweak creative/bid / Kill = pause and redirect budget / Testing = still gathering data</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Creative Testing Tracker</h2>
+      <div class="worksheet">
+        <h3>Track creative performance and decisions</h3>
+        <table class="worksheet-table">
+          <tr><th>Creative Name</th><th>Format</th><th>Hook</th><th>Impressions</th><th>CTR</th><th>Hook Rate</th><th>CPA</th><th>ROAS</th><th>Decision</th></tr>
+          <tr><td><input type="text" placeholder="VID_Problem_V1"></td><td>Video 15s</td><td><input type="text" placeholder="Stop wasting..."></td><td><input type="text" placeholder="25K"></td><td><input type="text" placeholder="1.8%"></td><td><input type="text" placeholder="32%"></td><td><input type="text" placeholder="$26"></td><td><input type="text" placeholder="3.5"></td><td><select><option>Scale</option><option>Test Variation</option><option>Kill</option><option>Keep</option></select></td></tr>
+          <tr><td><input type="text" placeholder="VID_UGC_V1"></td><td>Video 15s</td><td><input type="text" placeholder="POV: You..."></td><td><input type="text" placeholder="18K"></td><td><input type="text" placeholder="2.1%"></td><td><input type="text" placeholder="38%"></td><td><input type="text" placeholder="$22"></td><td><input type="text" placeholder="4.2"></td><td><select><option>Scale</option><option>Test Variation</option><option>Kill</option><option>Keep</option></select></td></tr>
+          <tr><td><input type="text" placeholder="CAR_Benefit_V1"></td><td>Carousel 5</td><td><input type="text" placeholder="How [X] got..."></td><td><input type="text" placeholder="12K"></td><td><input type="text" placeholder="1.5%"></td><td><input type="text" placeholder="N/A"></td><td><input type="text" placeholder="$34"></td><td><input type="text" placeholder="2.2"></td><td><select><option>Scale</option><option>Test Variation</option><option>Kill</option><option>Keep</option></select></td></tr>
+          <tr><td><input type="text" placeholder="IMG_Brand_V1"></td><td>Image 1:1</td><td><input type="text" placeholder="Product hero"></td><td><input type="text" placeholder="30K"></td><td><input type="text" placeholder="0.9%"></td><td><input type="text" placeholder="N/A"></td><td><input type="text" placeholder="$45"></td><td><input type="text" placeholder="1.4"></td><td><select><option>Scale</option><option>Test Variation</option><option>Kill</option><option>Keep</option></select></td></tr>
+          <tr><td><input type="text" placeholder="VID_Demo_V1"></td><td>Video 30s</td><td><input type="text" placeholder="Watch me..."></td><td><input type="text" placeholder="20K"></td><td><input type="text" placeholder="1.6%"></td><td><input type="text" placeholder="28%"></td><td><input type="text" placeholder="$30"></td><td><input type="text" placeholder="2.8"></td><td><select><option>Scale</option><option>Test Variation</option><option>Kill</option><option>Keep</option></select></td></tr>
+        </table>
+        <p style="font-size: 13px; color: #666;">Scale = winner, increase budget / Test Variation = new hook or CTA / Kill = pause and replace / Keep = steady performer, maintain</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Performance Benchmarks</h2>
+      <div class="worksheet">
+        <h3>Set your targets by industry and funnel stage</h3>
+        <table class="worksheet-table">
+          <tr><th>Metric</th><th>E-commerce Target</th><th>SaaS/Lead Gen Target</th><th>Local Business Target</th><th>Your Target</th></tr>
+          <tr><td>CPA (Cost Per Acquisition)</td><td>$20-50</td><td>$50-150</td><td>$15-40</td><td><input type="text" placeholder="$___"></td></tr>
+          <tr><td>ROAS</td><td>3.0-5.0x</td><td>N/A (LTV-based)</td><td>4.0-8.0x</td><td><input type="text" placeholder="___x"></td></tr>
+          <tr><td>CTR (Click-Through Rate)</td><td>1.0-2.0%</td><td>0.8-1.5%</td><td>1.5-3.0%</td><td><input type="text" placeholder="___%"></td></tr>
+          <tr><td>CPM</td><td>$10-25</td><td>$15-35</td><td>$8-20</td><td><input type="text" placeholder="$___"></td></tr>
+          <tr><td>Conversion Rate (Landing Page)</td><td>2-4%</td><td>5-15%</td><td>5-10%</td><td><input type="text" placeholder="___%"></td></tr>
+          <tr><td>Frequency (Prospecting)</td><td>< 2.5</td><td>< 3.0</td><td>< 2.0</td><td><input type="text" placeholder="< ___"></td></tr>
+          <tr><td>Frequency (Retargeting)</td><td>< 5.0</td><td>< 6.0</td><td>< 4.0</td><td><input type="text" placeholder="< ___"></td></tr>
+          <tr><td>Hook Rate (Video 3s)</td><td>> 25%</td><td>> 20%</td><td>> 30%</td><td><input type="text" placeholder="> ___%"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Fill this worksheet BEFORE opening Ads Manager. It prevents "blank canvas paralysis" and ensures strategic alignment. Duplicate for each new scaling phase or monthly review.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

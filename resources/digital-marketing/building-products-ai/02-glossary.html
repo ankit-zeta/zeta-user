@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Product Glossary — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .glossary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .glossary-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .glossary-term { font-size: 14px; font-weight: 600; color: #176B4D; margin-bottom: 4px; }
+    .glossary-def { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Glossary</div>
+    </div>
+    <div class="title-section">
+      <div class="resource-type">Building Products With AI Tools</div>
+      <h1>AI Product Building Glossary</h1>
+      <p class="subtitle">Key terms for building, deploying, and monetizing AI-powered products</p>
+    </div>
+    <div class="section">
+      <h2 class="section-title">AI Product Concepts</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">AI-Native Product</div><div class="glossary-def">Product where AI is core, not bolt-on. AI handles primary value delivery. Example: Jasper, Midjourney, Notion AI.</div></div>
+        <div class="glossary-item"><div class="glossary-term">AI-Enhanced Product</div><div class="glossary-def">Existing product with AI features added. AI improves, doesn't replace. Example: Gmail Smart Compose, Figma AI.</div></div>
+        <div class="glossary-item"><div class="glossary-term">RAG (Retrieval Augmented Generation)</div><div class="glossary-def">Retrieves relevant docs before generating. Reduces hallucinations. Vector DB + embeddings + LLM. Core of knowledge-based AI products.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Fine-tuning</div><div class="glossary-def">Training base model on domain-specific data. Custom behavior, tone, knowledge. Expensive but powerful. OpenAI charges per token.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Prompt Caching</div><div class="glossary-def">Store and reuse prompt contexts. Reduces cost and latency. OpenAI and Anthropic offer this. Essential for high-traffic products.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Embedding</div><div class="glossary-def">Convert text to numerical vectors. Used for semantic search, clustering, recommendations. OpenAI ada-002, Cohere embed.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Vector Database</div><div class="glossary-def">Store and query embeddings. Pinecone, Weaviate, Qdrant, pgvector. Powers semantic search and RAG systems.</div></div>
+        <div class="glossary-item"><div class="glossary-term">AI Agent</div><div class="glossary-def">Autonomous AI that plans, uses tools, and executes multi-step tasks. LangChain, CrewAI, AutoGen. Future of AI products.</div></div>
+      </div>
+    </div>
+    <div class="section">
+      <h2 class="section-title">Monetization Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Usage-Based Pricing</div><div class="glossary-def">Pay per API call, token, or generation. Aligns cost with value. OpenAI charges per token. Best for variable usage.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Tiered Pricing</div><div class="glossary-def">Free, Starter, Pro, Enterprise. Feature gates + usage limits. Most common SaaS model. Reduces friction for new users.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Credit System</div><div class="glossary-def">Users buy credits, spend per action. Predictable for users, flexible for you. Common in AI content tools.</div></div>
+        <div class="glossary-item"><div class="glossary-term">GPT Store Revenue</div><div class="glossary-def">OpenAI pays creators based on usage. Build popular Custom GPTs, earn revenue share. Still early but growing.</div></div>
+        <div class="glossary-item"><div class="glossary-term">API Reselling</div><div class="glossary-def">Call OpenAI/Anthropic API, mark up, resell to users. Build value layer on top. Margin: 30-70% depending on volume.</div></div>
+        <div class="glossary-item"><div class="glossary-term">White-Label AI</div><div class="glossary-def">License your AI product to other businesses. B2B2C model. Higher ACV, fewer customers. Enterprise sales skills needed.</div></div>
+      </div>
+    </div>
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>AI products fail when they're "cool tech" without clear value. Start with the problem, not the technology. "AI-powered" isn't a value proposition — "Save 10 hours/week on X" is.</p>
+    </div>
+    <div class="footer">
+      <p class="footer-text">© 2026 ZetaGrow — Professional Digital Skills Platform<br><a href="https://zetagrow.in" class="footer-link">zetagrow.in</a></p>
+    </div>
+  </div>
+</body>
+</html>

@@ -12,6 +12,7 @@ import {
   TrendingUp,
   ArrowRight,
 } from "lucide-react";
+import BannerCarousel from "@/components/BannerCarousel";
 
 export default function DashboardOverviewPage() {
   const { user, token } = useAuth();
@@ -116,6 +117,9 @@ export default function DashboardOverviewPage() {
           </Link>
         </div>
       </div>
+
+      {/* Banner Carousel */}
+      <BannerCarousel targetPage="work" />
 
       {/* 2. Key Metrics Row — work & learning only */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

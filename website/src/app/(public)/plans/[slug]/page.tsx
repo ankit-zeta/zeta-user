@@ -21,6 +21,7 @@ import {
 
 const RESOURCE_META: Record<string, { icon: typeof FileText; label: string }> = {
   pdf: { icon: FileText, label: "PDF Guide" },
+  html: { icon: FileText, label: "HTML Resource" },
   zip: { icon: FolderDown, label: "Asset Pack" },
   doc: { icon: FileText, label: "Document" },
   template: { icon: FileText, label: "Template" },
@@ -287,40 +288,76 @@ export default function PlanDetailPage() {
         </div>
       </section>
 
-      {/* Resources */}
-      {plan.resourceList && plan.resourceList.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="max-w-3xl space-y-2">
-            <span className="text-xs font-semibold text-brand-600 uppercase tracking-wider">
-              Included Resources
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-textMain">
-              {plan.resourceList.length} Resource Kits & Templates
-            </h2>
-            <p className="text-sm text-textMuted">
-              Templates, playbooks and guides that come bundled with this plan.
-            </p>
-          </div>
-          <div className="max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4">
-            {plan.resourceList.map((r: any, i: number) => {
-              const meta = RESOURCE_META[r.fileType] || RESOURCE_META.doc;
-              const IconComp = meta.icon;
-              return (
-                <div key={i} className="card-surface p-4 flex items-start gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
-                    <IconComp className="w-4 h-4" />
+      {/* Resources - from real resources table via courses */}
+      {(() => {
+        // Aggregate resources from all courses in this plan
+        const allResources: Array<{
+          _id: string;
+          title: string;
+          description: string;
+          fileType: string;
+          fileSize: string;
+          accessType: string;
+          courseName?: string;
+        }> = [];
+        if (plan.courses) {
+          for (const course of plan.courses) {
+            if ((course as any).resources) {
+              for (const r of (course as any).resources) {
+                allResources.push({ ...r, courseName: course.name });
+              }
+            }
+          }
+        }
+
+        if (allResources.length === 0) return null;
+
+        return (
+          <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div className="max-w-3xl space-y-2">
+              <span className="text-xs font-semibold text-brand-600 uppercase tracking-wider">
+                Included Resources
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-textMain">
+                {allResources.length} Resource{allResources.length !== 1 ? "s" : ""} & Templates
+              </h2>
+              <p className="text-sm text-textMuted">
+                Downloadable materials included with this plan — templates, guides, and toolkits.
+              </p>
+            </div>
+            <div className="max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4">
+              {allResources.map((r) => {
+                const meta = RESOURCE_META[r.fileType] || RESOURCE_META.doc;
+                const IconComp = meta.icon;
+                return (
+                  <div key={r._id} className="card-surface p-4 flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
+                      <IconComp className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-xs font-bold text-textMain truncate">{r.title}</h4>
+                      <p className="text-[11px] text-textMuted line-clamp-2 mt-0.5">{r.description}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-[10px] text-brand-700 font-semibold">{meta.label}</span>
+                        {r.accessType === "enrolled" && (
+                          <span className="text-[9px] font-bold text-green-700 bg-green-50 border border-green-200 px-1.5 py-0.5 rounded">
+                            Enrolled
+                          </span>
+                        )}
+                        {r.accessType === "public" && (
+                          <span className="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-200 px-1.5 py-0.5 rounded">
+                            Free
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <h4 className="text-xs font-bold text-textMain truncate">{r.title}</h4>
-                    <p className="text-[11px] text-textMuted line-clamp-2 mt-0.5">{r.description}</p>
-                    <span className="text-[10px] text-brand-700 font-semibold">{meta.label}</span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
+                );
+              })}
+            </div>
+          </section>
+        );
+      })()}
     </div>
   );
 }

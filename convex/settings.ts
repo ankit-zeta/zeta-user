@@ -143,8 +143,8 @@ export const updateSetting = mutation({
     const schema = SETTING_SCHEMS[args.key];
     if (schema) {
       try {
-        // Convex validators throw on invalid data — this will catch shape mismatches
-        v.validate(schema, args.value);
+        // Convex validators expose .validate() on the validator instance
+        schema.validate(args.value);
       } catch (e: any) {
         throw new Error(`Invalid value for setting "${args.key}": ${e.message}`);
       }

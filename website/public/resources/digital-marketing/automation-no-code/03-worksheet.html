@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automation Planning Worksheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .worksheet { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .worksheet h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .worksheet p { color: #4b5563; margin-bottom: 12px; }
+    .worksheet label { display: block; font-weight: 600; margin-bottom: 6px; color: #374151; }
+    .worksheet input, .worksheet textarea, .worksheet select { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; font-size: 14px; margin-bottom: 16px; background: white; }
+    .worksheet textarea { min-height: 80px; resize: vertical; }
+    .worksheet-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .worksheet-table th, .worksheet-table td { border: 1px solid #e5e7eb; padding: 10px 12px; text-align: left; }
+    .worksheet-table th { background: #176B4D; color: white; font-weight: 600; font-size: 13px; }
+    .worksheet-table td { font-size: 13px; color: #374151; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .worksheet { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Worksheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Automation & No-Code Tools</div>
+      <h1>Automation Planning Worksheet</h1>
+      <p class="subtitle">Map manual processes, identify automation candidates, tool selection matrix, workflow diagrams, and success metrics</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 1: Process Audit — List All Manual Tasks</h2>
+      <div class="worksheet">
+        <h3>Track every repetitive task for one week</h3>
+        <table class="worksheet-table">
+          <tr><th>Task Description</th><th>Frequency</th><th>Time/Run (min)</th><th>Tools Involved</th><th>Pain Level (1-5)</th><th>Automatable? (Y/N)</th><th>Priority</th></tr>
+          <tr><td><input type="text" placeholder="Copy leads from Typeform to HubSpot"></td><td><input type="text" placeholder="Daily"></td><td><input type="text" placeholder="15"></td><td><input type="text" placeholder="Typeform, HubSpot"></td><td><input type="text" placeholder="4"></td><td><input type="text" placeholder="Y"></td><td><input type="text" placeholder="High"></td></tr>
+          <tr><td><input type="text" placeholder="Send weekly report to clients"></td><td><input type="text" placeholder="Weekly"></td><td><input type="text" placeholder="30"></td><td><input type="text" placeholder="GA4, Sheets, Gmail"></td><td><input type="text" placeholder="3"></td><td><input type="text" placeholder="Y"></td><td><input type="text" placeholder="High"></td></tr>
+          <tr><td><input type="text" placeholder="Create invoice from Stripe payment"></td><td><input type="text" placeholder="Per sale"></td><td><input type="text" placeholder="10"></td><td><input type="text" placeholder="Stripe, QuickBooks"></td><td><input type="text" placeholder="2"></td><td><input type="text" placeholder="Y"></td><td><input type="text" placeholder="Medium"></td></tr>
+          <tr><td><input type="text" placeholder=""></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+          <tr><td><input type="text" placeholder=""></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 2: Automation Candidate Scoring</h2>
+      <div class="worksheet">
+        <h3>Score each task (1-5 each): Time Saved × Frequency × Pain × Complexity⁻¹</h3>
+        <table class="worksheet-table">
+          <tr><th>Task</th><th>Time Saved/Week (hrs)</th><th>Frequency (1-5)</th><th>Pain (1-5)</th><th>Complexity (1-5, low=simple)</th><th>Score</th><th>Tool</th></tr>
+          <tr><td><input type="text" placeholder="Lead capture → CRM"></td><td><input type="text" placeholder="2.5"></td><td><input type="text" placeholder="5"></td><td><input type="text" placeholder="4"></td><td><input type="text" placeholder="2"></td><td><input type="text" placeholder="50"></td><td><input type="text" placeholder="Zapier/Make"></td></tr>
+          <tr><td><input type="text" placeholder="Weekly report generation"></td><td><input type="text" placeholder="1"></td><td><input type="text" placeholder="2"></td><td><input type="text" placeholder="3"></td><td><input type="text" placeholder="3"></td><td><input type="text" placeholder="12"></td><td><input type="text" placeholder="Make + Supermetrics"></td></tr>
+          <tr><td><input type="text" placeholder="Invoice creation"></td><td><input type="text" placeholder="0.5"></td><td><input type="text" placeholder="3"></td><td><input type="text" placeholder="2"></td><td><input type="text" placeholder="2"></td><td><input type="text" placeholder="9"></td><td><input type="text" placeholder="Zapier"></td></tr>
+          <tr><td><input type="text" placeholder=""></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        </table>
+        <p style="font-size: 13px; color: #666; margin-top: 12px;">Score = Time Saved × Frequency × Pain ÷ Complexity. Target: Score > 20 = automate now. 10-20 = automate soon. < 10 = defer.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 3: Tool Selection Matrix</h2>
+      <div class="worksheet">
+        <h3>Match automation to right tool</h3>
+        <table class="worksheet-table">
+          <tr><th>Automation Need</th><th>Primary Tool</th><th>Backup Tool</th><th>Reason</th><th>Cost/Month</th></tr>
+          <tr><td>Simple: Form → CRM → Email</td><td><input type="text" placeholder="Zapier"></td><td><input type="text" placeholder="Make"></td><td><input type="text" placeholder="Linear, 3 steps, native integrations"></td><td><input type="text" placeholder="$0-19"></td></tr>
+          <tr><td>Complex: Branch, loop, transform</td><td><input type="text" placeholder="Make"></td><td><input type="text" placeholder="n8n"></td><td><input type="text" placeholder="Iterator, router, data transformation"></td><td><input type="text" placeholder="$9-16"></td></tr>
+          <tr><td>Custom API / Code needed</td><td><input type="text" placeholder="n8n / Pipedream"></td><td><input type="text" placeholder="Make (HTTP)"></td><td><input type="text" placeholder="Custom auth, pagination, GraphQL"></td><td><input type="text" placeholder="$0-20"></td></tr>
+          <tr><td>Database + App logic</td><td><input type="text" placeholder="Airtable / Supabase"></td><td><input type="text" placeholder="Xano"></td><td><input type="text" placeholder="CRUD + relationships + views"></td><td><input type="text" placeholder="$0-25"></td></tr>
+          <tr><td>Full web app (SaaS)</td><td><input type="text" placeholder="Bubble / WeWeb"></td><td><input type="text" placeholder="FlutterFlow"></td><td><input type="text" placeholder="Auth, DB, workflows, payments"></td><td><input type="text" placeholder="$29-119"></td></tr>
+          <tr><td>AI content generation</td><td><input type="text" placeholder="Zapier AI / Make OpenAI"></td><td><input type="text" placeholder="Custom n8n"></td><td><input type="text" placeholder="Prompt chaining, structured output"></td><td><input type="text" placeholder="$0-50 (API)"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 4: Workflow Diagram Template</h2>
+      <div class="worksheet">
+        <h3>Map your automation visually (draw or describe)</h3>
+        <p>Format: [Trigger] → [Filter?] → [Action 1] → [Action 2] → ... → [Result] → [Error Handling]</p>
+        <textarea placeholder="Example: 
+[New Typeform Entry] 
+  → [Filter: Email not in HubSpot] 
+    → [Create Contact in HubSpot] 
+    → [Add to List: 'New Leads'] 
+    → [Send Slack to #leads] 
+    → [Enroll in ConvertKit Sequence 'Welcome'] 
+  → [Else: Update existing contact]
+  → [Error: Log to Airtable 'Failed Syncs' + Slack alert]"></textarea>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">Your Workflow 1:</h4>
+        <textarea placeholder="[Trigger] → ..."></textarea>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">Your Workflow 2:</h4>
+        <textarea placeholder="[Trigger] → ..."></textarea>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">Your Workflow 3:</h4>
+        <textarea placeholder="[Trigger] → ..."></textarea>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 5: Data Mapping Specification</h2>
+      <div class="worksheet">
+        <h3>Define field mappings for each integration</h3>
+        <table class="worksheet-table">
+          <tr><th>Source App / Field</th><th>Destination App / Field</th><th>Transform?</th><th>Transform Logic</th><th>Required?</th></tr>
+          <tr><td>Typeform: Email</td><td>HubSpot: Email</td><td><select><option>No</option><option>Yes</option></select></td><td><input type="text" placeholder="Lowercase, trim"></td><td>Yes</td></tr>
+          <tr><td>Typeform: Name</td><td>HubSpot: First Name / Last Name</td><td><select><option>Yes</option><option>No</option></select></td><td><input type="text" placeholder="Split on first space"></td><td>Yes</td></tr>
+          <tr><td>Typeform: Company</td><td>HubSpot: Company Name</td><td><select><option>No</option><option>Yes</option></select></td><td><input type="text" placeholder="Create if not exists"></td><td>No</td></tr>
+          <tr><td>Stripe: Amount (cents)</td><td>QuickBooks: Amount (dollars)</td><td><select><option>Yes</option><option>No</option></select></td><td><input type="text" placeholder="Divide by 100"></td><td>Yes</td></tr>
+          <tr><td>Calendly: Start Time (UTC)</td><td>Google Calendar: Start Time (User TZ)</td><td><select><option>Yes</option><option>No</option></select></td><td><input type="text" placeholder="Convert to user timezone"></td><td>Yes</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 6: Success Metrics & Monitoring</h2>
+      <div class="worksheet">
+        <h3>Define how you'll measure automation value</h3>
+        <table class="worksheet-table">
+          <tr><th>Metric</th><th>Baseline (Manual)</th><th>Target (Automated)</th><th>Measurement Method</th><th>Review Cadence</th></tr>
+          <tr><td>Time spent/week</td><td><input type="text" placeholder="5 hrs"></td><td><input type="text" placeholder="0.5 hrs"></td><td><input type="text" placeholder="Toggl / manual log"></td><td><input type="text" placeholder="Monthly"></td></tr>
+          <tr><td>Error rate</td><td><input type="text" placeholder="10% (typos, missed)</td><td><input type="text" placeholder="< 1%"></td><td><input type="text" placeholder="Make/Zapier error logs"></td><td><input type="text" placeholder="Weekly"></td></tr>
+          <tr><td>Lead response time</td><td><input type="text" placeholder="4 hrs (business hours)</td><td><input type="text" placeholder="< 5 min"></td><td><input type="text" placeholder="HubSpot timestamp diff"></td><td><input type="text" placeholder="Daily"></td></tr>
+          <tr><td>Report delivery</td><td><input type="text" placeholder="Mon 2pm (manual)</td><td><input type="text" placeholder="Mon 8am (auto)</td><td><input type="text" placeholder="Email sent timestamp"></td><td><input type="text" placeholder="Weekly"></td></tr>
+          <tr><td>Cost/month</td><td><input type="text" placeholder="$0 (labor)</td><td><input type="text" placeholder="$29 (tools)</td><td><input type="text" placeholder="Tool billing"></td><td><input type="text" placeholder="Monthly"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 7: Implementation Checklist per Automation</h2>
+      <div class="worksheet">
+        <h3>Use for each automation you build</h3>
+        <ul>
+          <li><input type="checkbox"> Trigger tested with real data</li>
+          <li><input type="checkbox"> All actions execute correctly</li>
+          <li><input type="checkbox"> Data mappings verified (spot-check 5 runs)</li>
+          <li><input type="checkbox"> Error handling: alerts configured (Slack/email)</li>
+          <li><input type="checkbox"> Idempotency: re-run won't create duplicates</li>
+          <li><input type="checkbox"> Credentials stored securely (not in workflow)</li>
+          <li><input type="checkbox"> Documentation: Name, Purpose, Trigger, Apps, Owner, Last Updated</li>
+          <li><input type="checkbox"> Rollback plan: How to disable quickly if issues</li>
+          <li><input type="checkbox"> Monitoring: Weekly check of run history</li>
+          <li><input type="checkbox"> Handoff: Another team member can maintain</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Start with the highest-scoring automation from Step 2. Build it completely before starting the next. One working automation > five half-built ones. Document as you go.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

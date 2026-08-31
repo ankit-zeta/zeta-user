@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Product Resources — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .resource-list { list-style: none; }
+    .resource-list li { padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
+    .resource-list li:last-child { border-bottom: none; }
+    .resource-name { font-weight: 600; color: #1a1a1a; font-size: 15px; margin-bottom: 4px; }
+    .resource-desc { font-size: 13px; color: #666; margin-bottom: 6px; }
+    .resource-link { font-size: 13px; color: #176B4D; text-decoration: none; font-weight: 500; }
+    .resource-link:hover { text-decoration: underline; }
+    .resource-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag { background: #ecfdf5; color: #176B4D; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .tag.purple { background: #f3e8ff; color: #7c3aed; }
+    .tag.blue { background: #dbeafe; color: #2563eb; }
+    .tag.orange { background: #fff7ed; color: #ea580c; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Resource List</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Building Products With AI Tools</div>
+      <h1>AI Product Resources</h1>
+      <p class="subtitle">Complete directory of AI APIs, vector databases, frameworks, deployment platforms, courses, communities, and monetization tools</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">AI APIs & Models</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">OpenAI API</div>
+          <div class="resource-desc">GPT-4o, GPT-4o-mini, DALL-E, Whisper, TTS. Most popular LLM API. Excellent documentation and SDKs.</div>
+          <a href="https://platform.openai.com" class="resource-link" target="_blank">platform.openai.com →</a>
+          <div class="resource-tags"><span class="tag">Paid</span><span class="tag">Industry Standard</span><span class="tag">SDKs</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Anthropic API</div>
+          <div class="resource-desc">Claude 3.5 Sonnet, Claude 3 Opus. Strong at long context, safety, and nuanced writing. Growing enterprise adoption.</div>
+          <a href="https://console.anthropic.com" class="resource-link" target="_blank">console.anthropic.com →</a>
+          <div class="resource-tags"><span class="tag">Paid</span><span class="tag">Long Context</span><span class="tag">Safety</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Google AI Studio (Gemini)</div>
+          <div class="resource-desc">Gemini 1.5 Pro/Flash. 1M token context window. Multimodal. Free tier available. Good for prototyping.</div>
+          <a href="https://aistudio.google.com" class="resource-link" target="_blank">aistudio.google.com →</a>
+          <div class="resource-tags"><span class="tag">Free Tier</span><span class="tag">Multimodal</span><span class="tag">1M Context</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Mistral AI</div>
+          <div class="resource-desc">Mistral Large, Medium, Small. Open-weight models. Strong European language support. Cost-effective.</div>
+          <a href="https://console.mistral.ai" class="resource-link" target="_blank">console.mistral.ai →</a>
+          <div class="resource-tags"><span class="tag">Paid</span><span class="tag">Open Weight</span><span class="tag">Cost-Effective</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Groq</div>
+          <div class="resource-desc">Ultra-fast LLM inference on custom LPUs. 10x faster than GPU-based providers. Great for real-time apps.</div>
+          <a href="https://console.groq.com" class="resource-link" target="_blank">console.groq.com →</a>
+          <div class="resource-tags"><span class="tag">Free Tier</span><span class="tag">Fastest</span><span class="tag">Real-Time</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Together AI</div>
+          <div class="resource-desc">Open-source model hosting. Run Llama, Mistral, Mixtral at scale. Fine-tuning API. Serverless inference.</div>
+          <a href="https://api.together.xyz" class="resource-link" target="_blank">api.together.xyz →</a>
+          <div class="resource-tags"><span class="tag">Paid</span><span class="tag">Open Source</span><span class="tag">Fine-Tuning</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Vector Databases</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Pinecone</div>
+          <div class="resource-desc">Fully managed vector database. Serverless, autoscaling, low-latency. Free tier: 100K vectors. Best for production RAG.</div>
+          <a href="https://pinecone.io" class="resource-link" target="_blank">pinecone.io →</a>
+          <div class="resource-tags"><span class="tag">Free Tier</span><span class="tag">Managed</span><span class="tag">Production Ready</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Weaviate</div>
+          <div class="resource-desc">Open-source vector search engine. GraphQL API. Built-in vectorization modules. Self-host or cloud.</div>
+          <a href="https://weaviate.io" class="resource-link" target="_blank">weaviate.io →</a>
+          <div class="resource-tags"><span class="tag">Open Source</span><span class="tag">Self-Host</span><span class="tag">GraphQL</span></div>
+        </li>
+        <li>
+          <div class="resource-name">ChromaDB</div>
+          <div class="resource-desc">Lightweight open-source vector database. Python-first. Great for local development and small projects. pip install chromadb.</div>
+          <a href="https://chromadb.com" class="resource-link" target="_blank">chromadb.com →</a>
+          <div class="resource-tags"><span class="tag">Open Source</span><span class="tag">Lightweight</span><span class="tag">Local Dev</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Qdrant</div>
+          <div class="resource-desc">High-performance vector similarity search. Rust-based. Filtering, payload storage. Self-host or cloud.</div>
+          <a href="https://qdrant.tech" class="resource-link" target="_blank">qdrant.tech →</a>
+          <div class="resource-tags"><span class="tag">Open Source</span><span class="tag">Fast</span><span class="tag">Rust</span></div>
+        </li>
+        <li>
+          <div class="resource-name">pgvector (PostgreSQL)</div>
+          <div class="resource-desc">PostgreSQL extension for vector similarity search. Use your existing Postgres database. No separate infrastructure.</div>
+          <a href="https://github.com/pgvector/pgvector" class="resource-link" target="_blank">github.com/pgvector/pgvector →</a>
+          <div class="resource-tags"><span class="tag">Open Source</span><span class="tag">PostgreSQL</span><span class="tag">Simple</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Supabase pgvector</div>
+          <div class="resource-desc">Supabase with built-in pgvector support. Managed PostgreSQL + vector search + auth + storage. One platform for everything.</div>
+          <a href="https://supabase.com" class="resource-link" target="_blank">supabase.com →</a>
+          <div class="resource-tags"><span class="tag">Free Tier</span><span class="tag">Managed</span><span class="tag">All-in-One</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Frameworks & Libraries</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">LangChain</div>
+          <div class="resource-desc">Python/JS framework for building LLM-powered apps. Chains, agents, RAG pipelines, memory. Large ecosystem.</div>
+          <a href="https://langchain.com" class="resource-link" target="_blank">langchain.com →</a>
+          <div class="resource-tags"><span class="tag purple">Framework</span><span class="tag">Python/JS</span><span class="tag">RAG</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Vercel AI SDK</div>
+          <div class="resource-desc">TypeScript-first AI SDK for Next.js. Streaming, function calling, edge runtime support. Built by Vercel.</div>
+          <a href="https://sdk.vercel.ai" class="resource-link" target="_blank">sdk.vercel.ai →</a>
+          <div class="resource-tags"><span class="tag purple">Framework</span><span class="tag">TypeScript</span><span class="tag">Next.js</span></div>
+        </li>
+        <li>
+          <div class="resource-name">LlamaIndex</div>
+          <div class="resource-desc">Data framework for LLM apps. Advanced RAG, document indexing, query engines. Strong for knowledge-heavy apps.</div>
+          <a href="https://llamaindex.ai" class="resource-link" target="_blank">llamaindex.ai →</a>
+          <div class="resource-tags"><span class="tag purple">Framework</span><span class="tag">RAG</span><span class="tag">Data</span></div>
+        </li>
+        <li>
+          <div class="resource-name">OpenAI Node SDK</div>
+          <div class="resource-desc">Official OpenAI JavaScript/TypeScript client. TypeScript types, streaming, function calling. Minimal and reliable.</div>
+          <a href="https://github.com/openai/openai-node" class="resource-link" target="_blank">github.com/openai/openai-node →</a>
+          <div class="resource-tags"><span class="tag purple">SDK</span><span class="tag">TypeScript</span><span class="tag">Official</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Streamlit</div>
+          <div class="resource-desc">Python app framework for ML/data science demos. Turn Python scripts into web apps in minutes. Great for prototyping AI tools.</div>
+          <a href="https://streamlit.io" class="resource-link" target="_blank">streamlit.io →</a>
+          <div class="resource-tags"><span class="tag purple">Framework</span><span class="tag">Python</span><span class="tag">Prototyping</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Deployment Platforms</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Vercel</div>
+          <div class="resource-desc">Best for Next.js apps. Edge functions, serverless, analytics. Free tier generous for MVPs. Automatic deployments from Git.</div>
+          <a href="https://vercel.com" class="resource-link" target="_blank">vercel.com →</a>
+          <div class="resource-tags"><span class="tag blue">Hosting</span><span class="tag">Free Tier</span><span class="tag">Next.js</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Railway</div>
+          <div class="resource-desc">Full-stack app hosting. Databases, cron jobs, TCP/UDP. $5/month hobby plan. Great for Python + PostgreSQL apps.</div>
+          <a href="https://railway.app" class="resource-link" target="_blank">railway.app →</a>
+          <div class="resource-tags"><span class="tag blue">Hosting</span><span class="tag">Full-Stack</span><span class="tag">Databases</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Fly.io</div>
+          <div class="resource-desc">Deploy apps close to users. Docker-based. Great for long-running processes, WebSockets, and EU data residency.</div>
+          <a href="https://fly.io" class="resource-link" target="_blank">fly.io →</a>
+          <div class="resource-tags"><span class="tag blue">Hosting</span><span class="tag">Docker</span><span class="tag">Global</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Netlify</div>
+          <div class="resource-desc">Static sites and serverless functions. Forms, identity, edge functions. Free tier for personal projects.</div>
+          <a href="https://netlify.com" class="resource-link" target="_blank">netlify.com →</a>
+          <div class="resource-tags"><span class="tag blue">Hosting</span><span class="tag">Free Tier</span><span class="tag">Static</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Cloudflare Workers</div>
+          <div class="resource-desc">Edge computing on Cloudflare's network. Sub-millisecond cold starts. Workers AI for running models at the edge.</div>
+          <a href="https://workers.cloudflare.com" class="resource-link" target="_blank">workers.cloudflare.com →</a>
+          <div class="resource-tags"><span class="tag blue">Edge</span><span class="tag">Fast</span><span class="tag">AI at Edge</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Monetization & Billing</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Stripe</div>
+          <div class="resource-desc">Industry-standard payment processing. Subscriptions, invoicing, usage-based billing. Excellent documentation and SDKs.</div>
+          <a href="https://stripe.com" class="resource-link" target="_blank">stripe.com →</a>
+          <div class="resource-tags"><span class="tag orange">Payments</span><span class="tag">Industry Standard</span><span class="tag">Subscriptions</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Lemon Squeezy</div>
+          <div class="resource-desc">All-in-one platform for selling digital products. Handles taxes, licensing, affiliates. Simpler than Stripe for solo devs.</div>
+          <a href="https://lemonsqueezy.com" class="resource-link" target="_blank">lemonsqueezy.com →</a>
+          <div class="resource-tags"><span class="tag orange">Payments</span><span class="tag">Taxes Included</span><span class="tag">Solo Dev</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Paddle</div>
+          <div class="resource-desc">Merchant of record for SaaS. Handles global sales tax, compliance, invoicing. Higher fees but zero tax headaches.</div>
+          <a href="https://paddle.com" class="resource-link" target="_blank">paddle.com →</a>
+          <div class="resource-tags"><span class="tag orange">Payments</span><span class="tag">Tax Compliance</span><span class="tag">SaaS</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Creem</div>
+          <div class="resource-desc">Payment platform for indie hackers and small SaaS. Simple setup, usage-based billing, fast payouts.</div>
+          <a href="https://creem.io" class="resource-link" target="_blank">creem.io →</a>
+          <div class="resource-tags"><span class="tag orange">Payments</span><span class="tag">Indie</span><span class="tag">Simple</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Learning Resources</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">OpenAI Cookbook</div>
+          <div class="resource-desc">Official examples and guides for building with OpenAI API. RAG, function calling, fine-tuning, embeddings.</div>
+          <a href="https://cookbook.openai.com" class="resource-link" target="_blank">cookbook.openai.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Official</span><span class="tag">Examples</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Vercel AI Fundamentals</div>
+          <div class="resource-desc">Free course on building AI apps with Next.js and Vercel AI SDK. Streaming, tool calling, RAG patterns.</div>
+          <a href="https://sdk.vercel.ai/docs/foundations/ai-sdk-core" class="resource-link" target="_blank">sdk.vercel.ai →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Next.js</span><span class="tag">Streaming</span></div>
+        </li>
+        <li>
+          <div class="resource-name">LangChain Documentation</div>
+          <div class="resource-desc">Comprehensive guides for building with LangChain. Tutorials, API reference, cookbooks for common patterns.</div>
+          <a href="https://python.langchain.com" class="resource-link" target="_blank">python.langchain.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Python</span><span class="tag">RAG</span></div>
+        </li>
+        <li>
+          <div class="resource-name">DeepLearning.AI Short Courses</div>
+          <div class="resource-desc">Free 1-hour courses on AI topics: LangChain, RAG, fine-tuning, agents. Taught by industry experts.</div>
+          <a href="https://deeplearning.ai/short-courses" class="resource-link" target="_blank">deeplearning.ai →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Video</span><span class="tag">Certificates</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Anthropic Prompt Engineering Guide</div>
+          <div class="resource-desc">Official guide to effective prompting. Covers chain of thought, role prompting, XML tags, and best practices.</div>
+          <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering" class="resource-link" target="_blank">docs.anthropic.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Prompting</span><span class="tag">Best Practices</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Communities</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Indie Hackers</div>
+          <div class="resource-desc">Community of founders building profitable businesses. AI/SaaS section very active. Revenue milestones, launch feedback.</div>
+          <a href="https://indiehackers.com" class="resource-link" target="_blank">indiehackers.com →</a>
+          <div class="resource-tags"><span class="tag">Community</span><span class="tag">SaaS</span><span class="tag">Revenue Sharing</span></div>
+        </li>
+        <li>
+          <div class="resource-name">r/SideProject</div>
+          <div class="resource-desc">Reddit community for side projects. Share launches, get feedback, find co-founders. Very active for AI tools.</div>
+          <a href="https://reddit.com/r/SideProject" class="resource-link" target="_blank">reddit.com/r/SideProject →</a>
+          <div class="resource-tags"><span class="tag">Community</span><span class="tag">Feedback</span><span class="tag">Launch</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Product Hunt</div>
+          <div class="resource-desc">Launch platform for new products. AI category is the most active. Great for initial traction and backlinks.</div>
+          <a href="https://producthunt.com" class="resource-link" target="_blank">producthunt.com →</a>
+          <div class="resource-tags"><span class="tag">Launch</span><span class="tag">Traffic</span><span class="tag">Backlinks</span></div>
+        </li>
+        <li>
+          <div class="resource-name">AI Twitter / X</div>
+          <div class="resource-desc">Follow @OpenAI, @AnthropicAI, @LangChainAI, @vercel. Use #buildinpublic hashtag. Share daily progress.</div>
+          <a href="https://twitter.com" class="resource-link" target="_blank">twitter.com →</a>
+          <div class="resource-tags"><span class="tag">Community</span><span class="tag">Networking</span><span class="tag">Build in Public</span></div>
+        </li>
+        <li>
+          <div class="resource-name">YC Startup School</div>
+          <div class="resource-desc">Free startup course from Y Combinator. Modules on product, growth, fundraising. Access to founder community.</div>
+          <a href="https://www.startupschool.org" class="resource-link" target="_blank">startupschool.org →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Course</span><span class="tag">Startup</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Bookmark this page — it's your one-stop directory for building AI products. Start with the AI APIs section, pick one provider, and follow their cookbook. Don't get stuck evaluating every option.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

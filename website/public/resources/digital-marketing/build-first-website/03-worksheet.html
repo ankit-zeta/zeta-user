@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Building Exercises — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .exercise { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .exercise h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
+    .exercise p { color: #4b5563; margin-bottom: 12px; }
+    .exercise ul { margin-left: 20px; color: #374151; }
+    .exercise li { margin-bottom: 6px; }
+    .code-block { background: #1f2937; color: #e5e7eb; border-radius: 8px; padding: 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 13px; overflow-x: auto; }
+    .code-block .comment { color: #9ca3af; }
+    .code-block .keyword { color: #34d399; }
+    .code-block .string { color: #f87171; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .exercise { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Worksheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Build Your First Website</div>
+      <h1>Website Building Exercises</h1>
+      <p class="subtitle">Step-by-step exercises to build a complete responsive landing page</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Exercise 1: Project Setup & HTML Structure</h2>
+      <div class="exercise">
+        <h3>Create the project foundation</h3>
+        <p>Set up your folder structure and create the base HTML file with semantic structure.</p>
+        <ul>
+          <li>Create folder: <code>my-website/</code> with subfolders <code>css/</code>, <code>js/</code>, <code>images/</code></li>
+          <li>Create <code>index.html</code> with DOCTYPE, html, head, body</li>
+          <li>Add viewport meta tag, title, and link to CSS file</li>
+          <li>Build semantic structure: header, nav, main, section, footer</li>
+        </ul>
+        <span class="lang-label">HTML</span>
+        <div class="code-block">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Website</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header></header>
+  <nav></nav>
+  <main></main>
+  <footer></footer>
+</body>
+</html>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Exercise 2: Hero Section</h2>
+      <div class="exercise">
+        <h3>Build an eye-catching hero section</h3>
+        <p>Create a hero with headline, subheadline, CTA button, and background image.</p>
+        <ul>
+          <li>Add <section class="hero"> inside <main></li>
+          <li>Include h1, p, and <a class="btn"> for CTA</li>
+          <li>Style with CSS: centered text, padding, background</li>
+        </ul>
+        <span class="lang-label">HTML</span>
+        <div class="code-block">
+<section class="hero">
+  <h1>Build Your Dream Website</h1>
+  <p>Professional, responsive, and fast</p>
+  <a href="#contact" class="btn">Get Started</a>
+</section>
+        </div>
+        <span class="lang-label">CSS</span>
+        <div class="code-block">
+.hero {
+  text-align: center;
+  padding: 100px 20px;
+  background: linear-gradient(135deg, #176B4D, #0f4d36);
+  color: white;
+}
+.btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 30px;
+  background: white;
+  color: #176B4D;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+}
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Exercise 3: Features Grid</h2>
+      <div class="exercise">
+        <h3>Create a responsive 3-column features section</h3>
+        <p>Use CSS Grid for a layout that stacks on mobile and shows 3 columns on desktop.</p>
+        <ul>
+          <li>Add <section class="features"> with 3 feature cards</li>
+          <li>Each card: icon/heading, description, link</li>
+          <li>Grid: 1 column mobile, 3 columns desktop</li>
+        </ul>
+        <span class="lang-label">CSS</span>
+        <div class="code-block">
+.features {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+  padding: 60px 20px;
+}
+@media (min-width: 768px) {
+  .features { grid-template-columns: repeat(3, 1fr); }
+}
+.feature-card { text-align: center; padding: 30px; }
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Exercise 4: Navigation Bar</h2>
+      <div class="exercise">
+        <h3>Build a responsive navigation with mobile hamburger</h3>
+        <p>Create a nav that shows links on desktop and collapses behind a hamburger on mobile.</p>
+        <ul>
+          <li>Semantic <nav> with logo and <ul> links</li>
+          <li>Flexbox for layout: space-between</li>
+          <li>CSS-only hamburger using checkbox hack</li>
+        </ul>
+        <span class="lang-label">HTML</span>
+        <div class="code-block">
+<nav>
+  <div class="logo">Brand</div>
+  <input type="checkbox" id="menu-toggle">
+  <label for="menu-toggle" class="hamburger"></label>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Features</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Exercise 5: Contact Form</h2>
+      <div class="exercise">
+        <h3>Create an accessible contact form</h3>
+        <p>Build a form with proper labels, validation attributes, and styled inputs.</p>
+        <ul>
+          <li>Fields: name, email, message</li>
+          <li>Use <label for="id"> linked to inputs</li>
+          <li>Add required, type="email", placeholder attributes</li>
+        </ul>
+        <span class="lang-label">HTML</span>
+        <div class="code-block">
+<form class="contact-form">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" id="name" name="name" required>
+  </div>
+  <div class="form-group">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required>
+  </div>
+  <div class="form-group">
+    <label for="message">Message</label>
+    <textarea id="message" name="message" rows="5" required></textarea>
+  </div>
+  <button type="submit">Send Message</button>
+</form>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Exercise 6: Footer with Social Links</h2>
+      <div class="exercise">
+        <h3>Complete the page with a professional footer</h3>
+        <p>Add copyright, navigation links, and social media icons.</p>
+        <ul>
+          <li><footer> with grid layout: brand, links, social</li>
+          <li>SVG icons for social media</li>
+          <li>Responsive: stacked on mobile, row on desktop</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Exercise 7: CSS Custom Properties (Variables)</h2>
+      <div class="exercise">
+        <h3>Refactor colors and spacing to CSS variables</h3>
+        <p>Define a design system using CSS custom properties for consistent theming.</p>
+        <span class="lang-label">CSS</span>
+        <div class="code-block">
+:root {
+  --color-primary: #176B4D;
+  --color-secondary: #0f4d36;
+  --color-text: #1a1a1a;
+  --color-text-light: #666;
+  --spacing-xs: 8px;
+  --spacing-sm: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 48px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+}
+.btn { background: var(--color-primary); padding: var(--spacing-sm) var(--spacing-md); }
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Exercise 8: Deploy to Netlify/Vercel</h2>
+      <div class="exercise">
+        <h3>Deploy your static site for free</h3>
+        <p>Push to GitHub and connect to Netlify or Vercel for automatic deployments.</p>
+        <ul>
+          <li>Initialize git: <code>git init && git add . && git commit -m "Initial commit"</code></li>
+          <li>Create GitHub repo and push: <code>git push -u origin main</code></li>
+          <li>Import project in Netlify/Vercel — auto-detects static site</li>
+          <li>Custom domain: add in dashboard DNS settings</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Build incrementally — commit after each exercise. If something breaks, you can always revert to a working version.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

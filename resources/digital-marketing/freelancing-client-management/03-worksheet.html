@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Management Worksheets — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .worksheet { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .worksheet h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .worksheet p { color: #4b5563; margin-bottom: 12px; }
+    .worksheet label { display: block; font-weight: 600; margin-bottom: 6px; color: #374151; }
+    .worksheet input, .worksheet textarea, .worksheet select { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; font-size: 14px; margin-bottom: 16px; background: white; }
+    .worksheet textarea { min-height: 80px; resize: vertical; }
+    .worksheet-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .worksheet-table th, .worksheet-table td { border: 1px solid #e5e7eb; padding: 10px 12px; text-align: left; }
+    .worksheet-table th { background: #176B4D; color: white; font-weight: 600; font-size: 13px; }
+    .worksheet-table td { font-size: 13px; color: #374151; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .worksheet { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Worksheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Freelancing & Client Management</div>
+      <h1>Client Management Worksheets</h1>
+      <p class="subtitle">Proposal template, project scope document, milestone tracker, time tracking log, invoice template, client feedback form</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Worksheet 1: Proposal Template</h2>
+      <div class="worksheet">
+        <h3>Fill in each section — duplicate for every proposal</h3>
+        <table class="worksheet-table">
+          <tr><th>Section</th><th>Your Content</th></tr>
+          <tr><td>Client Name / Company</td><td><input type="text" placeholder=""></td></tr>
+          <tr><td>Project Title</td><td><input type="text" placeholder=""></td></tr>
+          <tr><td>Date</td><td><input type="text" placeholder=""></td></tr>
+          <tr><td>Valid Until</td><td><input type="text" placeholder="30 days from date"></td></tr>
+        </table>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">1. Executive Summary (1 paragraph)</h4>
+        <textarea placeholder="[Client] needs [solution] to achieve [outcome]. We'll deliver [key deliverables] in [timeframe] for [investment].">
+</textarea>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">2. Problem Statement</h4>
+        <textarea placeholder="Current situation: [pain points]. Business impact: [cost of inaction]. Why now: [urgency].">
+</textarea>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">3. Proposed Solution & Scope</h4>
+        <table class="worksheet-table">
+          <tr><th>Phase</th><th>Deliverables</th><th>Timeline</th><th>Acceptance Criteria</th></tr>
+          <tr><td>Phase 1: Discovery</td><td><input type="text" placeholder="Audit, Research, Strategy Doc"></td><td><input type="text" placeholder="Week 1-2"></td><td><input type="text" placeholder="Strategy doc approved"></td></tr>
+          <tr><td>Phase 2: Design/Build</td><td><input type="text" placeholder="Wireframes, Mockups, Development"></td><td><input type="text" placeholder="Week 3-6"></td><td><input type="text" placeholder="Staging demo approved"></td></tr>
+          <tr><td>Phase 3: Launch</td><td><input type="text" placeholder="Testing, Deploy, Training"></td><td><input type="text" placeholder="Week 7"></td><td><input type="text" placeholder="Live + Handoff complete"></td></tr>
+        </table>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">4. Investment</h4>
+        <table class="worksheet-table">
+          <tr><th>Item</th><th>Amount</th><th>Payment Timing</th></tr>
+          <tr><td>Deposit (30%)</td><td><input type="text" placeholder="$X,XXX"></td><td>Upon signing</td></tr>
+          <tr><td>Milestone 1 (30%)</td><td><input type="text" placeholder="$X,XXX"></td><td>Phase 1 complete</td></tr>
+          <tr><td>Milestone 2 (25%)</td><td><input type="text" placeholder="$X,XXX"></td><td>Phase 2 complete</td></tr>
+          <tr><td>Final (15%)</td><td><input type="text" placeholder="$X,XXX"></td><td>Launch + 14 days</td></tr>
+          <tr><td><strong>Total</strong></td><td><strong><input type="text" placeholder="$X,XXX"></strong></td><td></td></tr>
+        </table>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">5. Assumptions & Exclusions</h4>
+        <textarea placeholder="Client provides: Brand assets by [date], Content by [date], Feedback within 2 business days.
+Out of scope: Copywriting, Photography, Video, SEO, Ongoing maintenance (separate retainer available).">
+</textarea>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Worksheet 2: Project Scope Document</h2>
+      <div class="worksheet">
+        <h3>Detailed scope — attach to contract as Exhibit A</h3>
+        <table class="worksheet-table">
+          <tr><th>Deliverable</th><th>Description / Specs</th><th>Format</th><th>Revisions Included</th><th>Out of Scope</th></tr>
+          <tr><td><input type="text" placeholder="Website Homepage"></td><td><textarea placeholder="Hero, Features, Testimonials, CTA, Footer. Mobile-first. Figma provided."></textarea></td><td><input type="text" placeholder="Figma + HTML/CSS"></td><td><input type="text" placeholder="2 rounds"></td><td><input type="text" placeholder="Copywriting, Images"></td></tr>
+          <tr><td><input type="text" placeholder="CMS Setup"></td><td><textarea placeholder="Webflow CMS: Blog, Case Studies, Team. 3 collections. Client editable."></textarea></td><td><input type="text" placeholder="Webflow"></td><td><input type="text" placeholder="1 round"></td><td><input type="text" placeholder="Content migration"></td></tr>
+          <tr><td><input type="text" placeholder=""></td><td><textarea placeholder=""></textarea></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td></tr>
+        </table>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">Timeline & Milestones</h4>
+        <table class="worksheet-table">
+          <tr><th>Milestone</th><th>Deliverables</th><th>Due Date</th><th>Client Dependency</th><th>Payment</th></tr>
+          <tr><td>M1: Discovery Complete</td><td><input type="text" placeholder="Strategy Doc, Sitemap, Wireframes"></td><td><input type="text" placeholder="Date"></td><td><input type="text" placeholder="Brand assets, Analytics access"></td><td><input type="text" placeholder="30%"></td></tr>
+          <tr><td>M2: Design Approved</td><td><input type="text" placeholder="All Page Designs, Style Guide"></td><td><input type="text" placeholder="Date"></td><td><input type="text" placeholder="Feedback on wireframes"></td><td><input type="text" placeholder="30%"></td></tr>
+          <tr><td>M3: Staging Demo</td><td><input type="text" placeholder="Functional Site on Staging"></td><td><input type="text" placeholder="Date"></td><td><input type="text" placeholder="Content, Images"></td><td><input type="text" placeholder="25%"></td></tr>
+          <tr><td>M4: Launch</td><td><input type="text" placeholder="Live Site, Training, Docs"></td><td><input type="text" placeholder="Date"></td><td><input type="text" placeholder="DNS access, Final approval"></td><td><input type="text" placeholder="15%"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Worksheet 3: Milestone Tracker</h2>
+      <div class="worksheet">
+        <h3>Track progress per project — update weekly</h3>
+        <table class="worksheet-table">
+          <tr><th>Project</th><th>Milestone</th><th>Status</th><th>Due Date</th><th>Actual Date</th><th>Blocker</th><th>Client Action Needed</th></tr>
+          <tr><td><input type="text" placeholder="Client A - Website"></td><td><input type="text" placeholder="M1: Discovery"></td><td><select><option>Not Started</option><option>In Progress</option><option>Client Review</option><option>Done</option></select></td><td><input type="text" placeholder="Jan 15"></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder="Brand assets"></td></tr>
+          <tr><td><input type="text" placeholder="Client A - Website"></td><td><input type="text" placeholder="M2: Design"></td><td><select><option>Not Started</option><option>In Progress</option><option>Client Review</option><option>Done</option></select></td><td><input type="text" placeholder="Feb 1"></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder="Design feedback"></td></tr>
+          <tr><td><input type="text" placeholder="Client B - Branding"></td><td><input type="text" placeholder="M1: Concepts"></td><td><select><option>Not Started</option><option>In Progress</option><option>Client Review</option><option>Done</option></select></td><td><input type="text" placeholder="Jan 20"></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder="Waiting on questionnaire"></td><td><input type="text" placeholder="Complete questionnaire"></td></tr>
+          <tr><td><input type="text" placeholder=""></td><td><input type="text"></td><td><select><option>Not Started</option><option>In Progress</option><option>Client Review</option><option>Done</option></select></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Worksheet 4: Time Tracking Log</h2>
+      <div class="worksheet">
+        <h3>Log daily — essential for hourly, retainers, and profitability analysis</h3>
+        <table class="worksheet-table">
+          <tr><th>Date</th><th>Project</th><th>Task</th><th>Hours</th><th>Billable?</th><th>Notes</th></tr>
+          <tr><td><input type="text" placeholder="Jan 8"></td><td><input type="text" placeholder="Client A"></td><td><input type="text" placeholder="Homepage Development"></td><td><input type="text" placeholder="3.5"></td><td><input type="text" placeholder="Yes"></td><td><input type="text" placeholder="Hero section + responsive"></td></tr>
+          <tr><td><input type="text" placeholder="Jan 8"></td><td><input type="text" placeholder="Client B"></td><td><input type="text" placeholder="Logo Concepts"></td><td><input type="text" placeholder="2.0"></td><td><input type="text" placeholder="Yes"></td><td><input type="text" placeholder="3 directions presented"></td></tr>
+          <tr><td><input type="text" placeholder="Jan 8"></td><td><input type="text" placeholder="Admin"></td><td><input type="text" placeholder="Invoicing, Emails"></td><td><input type="text" placeholder="1.0"></td><td><input type="text" placeholder="No"></td><td><input type="text" placeholder="Non-billable admin"></td></tr>
+        </table>
+        <p style="font-size: 13px; color: #666; margin-top: 12px;">Weekly Summary: Total Billable: ___ hrs | Non-Billable: ___ hrs | Target: 25+ billable hrs/week</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Worksheet 5: Invoice Template</h2>
+      <div class="worksheet">
+        <h3>Professional invoice — send immediately upon milestone completion</h3>
+        <table class="worksheet-table">
+          <tr><th>Field</th><th>Value</th></tr>
+          <tr><td>Invoice #</td><td><input type="text" placeholder="INV-2024-001"></td></tr>
+          <tr><td>Date</td><td><input type="text" placeholder="Jan 15, 2024"></td></tr>
+          <tr><td>Due Date</td><td><input type="text" placeholder="Net-15: Jan 30, 2024"></td></tr>
+          <tr><td>Client</td><td><input type="text" placeholder="Company Name, Address, Email"></td></tr>
+          <tr><td>Project</td><td><input type="text" placeholder="Project Name / Milestone"></td></tr>
+        </table>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">Line Items</h4>
+        <table class="worksheet-table">
+          <tr><th>Description</th><th>Qty</th><th>Rate</th><th>Amount</th></tr>
+          <tr><td><input type="text" placeholder="Milestone 2: Design Phase Complete"></td><td><input type="text" placeholder="1"></td><td><input type="text" placeholder="$X,XXX"></td><td><input type="text" placeholder="$X,XXX"></td></tr>
+          <tr><td><input type="text" placeholder=""></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+        </table>
+        
+        <table class="worksheet-table">
+          <tr><th>Subtotal</th><td><input type="text" placeholder="$X,XXX"></td></tr>
+          <tr><th>Tax (if applicable)</th><td><input type="text" placeholder="$XXX"></td></tr>
+          <tr><th><strong>Total</strong></th><td><strong><input type="text" placeholder="$X,XXX"></strong></td></tr>
+        </table>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">Payment Details</h4>
+        <textarea placeholder="Bank Transfer (Preferred):
+Account: [Name] | Bank: [Bank] | Routing: [XXX] | Account: [XXXX]
+SWIFT/BIC: [XXXX] for international
+
+Stripe Payment Link: [link]
+PayPal: [email]
+
+Terms: Net-15. Late fee: 1.5%/month after due date.">"></textarea>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Worksheet 6: Client Feedback Form</h2>
+      <div class="worksheet">
+        <h3>Send at project midpoint and completion — critical for improvement and testimonials</h3>
+        <table class="worksheet-table">
+          <tr><th>Question</th><th>Rating (1-5)</th><th>Comments</th></tr>
+          <tr><td>Communication clarity & responsiveness</td><td><select><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></td><td><input type="text" placeholder=""></td></tr>
+          <tr><td>Quality of deliverables</td><td><select><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></td><td><input type="text" placeholder=""></td></tr>
+          <tr><td>Adherence to timeline</td><td><select><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></td><td><input type="text" placeholder=""></td></tr>
+          <tr><td>Problem-solving / Proactivity</td><td><select><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></td><td><input type="text" placeholder=""></td></tr>
+          <tr><td>Overall satisfaction</td><td><select><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></td><td><input type="text" placeholder=""></td></tr>
+          <tr><td>Would you refer us? (NPS)</td><td><select><option>10</option><option>9</option><option>8</option><option>7</option><option>6</option><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option><option>0</option></select></td><td><input type="text" placeholder=""></td></tr>
+        </table>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">Open-Ended</h4>
+        <textarea placeholder="What did we do exceptionally well?"></textarea>
+        <textarea placeholder="What could we improve for next time?"></textarea>
+        <textarea placeholder="Testimonial (permission to use on website/marketing):"></textarea>
+        <textarea placeholder="Any additional services you'd like to discuss?"></textarea>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Store all worksheets in a Notion database per client. Link: Proposal → Scope → Milestones → Time Logs → Invoices → Feedback. Single source of truth. Filter by client, status, date. Export for taxes/reviews.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

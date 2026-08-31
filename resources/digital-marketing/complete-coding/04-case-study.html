@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Case Study — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .case-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; margin-bottom: 15px; }
+    .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .case-name { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+    .case-type { font-size: 11px; font-weight: 600; color: #176B4D; background: #ecfdf5; padding: 3px 10px; border-radius: 20px; }
+    .case-desc { font-size: 13px; color: #4b5563; margin-bottom: 10px; }
+    .case-tech { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .tech-tag { background: white; border: 1px solid #e5e7eb; padding: 2px 8px; border-radius: 20px; font-size: 11px; color: #6b7280; }
+    .case-link { font-size: 13px; color: #176B4D; text-decoration: none; font-weight: 500; }
+    .case-link:hover { text-decoration: underline; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Case Study</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Complete Coding: Basics to Advanced</div>
+      <h1>Portfolio Case Study</h1>
+      <p class="subtitle">Real developer projects that demonstrate full-stack skills employers want to see</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Case Study 1: SaaS Task Manager</h2>
+      <div class="case-card">
+        <div class="case-header"><span class="case-name">TaskFlow</span><span class="case-type">SaaS MVP</span></div>
+        <div class="case-desc">Team task management app with real-time collaboration, Kanban boards, time tracking, and billing. Built solo in 4 weeks, launched on Product Hunt.</div>
+        <div class="case-tech"><span class="tech-tag">Next.js</span><span class="tech-tag">TypeScript</span><span class="tech-tag">Prisma</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">Pusher</span><span class="tech-tag">Stripe</span><span class="tech-tag">Vercel</span></div>
+        <div class="case-desc"><strong>Key Features:</strong> Auth (NextAuth), Real-time updates (WebSockets), Stripe billing, Team invites, Activity logs, File uploads (S3)</div>
+        <div class="case-desc"><strong>Result:</strong> 340 users, $180 MRR, Featured on Product Hunt (#7 of the day), 12-star GitHub repo</div>
+        <a href="#" class="case-link">GitHub → | Live →</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Case Study 2: AI Content Platform</h2>
+      <div class="case-card">
+        <div class="case-header"><span class="case-name">WriteAI</span><span class="case-type">AI/ML Integration</span></div>
+        <div class="case-desc">AI-powered blog post generator with SEO optimization, image generation, and WordPress auto-publish. GPT-4 + DALL-E integration.</div>
+        <div class="case-tech"><span class="tech-tag">Next.js</span><span class="tech-tag">OpenAI API</span><span class="tech-tag">Convex</span><span class="tech-tag">Stripe</span><span class="tech-tag">Vercel AI SDK</span></div>
+        <div class="case-desc"><strong>Key Features:</strong> Streaming responses, Usage-based billing, Credit system, Template library, API access, Export to Markdown</div>
+        <div class="case-desc"><strong>Result:</strong> 500+ users, $450 MRR, 40% organic traffic growth for users</div>
+        <a href="#" class="case-link">GitHub → | Live →</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Case Study 3: E-commerce Store</h2>
+      <div class="case-card">
+        <div class="case-header"><span class="case-name">ShopKit</span><span class="case-type">E-commerce</span></div>
+        <div class="case-desc">Headless e-commerce platform: Product management, cart, checkout, order tracking, admin dashboard. Stripe + inventory management.</div>
+        <div class="case-tech"><span class="tech-tag">Next.js</span><span class="tech-tag">Medusa.js</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">Stripe</span><span class="tech-tag">Tailwind</span></div>
+        <div class="case-desc"><strong>Key Features:</strong> Product variants, Cart persistence, Stripe checkout, Order emails, Admin CRUD, Inventory tracking</div>
+        <div class="case-desc"><strong>Result:</strong> Used by 3 real businesses, processed $12K in sales, 99.8% uptime</div>
+        <a href="#" class="case-link">GitHub → | Live →</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Case Study 4: Developer Tools</h2>
+      <div class="case-card">
+        <div class="case-header"><span class="case-name">URLShot</span><span class="case-type">API + Dashboard</span></div>
+        <div class="case-desc">URL shortener with analytics: Click tracking, geographic data, device info, referrer analysis. REST API + dashboard.</div>
+        <div class="case-tech"><span class="tech-tag">Node.js</span><span class="tech-tag">Express</span><span class="tech-tag">Redis</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">Chart.js</span></div>
+        <div class="case-desc"><strong>Key Features:</strong> Nano-ID slugs, Click analytics, Geo/IP tracking, Custom slugs, QR codes, API keys, Rate limiting</div>
+        <div class="case-desc"><strong>Result:</strong> 2M+ redirects served, 50ms avg response time, 500 API users</div>
+        <a href="#" class="case-link">GitHub → | Live →</a>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Every portfolio project should answer: What problem does it solve? Who is it for? What did you learn? What would you do differently? Include screenshots, a 60-second Loom video, and a clear README with setup instructions.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

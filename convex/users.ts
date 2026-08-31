@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { ConvexError } from "convex/values";
 import { mutation, query, internalMutation } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { hashPassword, generateSalt, isValidEmail, sanitizeName, getUniqueReferralCode } from "./auth";
+import { hashPassword, generateSalt, isValidEmail, isStrongPassword, sanitizeName, getUniqueReferralCode } from "./auth";
 
 // Daily onboarding nudge: email verified users who signed up 2-10 days ago
 // and have never purchased anything. Sends at most once per user (flag-gated).
@@ -70,6 +70,33 @@ async function requireAdmin(ctx: any, token: string) {
   return user;
 }
 
+// Restrict admin helper: only super_admin and admin for sensitive operations
+async function requireSuperAdmin(ctx: any, token: string) {
+  const session = await ctx.db
+    .query("sessions")
+    .withIndex("by_token", (q: any) => q.eq("token", token))
+    .first();
+  if (!session || session.expiresAt < Date.now()) {
+    throw new Error("Unauthorized: Invalid session");
+  }
+  const user = await ctx.db.get(session.userId);
+  if (!user || !["super_admin", "admin"].includes(user.role)) {
+    throw new Error("Forbidden: Only super_admin or admin can perform this action");
+  }
+  return user;
+}
+
+// Validate avatar URL is from a trusted source (Convex storage or whitelisted domains)
+function isValidAvatarUrl(url: string): boolean {
+  if (!url || url.length > 500) return false;
+  // Convex storage URLs are safe (they are internal storage IDs or resolved URLs)
+  if (url.startsWith("https://") && url.includes(".convex.cloud")) return true;
+  // Allow data URIs for inline base64 images (small, validated format)
+  if (url.startsWith("data:image/")) return true;
+  // Block everything else
+  return false;
+}
+
 // ── Admin: create a user account directly ───────────────────────────────────
 // Account is created active + email-verified (admin vouches for the person),
 // with wallet + referral code initialized like normal signup. Audit-logged.
@@ -99,6 +126,10 @@ export const adminCreateUser = mutation({
     }
     if (!args.password || args.password.length < 8) {
       throw new ConvexError("Password must be at least 8 characters");
+    }
+    const passwordCheck = isStrongPassword(args.password);
+    if (!passwordCheck.valid) {
+      throw new ConvexError(passwordCheck.error || "Password does not meet strength requirements");
     }
 
     const existing = await ctx.db
@@ -185,12 +216,24 @@ export const updateProfile = mutation({
       throw new Error("Unauthorized");
     }
 
+    // Rate limit: 10 profile updates per hour per user
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, {
+      key: `updateProfile:userId:${session.userId}`,
+      max: 10,
+      windowMs: 60 * 60 * 1000,
+    });
+
     const updates: Record<string, any> = { updatedAt: Date.now() };
     if (args.name !== undefined) updates.name = sanitizeName(args.name);
     if (args.phone !== undefined) updates.phone = args.phone.trim();
     if (args.bio !== undefined) updates.bio = args.bio.trim();
     if (args.skills !== undefined) updates.skills = args.skills;
-    if (args.avatarUrl !== undefined) updates.avatarUrl = args.avatarUrl;
+    if (args.avatarUrl !== undefined) {
+      if (args.avatarUrl && !isValidAvatarUrl(args.avatarUrl)) {
+        throw new Error("Invalid avatar URL: only Convex storage images are allowed");
+      }
+      updates.avatarUrl = args.avatarUrl;
+    }
 
     await ctx.db.patch(session.userId, updates);
     return { success: true };
@@ -507,6 +550,10 @@ export const updateUserRole = mutation({
   },
   handler: async (ctx, args) => {
     const admin = await requireAdmin(ctx, args.token);
+    // SECURITY: Only super_admin and admin can change user roles
+    if (!["super_admin", "admin"].includes(admin.role)) {
+      throw new Error("Forbidden: Only super_admin or admin can change user roles");
+    }
     const user = await ctx.db.get(args.userId);
     if (!user) throw new Error("User not found");
     if (user._id === admin._id) throw new Error("You cannot change your own role");
@@ -564,6 +611,10 @@ export const adminResetPassword = mutation({
     if (!user) throw new Error("User not found");
     if (args.newPassword.length < 8) {
       throw new Error("Password must be at least 8 characters");
+    }
+    const passwordCheck = isStrongPassword(args.newPassword);
+    if (!passwordCheck.valid) {
+      throw new Error(passwordCheck.error);
     }
 
     const salt = generateSalt();
@@ -657,7 +708,7 @@ export const updateUserStatus = mutation({
     reason: v.string(),
   },
   handler: async (ctx, args) => {
-    const admin = await requireAdmin(ctx, args.token);
+    const admin = await requireSuperAdmin(ctx, args.token);
     const user = await ctx.db.get(args.userId);
     if (!user) throw new Error("User not found");
 
@@ -727,7 +778,7 @@ export const grantProgramAccess = mutation({
     reason: v.string(),
   },
   handler: async (ctx, args) => {
-    const admin = await requireAdmin(ctx, args.token);
+    const admin = await requireSuperAdmin(ctx, args.token);
     const user = await ctx.db.get(args.userId);
     const program = await ctx.db.get(args.programId);
     if (!user || !program) throw new Error("User or Program not found");
@@ -792,7 +843,7 @@ export const revokeProgramAccess = mutation({
     reason: v.string(),
   },
   handler: async (ctx, args) => {
-    const admin = await requireAdmin(ctx, args.token);
+    const admin = await requireSuperAdmin(ctx, args.token);
     const user = await ctx.db.get(args.userId);
     const program = await ctx.db.get(args.programId);
     if (!user || !program) throw new Error("User or Program not found");
@@ -965,7 +1016,7 @@ export const grantPlanAccess = mutation({
     reason: v.string(),
   },
   handler: async (ctx, args) => {
-    const admin = await requireAdmin(ctx, args.token);
+    const admin = await requireSuperAdmin(ctx, args.token);
     const user = await ctx.db.get(args.userId);
     const plan = await ctx.db.get(args.planId);
     if (!user) throw new Error("User not found");
@@ -1043,9 +1094,16 @@ export const sendAdminNotification = mutation({
     actionUrl: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const admin = await requireAdmin(ctx, args.token);
+    const admin = await requireSuperAdmin(ctx, args.token);
     const user = await ctx.db.get(args.userId);
     if (!user) throw new Error("User not found");
+
+    // Rate limit: 10 notifications per hour per admin
+    await ctx.runMutation(internal.rateLimit.enforceRateLimit, {
+      key: `sendAdminNotification:userId:${admin._id}`,
+      max: 10,
+      windowMs: 60 * 60 * 1000,
+    });
 
     await ctx.db.insert("notifications", {
       userId: args.userId,

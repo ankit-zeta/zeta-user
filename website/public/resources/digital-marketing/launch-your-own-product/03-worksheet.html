@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Launch Worksheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .worksheet { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .worksheet h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .worksheet p { color: #4b5563; margin-bottom: 12px; }
+    .worksheet label { display: block; font-weight: 600; margin-bottom: 6px; color: #374151; }
+    .worksheet input, .worksheet textarea, .worksheet select { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; font-size: 14px; margin-bottom: 16px; background: white; }
+    .worksheet textarea { min-height: 80px; resize: vertical; }
+    .worksheet-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .worksheet-table th, .worksheet-table td { border: 1px solid #e5e7eb; padding: 10px 12px; text-align: left; }
+    .worksheet-table th { background: #176B4D; color: white; font-weight: 600; font-size: 13px; }
+    .worksheet-table td { font-size: 13px; color: #374151; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .worksheet { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Worksheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Launch Your Own Product</div>
+      <h1>Product Launch Worksheet</h1>
+      <p class="subtitle">Idea validation, pricing calculator, launch timeline, checklist templates for planning your product launch</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 1: Idea Validation</h2>
+      <div class="worksheet">
+        <h3>Validate before you build</h3>
+        <label>What problem does your product solve?</label>
+        <textarea placeholder="Describe the specific pain point your target customer faces..."></textarea>
+        <label>Who is your ideal customer? (Be specific)</label>
+        <textarea placeholder="Role, industry, company size, demographics, psychographics..."></textarea>
+        <label>How do they solve this problem today?</label>
+        <textarea placeholder="Current alternatives, workarounds, manual processes..."></textarea>
+        <label>Why is your solution 10x better?</label>
+        <textarea placeholder="What makes your approach fundamentally different or better?"></textarea>
+        <table class="worksheet-table">
+          <tr><th>Validation Method</th><th>Target</th><th>Your Result</th></tr>
+          <tr><td>Customer interviews completed</td><td>20+</td><td><input type="text" placeholder="Number completed"></td></tr>
+          <tr><td>Landing page signups</td><td>100+</td><td><input type="text" placeholder="Number of signups"></td></tr>
+          <tr><td>Pre-orders / payments</td><td>10+</td><td><input type="text" placeholder="Number of pre-orders"></td></tr>
+          <tr><td>Survey responses</td><td>50+</td><td><input type="text" placeholder="Number of responses"></td></tr>
+          <tr><td>"Would you pay for this?" Yes %</td><td>40%+</td><td><input type="text" placeholder="Percentage saying yes"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 2: Pricing Calculator</h2>
+      <div class="worksheet">
+        <h3>Find your optimal price point</h3>
+        <table class="worksheet-table">
+          <tr><th>Input</th><th>Your Number</th><th>Notes</th></tr>
+          <tr><td>Cost to produce (per unit)</td><td><input type="text" placeholder="$0 for digital"></td><td>Hosting, tools, time</td></tr>
+          <tr><td>Target monthly revenue</td><td><input type="text" placeholder="$5,000"></td><td>Income goal</td></tr>
+          <tr><td>Expected monthly sales</td><td><input type="text" placeholder="100"></td><td>Realistic estimate</td></tr>
+          <tr><td>Minimum viable price</td><td><input type="text" placeholder="$29"></td><td>Revenue ÷ Sales</td></tr>
+          <tr><td>Competitor price range</td><td><input type="text" placeholder="$19-79"></td><td>Research 3-5 competitors</td></tr>
+          <tr><td>Customer willingness to pay</td><td><input type="text" placeholder="$49"></td><td>From surveys/interviews</td></tr>
+          <tr><td><strong>Chosen Price</strong></td><td><input type="text" placeholder="$47"></td><td><strong>Based on value, not cost</strong></td></tr>
+        </table>
+        <label>Why this price? (Value justification)</label>
+        <textarea placeholder="What value does the customer get that justifies this price?"></textarea>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 3: Launch Timeline</h2>
+      <div class="worksheet">
+        <h3>Plan your 8-week launch</h3>
+        <table class="worksheet-table">
+          <tr><th>Week</th><th>Focus</th><th>Key Tasks</th><th>Status</th></tr>
+          <tr><td>Week 1-2</td><td>Validate</td><td>Customer interviews, survey, landing page</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td></tr>
+          <tr><td>Week 3</td><td>Build MVP</td><td>Core features only, no polish</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td></tr>
+          <tr><td>Week 4</td><td>Pre-Launch Setup</td><td>Email sequences, payment, landing page</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td></tr>
+          <tr><td>Week 5-6</td><td>Build Audience</td><td>Waitlist growth, content, partnerships</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td></tr>
+          <tr><td>Week 7</td><td>Launch Prep</td><td>Final testing, social assets, PR outreach</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td></tr>
+          <tr><td>Week 8</td><td>Launch Week</td><td>Email blast, social push, community, support</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 4: Launch Day Checklist</h2>
+      <div class="worksheet">
+        <h3>Launch day hour-by-hour</h3>
+        <table class="worksheet-table">
+          <tr><th>Time</th><th>Action</th><th>Owner</th><th>Done?</th></tr>
+          <tr><td>8:00 AM</td><td>Final product/checkout test</td><td><input type="text" placeholder="Name"></td><td><input type="checkbox"></td></tr>
+          <tr><td>9:00 AM</td><td>Send launch email to waitlist</td><td><input type="text" placeholder="Name"></td><td><input type="checkbox"></td></tr>
+          <tr><td>9:30 AM</td><td>Post on Twitter/X, LinkedIn, Instagram</td><td><input type="text" placeholder="Name"></td><td><input type="checkbox"></td></tr>
+          <tr><td>10:00 AM</td><td>Share in relevant communities</td><td><input type="text" placeholder="Name"></td><td><input type="checkbox"></td></tr>
+          <tr><td>11:00 AM</td><td>Monitor sales and support inbox</td><td><input type="text" placeholder="Name"></td><td><input type="checkbox"></td></tr>
+          <tr><td>12:00 PM</td><td>Midday social proof post (sales numbers)</td><td><input type="text" placeholder="Name"></td><td><input type="checkbox"></td></tr>
+          <tr><td>3:00 PM</td><td>Follow up with early buyers (thank you)</td><td><input type="text" placeholder="Name"></td><td><input type="checkbox"></td></tr>
+          <tr><td>5:00 PM</td><td>End-of-day metrics report</td><td><input type="text" placeholder="Name"></td><td><input type="checkbox"></td></tr>
+          <tr><td>8:00 PM</td><td>Final social proof post, day recap</td><td><input type="text" placeholder="Name"></td><td><input type="checkbox"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Fill out this worksheet completely before building anything. The validation step is non-negotiable — if you can't get 20 people to say "yes, I'd pay for that," rethink your idea. A validated small idea beats an unvalidated big one.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

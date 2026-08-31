@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coding Fundamentals Quick Reference — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .code-block { background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 13px; overflow-x: auto; }
+    .code-block .comment { color: #6b7280; }
+    .code-block .keyword { color: #176B4D; font-weight: 600; }
+    .code-block .string { color: #dc2626; }
+    .lang-label { display: inline-block; background: #176B4D; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 8px; }
+    .table-wrapper { overflow-x: auto; margin: 12px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #176B4D; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+    td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+    tr:nth-child(even) { background: #f9fafb; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .badge { border: 1px solid #176B4D; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Quick Reference</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Coding Fundamentals</div>
+      <h1>Coding Fundamentals Quick Reference</h1>
+      <p class="subtitle">Common syntax patterns, data types, and control flow across Python, JavaScript, HTML, and CSS</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Variable Declarations</h2>
+      <span class="lang-label">JavaScript</span>
+      <div class="code-block">
+        <span class="keyword">let</span> name = <span class="string">"Alice"</span>;<br>
+        <span class="keyword">const</span> age = 25;<br>
+        <span class="keyword">var</span> oldWay = <span class="string">"avoid"</span>;
+      </div>
+      <span class="lang-label">Python</span>
+      <div class="code-block">
+        name = <span class="string">"Alice"</span><br>
+        age = 25<br>
+        PI = 3.14159  <span class="comment"># convention: UPPER_CASE for constants</span>
+      </div>
+      <span class="lang-label">HTML</span>
+      <div class="code-block">
+        &lt;<span class="keyword">input</span> type=<span class="string">"text"</span> id=<span class="string">"username"</span> value=<span class="string">"Alice"</span>&gt;
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Data Types</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Type</th><th>JavaScript</th><th>Python</th><th>Example</th></tr>
+          <tr><td>String</td><td>string</td><td>str</td><td>"hello", 'hello'</td></tr>
+          <tr><td>Number</td><td>number</td><td>int / float</td><td>42, 3.14</td></tr>
+          <tr><td>Boolean</td><td>boolean</td><td>bool</td><td>true / false, True / False</td></tr>
+          <tr><td>Array / List</td><td>Array [1, 2, 3]</td><td>List [1, 2, 3]</td><td>[1, 2, 3]</td></tr>
+          <tr><td>Object / Dict</td><td>{ key: "val" }</td><td>{ "key": "val" }</td><td>Key-value pairs</td></tr>
+          <tr><td>Null / None</td><td>null, undefined</td><td>None</td><td>Absence of value</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Control Flow — Conditionals</h2>
+      <span class="lang-label">JavaScript</span>
+      <div class="code-block">
+        <span class="keyword">if</span> (age >= 18) {<br>
+        &nbsp;&nbsp;console.log(<span class="string">"Adult"</span>);<br>
+        } <span class="keyword">else if</span> (age >= 13) {<br>
+        &nbsp;&nbsp;console.log(<span class="string">"Teen"</span>);<br>
+        } <span class="keyword">else</span> {<br>
+        &nbsp;&nbsp;console.log(<span class="string">"Child"</span>);<br>
+        }
+      </div>
+      <span class="lang-label">Python</span>
+      <div class="code-block">
+        <span class="keyword">if</span> age >= 18:<br>
+        &nbsp;&nbsp;print(<span class="string">"Adult"</span>)<br>
+        <span class="keyword">elif</span> age >= 13:<br>
+        &nbsp;&nbsp;print(<span class="string">"Teen"</span>)<br>
+        <span class="keyword">else</span>:<br>
+        &nbsp;&nbsp;print(<span class="string">"Child"</span>)
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Loops</h2>
+      <span class="lang-label">JavaScript</span>
+      <div class="code-block">
+        <span class="comment">// For loop</span><br>
+        <span class="keyword">for</span> (<span class="keyword">let</span> i = 0; i < 5; i++) {<br>
+        &nbsp;&nbsp;console.log(i);<br>
+        }<br><br>
+        <span class="comment">// For...of</span><br>
+        <span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> items) {<br>
+        &nbsp;&nbsp;console.log(item);<br>
+        }
+      </div>
+      <span class="lang-label">Python</span>
+      <div class="code-block">
+        <span class="keyword">for</span> i <span class="keyword">in</span> range(5):<br>
+        &nbsp;&nbsp;print(i)<br><br>
+        <span class="keyword">for</span> item <span class="keyword">in</span> items:<br>
+        &nbsp;&nbsp;print(item)
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Functions</h2>
+      <span class="lang-label">JavaScript</span>
+      <div class="code-block">
+        <span class="comment">// Function declaration</span><br>
+        <span class="keyword">function</span> greet(name) {<br>
+        &nbsp;&nbsp;<span class="keyword">return</span> <span class="string">`Hello, ${name}!`</span>;<br>
+        }<br><br>
+        <span class="comment">// Arrow function</span><br>
+        <span class="keyword">const</span> greet = (name) => <span class="string">`Hello, ${name}!`</span>;
+      </div>
+      <span class="lang-label">Python</span>
+      <div class="code-block">
+        <span class="keyword">def</span> greet(name):<br>
+        &nbsp;&nbsp;<span class="keyword">return</span> f<span class="string">"Hello, {name}!"</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Arrays & Objects</h2>
+      <span class="lang-label">JavaScript</span>
+      <div class="code-block">
+        <span class="comment">// Array</span><br>
+        <span class="keyword">const</span> fruits = [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"cherry"</span>];<br>
+        fruits.push(<span class="string">"date"</span>);<br>
+        fruits.filter(f => f.length > 5);<br><br>
+        <span class="comment">// Object</span><br>
+        <span class="keyword">const</span> user = { name: <span class="string">"Alice"</span>, age: 25 };<br>
+        user.email = <span class="string">"alice@email.com"</span>;
+      </div>
+      <span class="lang-label">Python</span>
+      <div class="code-block">
+        <span class="comment"># List</span><br>
+        fruits = [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"cherry"</span>]<br>
+        fruits.append(<span class="string">"date"</span>)<br><br>
+        <span class="comment"># Dictionary</span><br>
+        user = { <span class="string">"name"</span>: <span class="string">"Alice"</span>, <span class="string">"age"</span>: 25 }<br>
+        user[<span class="string">"email"</span>] = <span class="string">"alice@email.com"</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">HTML Essentials</h2>
+      <div class="code-block">
+        &lt;!DOCTYPE html&gt;<br>
+        &lt;html lang=<span class="string">"en"</span>&gt;<br>
+        &lt;head&gt;<br>
+        &nbsp;&nbsp;&lt;meta charset=<span class="string">"UTF-8"</span>&gt;<br>
+        &nbsp;&nbsp;&lt;meta name=<span class="string">"viewport"</span> content=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;<br>
+        &nbsp;&nbsp;&lt;title&gt;Page Title&lt;/title&gt;<br>
+        &lt;/head&gt;<br>
+        &lt;body&gt;<br>
+        &nbsp;&nbsp;&lt;h1&gt;Main Heading&lt;/h1&gt;<br>
+        &nbsp;&nbsp;&lt;p&gt;Paragraph text&lt;/p&gt;<br>
+        &nbsp;&nbsp;&lt;a href=<span class="string">"https://example.com"</span>&gt;Link&lt;/a&gt;<br>
+        &nbsp;&nbsp;&lt;img src=<span class="string">"photo.jpg"</span> alt=<span class="string">"Description"</span>&gt;<br>
+        &lt;/body&gt;<br>
+        &lt;/html&gt;
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">CSS Selectors</h2>
+      <div class="code-block">
+        <span class="comment">/* Element selector */</span><br>
+        p { color: #333; }<br><br>
+        <span class="comment">/* Class selector */</span><br>
+        .highlight { background: yellow; }<br><br>
+        <span class="comment">/* ID selector */</span><br>
+        #header { font-size: 24px; }<br><br>
+        <span class="comment">/* Descendant */</span><br>
+        nav a { text-decoration: none; }<br><br>
+        <span class="comment">/* Pseudo-class */</span><br>
+        a:hover { color: #176B4D; }
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Bookmark MDN Web Docs (developer.mozilla.org) — it's the definitive reference for HTML, CSS, and JavaScript. Every concept above has deeper documentation there.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

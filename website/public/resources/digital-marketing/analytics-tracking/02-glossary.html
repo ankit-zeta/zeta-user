@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics Glossary — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .glossary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .glossary-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .glossary-term { font-size: 14px; font-weight: 600; color: #176B4D; margin-bottom: 4px; }
+    .glossary-def { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Glossary</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Analytics & Tracking Setup</div>
+      <h1>Analytics Glossary</h1>
+      <p class="subtitle">Essential terminology for GA4, event tracking, attribution, and data analysis</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Core Concepts</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Session</div><div class="glossary-def">Period of user engagement. Starts with first event, ends after 30 min inactivity or midnight. New campaign source = new session.</div></div>
+        <div class="glossary-item"><div class="glossary-term">User</div><div class="glossary-def">Unique individual (identified by User ID or Device ID). Active User = engaged session in last 28 days.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Event</div><div class="glossary-def">Any user interaction: page_view, click, scroll, purchase. Foundation of GA4 data model. Name + Parameters.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Parameter</div><div class="glossary-def">Additional context for events. page_location, item_id, value, currency, engagement_time_msec. Max 25 params/event.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Conversion</div><div class="glossary-def">Event marked as valuable. Count: Once per session (default) or Once per event. Mark in Admin → Events.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Engagement Rate</div><div class="glossary-def">Engaged Sessions ÷ Sessions. Engaged = >10s OR 1+ conversion OR 2+ pageviews. Replaces Bounce Rate.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Attribution Model</div><div class="glossary-def">Rules assigning conversion credit: Data-Driven (ML), Last Click, First Click, Linear, Time Decay, Position-Based.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Dimension</div><div class="glossary-def">Attribute of data: source, medium, campaign, device, country, page_title, event_name. What you analyze BY.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">GA4-Specific Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Data Stream</div><div class="glossary-def">Data source: Web, iOS App, Android App. Each has Measurement ID (G-XXXXXXXX). Enhanced Measurement auto-events.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Measurement ID</div><div class="glossary-def">G-XXXXXXXX format. Replaces UA-XXXXXX-X. One per data stream. Used in gtag/GTM config.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Enhanced Measurement</div><div class="glossary-def">Auto-collects: scroll, video_play, file_download, form_start, form_submit, search, click (outbound). Toggle per stream.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Data-Driven Attribution</div><div class="glossary-def">ML model assigning credit based on actual paths. Default in GA4. Requires 300 conversions/30d + 3k visits.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Explore</div><div class="glossary-def">Custom analysis workspace. Techniques: Free Form, Funnel, Path, Segment Overlap, Cohort, User Lifetime.</div></div>
+        <div class="glossary-item"><div class="glossary-term">BigQuery Export</div><div class="glossary-def">Raw event-level export to BigQuery. Daily or streaming. Enables SQL analysis, ML, custom dashboards. Free tier: 10GB/mo.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Consent Mode v2</div><div class="glossary-def">Adjusts tag behavior based on user consent (ad_storage, analytics_storage). Required for EEA/UK traffic.</div></div>
+        <div class="glossary-item"><div class="glossary-term">User ID</div><div class="glossary-def">Your CRM ID for cross-device tracking. Set via gtag('set', 'user_id', 'ID'). Enables User Explorer, cross-device reports.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">E-Commerce & Monetization Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Ecommerce Events</div><div class="glossary-def">Standard events: view_item, add_to_cart, remove_from_cart, begin_checkout, add_payment_info, purchase, refund.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Items Array</div><div class="glossary-def">Array of item objects in ecommerce events: item_id, item_name, price, quantity, item_brand, item_category, item_variant.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Transaction ID</div><div class="glossary-def">Unique order identifier (string). Required for purchase/refund. Prevents duplicate counting.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Currency</div><div class="glossary-def">ISO 4217 code (USD, EUR, GBP). Required for monetary events. GA4 converts to property currency.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Value</div><div class="glossary-def">Monetary value (number). For purchase: total revenue. For lead: estimated value. Required for ROAS/ROI.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Item Scoped Dimensions</div><div class="glossary-dimensions">Dimensions tied to items: item_name, item_brand, item_category, item_variant. Used in Ecommerce reports.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Promotion Events</div><div class="glossary-def">view_promotion, select_promotion. Track internal promo impressions/clicks. promotion_id, promotion_name, creative_name, creative_slot.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Attribution & Marketing Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">UTM Parameters</div><div class="glossary-def">Campaign tracking tags: utm_source, utm_medium, utm_campaign, utm_content, utm_term. Append to URLs.</div></div>
+        <div class="glossary-item"><div class="glossary-term">gclid / wbraid / gbraid</div><div class="glossary-def">Google Click ID (auto-tagging). wbraid/gbraid for iOS 14+. Enables Ads ↔ GA4 conversion linking.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Channel Grouping</div><div class="glossary-def">Rule-based grouping of source/medium: Organic Search, Paid Search, Organic Social, Paid Social, Email, Referral, Direct.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Default Channel Group</div><div class="glossary-def">GA4's built-in channel grouping. Customizable in Admin → Data Settings → Channel Groups.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Assisted Conversion</div><div class="glossary-def">Channel contributed to conversion path but wasn't final touch. View in Advertising → Conversion Paths.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Conversion Path</div><div class="glossary-def">Sequence of channel touchpoints leading to conversion. Length, time lag, channel sequence.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Lookback Window</div><div class="glossary-def">Time before conversion to consider touchpoints. Default 30 days (configurable 1-90 days).</div></div>
+        <div class="glossary-item"><div class="glossary-term">Cross-Network</div><div class="glossary-def">Channel for Performance Max / Smart Shopping where Google doesn't disclose specific network.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Technical & Implementation Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">gtag.js</div><div class="glossary-def">Google's unified tag library. gtag('config', 'G-XXXXXXXX'); gtag('event', 'name', {params});</div></div>
+        <div class="glossary-item"><div class="glossary-term">Data Layer</div><div class="glossary-def">JavaScript array (window.dataLayer) holding structured data. GTM reads from it. Single source of truth.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Google Tag Manager (GTM)</div><div class="glossary-def">Tag management system. Container tag on site. Triggers fire tags based on data layer/events. Version control.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Container</div><div class="glossary-def">GTM workspace holding tags, triggers, variables. Published versions. Environments: Live, Preview, Custom.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Trigger</div><div class="glossary-def">Condition that fires a tag: Page View, Click, Form Submit, Custom Event, Timer, Scroll Depth, YouTube Video.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Variable</div><div class="glossary-def">Dynamic value used in tags/triggers: Built-in (Page URL, Click Text), Data Layer, Custom JS, Constant, Lookup Table.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Server-Side GTM</div><div class="glossary-def">GTM running on your server (Cloud Run, App Engine). Better privacy, ad blocker resistance, data enrichment. Advanced.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Enhanced Conversions</div><div class="glossary-def">Hashes PII (email, phone, name, address) sent with conversions. Improves matching accuracy. Required for Ads.</div></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Bookmark the GA4 Dimensions & Metrics Explorer (ga-dev-tools.web.app/ga4/dimensions-metrics-explorer). It's the definitive reference for every available field in reports and API.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

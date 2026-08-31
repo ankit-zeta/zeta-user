@@ -157,7 +157,7 @@ export default function JourneyScrollSection() {
                       src={card.imageSrc}
                       alt={card.imageAlt}
                       fill
-                      sizes="100vw"
+                      sizes="(max-width: 640px) 90vw, (max-width: 1024px) 80vw, 50vw"
                       className="object-cover"
                       priority={i === 0}
                     />

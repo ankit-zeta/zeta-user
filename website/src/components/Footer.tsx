@@ -79,7 +79,7 @@ export default function Footer() {
             <p className="text-[11px] text-neutral-500 leading-relaxed">
               Zetagrow Edutech and Solutions · UDYAM-UP-73-0047816
 Shop No. 06, Vrindavan Marriage Lawn, Dobhiyara, NH-330A, Sultanpur City, Lucknow District, Uttar Pradesh – 224229
-+91 75218 40759 · Serving learners across India
++91 72340 51567 · Serving learners across India
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-neutral-300">
               <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />

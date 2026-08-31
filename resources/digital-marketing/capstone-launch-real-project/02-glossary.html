@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capstone Glossary — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .glossary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .glossary-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .glossary-term { font-size: 14px; font-weight: 600; color: #176B4D; margin-bottom: 4px; }
+    .glossary-def { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Glossary</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Capstone: Launch a Real Project</div>
+      <h1>Capstone Project Glossary</h1>
+      <p class="subtitle">MVP, product-market fit, launch funnel, conversion rate, CAC, LTV, iteration, pivot, and scaling terms</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Product &amp; Validation Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">MVP (Minimum Viable Product)</div><div class="glossary-def">The simplest version of your product that solves one core problem. NOT a prototype — it's real enough to sell. Goal: validate demand before building everything. Example: 3-lesson course before full curriculum.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Product-Market Fit</div><div class="glossary-def">When your product satisfies strong market demand. Signals: customers come back, word-of-mouth grows, sales happen without heavy marketing. Marc Andreessen: "being in a good market with a product that can satisfy that market."</div></div>
+        <div class="glossary-item"><div class="glossary-term">Validation</div><div class="glossary-def">Testing whether your idea has paying customers BEFORE building the full product. Methods: landing page tests, pre-sales, interviews, surveys. Target: 10+ pre-sales or 5%+ landing page conversion.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Pivot</div><div class="glossary-def">Changing direction based on market feedback. Not failure — it's smart business. Example: Started as SEO course, audience wants Facebook ads course instead. Pivot fast, don't cling to original idea.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Iteration</div><div class="glossary-def">Improving your product based on real user feedback. Small, continuous changes. NOT waiting months for a perfect version. Launch → learn → improve → repeat. Speed of iteration wins.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Value Proposition</div><div class="glossary-def">Clear statement of what your product does, who it's for, and why it's better. Formula: "I help [audience] achieve [outcome] through [method] without [pain point]."</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Marketing &amp; Funnel Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Launch Funnel</div><div class="glossary-def">The path customers take from discovery to purchase. Typical: Traffic → Landing Page → Email Opt-in → Nurture Sequence → Sales Page → Checkout → Thank You Page. Optimize each step.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Conversion Rate</div><div class="glossary-def">Percentage of visitors who take desired action. Formula: Conversions ÷ Visitors × 100. Landing page benchmark: 2-5%. Sales page benchmark: 1-3%. Below 1% = fix your offer or targeting.</div></div>
+        <div class="glossary-item"><div class="glossary-term">CAC (Customer Acquisition Cost)</div><div class="glossary-def">How much you spend to acquire one customer. Formula: Total Marketing Spend ÷ Customers Acquired. Must be less than LTV. If CAC > LTV, you're losing money on every sale.</div></div>
+        <div class="glossary-item"><div class="glossary-term">LTV (Lifetime Value)</div><div class="glossary-def">Total revenue a customer generates over their relationship with you. Formula: Average Order Value × Purchase Frequency × Customer Lifespan. Higher LTV = more you can spend on acquisition.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Email List</div><div class="glossary-def">Your most valuable asset. People who opted in to hear from you. Unlike social followers, you OWN this list. Email converts 3-5x better than social media. Build it from day one.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Pre-Launch</div><div class="glossary-def">Phase before your product goes live. Build anticipation: waitlist, early access, founding member pricing. Collect emails, gather testimonials, create buzz. 2-4 weeks minimum.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Growth &amp; Scaling Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Organic Growth</div><div class="glossary-def">Growth without paid advertising. SEO, content marketing, social media, referrals. Slower but sustainable and cheaper. Foundation for paid growth. Build organic first, amplify with ads.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Paid Growth</div><div class="glossary-def">Growth through advertising. Google Ads, Facebook Ads, sponsored content. Faster but costs money. Only works if CAC &lt; LTV. Requires budget and testing. Best after product-market fit.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Viral Coefficient</div><div class="glossary-def">How many new users each existing user brings. Formula: Invites Sent × Conversion Rate. Above 1.0 = viral growth (each user brings more than 1 new user). Rare but powerful.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Churn Rate</div><div class="glossary-def">Percentage of customers who stop buying. Formula: Customers Lost ÷ Total Customers × 100. For subscriptions: monthly churn. Target: under 5% monthly. High churn = product problem.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Social Proof</div><div class="glossary-def">Evidence that others use and value your product. Testimonials, reviews, case studies, user counts, media mentions. Reduces purchase anxiety. Add to every page of your funnel.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Evergreen</div><div class="glossary-def">Content or product that stays relevant over time. Evergreen courses sell for years. Evergreen content ranks in SEO long-term. Build evergreen assets, not just trendy content.</div></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>The capstone glossary terms are all connected: MVP leads to validation, validation leads to product-market fit, product-market fit enables scaling, scaling requires managing CAC and LTV. Master the connections, not just the definitions.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        &copy; 2026 ZetaGrow &mdash; Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

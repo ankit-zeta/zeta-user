@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optimization Cheat Sheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .cheat-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .cheat-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .cheat-item p { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Cheat Sheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Google Ads Essentials</div>
+      <h1>Optimization Cheat Sheet</h1>
+      <p class="subtitle">Quality Score improvement, ad copy testing, keyword match type adjustments, bid modifiers, ad scheduling, geo targeting</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Quality Score Improvement</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Expected CTR (Biggest Lever)</h4><p>• Tighten ad groups (15-20 keywords max)<br>• Write specific ads per ad group theme<br>• Use all ad extensions (sitelinks, callouts, snippets)<br>• Test RSA vs RSA (not vs old ETA)<br>• Add negative keywords weekly</p></div>
+        <div class="cheat-item"><h4>Ad Relevance</h4><p>• Include keyword in Headline 1<br>• Match ad copy to search intent (buy/learn/compare)<br>• Use DKI (Keyword Insertion) in H1<br>• Separate brand vs non-brand campaigns<br>• Single-theme ad groups (STAGs)</p></div>
+        <div class="cheat-item"><h4>Landing Page Experience</h4><p>• Keyword in H1 & first paragraph<br>• Page load < 3s mobile (PageSpeed > 90)<br>• Clear CTA above fold, no popups<br>• Mobile-first design, thumb-friendly<br>• Trust signals: reviews, badges, guarantee</p></div>
+        <div class="cheat-item"><h4>Quick Wins</h4><p>• Pause QS 1-3 keywords (or move to own AG)<br>• Add sitelinks to all campaigns<br>• Enable Dynamic Search Ads for coverage<br>• Check: Keywords → Columns → Quality Score sections</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Ad Copy Testing Framework</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Test ONE Variable at a Time</h4><p>• Headline 1 (pin vs unpin)<br>• Description 1 (benefit vs feature)<br>• CTA text (Shop Now vs Get Quote)<br>• Offer (% off vs $ off vs free shipping)<br>• Pinning strategy (pin H1 vs pin none)</p></div>
+        <div class="cheat-item"><h4>RSA Testing Best Practices</h4><p>• 2-3 RSAs per ad group max<br>• Each RSA = distinct angle (not minor tweaks)<br>• Run 2-4 weeks or 1000+ impressions<br>• Winner = lowest CPA / highest ROAS<br>• Pause losers, iterate winners</p></div>
+        <div class="cheat-item"><h4>Ad Copy Formulas to Test</h4><p>• PAS (Problem-Agitate-Solution)<br>• AIDA (Attention-Interest-Desire-Action)<br>• Before-After-Bridge<br>• Feature-Advantage-Benefit (FAB)<br>• Question-Answer-Proof</p></div>
+        <div class="cheat-item"><h4>Seasonal/Promo Testing</h4><p>• Holiday-specific creative (Q4, Back-to-School)<br>• Countdown timers in descriptions<br>• Limited inventory language<br>• Free gift vs discount A/B test<br>• Urgency vs value proposition</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Keyword & Match Type Optimization</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Search Terms Report (Weekly)</h4><p>• Add converting queries as exact/phrase keywords<br>• Add irrelevant queries as negatives (exact match)<br>• Identify new ad group themes<br>• Spot match type expansion issues</p></div>
+        <div class="cheat-item"><h4>Match Type Strategy</h4><p>• Phrase = default (balance)<br>• Exact = high-value, high-volume terms<br>• Broad = Smart Bidding only (Target CPA/ROAS)<br>• Negative = aggressive, campaign + ad group level</p></div>
+        <div class="cheat-item"><h4>Keyword Lifecycle</h4><p>• New → Test in broad/phrase (Smart Bidding)<br>• Performing → Move to exact, own ad group<br>• Declining → Pause, add negatives, refresh creative<br>• Dead → Remove after 90 days no conversions</p></div>
+        <div class="cheat-item"><h4>Keyword Expansion</h4><p>• Keyword Planner: new seed terms monthly<br>• Competitor gaps: Semrush/Ahrefs quarterly<br>• Search Terms: weekly mining<br>• DSA (Dynamic Search Ads): gap filling</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Bid Modifier Strategy</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Device Modifiers</h4><p>• Mobile: +20-50% (local, services, calls)<br>• Desktop: +20-50% (B2B, complex purchases)<br>• Tablet: -50% to -100% (usually poor ROI)<br>• Set at campaign level, review monthly</p></div>
+        <div class="cheat-item"><h4>Location Modifiers</h4><p>• +Bid: High-converting cities/regions<br>• -Bid: Low-converting, high-CPA areas<br>• Exclude: Non-serviceable locations<br>• Radius: +Bid near physical locations</p></div>
+        <div class="cheat-item"><h4>Ad Schedule Modifiers</h4><p>• +Bid: Business hours (call-driven)<br>• +Bid: Peak conversion hours (check by hour report)<br>• -Bid: Low-activity hours (2am-5am)<br>• Use: Lifetime budget campaigns only</p></div>
+        <div class="cheat-item"><h4>Audience Bid Modifiers</h4><p>• Remarketing (cart abandoners): +50-100%<br>• Remarketing (visitors): +20-30%<br>• In-Market (high intent): +15-25%<br>• Customer Match (lookalike): +10-20%<br>• Demographics (converting age/gender): +10-20%</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Weekly Optimization Routine</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Monday (30 min)</h4><p>• Search Terms Report → Add negatives<br>• Search Terms Report → Add converting keywords<br>• Check Quality Score changes<br>• Review budget pacing</p></div>
+        <div class="cheat-item"><h4>Wednesday (20 min)</h4><p>• Ad performance → Pause losers<br>• Extension performance → Optimize<br>• Device/Location/Audience breakdowns → Bid mods<br>• Ad schedule → Adjust bid modifiers</p></div>
+        <div class="cheat-item"><h4>Friday (15 min)</h4><p>• Budget pacing for week<br>• Competitor check (Auction Insights)<br>• Plan next week's tests<br>• Update negative keyword master list</p></div>
+        <div class="cheat-item"><h4>Monthly (60 min)</h4><p>• Full account audit<br>• Landing page audit (new vs returning)<br>• Attribution model review<br>• Bid strategy evaluation (Manual → Smart?)</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Troubleshooting Common Issues</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>High CPC / Low Impression Share</h4><p>• Improve Quality Score (see above)<br>• Add more relevant keywords<br>• Increase budget (if profitable)<br>• Expand to phrase/broad (Smart Bidding)<br>• Check: Lost IS (Rank) vs Lost IS (Budget)</p></div>
+        <div class="cheat-item"><h4>High CPA / Low ROAS</h4><p>• Pause high-CPA keywords/ads<br>• Add negatives from Search Terms<br>• Improve landing page CVR<br>• Switch to Target CPA/ROAS (if 30+ conv)<br>• Check: Mobile vs Desktop performance</p></div>
+        <div class="cheat-item"><h4>Low Click Volume</h4><p>• Expand keyword list (broad match + Smart Bidding)<br>• Increase bids (if Manual CPC)<br>• Add more ad groups / campaigns<br>• Check: Ad Strength, ad disapprovals<br>• Try Performance Max for reach</p></div>
+        <div class="cheat-item"><h4>Conversion Tracking Issues</h4><p>• Verify Tag Assistant / GTM Preview<br>• Check Enhanced Conversions status<br>• Verify GA4 events in DebugView<br>• Test offline import (GCLID format)<br>• Check: Consent Mode (EU/UK)</p></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Automate the routine: Automated Rules for budget guards, Scripts for negative keyword cleanup, Looker Studio dashboard for Monday reviews. Your time = strategy, not manual work.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

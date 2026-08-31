@@ -179,7 +179,7 @@ export default function AdminSettingsPage() {
   // ── General ──
   const [brandName, setBrandName] = useState("ZetaGrow");
   const [tagline, setTagline] = useState("Learn. Work. Grow.");
-  const [supportEmail, setSupportEmail] = useState("support@zetagrow.com");
+  const [supportEmail, setSupportEmail] = useState("hey@zetagrow.in");
   const [supportPhone, setSupportPhone] = useState("");
 
   // ── Withdrawals ──
@@ -230,7 +230,7 @@ export default function AdminSettingsPage() {
     if (g) {
       setBrandName(g.brandName || "ZetaGrow");
       setTagline(g.tagline || "Learn. Work. Grow.");
-      setSupportEmail(g.supportEmail || "support@zetagrow.com");
+      setSupportEmail(g.supportEmail || "hey@zetagrow.in");
       setSupportPhone(g.supportPhone || "");
     }
     const w = allSettings.withdrawals;

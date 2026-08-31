@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
 import { useGst, gstSuffix } from "@/lib/gst";
-import { CheckCircle2, ArrowRight, BookOpen, Layers, Star, ShieldCheck, Award, Clock, Users, TrendingUp, Target, Sparkles, GraduationCap, Briefcase, BarChart2 } from "lucide-react";
+import { CheckCircle2, ArrowRight, BookOpen, Layers, Star, ShieldCheck, Award, Clock, Users, TrendingUp, Target, GraduationCap, Briefcase, BarChart2 } from "lucide-react";
 
 export default function PlansPage() {
   const plans = useQuery(api.plans.getPublicPlans);
@@ -54,7 +54,7 @@ export default function PlansPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             {/* Trust Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-50/80 backdrop-blur-sm border border-brand-100 text-brand-700 text-xs font-semibold uppercase tracking-wider mb-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-              <Sparkles className="w-4 h-4" />
+              <Star className="w-4 h-4" />
               <span>Trusted by 10,000+ learners across India</span>
             </div>
 
@@ -234,7 +234,7 @@ export default function PlansPage() {
             </header>
             <div className="space-y-3">
               {[
-                { q: "Are courses inside plans available individually?", a: "Yes, you can buy courses individually, but plans offer significant savings — typically 40-60% off compared to buying each course separately." },
+                { q: "Are courses inside plans available individually?", a: "Yes, you can buy courses individually, but plans offer better value compared to buying each course separately." },
                 { q: "Do I get future course updates in my plan?", a: "Yes. Any updates to existing courses in your plan are included. New courses added to the platform are not automatically included unless specified." },
                 { q: "How do certificates work?", a: "Each course has a final test. Score 80%+ to unlock a verified certificate with a unique public ID that employers/clients can verify on our website." },
                 { q: "Is there a time limit to complete courses?", a: "No. Once enrolled, you have lifetime access to all course materials. Learn at your own pace." },

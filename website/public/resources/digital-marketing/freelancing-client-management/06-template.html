@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Templates — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .template-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+    .template-card h3 { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; }
+    .template-content { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; white-space: pre-wrap; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .template-card { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Templates</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Freelancing & Client Management</div>
+      <h1>Client Templates</h1>
+      <p class="subtitle">Proposal template, contract template, project brief, status update email, scope change request, project completion survey</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 1: Proposal Template</h2>
+      <div class="template-card">
+        <h3>Customize per client — save as master, duplicate for each proposal</h3>
+        <div class="template-content">
+[YOUR LOGO / LETTERHEAD]
+
+PROPOSAL: [Project Title]
+Prepared for: [Client Name / Company]
+Date: [Date] | Valid Until: [Date + 30 days]
+Prepared by: [Your Name / Company]
+
+────────────────────────────────────────────────────────────
+
+1. EXECUTIVE SUMMARY
+[Client] is seeking [solution] to [achieve outcome]. We propose [approach] 
+delivering [key deliverables] within [timeframe] for an investment of [amount].
+This will enable [Client] to [specific business outcome: revenue, efficiency, growth].
+
+2. PROBLEM STATEMENT
+[Describe the current situation using client's own words from discovery.]
+Current challenges:
+• [Challenge 1: e.g., "Website converts at 0.8% vs industry 2.5%"]
+• [Challenge 2: e.g., "Manual processes cost 20 hrs/week"]
+• [Challenge 3: e.g., "No analytics visibility into user behavior"]
+
+Business impact: [Quantify: lost revenue, wasted time, competitive disadvantage]
+
+3. PROPOSED SOLUTION
+Our approach: [High-level methodology/philosophy]
+
+Phase 1: Discovery & Strategy (Week 1-2)
+• [Deliverable 1: e.g., "Comprehensive audit + strategy document"]
+• [Deliverable 2: e.g., "Sitemap, user flows, wireframes"]
+• Acceptance: Strategy document approved by [Client Contact]
+
+Phase 2: Design & Development (Week 3-6)
+• [Deliverable 1: e.g., "High-fidelity designs for 8 pages"]
+• [Deliverable 2: e.g., "Webflow build: CMS, interactions, responsive"]
+• [Deliverable 3: e.g., "Staging environment for review"]
+• Acceptance: Staging demo approved
+
+Phase 3: Launch & Handoff (Week 7)
+• [Deliverable 1: e.g., "Production deployment + DNS"]
+• [Deliverable 2: e.g., "CMS training session (recorded)"]
+• [Deliverable 3: e.g., "Documentation + 30-day support"]
+• Acceptance: Live site + training complete
+
+4. INVESTMENT & PAYMENT SCHEDULE
+Total Investment: $[XX,XXX]
+
+Payment Schedule:
+• Deposit (30%): $[X,XXX] — Due upon signing
+• Milestone 1 (30%): $[X,XXX] — Phase 1 complete
+• Milestone 2 (25%): $[X,XXX] — Phase 2 complete  
+• Final (15%): $[X,XXX] — Launch + 14 days
+
+Payment Methods: Bank Transfer (preferred), Stripe, Wise
+Terms: Net-15. Late fee: 1.5%/month after due date.
+
+5. ASSUMPTIONS & EXCLUSIONS
+Assumptions:
+• Client provides: Brand assets by [date], Content by [date], Feedback within 2 business days
+• Single Point of Contact: [Name] for all approvals
+• Staging feedback consolidated into single review per phase
+
+Out of Scope (available as add-ons):
+• Copywriting, Photography, Video production
+• SEO optimization, Ongoing maintenance
+• Third-party integrations beyond [specified]
+• Additional revisions beyond [2] rounds per phase
+
+6. TIMELINE
+Project Start: [Date] | Estimated Completion: [Date]
+Key Milestones:
+• [Date]: Kickoff Meeting
+• [Date]: Phase 1 Delivery
+• [Date]: Phase 2 Delivery
+• [Date]: Launch
+
+6. NEXT STEPS
+1. Review this proposal — questions welcome
+2. Sign electronically via [DocuSign/PandaDoc link]
+3. Deposit invoice sent upon signing
+4. Kickoff scheduled within 5 business days
+
+────────────────────────────────────────────────────────────
+
+[Your Name]
+[Title] | [Company]
+[Email] | [Phone] | [Website] | [LinkedIn]
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 2: Contract Template (Key Clauses)</h2>
+      <div class="template-card">
+        <h3>Attach Scope of Work (Template 1, Sections 3-6) as Exhibit A</h3>
+        <div class="template-content">
+MASTER SERVICES AGREEMENT
+
+This Agreement is entered into [Date] between:
+[Your Company], ["Provider"] and [Client Company], ["Client"]
+
+1. SERVICES
+Provider shall perform Services described in Exhibit A (Scope of Work).
+Provider has authority to determine method/manner of performance.
+
+2. COMPENSATION
+Fees per Exhibit A. Payment terms: [Net-15 / per milestone].
+Late payments: 1.5%/month. Expenses pre-approved in writing.
+
+3. TIMELINE
+Start: [Date] | Estimated Completion: [Date]
+Milestones per Exhibit A. Delays from Client dependencies extend timeline equally.
+
+4. INTELLECTUAL PROPERTY
+Work Product: Client owns all deliverables upon full payment.
+Provider Retains: Pre-existing code, tools, methodologies, frameworks, generic components.
+License: Provider grants Client perpetual, worldwide, exclusive license to Work Product.
+
+5. CONFIDENTIALITY
+Both parties protect Confidential Information (non-public business info).
+Exceptions: Public knowledge, independently developed, legal requirement.
+Survives: 3 years post-termination.
+
+6. TERM & TERMINATION
+Term: Until Services complete or terminated.
+Either party: 15 days written notice.
+For Cause: Immediate (breach, insolvency).
+On Termination: Pay for work completed + Kill Fee (25% of remaining).
+Transition: 5 business days handoff assistance.
+
+7. WARRANTIES & DISCLAIMERS
+Provider: Professional standard of care. No other warranties.
+Client: Owns/provides all content/assets legally. Complies with laws.
+
+8. LIMITATION OF LIABILITY
+Neither party liable for indirect/consequential damages.
+Provider's liability capped at total fees paid (or 2x fees).
+Excludes: IP infringement, Confidentiality breach, Gross negligence.
+
+9. INDEMNIFICATION
+Client indemnifies Provider for: Client content legality, Third-party claims from Client materials.
+Provider indemnifies Client for: IP infringement in Work Product.
+
+10. GENERAL
+Governing Law: [Your State/Country]. Disputes: Mediation → Arbitration (AAA).
+Entire Agreement: Supersedes all prior. Amendments in writing.
+Severability: Invalid clause removed, rest stands.
+Assignment: Neither party without consent (except acquisition).
+
+SIGNATURES:
+Provider: _________________________ Date: ________
+Client: ___________________________ Date: ________
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 3: Project Brief</h2>
+      <div class="template-card">
+        <h3>One-pager for team alignment — client approves at kickoff</h3>
+        <div class="template-content">
+PROJECT BRIEF: [Project Name]
+Client: [Company] | PM: [Name] | Start: [Date] | Target Launch: [Date]
+
+────────────────────────────────────────────────────────────
+
+BUSINESS CONTEXT
+Company: [What they do, size, stage]
+Project Goal: [Primary objective — ONE sentence]
+Success Metrics: [Measurable: "Launch by X", "Convert at Y%", "Speed < Z seconds"]
+Target Audience: [Primary: demographics, pain points, goals]
+Key Stakeholders: [Decision-maker, SPOC, Technical, Content, Legal]
+
+BRAND & CREATIVE
+Brand Guidelines: [Link / Attached]
+Tone/Voice: [Professional, Friendly, Authoritative, Playful]
+Color Palette: [Hex codes or link to guide]
+Typography: [Headings: Font | Body: Font]
+Imagery Style: [Photography, Illustration, Abstract, Minimal]
+Reference Sites: [3 URLs + what you like about each]
+
+TECHNICAL SPECIFICATIONS
+Platform: [Webflow / WordPress / Custom / Shopify]
+Hosting: [Provider / Client handles]
+Domain: [Current / New / Subdomain]
+DNS: [Who manages / Access needed]
+Integrations: [Analytics, CRM, Email, Payment, Search, Chat]
+Browser Support: [Last 2 versions Chrome/Firefox/Safari/Edge]
+Accessibility: [WCAG 2.1 AA target]
+Performance: [LCP < 2.5s, CLS < 0.1, Mobile-first]
+
+CONTENT STRATEGY
+Content Source: [Client provides / We write / Hybrid]
+Pages Required: [List with priority: Home, About, Services, Contact, Blog...]
+CMS Collections: [Blog, Case Studies, Team, Resources — fields defined]
+Migration: [Manual / Automated / Not needed]
+SEO: [Meta titles/descriptions, Schema, Redirects map, Sitemap]
+
+FUNCTIONAL REQUIREMENTS
+Forms: [Contact, Lead capture, Newsletter, Quote — fields + destinations]
+User Accounts: [None / Client portal / Membership / Admin only]
+Search: [Native / Algolia / Meilisearch]
+E-commerce: [Products, Cart, Checkout, Tax, Shipping]
+Multilingual: [No / Yes — Languages: EN, ES, FR]
+
+TIMELINE & MILESTONES
+[Date] Kickoff & Brief Approval
+[Date] Phase 1: Strategy/Discovery Complete
+[Date] Phase 2: Design System + Key Pages Approved
+[Date] Phase 3: Build Complete on Staging
+[Date] Phase 4: QA + Client Review
+[Date] Launch + Training
+[Date] 30-Day Support Ends
+
+COMMUNICATION PROTOCOL
+Primary: Slack Connect #client-[name] (4hr SLA business hours)
+Formal: Email thread "Project: [Name]" (approvals, invoices)
+Meetings: Bi-weekly [Day] [Time] [TZ] — 30 min standing
+Status Reports: Friday 4pm email (Wins, Next, Blockers, Decisions)
+Emergency: Call/Text [PM Phone] — 15 min response
+
+CLIENT DEPENDENCIES (with due dates)
+• Brand assets: [Date]
+• Final copy (all pages): [Date]
+• Product images: [Date]
+• API keys/credentials: [Date]
+• Legal/compliance review: [Date]
+• DNS access for launch: [Date]
+
+RISKS & MITIGATION
+• Risk: Content delay → Mitigation: Design with placeholder, content sprint week
+• Risk: Scope creep → Mitigation: Change order process, weekly scope review
+• Risk: Third-party API → Mitigation: Early integration, fallback plan
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 4: Weekly Status Update Email</h2>
+      <div class="template-card">
+        <h3>Send Friday 4pm — template saves 30 min/week</h3>
+        <div class="template-content">
+Subject: Status Update — [Project Name] — Week of [Date]
+
+Hi [Client Name],
+
+Quick update on [Project Name] for the week of [Date].
+
+──────────────────
+✅ THIS WEEK'S WINS
+• [Completed deliverable 1] — [Link to staging/preview]
+• [Completed deliverable 2] — [Link]
+• [Milestone achieved] — [Details]
+• [Blocker resolved] — [How]
+
+──────────────────
+🎯 NEXT WEEK'S FOCUS
+• [Priority 1: e.g., "Homepage development + mobile responsive"]
+• [Priority 2: e.g., "CMS collections setup + content migration"]
+• [Priority 3: e.g., "QA testing + bug fixes"]
+
+──────────────────
+🚧 BLOCKERS / NEEDS FROM YOU
+• [Item 1: e.g., "Product images — needed by Wednesday for homepage build"]
+• [Item 2: e.g., "Legal review of Terms page — targeting Friday"]
+• [Item 3: e.g., "API credentials for payment integration"]
+
+──────────────────
+📅 UPCOMING MILESTONES
+• [Date]: [Milestone Name] — [Status: On Track / At Risk / Delayed]
+• [Date]: [Milestone Name] — [Status]
+
+──────────────────
+💡 DECISIONS NEEDED
+• [Decision 1: e.g., "Choose between Option A (faster) vs Option B (more features)"]
+• [Decision 2: e.g., "Confirm color variant for CTA buttons"]
+
+──────────────────
+📊 PROJECT HEALTH
+Timeline: [Green/Yellow/Red] — [Brief reason if not Green]
+Budget: [Green/Yellow/Red] — [Spent: $X of $Y]
+Scope: [Green/Yellow/Red] — [Changes: 0 / 1 pending / 2 approved]
+
+Questions? Reply to this email or ping me in Slack.
+
+Best,
+[Your Name]
+[Title] | [Company]
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 5: Scope Change Request</h2>
+      <div class="template-card">
+        <h3>Formal process — no work starts without signed approval</h3>
+        <div class="template-content">
+SCOPE CHANGE REQUEST #[Number]
+Project: [Name] | Client: [Company] | Date: [Date]
+Requested by: [Name/Role] | Submitted by: [Your Name]
+
+────────────────────────────────────────────────────────────
+
+CHANGE DESCRIPTION
+[Clear description of new request: "Add blog filtering by category and tag"
+ vs original scope: "Blog listing page only"]
+
+────────────────────────────────────────────────────────────
+
+IMPACT ANALYSIS
+Additional Time Required: [X hours / Y days]
+Additional Cost: $[Amount] ([Hourly rate] × [Hours] OR Fixed: $[Amount])
+Timeline Impact: [No change / Extends milestone [X] by [Y] days / New milestone needed]
+Dependencies: [e.g., "Requires CMS restructuring — affects Case Studies collection too"]
+Risks: [e.g., "May delay launch by 3 days if not approved by [Date]"]
+
+────────────────────────────────────────────────────────────
+
+REVISED DELIVERABLES
+[List specific new deliverables with acceptance criteria]
+1. [New Deliverable] — Acceptance: [Criteria]
+2. [New Deliverable] — Acceptance: [Criteria]
+
+────────────────────────────────────────────────────────────
+
+APPROVAL
+By signing below, Client approves:
+• Additional scope as described
+• Additional cost of $[Amount] (invoice: [upon approval / next milestone / 50/50])
+• Revised timeline as noted
+• Work begins upon signed return
+
+Client Signature: _________________________ Date: ________
+Provider Signature: _________________________ Date: ________
+
+────────────────────────────────────────────────────────────
+
+INTERNAL NOTES (Not sent to client)
+[Notes for team: Implementation approach, Technical considerations, 
+Assigned to: [Team Member], Estimated start: [Date]]
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 6: Project Completion Survey</h2>
+      <div class="template-card">
+        <h3>Send at project close — drives testimonials, referrals, improvement</h3>
+        <div class="template-content">
+Subject: Project Complete — [Project Name] + Quick Feedback (2 min)
+
+Hi [Client Name],
+
+[Project Name] is officially live! 🎉 
+
+[Link to live site/project] | [Link to documentation/handoff]
+
+As we wrap up, I'd love 2 minutes of your time to help us improve.
+
+──────────────────
+RATING (1-5)
+Communication & Responsiveness:  ☐ 5  ☐ 4  ☐ 3  ☐ 2  ☐ 1
+Quality of Deliverables:         ☐ 5  ☐ 4  ☐ 3  ☐ 2  ☐ 1
+Timeline Adherence:              ☐ 5  ☐ 4  ☐ 3  ☐ 2  ☐ 1
+Problem-Solving/Proactivity:     ☐ 5  ☐ 4  ☐ 3  ☐ 2  ☐ 1
+Overall Satisfaction:            ☐ 5  ☐ 4  ☐ 3  ☐ 2  ☐ 1
+
+Net Promoter Score (0-10):
+How likely to refer us?  ☐ 10  ☐ 9  ☐ 8  ☐ 7  ☐ 6  ☐ 5  ☐ 4  ☐ 3  ☐ 2  ☐ 1  ☐ 0
+
+──────────────────
+OPEN-ENDED
+What did we do exceptionally well?
+[Text area]
+
+What could we improve for next time?
+[Text area]
+
+Testimonial (permission to use on website/LinkedIn):
+[Text area]
+☐ Yes, you may use my name/company
+☐ Anonymous only
+☐ Please don't use
+
+──────────────────
+FUTURE WORK
+Any upcoming projects we should discuss?
+☐ Yes — [Brief description]
+☐ Not right now
+☐ Add me to newsletter for tips
+
+──────────────────
+NEXT STEPS
+• 30-day support period ends: [Date]
+• Ongoing maintenance retainer available: $[X]/mo
+• Referral program: 10% credit for each referred project
+
+Thank you for trusting us with [Project Name]. It's been a pleasure!
+
+Best,
+[Your Name]
+[Title] | [Company]
+[Calendly link for follow-up chat]
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Store all templates in a Notion "Template Library" database. Properties: Category, Last Updated, Version, Used Count. Team duplicates → customizes → saves as new project doc. Single source of truth.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Design Resources — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .resource-list { list-style: none; }
+    .resource-list li { padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
+    .resource-list li:last-child { border-bottom: none; }
+    .resource-name { font-weight: 600; color: #1a1a1a; font-size: 15px; margin-bottom: 4px; }
+    .resource-desc { font-size: 13px; color: #666; margin-bottom: 6px; }
+    .resource-link { font-size: 13px; color: #176B4D; text-decoration: none; font-weight: 500; }
+    .resource-link:hover { text-decoration: underline; }
+    .resource-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag { background: #ecfdf5; color: #176B4D; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Resource List</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Build Your First Website</div>
+      <h1>Web Design Resources</h1>
+      <p class="subtitle">Curated tools, libraries, and learning resources for color, typography, icons, images, and CSS</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Color Palette Generators</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Coolors.co</div>
+          <div class="resource-desc">Fast color scheme generator with export options (CSS, SCSS, PNG, SVG). Lock colors, generate variations.</div>
+          <a href="https://coolors.co" class="resource-link" target="_blank">coolors.co →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Export</span><span class="tag">Accessibility</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Adobe Color</div>
+          <div class="resource-desc">Professional color wheel with harmony rules (analogous, monochromatic, triadic). WCAG contrast checker built-in.</div>
+          <a href="https://color.adobe.com" class="resource-link" target="_blank">color.adobe.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Adobe</span><span class="tag">Contrast Check</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Tailwind CSS Colors</div>
+          <div class="resource-desc">Curated 22-color palette with 10 shades each. Ready-to-use CSS variables or Tailwind config.</div>
+          <a href="https://tailwindcss.com/docs/customizing-colors" class="resource-link" target="_blank">tailwindcss.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Design System</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Khroma</div>
+          <div class="resource-desc">AI-powered color palette generator that learns your preferences and suggests infinite combinations.</div>
+          <a href="https://khroma.co" class="resource-link" target="_blank">khroma.co →</a>
+          <div class="resource-tags"><span class="tag">AI</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Color Hunt</div>
+          <div class="resource-desc">Curated collection of beautiful color palettes submitted by designers. Browse by popularity or new.</div>
+          <a href="https://colorhunt.co" class="resource-link" target="_blank">colorhunt.co →</a>
+          <div class="resource-tags"><span class="tag">Inspiration</span><span class="tag">Free</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Font Pairings & Typography</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Google Fonts</div>
+          <div class="resource-desc">1000+ free, open-source font families. Pairing suggestions on each font page. Self-host or CDN.</div>
+          <a href="https://fonts.google.com" class="resource-link" target="_blank">fonts.google.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">CDN</span><span class="tag">Self-host</span></div>
+        </li>
+        <li>
+          <div class="resource-name">FontPair</div>
+          <div class="resource-desc">Curated Google Font pairings for headings + body. Filter by style (sans-serif, serif, display).</div>
+          <a href="https://fontpair.co" class="resource-link" target="_blank">fontpair.co →</a>
+          <div class="resource-tags"><span class="tag">Pairings</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Typewolf</div>
+          <div class="resource-desc">Typography inspiration site showing real-world font usage on beautiful websites. Great for trends.</div>
+          <a href="https://typewolf.com" class="resource-link" target="_blank">typewolf.com →</a>
+          <div class="resource-tags"><span class="tag">Inspiration</span><span class="tag">Trends</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Fonts In Use</div>
+          <div class="resource-desc">Archive of typography in the real world — books, posters, websites, branding. Search by font, format, industry.</div>
+          <a href="https://fontsinuse.com" class="resource-link" target="_blank">fontsinuse.com →</a>
+          <div class="resource-tags"><span class="tag">Research</span><span class="tag">Inspiration</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Icon Libraries</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Lucide Icons</div>
+          <div class="resource-desc">1000+ clean, consistent SVG icons. Available as React, Vue, Svelte, HTML, Figma. MIT license.</div>
+          <a href="https://lucide.dev" class="resource-link" target="_blank">lucide.dev →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Open Source</span><span class="tag">Frameworks</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Heroicons</div>
+          <div class="resource-desc">Beautiful hand-crafted SVG icons by Tailwind CSS team. Outline and solid styles. Free for any use.</div>
+          <a href="https://heroicons.com" class="resource-link" target="_blank">heroicons.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Tailwind</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Phosphor Icons</div>
+          <div class="resource-desc">7000+ flexible icons with 6 weights (thin, light, regular, bold, fill, duotone). Multiple formats.</div>
+          <a href="https://phosphoricons.com" class="resource-link" target="_blank">phosphoricons.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Multiple Weights</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Tabler Icons</div>
+          <div class="resource-desc">5000+ pixel-perfect SVG icons. Consistent 24×24 grid. Free, open source, multiple frameworks.</div>
+          <a href="https://tabler.io/icons" class="resource-link" target="_blank">tabler.io/icons →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Large Set</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Stock Photos & Illustrations</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Unsplash</div>
+          <div class="resource-desc">High-quality free photos from global community. Generous license (commercial use, no attribution required).</div>
+          <a href="https://unsplash.com" class="resource-link" target="_blank">unsplash.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Photos</span><span class="tag">Commercial</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Pexels</div>
+          <div class="resource-desc">Free stock photos and videos. Similar license to Unsplash. Good for lifestyle/business imagery.</div>
+          <a href="https://pexels.com" class="resource-link" target="_blank">pexels.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Photos</span><span class="tag">Videos</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Undraw</div>
+          <div class="resource-desc">Open-source illustrations for any project. Customizable color. SVG/PNG. MIT license.</div>
+          <a href="https://undraw.co" class="resource-link" target="_blank">undraw.co →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Illustrations</span><span class="tag">Customizable</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Humaaans</div>
+          <div class="resource-desc">Mix-and-match illustration library of people. Customize poses, clothing, colors, skin tones.</div>
+          <a href="https://humaaans.com" class="resource-link" target="_blank">humaaans.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">People</span><span class="tag">Customizable</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">CSS Animation & Effects</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Animate.css</div>
+          <div class="resource-drop">Drop-in CSS animations. Just add classes: <code>animate__animated animate__bounce</code>. Lightweight.</div>
+          <a href="https://animate.style" class="resource-link" target="_blank">animate.style →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">CSS Only</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Motion One</div>
+          <div class="resource-desc">Small (3kb) animation library using Web Animations API. React, Vue, vanilla JS support.</div>
+          <a href="https://motion.dev" class="resource-link" target="_blank">motion.dev →</a>
+          <div class="resource-tags"><span class="tag">Lightweight</span><span class="tag">WAAPI</span></div>
+        </li>
+        <li>
+          <div class="resource-name">CSS Animation Rocks</div>
+          <div class="resource-desc">Tutorials and examples for CSS animations, transitions, keyframes. Learn by deconstructing.</div>
+          <a href="https://cssanimation.rocks" class="resource-link" target="_blank">cssanimation.rocks →</a>
+          <div class="resource-tags"><span class="tag">Learning</span><span class="tag">Free</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template Galleries & Inspiration</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Dribbble</div>
+          <div class="resource-desc">Design community showcasing UI, illustration, branding. Search by tag, color, style.</div>
+          <a href="https://dribbble.com" class="resource-link" target="_blank">dribbble.com →</a>
+          <div class="resource-tags"><span class="tag">Inspiration</span><span class="tag">Community</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Behance</div>
+          <div class="resource-desc">Adobe's portfolio platform. Full case studies with process, not just final images.</div>
+          <a href="https://behance.net" class="resource-link" target="_blank">behance.net →</a>
+          <div class="resource-tags"><span class="tag">Case Studies</span><span class="tag">Process</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Awwwards</div>
+          <div class="resource-desc">Award-winning websites. Analyze cutting-edge interactions, animations, layouts.</div>
+          <a href="https://awwwards.com" class="resource-link" target="_blank">awwwards.com →</a>
+          <div class="resource-tags"><span class="tag">Inspiration</span><span class="tag">Advanced</span></div>
+        </li>
+        <li>
+          <div class="resource-name">HTML5 UP</div>
+          <div class="resource-desc">Free, responsive HTML5/CSS3 templates. Clean code, modern designs. CC BY 3.0 license.</div>
+          <a href="https://html5up.net" class="resource-link" target="_blank">html5up.net →</a>
+          <div class="resource-tags"><span class="tag">Free Templates</span><span class="tag">Code</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Learning & Reference</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">MDN Web Docs</div>
+          <div class="resource-desc">Definitive reference for HTML, CSS, JavaScript, APIs. Tutorials, browser compatibility, examples.</div>
+          <a href="https://developer.mozilla.org" class="resource-link" target="_blank">developer.mozilla.org →</a>
+          <div class="resource-tags"><span class="tag">Reference</span><span class="tag">Authority</span></div>
+        </li>
+        <li>
+          <div class="resource-name">CSS-Tricks</div>
+          <div class="resource-desc">Practical CSS guides, snippets, Almanac of properties. Real-world solutions from Chris Coyier.</div>
+          <a href="https://css-tricks.com" class="resource-link" target="_blank">css-tricks.com →</a>
+          <div class="resource-tags"><span class="tag">Tutorials</span><span class="tag">Snippets</span></div>
+        </li>
+        <li>
+          <div class="resource-name">web.dev</div>
+          <div class="resource-desc">Google's web development guidance. Core Web Vitals, performance, accessibility, modern patterns.</div>
+          <a href="https://web.dev" class="resource-link" target="_blank">web.dev →</a>
+          <div class="resource-tags"><span class="tag">Performance</span><span class="tag">Best Practices</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Frontend Mentor</div>
+          <div class="resource-desc">Real-world HTML/CSS/JS challenges with designs. Build, submit, get community feedback.</div>
+          <a href="https://frontendmentor.io" class="resource-link" target="_blank">frontendmentor.io →</a>
+          <div class="resource-tags"><span class="tag">Practice</span><span class="tag">Portfolio</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Bookmark MDN and CSS-Tricks — they're the two resources you'll return to most. For inspiration, set Dribbble/Behance as your new tab page.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

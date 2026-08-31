@@ -18,7 +18,6 @@ import {
   Clock,
   Briefcase,
   GraduationCap,
-  Sparkles,
   Link2,
   Plus,
   Trash2,
@@ -254,7 +253,7 @@ export default function ProfilePage() {
         {/* Overview */}
         <div className="card-surface p-6 sm:p-8 space-y-3">
           <h2 className="text-sm font-bold text-textMain flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-brand-600" /> Professional Overview
+            <span className="text-sm font-bold text-textMain">Professional Overview</span>
           </h2>
           <p className="text-[11px] text-textMuted">
             A short introduction about yourself — required to apply for work (min 50 characters).

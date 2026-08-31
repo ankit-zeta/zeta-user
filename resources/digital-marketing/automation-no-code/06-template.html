@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workflow Templates — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .template-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+    .template-card h3 { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; }
+    .template-content { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; white-space: pre-wrap; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .template-card { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Templates</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Automation & No-Code Tools</div>
+      <h1>Workflow Templates</h1>
+      <p class="subtitle">Lead capture automation, welcome email sequence, appointment booking flow, social media posting pipeline, client onboarding workflow</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 1: Lead Capture → CRM → Email → Slack</h2>
+      <div class="template-card">
+        <h3>Make Scenario / Zapier Zap</h3>
+        <div class="template-content">
+TRIGGER: New Form Submission (Typeform / Tally / Webhook)
+  │
+  ├─► FILTER: Email not already in CRM (Search HubSpot/Airtable)
+  │       │
+  │       ├─► IF NEW: Create Contact (HubSpot / Airtable / Pipedrive)
+  │       │       Fields: Email, First Name, Last Name, Company, Source, Lead Score
+  │       │       Tags: [Source: Website/FB Ads/LinkedIn/Referral]
+  │       │       Owner: Round-robin assignment
+  │       │
+  │       ├─► Add to List/Sequence (ConvertKit / MailerLite / Customer.io)
+  │       │       Sequence: "Welcome Series" or "Lead Nurture"
+  │       │
+  │       ├─► Create Task/Project (Asana / ClickUp / Notion)
+  │       │       Template: "New Lead Follow-up"
+  │       │       Due: +1 business day
+  │       │       Assignee: Contact Owner
+  │       │
+  │       └─► Send Slack Notification (#leads channel)
+  │               Message: "🎯 New Lead: {{First Name}} {{Last Name}} ({{Company}})
+  │                        Source: {{Source}} | Score: {{Lead Score}}
+  │                        👤 Owner: {{Owner}} | 🔗 [View in CRM]"
+  │
+  └─► IF EXISTING: Update Contact (Last Activity = Now)
+          Add Note: "Re-engaged via {{Form Name}}"
+          Re-enroll in nurture if >90 days inactive
+          Notify Owner: "Lead {{Name}} re-engaged"
+</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 2: Appointment Booking → Calendar → Reminders → Prep</h2>
+      <div class="template-card">
+        <h3>Calendly / Cal.com → Google Calendar → Email/SMS → CRM</h3>
+        <div class="template-content">
+TRIGGER: Invitee Created (Calendly Webhook) / Booking Confirmed (Cal.com)
+  │
+  ├─► CREATE: Google Calendar Event (or Outlook)
+  │       Title: "{{Event Type}} — {{Invitee Name}} ({{Company}})"
+  │       Guests: Host + Invitee email
+  │       Location: Video call link (Zoom/Meet) + Physical (if applicable)
+  │       Description: Agenda template + Invitee answers to booking questions
+  │
+  ├─► UPDATE CRM (HubSpot / Airtable / Pipedrive)
+  │       Log Meeting: Type = "Discovery Call" / "Demo" / "Onboarding"
+  │       Contact: Link to existing or create new
+  │       Deal: Associate if exists
+  │       Activity: Completed = No (will update post-meeting)
+  │
+  ├─► SEND CONFIRMATION (Email + SMS)
+  │       Email: Calendar invite + "What to prepare" + Reschedule link
+  │       SMS (Twilio): "Confirmed: {{Date}} at {{Time}} for {{Event Type}}.
+  │                      Add to calendar: {{Calendar Link}} | Reschedule: {{Link}}"
+  │
+  ├─► SCHEDULE REMINDERS (Delayed actions)
+  │       24 hrs before: Email + SMS — "Tomorrow at {{Time}}"
+  │       1 hr before:  SMS only — "Starting in 1 hour: {{Meeting Link}}"
+  │       5 min before: Push/Slack to host — "Meeting starting: {{Invitee Name}}"
+  │
+  └─► PRE-MEETING PREP (Trigger: 2 hrs before)
+          Create Notion/Google Doc: "Meeting Notes — {{Invitee Name}}"
+          Template: Agenda, Pain points (from form), Current solutions, Questions
+          Share with host (Slack/Email)
+</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 3: Client Onboarding — Payment → Contract → Workspace → Kickoff</h2>
+      <div class="template-card">
+        <h3>Stripe → PandaDoc/DocuSign → Notion/Asana → Slack → Email</h3>
+        <div class="template-content">
+TRIGGER: Checkout Session Completed (Stripe Webhook) / Invoice Paid
+  │
+  ├─► VERIFY: Payment succeeded, amount matches plan, customer email valid
+  │
+  ├─► GENERATE CONTRACT (PandaDoc / DocuSign / Documint)
+  │       Template: "MSA + SOW — {{Plan Name}}"
+  │       Variables: Client Name, Company, Plan, Price, Start Date, Terms
+  │       Send for signature: Client + Internal signatory
+  │
+  ├─► ON SIGNATURE COMPLETE (Webhook from DocuSign/PandaDoc)
+  │       │
+  │       ├─► CREATE CLIENT WORKSPACE
+  │       │       Notion: Duplicate "Client Hub" template → Set permissions
+  │       │       Asana/ClickUp: Create Project from "Client Onboarding" template
+  │       │       Sections: Kickoff, Discovery, Delivery, Reviews, Offboarding
+  │       │
+  │       ├─► PROVISION ACCESS
+  │       │       Slack: Invite to #client-{{ClientName}} (Shared Channel or Connect)
+  │       │       Google Drive: Create folder → Share with client email
+  │       │       Tools: Figma, Miro, GitHub repo — add as collaborator
+  │       │
+  │       ├─► WELCOME SEQUENCE
+  │       │       Email 1 (Immediate): "Welcome! Here's your hub + next steps"
+  │       │       Email 2 (+1 day): "Your dedicated team + communication norms"
+  │       │       Email 3 (+3 days): "Kickoff call booked — prep guide attached"
+  │       │
+  │       └─► SCHEDULE KICKOFF
+  │               Calendly link sent: "Book 60-min Kickoff"
+  │               Auto-create: Asana task "Kickoff Prep" (Due: -1 day)
+  │
+  ├─► INTERNAL NOTIFICATIONS
+  │       Slack #onboarding: "🎉 New Client: {{Client}} ({{Plan}})
+  │                           PM: {{PM}} | Lead: {{Lead}} | Kickoff: {{Date}}
+  │                           🔗 [Client Hub] [Asana Project] [Contract]"
+  │       Assign: Account Manager, Project Manager, Specialist(s)
+  │
+  └─► TRACK: Add to "Active Clients" dashboard (Airtable/Notion)
+          Fields: Client, Plan, MRR, Start Date, PM, Health Score, Next Renewal
+</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 4: Social Media Posting Pipeline — Content → Approve → Schedule → Analyze</h2>
+      <div class="template-card">
+        <h3>Airtable/Notion → Make → Buffer/Later/Meta → GA4/Sheets</h3>
+        <div class="template-content">
+SOURCE: Content Database (Airtable "Content Calendar" / Notion "Content Pipeline")
+  Fields: Title, Copy, Image/Video, Platforms, Status, Scheduled Date, UTM, Approver
+
+TRIGGER: Record status = "Ready to Schedule" (Airtable Webhook / Make Scheduler)
+  │
+  ├─► FOR EACH PLATFORM (Iterator: LinkedIn, Twitter, Instagram, Facebook, Threads)
+  │       │
+  │       ├─► FORMAT CONTENT
+  │       │       Transform: Copy → Platform-optimized (char limits, hashtags, mentions)
+  │       │       Image: Resize/crop per platform specs (Canva API / Cloudinary)
+  │       │       UTM: Append utm_source={{platform}}&utm_medium=organic&utm_campaign={{campaign}}
+  │       │
+  │       ├─► SCHEDULE (Buffer / Later / Meta Business Suite API)
+  │       │       Post at: {{Scheduled Date}} + Platform optimal time
+  │       │       Save: Post ID, Scheduled Time, Platform URL
+  │       │
+  │       └─► UPDATE SOURCE RECORD
+  │               Status: "Scheduled"
+  │               Platform Post IDs: JSON array
+  │               Scheduled Times: Per platform
+  │
+  ├─► POST-PUBLISH (Webhook from Buffer/Later / Scheduled Check)
+  │       Wait: {{Scheduled Date}} + 24 hrs
+  │       Fetch: Engagement metrics (Likes, Comments, Shares, Clicks, Impressions)
+  │       Update Airtable: Metrics fields populated
+  │       Calculate: Engagement Rate, Click-Through Rate
+  │
+  ├─► WEEKLY AGGREGATION (Sunday 6pm)
+  │       Rollup: Total posts, Total impressions, Total engagement, Top 3 posts
+  │       Create: "Weekly Social Report" (Google Doc / Notion / Slack)
+  │       Send: To marketing team + leadership
+  │
+  └─► MONTHLY REVIEW (1st of month)
+          Compare: MoM growth, Best platforms, Content types, ROI (if tracked)
+          Update: Content strategy doc, Platform focus, Budget allocation
+</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 5: E-Commerce Order → Invoice → Fulfillment → Review</h2>
+      <div class="template-card">
+        <h3>Shopify/WooCommerce → Documint → Airtable → ShipStation → Judge.me</h3>
+        <div class="template-content">
+TRIGGER: Order Created / Paid (Shopify Webhook / WooCommerce Webhook)
+  │
+  ├─► VALIDATE & ENRICH
+  │       Check: Payment captured, Inventory available, Address valid
+  │       Enrich: Customer tier (VIP/Wholesale), Tags, Marketing consent
+  │
+  ├─► GENERATE INVOICE (Documint / PDFMonkey / Gotenberg)
+  │       Template: Professional invoice with line items, tax, branding
+  │       Send: Email to customer (Transactional email: SendGrid/Postmark)
+  │       Save: PDF to Google Drive / Airtable Attachment
+  │
+  ├─► CREATE FULFILLMENT RECORD (Airtable "Orders" table)
+  │       Link: Customer, Line Items, Shipping Method, Warehouse
+  │       Status: "Processing" → "Ready to Pack" → "Shipped"
+  │       Assign: Fulfillment team member
+  │
+  ├─► INVENTORY SYNC (Bidirectional)
+  │       Airtable Products → Shopify: Decrement stock on order
+  │       Shopify → Airtable: Sync returns, adjustments, incoming PO
+  │       Low Stock Alert: Airtable Automation → Slack #inventory
+  │
+  ├─► SHIPPING (ShipStation / Shippo / EasyPost)
+  │       Trigger: Airtable Status = "Ready to Ship"
+  │       Rate Shop: Best carrier/service for weight/zone/delivery date
+  │       Create Label: Auto-purchase, print batch, tracking generated
+  │       Update: Shopify (Tracking + Carrier), Airtable (Tracking + Label PDF)
+  │       Email Customer: "Your order shipped! Track: {{Tracking Link}}"
+  │
+  ├─► DELIVERED WEBHOOK (Carrier / ShipStation)
+  │       Wait: 7 days post-delivery
+  │       Request Review: Judge.me / Yotpo / Loox (Email + SMS)
+  │       NPS Survey: Typeform (1 question: "How likely to recommend?")
+  │       Segment: Promoters → Referral program; Detractors → Support ticket
+  │
+  └─► REPORTING (Daily 6am)
+          Sync: Orders, Revenue, AOV, Conversion Rate → Google Sheets → Looker Studio
+          Alert: Revenue < 80% 7-day avg → Slack #alerts
+</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 6: Support Ticket → Triage → Resolve → Follow-up</h2>
+      <div class="template-card">
+        <h3>Form/Email/Intercom → Linear/Jira → Slack → Customer → Satisfaction</h3>
+        <div class="template-content">
+TRIGGER: New Ticket (Typeform / Email Parser / Intercom / Zendesk Webhook)
+  │
+  ├─► ENRICH & TRIAGE
+  │       Auto-categorize: AI classify (Billing, Technical, Feature, General)
+  │       Priority: SLA rules (VIP = P0, Billing = P1, Feature = P3)
+  │       Assign: Round-robin per category + workload balancing
+  │       Check: Duplicate? (Recent ticket from same customer on same topic)
+  │
+  ├─► CREATE TRACKING (Linear / Jira / Asana / ClickUp)
+  │       Issue Type: Bug / Task / Question
+  │       Labels: Category, Priority, Customer Tier
+  │       Linked: Customer record (CRM), Related issues
+  │
+  ├─► NOTIFY & ACKNOWLEDGE
+  │       Slack #support: "🎫 New {{Priority}} Ticket: {{Title}}
+  │                        Customer: {{Name}} ({{Tier}}) | Assignee: {{Assignee}}
+  │                        SLA: Respond by {{Time}} | Resolve by {{Time}}"
+  │       Auto-reply to Customer: "Received! Ticket #{{ID}}.
+  │                                {{Category}} team will respond by {{SLA Time}}."
+  │
+  ├─► RESOLUTION WORKFLOW
+  │       Assignee works → Updates Linear status: In Progress → In Review → Done
+  │       Internal notes: Private comments in Linear
+  │       Customer updates: Public comments → Email to customer
+  │       Escalation: If SLA breach risk → Auto-escalate to Lead/Manager
+  │
+  ├─► CLOSE & FOLLOW-UP
+  │       Status = Done → Trigger: "Ticket Resolved" email
+  │       Include: Resolution summary, Link to details, "Reopen if needed"
+  │       Wait 48 hrs → CSAT Survey (1-click: 😊 😐 ☹️ + optional comment)
+  │       CSAT < 3 → Create follow-up task for Manager review
+  │
+  └─► WEEKLY SUPPORT REPORT
+          Metrics: Volume, First Response Time, Resolution Time, CSAT, Reopen Rate
+          By: Category, Priority, Agent, Customer Tier
+          Trends: Week-over-week, Top issues, Knowledge base gaps
+</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Import these templates directly into Make (Scenarios → Import Blueprint) or Zapier (Zap → Import). Customize field mappings for your apps. Save as "Team Templates" for reuse.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

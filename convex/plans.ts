@@ -26,6 +26,23 @@ async function planWithCourses(ctx: any, plan: any) {
         .withIndex("by_programId", (q: any) => q.eq("programId", pid))
         .collect();
       const totalMinutes = lessons.reduce((s: number, l: any) => s + (l.durationMinutes || 0), 0);
+
+      // Fetch real resources for this program
+      const programResources = await ctx.db
+        .query("resources")
+        .withIndex("by_programId", (q: any) => q.eq("programId", pid))
+        .collect();
+      programResources.sort((a: any, b: any) => a.sortOrder - b.sortOrder);
+
+      const resources = programResources.map((r: any) => ({
+        _id: r._id,
+        title: r.title,
+        description: r.description,
+        fileType: r.fileType,
+        fileSize: r.fileSize,
+        accessType: r.accessType,
+      }));
+
       return {
         _id: p._id,
         name: p.name,
@@ -36,6 +53,7 @@ async function planWithCourses(ctx: any, plan: any) {
         price: p.price,
         lessonCount: lessons.length,
         totalMinutes,
+        resources,
       };
     })
   );

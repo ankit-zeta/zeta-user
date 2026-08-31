@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Product Templates — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .template-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+    .template-card h3 { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; }
+    .template-card p { font-size: 13px; color: #666; margin-bottom: 10px; }
+    .template-content { background: #1f2937; color: #e5e7eb; border-radius: 8px; padding: 16px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; overflow-x: auto; }
+    .template-content .comment { color: #9ca3af; }
+    .template-content .keyword { color: #34d399; }
+    .template-content .string { color: #f87171; }
+    .template-content .type { color: #60a5fa; }
+    .template-content .func { color: #fbbf24; }
+    .template-content .const { color: #c084fc; }
+    .folder-structure { background: #f0fdf4; border: 1px solid #a7f3d0; border-radius: 8px; padding: 15px; font-family: 'Courier New', monospace; font-size: 12px; color: #166534; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .template-card { break-inside: avoid; } .template-content { color: #1a1a1a; background: #f3f4f6; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Templates</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Building Products With AI Tools</div>
+      <h1>AI Product Code Templates</h1>
+      <p class="subtitle">Copy-paste production-ready code for Next.js + OpenAI, streaming chat, RAG pipelines, and Stripe billing</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Project Structure</h2>
+      <div class="folder-structure">
+my-ai-app/
+├── app/
+│   ├── page.tsx
+│   ├── layout.tsx
+│   ├── api/
+│   │   └── generate/
+│   │       └── route.ts
+│   └── dashboard/
+│       └── page.tsx
+├── components/
+│   ├── ChatInterface.tsx
+│   ├── PricingCard.tsx
+│   └── UsageBar.tsx
+├── lib/
+│   ├── openai.ts
+│   ├── pinecone.ts
+│   └── stripe.ts
+├── .env.local
+├── package.json
+└── tailwind.config.js
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 1: Next.js + OpenAI API Setup</h2>
+      <div class="template-card">
+        <h3>lib/openai.ts — OpenAI client configuration</h3>
+        <p>Reusable OpenAI client with retry logic and cost tracking.</p>
+        <div class="template-content"><span class="keyword">import</span> OpenAI <span class="keyword">from</span> <span class="string">'openai'</span>;
+
+<span class="keyword">const</span> <span class="const">openai</span> = <span class="keyword">new</span> <span class="type">OpenAI</span>({
+  apiKey: process.env.<span class="const">OPENAI_API_KEY</span>,
+});
+
+<span class="keyword">export interface</span> <span class="type">GenerateOptions</span> {
+  prompt: <span class="type">string</span>;
+  systemPrompt?: <span class="type">string</span>;
+  model?: <span class="type">string</span>;
+  maxTokens?: <span class="type">number</span>;
+  temperature?: <span class="type">number</span>;
+}
+
+<span class="keyword">export async function</span> <span class="func">generateText</span>(options: <span class="type">GenerateOptions</span>) {
+  <span class="keyword">const</span> startTime = Date.<span class="func">now</span>();
+
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> response = <span class="keyword">await</span> openai.chat.completions.<span class="func">create</span>({
+      model: options.model || <span class="string">'gpt-4o-mini'</span>,
+      messages: [
+        { role: <span class="string">'system'</span>, content: options.systemPrompt || <span class="string">'You are a helpful assistant.'</span> },
+        { role: <span class="string">'user'</span>, content: options.prompt },
+      ],
+      max_tokens: options.maxTokens || 1000,
+      temperature: options.temperature || 0.7,
+    });
+
+    <span class="keyword">const</span> latency = Date.<span class="func">now</span>() - startTime;
+    <span class="keyword">const</span> usage = response.usage;
+
+    console.<span class="func">log</span>(<span class="string">`[AI] Model: ${response.model} | Tokens: ${usage?.total_tokens} | Latency: ${latency}ms`</span>);
+
+    <span class="keyword">return</span> {
+      text: response.choices[0]?.message?.content || <span class="string">''</span>,
+      usage: {
+        promptTokens: usage?.prompt_tokens || 0,
+        completionTokens: usage?.completion_tokens || 0,
+        totalTokens: usage?.total_tokens || 0,
+      },
+      model: response.model,
+      latency,
+    };
+  } <span class="keyword">catch</span> (error) {
+    console.<span class="func">error</span>(<span class="string">'[AI] Generation failed:'</span>, error);
+    <span class="keyword">throw</span> error;
+  }
+}
+
+<span class="keyword">export</span> <span class="keyword">default</span> openai;</div>
+      </div>
+
+      <div class="template-card">
+        <h3>app/api/generate/route.ts — Streaming API endpoint</h3>
+        <p>Server-side API route that streams AI responses to the client.</p>
+        <div class="template-content"><span class="keyword">import</span> { NextRequest, NextResponse } <span class="keyword">from</span> <span class="string">'next/server'</span>;
+<span class="keyword">import</span> openai <span class="keyword">from</span> <span class="string">'@/lib/openai'</span>;
+
+<span class="keyword">export async function</span> <span class="func">POST</span>(req: NextRequest) {
+  <span class="keyword">const</span> { prompt, systemPrompt, model } = <span class="keyword">await</span> req.<span class="func">json</span>();
+
+  <span class="keyword">if</span> (!prompt) {
+    <span class="keyword">return</span> NextResponse.<span class="func">json</span>(
+      { error: <span class="string">'Prompt is required'</span> },
+      { status: 400 }
+    );
+  }
+
+  <span class="keyword">const</span> stream = <span class="keyword">await</span> openai.chat.completions.<span class="func">create</span>({
+    model: model || <span class="string">'gpt-4o-mini'</span>,
+    messages: [
+      { role: <span class="string">'system'</span>, content: systemPrompt || <span class="string">'You are a helpful assistant.'</span> },
+      { role: <span class="string">'user'</span>, content: prompt },
+    ],
+    max_tokens: 1000,
+    temperature: 0.7,
+    stream: <span class="keyword">true</span>,
+  });
+
+  <span class="keyword">const</span> encoder = <span class="keyword">new</span> <span class="type">TextEncoder</span>();
+  <span class="keyword">const</span> readable = <span class="keyword">new</span> <span class="type">ReadableStream</span>({
+    <span class="keyword">async</span> <span class="func">start</span>(controller) {
+      <span class="keyword">for await</span> (<span class="keyword">const</span> chunk <span class="keyword">of</span> stream) {
+        <span class="keyword">const</span> content = chunk.choices[0]?.delta?.content || <span class="string">''</span>;
+        <span class="keyword">if</span> (content) {
+          controller.<span class="func">enqueue</span>(encoder.<span class="func">encode</span>(content));
+        }
+      }
+      controller.<span class="func">close</span>();
+    },
+  });
+
+  <span class="keyword">return new</span> <span class="type">Response</span>(readable, {
+    headers: {
+      <span class="string">'Content-Type'</span>: <span class="string">'text/plain; charset=utf-8'</span>,
+      <span class="string">'Transfer-Encoding'</span>: <span class="string">'chunked'</span>,
+    },
+  });
+}</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 2: Chat Component with Streaming</h2>
+      <div class="template-card">
+        <h3>components/ChatInterface.tsx — React streaming chat UI</h3>
+        <p>Client-side component that displays AI responses as they stream in.</p>
+        <div class="template-content"><span class="string">'use client'</span>;
+<span class="keyword">import</span> { useState, useRef, useEffect } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">export default function</span> <span class="func">ChatInterface</span>() {
+  <span class="keyword">const</span> [messages, setMessages] = <span class="func">useState</span>&lt;<span class="type">Message</span>[]&gt;([]);
+  <span class="keyword">const</span> [input, setInput] = <span class="func">useState</span>(<span class="string">''</span>);
+  <span class="keyword">const</span> [isLoading, setIsLoading] = <span class="func">useState</span>(<span class="keyword">false</span>);
+  <span class="keyword">const</span> messagesEndRef = <span class="func">useRef</span>&lt;<span class="type">HTMLDivElement</span>&gt;(<span class="keyword">null</span>);
+
+  <span class="keyword">const</span> <span class="func">handleSubmit</span> = <span class="keyword">async</span> (e: React.FormEvent) => {
+    e.<span class="func">preventDefault</span>();
+    <span class="keyword">if</span> (!input.trim() || isLoading) <span class="keyword">return</span>;
+
+    <span class="keyword">const</span> userMessage = { role: <span class="string">'user'</span>, content: input };
+    <span class="func">setMessages</span>(prev =&gt; [...prev, userMessage]);
+    <span class="func">setInput</span>(<span class="string">''</span>);
+    <span class="func">setIsLoading</span>(<span class="keyword">true</span>);
+
+    <span class="keyword">try</span> {
+      <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">'/api/generate'</span>, {
+        method: <span class="string">'POST'</span>,
+        headers: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> },
+        body: JSON.<span class="func">stringify</span>({
+          prompt: input,
+          systemPrompt: <span class="string">'You are a helpful AI assistant.'</span>,
+        }),
+      });
+
+      <span class="keyword">const</span> reader = response.body?.<span class="func">getReader</span>();
+      <span class="keyword">const</span> decoder = <span class="keyword">new</span> <span class="type">TextDecoder</span>();
+      <span class="keyword">let</span> assistantMessage = <span class="string">''</span>;
+
+      <span class="func">setMessages</span>(prev =&gt; [...prev, { role: <span class="string">'assistant'</span>, content: <span class="string">''</span> }]);
+
+      <span class="keyword">while</span> (reader) {
+        <span class="keyword">const</span> { done, value } = <span class="keyword">await</span> reader.<span class="func">read</span>();
+        <span class="keyword">if</span> (done) <span class="keyword">break</span>;
+
+        assistantMessage += decoder.<span class="func">decode</span>(value, { stream: <span class="keyword">true</span> });
+        <span class="func">setMessages</span>(prev =&gt; {
+          <span class="keyword">const</span> updated = [...prev];
+          updated[updated.length - 1].content = assistantMessage;
+          <span class="keyword">return</span> updated;
+        });
+      }
+    } <span class="keyword">catch</span> (error) {
+      console.<span class="func">error</span>(<span class="string">'Chat error:'</span>, error);
+    } <span class="keyword">finally</span> {
+      <span class="func">setIsLoading</span>(<span class="keyword">false</span>);
+    }
+  };
+
+  <span class="keyword">return</span> (
+    &lt;<span class="type">div</span> className=<span class="string">"chat-container"</span>&gt;
+      &lt;<span class="type">div</span> className=<span class="string">"messages"</span>&gt;
+        {messages.<span class="func">map</span>((msg, i) =&gt; (
+          &lt;<span class="type">div</span> key={i} className={<span class="string">`message ${msg.role}`</span>}&gt;
+            {msg.content}
+          &lt;/<span class="type">div</span>&gt;
+        ))}
+        &lt;<span class="type">div</span> ref={messagesEndRef} /&gt;
+      &lt;/<span class="type">div</span>&gt;
+      &lt;<span class="type">form</span> onSubmit={handleSubmit}&gt;
+        &lt;<span class="type">input</span>
+          value={input}
+          onChange={e =&gt; <span class="func">setInput</span>(e.target.value)}
+          placeholder=<span class="string">"Type your message..."</span>
+          disabled={isLoading}
+        /&gt;
+        &lt;<span class="type">button</span> type=<span class="string">"submit"</span> disabled={isLoading}&gt;
+          {isLoading ? <span class="string">'Generating...'</span> : <span class="string">'Send'</span>}
+        &lt;/<span class="type">button</span>&gt;
+      &lt;/<span class="type">form</span>&gt;
+    &lt;/<span class="type">div</span>&gt;
+  );
+}</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 3: RAG Setup with Pinecone</h2>
+      <div class="template-card">
+        <h3>lib/pinecone.ts — Vector database for document retrieval</h3>
+        <p>Ingest documents, create embeddings, and query relevant context for your AI.</p>
+        <div class="template-content"><span class="keyword">import</span> { Pinecone } <span class="keyword">from</span> <span class="string">'@pinecone-database/pinecone'</span>;
+<span class="keyword">import</span> openai <span class="keyword">from</span> <span class="string">'./openai'</span>;
+
+<span class="keyword">const</span> pinecone = <span class="keyword">new</span> <span class="type">Pinecone</span>({
+  apiKey: process.env.<span class="const">PINECONE_API_KEY</span>!,
+});
+
+<span class="keyword">const</span> index = pinecone.<span class="func">Index</span>(process.env.<span class="const">PINECONE_INDEX</span> || <span class="string">'my-index'</span>);
+
+<span class="keyword">export async function</span> <span class="func">embedText</span>(text: <span class="type">string</span>): <span class="type">Promise</span>&lt;<span class="type">number</span>[]&gt; {
+  <span class="keyword">const</span> response = <span class="keyword">await</span> openai.embeddings.<span class="func">create</span>({
+    model: <span class="string">'text-embedding-3-small'</span>,
+    input: text,
+  });
+  <span class="keyword">return</span> response.data[0].embedding;
+}
+
+<span class="keyword">export async function</span> <span class="func">ingestDocuments</span>(
+  documents: { id: <span class="type">string</span>; text: <span class="type">string</span>; metadata?: <span class="type">Record</span>&lt;<span class="type">string</span>, <span class="type">any</span>&gt; }[]
+) {
+  <span class="keyword">const</span> vectors = <span class="keyword">await</span> Promise.<span class="func">all</span>(
+    documents.<span class="func">map</span>(<span class="keyword">async</span> (doc) =&gt; ({
+      id: doc.id,
+      values: <span class="keyword">await</span> <span class="func">embedText</span>(doc.text),
+      metadata: { ...doc.metadata, text: doc.text },
+    }))
+  );
+
+  <span class="keyword">await</span> index.<span class="func">upsert</span>(vectors);
+  <span class="keyword">return</span> { count: vectors.length };
+}
+
+<span class="keyword">export async function</span> <span class="func">queryDocuments</span>(
+  query: <span class="type">string</span>,
+  topK: <span class="type">number</span> = 5
+) {
+  <span class="keyword">const</span> embedding = <span class="keyword">await</span> <span class="func">embedText</span>(query);
+
+  <span class="keyword">const</span> results = <span class="keyword">await</span> index.<span class="func">query</span>({
+    vector: embedding,
+    topK,
+    includeMetadata: <span class="keyword">true</span>,
+  });
+
+  <span class="keyword">return</span> results.matches.<span class="func">map</span>((match) =&gt; ({
+    id: match.id,
+    score: match.score,
+    text: match.metadata?.text || <span class="string">''</span>,
+    metadata: match.metadata,
+  }));
+}
+
+<span class="comment">// Usage in your API route:</span>
+<span class="comment">// const context = await queryDocuments(userQuestion);</span>
+<span class="comment">// const prompt = `Context:\n${context.map(c => c.text).join('\n\n')}\n\nQuestion: ${userQuestion}`;</span>
+<span class="comment">// const response = await generateText({ prompt });</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Template 4: Stripe Billing Integration</h2>
+      <div class="template-card">
+        <h3>lib/stripe.ts — Stripe client and helpers</h3>
+        <p>Subscription management with usage-based billing support.</p>
+        <div class="template-content"><span class="keyword">import</span> Stripe <span class="keyword">from</span> <span class="string">'stripe'</span>;
+
+<span class="keyword">export const</span> stripe = <span class="keyword">new</span> <span class="type">Stripe</span>(process.env.<span class="const">STRIPE_SECRET_KEY</span>!, {
+  apiVersion: <span class="string">'2024-06-20'</span>,
+});
+
+<span class="keyword">export const</span> PLANS = {
+  free: { priceId: <span class="keyword">null</span>, generations: 50, name: <span class="string">'Free'</span> },
+  pro: { priceId: <span class="string">'price_pro_monthly'</span>, generations: 500, name: <span class="string">'Pro'</span> },
+  team: { priceId: <span class="string">'price_team_monthly'</span>, generations: 2000, name: <span class="string">'Team'</span> },
+} <span class="keyword">as const</span>;
+
+<span class="keyword">export async function</span> <span class="func">createCheckoutSession</span>(
+  priceId: <span class="type">string</span>,
+  userId: <span class="type">string</span>,
+  email: <span class="type">string</span>
+) {
+  <span class="keyword">return</span> stripe.checkout.sessions.<span class="func">create</span>({
+    mode: <span class="string">'subscription'</span>,
+    payment_method_types: [<span class="string">'card'</span>],
+    line_items: [{ price: priceId, quantity: 1 }],
+    success_url: <span class="string">`${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgraded=true`</span>,
+    cancel_url: <span class="string">`${process.env.NEXT_PUBLIC_APP_URL}/pricing`</span>,
+    metadata: { userId },
+    customer_email: email,
+  });
+}
+
+<span class="keyword">export async function</span> <span class="func">createPortalSession</span>(customerId: <span class="type">string</span>) {
+  <span class="keyword">return</span> stripe.billingPortal.sessions.<span class="func">create</span>({
+    customer: customerId,
+    return_url: <span class="string">`${process.env.NEXT_PUBLIC_APP_URL}/dashboard`</span>,
+  });
+}
+
+<span class="keyword">export async function</span> <span class="func">getUsage</span>(userId: <span class="type">string</span>) {
+  <span class="comment">// Query your database for current month usage</span>
+  <span class="comment">// Returns: { used: number, limit: number, plan: string }</span>
+}</div>
+      </div>
+
+      <div class="template-card">
+        <h3>app/api/stripe/webhook/route.ts — Webhook handler</h3>
+        <p>Process Stripe events for subscription lifecycle management.</p>
+        <div class="template-content"><span class="keyword">import</span> { NextRequest, NextResponse } <span class="keyword">from</span> <span class="string">'next/server'</span>;
+<span class="keyword">import</span> { stripe } <span class="keyword">from</span> <span class="string">'@/lib/stripe'</span>;
+
+<span class="keyword">export async function</span> <span class="func">POST</span>(req: NextRequest) {
+  <span class="keyword">const</span> body = <span class="keyword">await</span> req.<span class="func">text</span>();
+  <span class="keyword">const</span> sig = req.headers.<span class="func">get</span>(<span class="string">'stripe-signature'</span>)!;
+
+  <span class="keyword">let</span> event;
+  <span class="keyword">try</span> {
+    event = stripe.webhooks.<span class="func">constructEvent</span>(
+      body, sig, process.env.<span class="const">STRIPE_WEBHOOK_SECRET</span>!
+    );
+  } <span class="keyword">catch</span> (err) {
+    <span class="keyword">return</span> NextResponse.<span class="func">json</span>({ error: <span class="string">'Invalid signature'</span> }, { status: 400 });
+  }
+
+  <span class="keyword">switch</span> (event.type) {
+    <span class="keyword">case</span> <span class="string">'checkout.session.completed'</span>:
+      <span class="comment">// Activate subscription in your database</span>
+      <span class="keyword">await</span> <span class="func">handleSubscriptionCreated</span>(event.data.object);
+      <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'customer.subscription.updated'</span>:
+      <span class="comment">// Handle plan changes (upgrade/downgrade)</span>
+      <span class="keyword">await</span> <span class="func">handleSubscriptionUpdated</span>(event.data.object);
+      <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'customer.subscription.deleted'</span>:
+      <span class="comment">// Downgrade to free tier</span>
+      <span class="keyword">await</span> <span class="func">handleSubscriptionCancelled</span>(event.data.object);
+      <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'invoice.payment_failed'</span>:
+      <span class="comment">// Notify user, pause access after grace period</span>
+      <span class="keyword">await</span> <span class="func">handlePaymentFailed</span>(event.data.object);
+      <span class="keyword">break</span>;
+  }
+
+  <span class="keyword">return</span> NextResponse.<span class="func">json</span>({ received: <span class="keyword">true</span> });
+}</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Start with Template 1 (API setup) + Template 2 (chat UI). Get a working AI chatbot in under 30 minutes, then add RAG (Template 3) and billing (Template 4) once you've validated demand.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

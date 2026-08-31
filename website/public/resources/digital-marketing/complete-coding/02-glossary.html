@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full-Stack Glossary — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .glossary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .glossary-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .glossary-term { font-size: 14px; font-weight: 600; color: #176B4D; margin-bottom: 4px; }
+    .glossary-def { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Glossary</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Complete Coding: Basics to Advanced</div>
+      <h1>Full-Stack Glossary</h1>
+      <p class="subtitle">Essential terminology for React, Node.js, databases, APIs, deployment, and modern development workflows</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Frontend & React</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Component</div><div class="glossary-def">Reusable UI building block. Function or class returning JSX. Props in, UI out. Composable, testable.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Props</div><div class="glossary-def">Read-only inputs passed to components. Like function arguments. Type with TypeScript interfaces.</div></div>
+        <div class="glossary-item"><div class="glossary-term">State</div><div class="glossary-def">Component-local mutable data. Triggers re-render on change. useState, useReducer, useContext.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Hook</div><div class="glossary-def">Function to use React features in function components. useState, useEffect, useContext, useMemo, useCallback, custom hooks.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Virtual DOM</div><div class="glossary-def">Lightweight JS representation of real DOM. React diffs changes, batches updates for performance.</div></div>
+        <div class="glossary-item"><div class="glossary-term">JSX</div><div class="glossary-def">JavaScript XML. Syntax extension: write HTML in JS. Transpiles to React.createElement(). Type-safe with TS.</div></div>
+        <div class="glossary-item"><div class="glossary-term">SSR / SSG / ISR</div><div class="glossary-def">Server-Side Rendering, Static Site Generation, Incremental Static Regeneration. Next.js rendering strategies.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Hydration</div><div class="glossary-def">Process of attaching event listeners to server-rendered HTML. Makes static HTML interactive.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Backend & Node.js</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Middleware</div><div class="glossary-def">Function with access to req, res, next. Runs between request and response. Auth, logging, validation, error handling.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Controller</div><div class="glossary-def">Handles HTTP request: parses input, calls service, formats response. Thin layer, delegates to services.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Service Layer</div><div class="glossary-def">Business logic: data transformation, external API calls, transactions. Reusable, testable, framework-agnostic.</div></div>
+        <div class="glossary-item"><div class="glossary-term">ORM (Prisma/Drizzle)</div><div class="glossary-def">Object-Relational Mapping. Type-safe DB access. Schema definition, migrations, queries, relations. No raw SQL needed.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Migration</div><div class="glossary-def">Version-controlled schema changes. Up/Down functions. Run in CI/CD. Prisma: prisma migrate dev/deploy.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Connection Pool</div><div class="glossary-def">Reusable DB connections. Avoids handshake overhead. PgBouncer for Postgres. Size based on CPU cores.</div></div>
+        <div class="glossary-item"><div class="glossary-term">N+1 Problem</div><div class="glossary-def">Fetching parent then N children in separate queries. Fix: JOIN, include(), DataLoader, batch loading.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Database & API</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">ACID</div><div class="glossary-def">Atomicity, Consistency, Isolation, Durability. Transaction guarantees. Postgres: full ACID.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Index</div><div class="glossary-def">Data structure for fast lookups. B-tree (default), Hash, GIN, GiST. Trade-off: write speed vs read speed.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Foreign Key</div><div class="glossary-def">Column referencing another table's PK. Enforces referential integrity. ON DELETE CASCADE/SET NULL.</div></div>
+        <div class="glossary-item"><div class="glossary-term">REST</div><div class="glossary-def">Representational State Transfer. Resource-based URLs, HTTP verbs, stateless, cacheable, uniform interface.</div></div>
+        <div class="glossary-item"><div class="glossary-term">GraphQL</div><div class="glossary-def">Query language: client requests exact data. Single endpoint. Schema-first. Resolvers. N+1 risk (DataLoader).</div></div>
+        <div class="glossary-item"><div class="glossary-term">tRPC</div><div class="glossary-def">End-to-end typesafe APIs. No schema/codegen. Inference from backend to frontend. Great for TypeScript monorepos.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Webhook</div><div class="glossary-def">HTTP callback for real-time events. Stripe, GitHub, Clerk. Verify signatures. Idempotency keys.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Auth & Security</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">JWT (JSON Web Token)</div><div class="glossary-def">Stateless auth: Header.Payload.Signature. Access (short) + Refresh (long) tokens. Store in HttpOnly cookie.</div></div>
+        <div class="glossary-item"><div class="glossary-term">bcrypt / Argon2</div><div class="glossary-def">Password hashing. Slow, memory-hard. Cost factor 12+. Never use MD5/SHA. Verify: compare(hash, plain).</div></div>
+        <div class="glossary-item"><div class="glossary-term">OAuth 2.0 / OIDC</div><div class="glossary-def">Authorization framework. Google, GitHub, Microsoft providers. Scopes, PKCE, State parameter, Token exchange.</div></div>
+        <div class="glossary-item"><div class="glossary-term">MFA / 2FA</div><div class="glossary-def">Multi-Factor Auth. TOTP (Authenticator apps), SMS (less secure), WebAuthn (passkeys). Required for admin.</div></div>
+        <div class="glossary-item"><div class="glossary-term">CSRF / XSS</div><div class="glossary-def">Cross-Site Request Forgery (same-site cookies, CSRF tokens). Cross-Site Scripting (sanitize, CSP, HttpOnly).</div></div>
+        <div class="glossary-item"><div class="glossary-term">Rate Limiting</div><div class="glossary-def">Prevent abuse: Fixed window, Sliding window, Token bucket. Per IP, user, API key. Return 429 + Retry-After.</div></div>
+        <div class="glossary-item"><div class="glossary-term">CORS</div><div class="glossary-def">Cross-Origin Resource Sharing. Browser security. Allow origin, methods, headers, credentials. Preflight OPTIONS.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Helmet / CSP</div><div class="glossary-def">Security headers: X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Content-Security-Policy.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">DevOps & Deployment</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">CI/CD</div><div class="glossary-def">Continuous Integration / Deployment. Automate: Lint → Test → Build → Deploy. GitHub Actions, GitLab CI, CircleCI.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Docker</div><div class="glossary-def">Containerization. Image = layered filesystem. Container = running instance. Dockerfile, compose, multi-stage.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Kubernetes (K8s)</div><div class="glossary-def">Container orchestration. Pods, Services, Deployments, Ingress, ConfigMaps, Secrets. Overkill for small apps.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Edge Computing</div><div class="glossary-def">Run code near users: Cloudflare Workers, Vercel Edge, Deno Deploy. Low latency, limited runtime.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Observability</div><div class="glossary-def">Logs, Metrics, Traces. Structured JSON logs. OpenTelemetry. Datadog, Grafana, Sentry, Axiom.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Blue/Green / Canary</div><div class="glossary-def">Deployment strategies. Blue/Green: instant switch. Canary: gradual rollout. Feature flags for safety.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Infrastructure as Code</div><div class="glossary-def">Terraform, Pulumi, AWS CDK. Version-controlled infra. Plan → Apply. State management critical.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Secret Management</div><div class="glossary-def">Never commit secrets. 1Password, Vault, AWS Secrets Manager, Doppler, .env.local (local only). Rotate regularly.</div></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Create a personal "Dev Dictionary" in Obsidian/Notion. Add 3-5 terms weekly. Understanding terminology = faster code reviews, better architecture decisions, clearer communication with seniors.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

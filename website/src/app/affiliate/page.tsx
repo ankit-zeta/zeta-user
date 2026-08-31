@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   Crown
 } from "lucide-react";
+import BannerCarousel from "@/components/BannerCarousel";
 
 export default function AffiliateOverviewPage() {
   const { user, token } = useAuth();
@@ -82,6 +83,9 @@ export default function AffiliateOverviewPage() {
           Track your referral performance, commissions and payout status in one place.
         </p>
       </div>
+
+      {/* Banner Carousel */}
+      <BannerCarousel targetPage="affiliate" />
 
       {/* KYC gate banner */}
       {kycStatus !== "verified" && (

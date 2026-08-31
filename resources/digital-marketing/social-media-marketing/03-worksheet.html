@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Calendar Worksheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .worksheet { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .worksheet h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .worksheet p { color: #4b5563; margin-bottom: 12px; }
+    .worksheet label { display: block; font-weight: 600; margin-bottom: 6px; color: #374151; }
+    .worksheet input, .worksheet textarea, .worksheet select { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; font-size: 14px; margin-bottom: 16px; background: white; }
+    .worksheet textarea { min-height: 80px; resize: vertical; }
+    .worksheet-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .worksheet-table th, .worksheet-table td { border: 1px solid #e5e7eb; padding: 10px 12px; text-align: left; }
+    .worksheet-table th { background: #176B4D; color: white; font-weight: 600; font-size: 13px; }
+    .worksheet-table td { font-size: 13px; color: #374151; }
+    .pillar-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 16px 0; }
+    .pillar-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; text-align: center; }
+    .pillar-card .pillar-name { font-weight: 700; color: #176B4D; font-size: 12px; margin-bottom: 4px; }
+    .pillar-card .pillar-pct { font-size: 18px; font-weight: 800; color: #1a1a1a; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .worksheet { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Worksheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Social Media Marketing Systems</div>
+      <h1>Content Calendar Worksheet</h1>
+      <p class="subtitle">Monthly content planning template with pillars, platform formats, scheduling, and engagement goals</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 1: Define Your Content Pillars</h2>
+      <div class="worksheet">
+        <h3>Set your pillar distribution (must total 100%)</h3>
+        <p>Adjust percentages based on your goals and audience. Typical B2B: Educate 40%, Inspire 20%, Connect 20%, Promote 15%, Entertain 5%.</p>
+        <div class="pillar-grid">
+          <div class="pillar-card"><div class="pillar-name">Educate</div><div class="pillar-pct"><input type="number" value="30" min="0" max="100" style="width: 60px; text-align: center; border: none; background: transparent; font: inherit;">%</div></div>
+          <div class="pillar-card"><div class="pillar-name">Entertain</div><div class="pillar-pct"><input type="number" value="20" min="0" max="100" style="width: 60px; text-align: center; border: none; background: transparent; font: inherit;">%</div></div>
+          <div class="pillar-card"><div class="pillar-name">Inspire</div><div class="pillar-pct"><input type="number" value="20" min="0" max="100" style="width: 60px; text-align: center; border: none; background: transparent; font: inherit;">%</div></div>
+          <div class="pillar-card"><div class="pillar-name">Promote</div><div class="pillar-pct"><input type="number" value="15" min="0" max="100" style="width: 60px; text-align: center; border: none; background: transparent; font: inherit;">%</div></div>
+          <div class="pillar-card"><div class="pillar-name">Connect</div><div class="pillar-pct"><input type="number" value="15" min="0" max="100" style="width: 60px; text-align: center; border: none; background: transparent; font: inherit;">%</div></div>
+        </div>
+        <p style="color: #176B4D; font-weight: 600;">Total: <span id="total-pct">100</span>%</p>
+        <textarea placeholder="Notes on pillar strategy..."></textarea>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 2: Platform Selection & Frequency</h2>
+      <div class="worksheet">
+        <h3>Choose platforms and set weekly frequency</h3>
+        <table class="worksheet-table">
+          <tr><th>Platform</th><th>Active?</th><th>Feed Posts/Week</th><th>Stories/Reels/Shorts</th><th>Primary Goal</th><th>Target Audience</th></tr>
+          <tr><td>Instagram</td><td><input type="checkbox" checked></td><td><input type="number" value="4" min="0" max="7" style="width: 60px;"></td><td><input type="number" value="7" min="0" max="14" style="width: 60px;"></td><td><select><option>Brand Awareness</option><option>Lead Generation</option><option>Community</option><option>Sales</option></select></td><td><input type="text" placeholder="e.g., Creatives 25-35"></td></tr>
+          <tr><td>LinkedIn</td><td><input type="checkbox" checked></td><td><input type="number" value="3" min="0" max="7" style="width: 60px;"></td><td><input type="number" value="0" style="width: 60px;"></td><td><select><option>Thought Leadership</option><option>Lead Generation</option><option>Networking</option><option>Recruiting</option></select></td><td><input type="text" placeholder="e.g., B2B Decision Makers"></td></tr>
+          <tr><td>Twitter/X</td><td><input type="checkbox"></td><td><input type="number" value="15" min="0" max="35" style="width: 60px;"></td><td><input type="number" value="0" style="width: 60px;"></td><td><select><option>Real-time Engagement</option><option>Thought Leadership</option><option>Support</option></select></td><td><input type="text" placeholder="e.g., Tech Professionals"></td></tr>
+          <tr><td>TikTok</td><td><input type="checkbox"></td><td><input type="number" value="0" style="width: 60px;"></td><td><input type="number" value="5" min="0" max="21" style="width: 60px;"></td><td><select><option>Viral Reach</option><option>Brand Personality</option><option>Younger Audience</option></select></td><td><input type="text" placeholder="e.g., Gen Z / Millennials"></td></tr>
+          <tr><td>YouTube</td><td><input type="checkbox"></td><td><input type="number" value="1" min="0" max="3" style="width: 60px;"></td><td><input type="number" value="3" min="0" max="7" style="width: 60px;"></td><td><select><option>Search Traffic</option><option>Education</option><option>Authority</option></select></td><td><input type="text" placeholder="e.g., Problem-Aware Buyers"></td></tr>
+          <tr><td>Facebook</td><td><input type="checkbox"></td><td><input type="number" value="3" min="0" max="7" style="width: 60px;"></td><td><input type="number" value="3" min="0" max="7" style="width: 60px;"></td><td><select><option>Community Building</option><option>Local Business</option><option>Groups</option></select></td><td><input type="text" placeholder="e.g., Local Customers"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 3: Monthly Content Calendar</h2>
+      <div class="worksheet">
+        <h3>Plan your month — fill in each slot</h3>
+        <p>Use pillar codes: ED=Educate, EN=Entertain, IN=Inspire, PR=Promote, CO=Connect. Format codes: IM=Image, CA=Carousel, RE=Reel/Short, ST=Story, TH=Thread, VI=Video, LI=Live.</p>
+        <table class="worksheet-table">
+          <tr><th>Date</th><th>Platform</th><th>Pillar</th><th>Format</th><th>Topic / Hook</th><th>Caption / Key Points</th><th>CTA</th><th>Hashtag Set</th><th>Status</th></tr>
+          <tr><td>Mon 1</td><td>IG</td><td><input type="text" value="ED" style="width: 40px;"></td><td><input type="text" value="CA" style="width: 40px;"></td><td><input type="text" placeholder="5 Mistakes..."></td><td><textarea placeholder="Carousel slides..."></textarea></td><td><input type="text" placeholder="Save for later"></td><td><input type="text" placeholder="Set A"></td><td><select><option>Draft</option><option>Ready</option><option>Posted</option></select></td></tr>
+          <tr><td>Tue 2</td><td>LI</td><td><input type="text" value="IN" style="width: 40px;"></td><td><input type="text" value="IM" style="width: 40px;"></td><td><input type="text" placeholder="My journey..."></td><td><textarea placeholder="Story + lesson..."></textarea></td><td><input type="text" placeholder="Comment your start"></td><td><input type="text" placeholder="Set B"></td><td><select><option>Draft</option><option>Ready</option><option>Posted</option></select></td></tr>
+          <tr><td>Wed 3</td><td>IG</td><td><input type="text" value="CO" style="width: 40px;"></td><td><input type="text" value="ST" style="width: 40px;"></td><td><input type="text" placeholder="Poll/Q&A..."></td><td><textarea placeholder="Interactive stickers..."></textarea></td><td><input type="text" placeholder="Vote now"></td><td><input type="text" placeholder="—"></td><td><select><option>Draft</option><option>Ready</option><option>Posted</option></select></td></tr>
+          <tr><td>Thu 4</td><td>LI</td><td><input type="text" value="ED" style="width: 40px;"></td><td><input type="text" value="TH" style="width: 40px;"></td><td><input type="text" placeholder="Thread: How to..."></td><td><textarea placeholder="1/ 🧵 Thread..."></textarea></td><td><input type="text" placeholder="Follow for more"></td><td><input type="text" placeholder="Set B"></td><td><select><option>Draft</option><option>Ready</option><option>Posted</option></select></td></tr>
+          <tr><td>Fri 5</td><td>IG</td><td><input type="text" value="EN" style="width: 40px;"></td><td><input type="text" value="RE" style="width: 40px;"></td><td><input type="text" placeholder="BTS/Fun..."></td><td><textarea placeholder="Hook + value + CTA..."></textarea></td><td><input type="text" placeholder="Follow for more"></td><td><input type="text" placeholder="Set A"></td><td><select><option>Draft</option><option>Ready</option><option>Posted</option></select></td></tr>
+          <tr><td>Mon 8</td><td>IG</td><td><input type="text" value="PR" style="width: 40px;"></td><td><input type="text" value="CA" style="width: 40px;"></td><td><input type="text" placeholder="New feature..."></td><td><textarea placeholder="Benefits + demo..."></textarea></td><td><input type="text" placeholder="Try free"></td><td><input type="text" placeholder="Set C"></td><td><select><option>Draft</option><option>Ready</option><option>Posted</option></select></td></tr>
+          <tr><td>Tue 9</td><td>LI</td><td><input type="text" value="ED" style="width: 40px;"></td><td><input type="text" value="IM" style="width: 40px;"></td><td><input type="text" placeholder="Industry insight..."></td><td><textarea placeholder="Data + takeaway..."></textarea></td><td><input type="text" placeholder="What's your take?"></td><td><input type="text" placeholder="Set B"></td><td><select><option>Draft</option><option>Ready</option><option>Posted</option></select></td></tr>
+          <tr><td>Wed 10</td><td>IG</td><td><input type="text" value="CO" style="width: 40px;"></td><td><input type="text" value="ST" style="width: 40px;"></td><td><input type="text" placeholder="Ask me anything..."></td><td><textarea placeholder="Q&A sticker..."></textarea></td><td><input type="text" placeholder="Ask below"></td><td><input type="text" placeholder="—"></td><td><select><option>Draft</option><option>Ready</option><option>Posted</option></select></td></tr>
+          <tr><td>Thu 11</td><td>LI</td><td><input type="text" value="IN" style="width: 40px;"></td><td><input type="text" value="TH" style="width: 40px;"></td><td><input type="text" placeholder="Client win..."></td><td><textarea placeholder="Challenge → solution..."></textarea></td><td><input type="text" placeholder="DM to discuss"></td><td><input type="text" placeholder="Set B"></td><td><select><option>Draft</option><option>Ready</option><option>Posted</option></select></td></tr>
+          <tr><td>Fri 12</td><td>IG</td><td><input type="text" value="EN" style="width: 40px;"></td><td><input type="text" value="RE" style="width: 40px;"></td><td><input type="text" placeholder="Trend adaptation..."></td><td><textarea placeholder="Hook + twist + CTA..."></textarea></td><td><input type="text" placeholder="Follow"></td><td><input type="text" placeholder="Set A"></td><td><select><option>Draft</option><option>Ready</option><option>Posted</option></select></td></tr>
+        </table>
+        <p style="font-size: 13px; color: #666;">Add more rows for each week. Duplicate this table for weeks 3-4.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 4: Hashtag Sets</h2>
+      <div class="worksheet">
+        <h3>Create 3 rotating hashtag sets per platform</h3>
+        <table class="worksheet-table">
+          <tr><th>Set Name</th><th>Platform</th><th>Hashtags (comma-separated)</th><th>Focus</th></tr>
+          <tr><td><input type="text" value="Set A - General"></td><td>Instagram</td><td><input type="text" placeholder="#marketing #digitalmarketing #socialmedia #entrepreneur #businessgrowth #marketingtips #onlinemarketing #smallbusiness #brandbuilding #contentmarketing"></td><td>Broad reach</td></tr>
+          <tr><td><input type="text" value="Set B - Niche"></td><td>Instagram</td><td><input type="text" placeholder="#b2bmarketing #saasmarketing #growthmarketing #marketingstrategy #demandgeneration #leadgeneration #marketingops #abm #plg #growthhacking"></td><td>Targeted</td></tr>
+          <tr><td><input type="text" value="Set C - Promo"></td><td>Instagram</td><td><input type="text" placeholder="#newfeature #productlaunch #saas #startuplife #buildinpublic #indiehackers #saasfounder #productmarketing #launchday #earlyaccess"></td><td>Conversion</td></tr>
+          <tr><td><input type="text" value="Set A - Professional"></td><td>LinkedIn</td><td><input type="text" placeholder="#marketing #leadership #business #strategy #growth #entrepreneurship #innovation #digitaltransformation #saas #b2b"></td><td>Authority</td></tr>
+          <tr><td><input type="text" value="Set B - Personal"></td><td>LinkedIn</td><td><input type="text" placeholder="#personalbrand #careergrowth #productivity #mindset #learning #networking #thoughtleadership #professionaldevelopment"></td><td>Connection</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 5: Monthly Engagement Goals</h2>
+      <div class="worksheet">
+        <h3>Set measurable targets</h3>
+        <table class="worksheet-table">
+          <tr><th>Metric</th><th>Current (Last Month)</th><th>Target (This Month)</th><th>Stretch Goal</th><th>Key Actions</th></tr>
+          <tr><td>Total Followers</td><td><input type="text" placeholder="1,247"></td><td><input type="text" placeholder="1,400"></td><td><input type="text" placeholder="1,500"></td><td><input type="text" placeholder="Collab + 3 Reels/week"></td></tr>
+          <tr><td>Avg Engagement Rate</td><td><input type="text" placeholder="3.2%"></td><td><input type="text" placeholder="4.0%"></td><td><input type="text" placeholder="5.0%"></td><td><input type="text" placeholder="More questions, reply all comments"></td></tr>
+          <tr><td>Website Clicks</td><td><input type="text" placeholder="89"></td><td><input type="text" placeholder="150"></td><td><input type="text" placeholder="200"></td><td><input type="text" placeholder="Link in bio + Story links"></td></tr>
+          <tr><td>Leads Generated</td><td><input type="text" placeholder="12"></td><td><input type="text" placeholder="20"></td><td><input type="text" placeholder="30"></td><td><input type="text" placeholder="Lead magnet + newsletter CTA"></td></tr>
+          <tr><td>Video Views (Total)</td><td><input type="text" placeholder="15,400"></td><td><input type="text" placeholder="25,000"></td><td><input type="text" placeholder="35,000"></td><td><input type="text" placeholder="Daily Reels + 2 Shorts/week"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 6: Weekly Review Template</h2>
+      <div class="worksheet">
+        <h3>Complete every Monday for previous week</h3>
+        <table class="worksheet-table">
+          <tr><th>Week</th><th>Top Performing Post</th><th>Worst Performing</th><th>Key Insight</th><th>Adjustment for Next Week</th></tr>
+          <tr><td>Week 1</td><td><input type="text" placeholder="Carousel: 5 mistakes (4.2% ER)"></td><td><input type="text" placeholder="Promo post (0.8% ER)"></td><td><input type="text" placeholder="Educational carousels outperform promos 5:1"></td><td><input type="text" placeholder="Reduce promo to 10%, increase educational"></td></tr>
+          <tr><td>Week 2</td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td></tr>
+          <tr><td>Week 3</td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td></tr>
+          <tr><td>Week 4</td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td><td><input type="text" placeholder=""></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Batch-create content on Sundays for the week. Use a tool like Buffer, Later, or Meta Business Suite to schedule. Spend 30 min/day on engagement (replies, comments, DMs).</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

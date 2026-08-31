@@ -4,6 +4,15 @@ import { mutation, query, action } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { requirePurchasedUser, requireKycVerified } from "./entitlements";
 import { computeTds } from "./tds";
+import { isValidImageUrl } from "../shared/src/utils";
+
+async function requireUserId(ctx: any, token: string): Promise<string> {
+  const session = await ctx.runQuery(internal.paymentsData.getSessionByToken, {
+    token,
+  });
+  if (!session) throw new Error("Unauthorized");
+  return session.userId;
+}
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -21,8 +30,10 @@ async function requireAdmin(ctx: any, token: string) {
 }
 
 export const generateWithdrawalQrUploadUrl = action({
-  args: {},
-  handler: async (ctx) => {
+  args: { token: v.string() },
+  handler: async (ctx, args) => {
+    const userId = await requireUserId(ctx, args.token);
+    if (!userId) throw new Error("Unauthorized");
     return await ctx.storage.generateUploadUrl();
   },
 });
@@ -106,6 +117,10 @@ export const requestWithdrawal = mutation({
         !/^[a-zA-Z0-9_-]{10,}$/.test(args.payoutDetails.qrImageUrl)
       ) {
         throw new Error("A valid UPI QR image is required for QR payouts");
+      }
+      // Validate the QR image is from Convex storage (trusted source)
+      if (!isValidImageUrl(args.payoutDetails.qrImageUrl)) {
+        throw new Error("Invalid QR image: only uploaded images from Convex storage are allowed");
       }
       const resolved = await ctx.storage.getUrl(args.payoutDetails.qrImageUrl);
       if (!resolved) {

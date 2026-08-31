@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coding Development Checklist — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .checklist { list-style: none; }
+    .checklist li { padding: 10px 0; border-bottom: 1px solid #f3f4f6; display: flex; align-items: flex-start; gap: 10px; font-size: 14px; }
+    .check { color: #176B4D; font-weight: 700; min-width: 20px; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Checklist</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Complete Coding: Basics to Advanced</div>
+      <h1>Development Checklist</h1>
+      <p class="subtitle">Pre-launch, launch, and post-launch checklists for every project</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Pre-Development</h2>
+      <ul class="checklist">
+        <li><span class="check">□</span>Define MVP scope: 3-5 core features maximum</li>
+        <li><span class="check">□</span>Sketch wireframes (Figma, Excalidraw, or paper)</li>
+        <li><span class="check">□</span>Design database schema and relations</li>
+        <li><span class="check">□</span>Choose stack: Frontend + Backend + DB + Auth + Hosting</li>
+        <li><span class="check">□</span>Create GitHub repo with README, .gitignore, LICENSE</li>
+        <li><span class="check">□</span>Setup local dev: Node.js, package manager, editor, extensions</li>
+        <li><span class="check">□</span>Configure TypeScript strict mode, ESLint, Prettier</li>
+        <li><span class="check">□</span>Setup Husky + lint-staged for pre-commit hooks</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Development</h2>
+      <ul class="checklist">
+        <li><span class="check">□</span>Setup database: Schema, migrations, seed data</li>
+        <li><span class="check">□</span>Implement auth: Signup, login, logout, password reset</li>
+        <li><span class="check">□</span>Build core CRUD for main entity</li>
+        <li><span class="check">□</span>Add form validation (Zod / react-hook-form)</li>
+        <li><span class="check">□</span>Implement error handling: Try/catch, error boundaries, toast</li>
+        <li><span class="check">□</span>Add loading states: Skeletons, spinners, optimistic updates</li>
+        <li><span class="check">□</span>Responsive design: Mobile-first, test 320px-1440px</li>
+        <li><span class="check">□</span>Dark mode support (optional but impressive)</li>
+        <li><span class="check">□</span>Write unit tests for business logic (>80% coverage)</li>
+        <li><span class="check">□</span>Write integration tests for API routes</li>
+        <li><span class="check">□</span>Git commits: Conventional commits, meaningful messages</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Pre-Deploy</h2>
+      <ul class="checklist">
+        <li><span class="check">□</span>Environment variables: All secrets in .env, not committed</li>
+        <li><span class="check">□</span>Database connection pooling configured</li>
+        <li><span class="check">□</span>CORS configured for production domain</li>
+        <li><span class="check">□</span>Rate limiting on API endpoints</li>
+        <li><span class="check">□</span>Input sanitization (XSS prevention)</li>
+        <li><span class="check">□</span>CSRF protection enabled</li>
+        <li><span class="check">□</span>Security headers (Helmet / next.config.js)</li>
+        <li><span class="check">□</span>Build succeeds without errors: npm run build</li>
+        <li><span class="check">□</span>TypeScript passes: npx tsc --noEmit</li>
+        <li><span class="check">□</span>Lint passes: npm run lint</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Launch</h2>
+      <ul class="checklist">
+        <li><span class="check">□</span>Deploy to hosting (Vercel/Railway/Fly.io)</li>
+        <li><span class="check">□</span>Custom domain + SSL certificate</li>
+        <li><span class="check">□</span>DNS configured: A/CNAME records</li>
+        <li><span class="check">□</span>Database migrated on production</li>
+        <li><span class="check">□</span>Environment variables set in hosting dashboard</li>
+        <li><span class="check">□</span>Error monitoring (Sentry) initialized</li>
+        <li><span class="check">□</span>Analytics (PostHog/Plausible) installed</li>
+        <li><span class="check">□</span>Uptime monitoring (BetterUptime) configured</li>
+        <li><span class="check">□</span>Test critical flows on production</li>
+        <li><span class="check">□</span>Share on social: Twitter, LinkedIn, Product Hunt</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Post-Launch</h2>
+      <ul class="checklist">
+        <li><span class="check">□</span>Monitor error rates (Sentry dashboard)</li>
+        <li><span class="check">□</span>Track user analytics (signups, retention, feature usage)</li>
+        <li><span class="check">□</span>Collect user feedback (Typeform, in-app widget)</li>
+        <li><span class="check">□</span>Setup CI/CD: Auto-deploy on merge to main</li>
+        <li><span class="check">□</span>Database backups: Daily automated snapshots</li>
+        <li><span class="check">□</span>Performance audit: Lighthouse >90, Core Web Vitals</li>
+        <li><span class="check">□</span>SEO: Meta tags, sitemap, robots.txt, OG images</li>
+        <li><span class="check">□</span>Documentation: API docs, README, CONTRIBUTING.md</li>
+        <li><span class="check">□</span>Plan V2 features based on data + feedback</li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Use GitHub Projects or Linear to track your checklist. Each item = a card. Move through columns: To Do → In Progress → Done. Visual progress keeps you motivated.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

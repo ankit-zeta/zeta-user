@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Resources — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .resource-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px 20px; margin: 10px 0; }
+    .resource-name { font-weight: 700; color: #176B4D; font-size: 15px; }
+    .resource-url { font-size: 12px; color: #6b7280; font-family: monospace; margin-top: 2px; }
+    .resource-desc { font-size: 14px; color: #4b5563; margin-top: 6px; }
+    .resource-tag { display: inline-block; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-top: 6px; }
+    .resource-tag.free { background: #dbeafe; color: #1e40af; }
+    .resource-tag.paid { background: #fef3c7; color: #92400e; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .badge { border: 1px solid #176B4D; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Resources</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Coding Fundamentals</div>
+      <h1>Learning Resources</h1>
+      <p class="subtitle">The best free and paid platforms to learn web development</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Documentation & References</h2>
+
+      <div class="resource-card">
+        <div class="resource-name">MDN Web Docs</div>
+        <div class="resource-url">developer.mozilla.org</div>
+        <div class="resource-desc">The definitive reference for HTML, CSS, and JavaScript. Tutorials, guides, and documentation for everything web.</div>
+        <span class="resource-tag free">Free</span>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-name">W3Schools</div>
+        <div class="resource-url">w3schools.com</div>
+        <div class="resource-desc">Beginner-friendly tutorials with "Try it Yourself" editors. Great for quick syntax references.</div>
+        <span class="resource-tag free">Free</span>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-name">Can I Use</div>
+        <div class="resource-url">caniuse.com</div>
+        <div class="resource-desc">Check browser support for HTML, CSS, and JS features before using them.</div>
+        <span class="resource-tag free">Free</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Interactive Learning Platforms</h2>
+
+      <div class="resource-card">
+        <div class="resource-name">freeCodeCamp</div>
+        <div class="resource-url">freecodecamp.org</div>
+        <div class="resource-desc">Complete curriculum from HTML basics to full-stack development. Earn certifications by building projects. 100% free.</div>
+        <span class="resource-tag free">Free</span>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-name">Codecademy</div>
+        <div class="resource-url">codecademy.com</div>
+        <div class="resource-desc">Interactive coding lessons with instant feedback. Free tier available. Pro version has projects and certificates.</div>
+        <span class="resource-tag free">Free Tier</span>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-name">The Odin Project</div>
+        <div class="resource-url">theodinproject.com</div>
+        <div class="resource-desc">Full-stack curriculum using HTML, CSS, JavaScript, and Ruby/Node.js. Project-based, community-driven.</div>
+        <span class="resource-tag free">Free</span>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-name">Scrimba</div>
+        <div class="resource-url">scrimba.com</div>
+        <div class="resource-desc">Interactive video courses where you can edit the code directly in the video player. Excellent for visual learners.</div>
+        <span class="resource-tag free">Free Tier</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Code Editor & Tools</h2>
+
+      <div class="resource-card">
+        <div class="resource-name">Visual Studio Code</div>
+        <div class="resource-url">code.visualstudio.com</div>
+        <div class="resource-desc">The most popular code editor. Free, open-source, with thousands of extensions.</div>
+        <span class="resource-tag free">Free</span>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-name">VS Code Extensions Guide</div>
+        <div class="resource-url">Marketplace: search "HTML", "CSS", "JavaScript"</div>
+        <div class="resource-desc">Top picks: Live Server, Prettier, ESLint, Auto Rename Tag, Path Intellisense, Bracket Pair Colorizer.</div>
+        <span class="resource-tag free">Free</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Version Control & Hosting</h2>
+
+      <div class="resource-card">
+        <div class="resource-name">GitHub Learning Lab</div>
+        <div class="resource-url">lab.github.com</div>
+        <div class="resource-desc">Interactive courses on Git and GitHub. Learn branching, pull requests, and collaboration.</div>
+        <span class="resource-tag free">Free</span>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-name">GitHub Pages</div>
+        <div class="resource-url">pages.github.com</div>
+        <div class="resource-desc">Free hosting for static websites directly from your GitHub repository. Great for portfolios.</div>
+        <span class="resource-tag free">Free</span>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-name">Netlify</div>
+        <div class="resource-url">netlify.com</div>
+        <div class="resource-desc">Free static hosting with automatic deployments, custom domains, and SSL certificates.</div>
+        <span class="resource-tag free">Free Tier</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">YouTube Channels</h2>
+
+      <div class="resource-card">
+        <div class="resource-name">Traversy Media</div>
+        <div class="resource-url">youtube.com/traversymedia</div>
+        <div class="resource-desc">Crash courses and project tutorials on HTML, CSS, JavaScript, and frameworks.</div>
+        <span class="resource-tag free">Free</span>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-name">Fireship</div>
+        <div class="resource-url">youtube.com/fireship</div>
+        <div class="resource-desc">Short, intense coding tutorials and technology explainers. "X in 100 seconds" series.</div>
+        <span class="resource-tag free">Free</span>
+      </div>
+
+      <div class="resource-card">
+        <div class="resource-name">Web Dev Simplified</div>
+        <div class="resource-url">youtube.com/webdevsimplified</div>
+        <div class="resource-desc">Clear, concise tutorials on web development fundamentals and modern frameworks.</div>
+        <span class="resource-tag free">Free</span>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Recommended Learning Path</h4>
+      <p>1. Start with freeCodeCamp or The Odin Project for structured learning<br>
+      2. Use MDN Web Docs as your reference when you need details<br>
+      3. Watch YouTube tutorials for visual explanations<br>
+      4. Build projects immediately — don't just watch tutorials<br>
+      5. Practice daily, even if just 30 minutes</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

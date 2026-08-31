@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campaign Planning Worksheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .worksheet { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .worksheet h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .worksheet p { color: #4b5563; margin-bottom: 12px; }
+    .worksheet label { display: block; font-weight: 600; margin-bottom: 6px; color: #374151; }
+    .worksheet input, .worksheet textarea, .worksheet select { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; font-size: 14px; margin-bottom: 16px; background: white; }
+    .worksheet textarea { min-height: 80px; resize: vertical; }
+    .worksheet-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .worksheet-table th, .worksheet-table td { border: 1px solid #e5e7eb; padding: 10px 12px; text-align: left; }
+    .worksheet-table th { background: #176B4D; color: white; font-weight: 600; font-size: 13px; }
+    .worksheet-table td { font-size: 13px; color: #374151; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .worksheet { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Worksheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Meta Ads Deep Dive</div>
+      <h1>Campaign Planning Worksheet</h1>
+      <p class="subtitle">Complete campaign setup: objective, budget, audience, creative brief, copy frameworks, KPIs, tracking</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 1: Campaign Foundation</h2>
+      <div class="worksheet">
+        <h3>Define the basics</h3>
+        <table class="worksheet-table">
+          <tr><th>Field</th><th>Your Input</th></tr>
+          <tr><td>Campaign Name</td><td><input type="text" placeholder="CONV_US_ProductName_Jan24"></td></tr>
+          <tr><td>Objective</td><td><select><option>Sales (Conversions)</option><option>Leads</option><option>Traffic</option><option>Engagement</option><option>Awareness</option></select></td></tr>
+          <tr><td>Conversion Event</td><td><select><option>Purchase</option><option>Lead</option><option>CompleteRegistration</option><option>AddToCart</option><option>InitiateCheckout</option><option>Custom</option></select></td></tr>
+          <tr><td>Budget Type</td><td><select><option>Daily Budget</option><option>Lifetime Budget</option></select></td></tr>
+          <tr><td>Budget Amount</td><td><input type="text" placeholder="$50/day or $1,500 lifetime"></td></tr>
+          <tr><td>Campaign Dates</td><td><input type="text" placeholder="Start: Jan 15 / End: Feb 15 (or Ongoing)"></td></tr>
+          <tr><td>Budget Optimization</td><td><select><option>CBO (Campaign Budget Optimization)</option><option>ABO (Ad Set Budget Optimization)</option></select></td></tr>
+          <tr><td>Bid Strategy</td><td><select><option>Highest Volume</option><option>Cost Per Result Goal</option><option>ROAS Goal</option><option>Bid Cap</option></select></td></tr>
+          <tr><td>Target CPA / ROAS</td><td><input type="text" placeholder="$30 CPA or 3.0 ROAS"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 2: Audience Architecture</h2>
+      <div class="worksheet">
+        <h3>Plan your ad sets (audiences)</h3>
+        <table class="worksheet-table">
+          <tr><th>Ad Set Name</th><th>Audience Type</th><th>Source / Definition</th><th>Location</th><th>Age</th><th>Gender</th><th>Placements</th><th>Budget %</th></tr>
+          <tr><td><input type="text" value="LAL_1%_Purchasers"></td><td>Lookalike 1%</td><td>Purchasers 180d</td><td>US</td><td>18-65</td><td>All</td><td>Advantage+</td><td><input type="text" value="40%"></td></tr>
+          <tr><td><input type="text" value="LAL_1%_Leads"></td><td>Lookalike 1%</td><td>Leads 180d</td><td>US</td><td>18-65</td><td>All</td><td>Advantage+</td><td><input type="text" value="20%"></td></tr>
+          <tr><td><input type="text" value="Retarget_Web_30d"></td><td>Custom - Website</td><td>All visitors 30d</td><td>US</td><td>18-65</td><td>All</td><td>Feed + Stories</td><td><input type="text" value="25%"></td></tr>
+          <tr><td><input type="text" value="Retarget_Cart_7d"></td><td>Custom - Website</td><td>AddToCart 7d</td><td>US</td><td>18-65</td><td>All</td><td>Feed + Stories</td><td><input type="text" value="10%"></td></tr>
+          <tr><td><input type="text" value="Broad_Interest"></td><td>Advantage+ / Interest</td><td>Fitness + Health</td><td>US</td><td>25-55</td><td>All</td><td>Advantage+</td><td><input type="text" value="5%"></td></tr>
+        </table>
+        <p style="font-size: 13px; color: #666;">Rule: Min 3 ad sets per campaign. Max 5-7. Each needs 50+ conversions/week to exit learning.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 3: Creative Brief</h2>
+      <div class="worksheet">
+        <h3>Define what you're testing</h3>
+        <table class="worksheet-table">
+          <tr><th>Creative Concept</th><th>Format</th><th>Hook (First 3s / Headline)</th><th>Key Benefit</th><th>CTA</th><th>Status</th></tr>
+          <tr><td><input type="text" value="Problem/Solution"></td><td>Video (15s)</td><td><input type="text" placeholder="Stop wasting money on..."></td><td><input type="text" placeholder="Save 10hrs/week"></td><td><input type="text" value="Learn More"></td><td><select><option>Concept</option><option>Scripted</option><option>Filming</option><option>Ready</option></select></td></tr>
+          <tr><td><input type="text" value="Social Proof"></td><td>Carousel (5 cards)</td><td><input type="text" placeholder="How [Customer] got [Result]"></td><td><input type="text" placeholder="Real results"></td><td><input type="text" value="See How"></td><td><select><option>Concept</option><option>Scripted</option><option>Filming</option><option>Ready</option></select></td></tr>
+          <tr><td><input type="text" value="Demo/Walkthrough"></td><td>Video (30s)</td><td><input type="text" placeholder="Watch me [do thing] in 60s"></td><td><input type="text" placeholder="Easy to use"></td><td><input type="text" value="Try Free"></td><td><select><option>Concept</option><option>Scripted</option><option>Filming</option><option>Ready</option></select></td></tr>
+          <tr><td><input type="text" value="UGC Style"></td><td>Video (15s)</td><td><input type="text" placeholder="POV: You finally..."></td><td><input type="text" placeholder="Authentic"></td><td><input type="text" value="Get Started"></td><td><select><option>Concept</option><option>Scripted</option><option>Filming</option><option>Ready</option></select></td></tr>
+          <tr><td><input type="text" value="Offer/Urgent"></td><td>Image + Video</td><td><input type="text" placeholder="48hrs only: [Offer]"></td><td><input type="text" placeholder="Limited time"></td><td><input type="text" value="Claim Offer"></td><td><select><option>Concept</option><option>Scripted</option><option>Filming</option><option>Ready</option></select></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 4: Ad Copy Frameworks</h2>
+      <div class="worksheet">
+        <h3>Write 3 variations per framework per concept</h3>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">PAS (Problem-Agitate-Solution)</h4>
+        <textarea placeholder="Problem: [Pain point]
+Agitate: [Why it hurts more than they think]
+Solution: [Your unique fix]
+CTA: [Action]"></textarea>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">AIDA (Attention-Interest-Desire-Action)</h4>
+        <textarea placeholder="Attention: [Hook]
+Interest: [Why this matters]
+Desire: [Transformation + proof]
+Action: [CTA]"></textarea>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">Hook-Story-Offer</h4>
+        <textarea placeholder="Hook: [Stop scroll statement]
+Story: [Personal/client journey]
+Offer: [What you're giving + urgency]
+CTA: [Click link in bio / Learn more]"></textarea>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">Before-After-Bridge</h4>
+        <textarea placeholder="Before: [Current struggle]
+After: [Desired state]
+Bridge: [Your solution as the bridge]
+CTA: [Next step]"></textarea>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 5: KPI Targets & Tracking</h2>
+      <div class="worksheet">
+        <h3>Set measurable goals</h3>
+        <table class="worksheet-table">
+          <tr><th>Metric</th><th>Target</th><th>Measurement Tool</th><th>Review Cadence</th></tr>
+          <tr><td>CPA / CPL</td><td><input type="text" placeholder="$30"></td><td>Ads Manager + GA4</td><td>Daily / Weekly</td></tr>
+          <tr><td>ROAS</td><td><input type="text" placeholder="3.0"></td><td>Ads Manager + Pixel/CAPI</td><td>Daily / Weekly</td></tr>
+          <tr><td>CPC</td><td><input type="text" placeholder="$1.50"></td><td>Ads Manager</td><td>Weekly</td></tr>
+          <tr><td>CPM</td><td><input type="text" placeholder="$15"></td><td>Ads Manager</td><td>Weekly</td></tr>
+          <tr><td>CTR</td><td><input type="text" placeholder="1.5%"></td><td>Ads Manager</td><td>Weekly</td></tr>
+          <tr><td>Frequency</td><td><input type="text" placeholder="< 3"></td><td>Ads Manager</td><td>Weekly</td></tr>
+          <tr><td>Conversion Rate (Site)</td><td><input type="text" placeholder="3%"></td><td>GA4 / Pixel</td><td>Weekly</td></tr>
+          <tr><td>Add to Cart Rate</td><td><input type="text" placeholder="8%"></td><td>Pixel / GA4</td><td>Weekly</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 6: Tracking Setup Checklist</h2>
+      <div class="worksheet">
+        <h3>Verify before launch</h3>
+        <table class="worksheet-table">
+          <tr><th>Item</th><th>Status</th><th>Details</th></tr>
+          <tr><td>Meta Pixel installed on all pages</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td><td><input type="text" placeholder="Verify with Pixel Helper"></td></tr>
+          <tr><td>Conversions API (CAPI) connected</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td><td><input type="text" placeholder="Server-side events matching"></td></tr>
+          <tr><td>Standard events firing: Purchase/Lead</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td><td><input type="text" placeholder="Test Events tool"></td></tr>
+          <tr><td>Event Match Quality > 8/10</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td><td><input type="text" placeholder="Send email, phone, name"></td></tr>
+          <tr><td>AEM: 8 events prioritized</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td><td><input type="text" placeholder="Events Manager → Aggregated Events"></td></tr>
+          <tr><td>UTM parameters on all ad URLs</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td><td><input type="text" placeholder="utm_source=meta&utm_medium=cpc&utm_campaign=..."></td></tr>
+          <tr><td>Custom conversions created</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td><td><input type="text" placeholder="For non-standard events"></td></tr>
+          <tr><td>Test purchase/lead completed</td><td><select><option>Not Started</option><option>In Progress</option><option>Done</option></select></td><td><input type="text" placeholder="Verify in Events Manager"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 7: Launch Day Checklist</h2>
+      <div class="worksheet">
+        <h3>Final verification before hitting publish</h3>
+        <ul>
+          <li><input type="checkbox"> All ad sets have 3-5 ad variations</li>
+          <li><input type="checkbox"> Creatives meet specs (no text overlay issues, correct dimensions)</li>
+          <li><input type="checkbox"> Copy proofread (no typos, compliant claims, clear CTA)</li>
+          <li><input type="checkbox"> Landing page loads fast (<3s), mobile-optimized, congruent with ad</li>
+          <li><input type="checkbox"> Pixel/CAPI firing on landing page and thank you page</li>
+          <li><input type="checkbox"> UTM parameters appended to all destination URLs</li>
+          <li><input type="checkbox"> Budget and schedule correct</li>
+          <li><input type="checkbox"> Exclusion audiences applied (customers, employees)</li>
+          <li><input type="checkbox"> Automated rules set for cost guards</li>
+          <li><input type="checkbox"> Slack/email notifications for spend/CPA alerts</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Fill this worksheet BEFORE opening Ads Manager. It prevents "blank canvas paralysis" and ensures strategic alignment. Duplicate for each new campaign.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

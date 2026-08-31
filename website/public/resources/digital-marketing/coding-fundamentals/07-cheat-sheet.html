@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debugging Cheat Sheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .code-block { background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 13px; overflow-x: auto; }
+    .table-wrapper { overflow-x: auto; margin: 12px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #176B4D; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+    td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+    tr:nth-child(even) { background: #f9fafb; }
+    .error-item { background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #dc2626; border-radius: 6px; padding: 12px 16px; margin: 10px 0; }
+    .error-item h4 { font-size: 14px; font-weight: 600; color: #dc2626; margin-bottom: 4px; }
+    .error-item p { font-size: 13px; color: #7f1d1d; }
+    .fix { background: #ecfdf5; border-left: 4px solid #176B4D; padding: 8px 12px; margin-top: 6px; border-radius: 0 4px 4px 0; font-size: 13px; color: #065f46; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .badge { border: 1px solid #176B4D; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Cheat Sheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Coding Fundamentals</div>
+      <h1>Debugging Cheat Sheet</h1>
+      <p class="subtitle">Console methods, common errors, and step-by-step debugging techniques</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Console Methods</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Method</th><th>Use</th><th>Example</th></tr>
+          <tr><td>console.log()</td><td>General output</td><td>console.log("Hello", variable)</td></tr>
+          <tr><td>console.error()</td><td>Error messages (red)</td><td>console.error("Failed to load")</td></tr>
+          <tr><td>console.warn()</td><td>Warnings (yellow)</td><td>console.warn("Deprecated API")</td></tr>
+          <tr><td>console.table()</td><td>Display arrays/objects as table</td><td>console.table(usersArray)</td></tr>
+          <tr><td>console.time()</td><td>Measure execution time</td><td>console.time("loop") ... console.timeEnd("loop")</td></tr>
+          <tr><td>console.group()</td><td>Group related logs</td><td>console.group("Auth") ... console.groupEnd()</td></tr>
+          <tr><td>console.clear()</td><td>Clear the console</td><td>console.clear()</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Common JavaScript Errors</h2>
+
+      <div class="error-item">
+        <h4>TypeError: Cannot read property of undefined</h4>
+        <p>You're trying to access a property on something that doesn't exist.</p>
+        <div class="fix"><strong>Fix:</strong> Add a check: if (obj && obj.property) or use optional chaining obj?.property</div>
+      </div>
+
+      <div class="error-item">
+        <h4>ReferenceError: x is not defined</h4>
+        <p>You're using a variable that hasn't been declared.</p>
+        <div class="fix"><strong>Fix:</strong> Check spelling. Make sure the variable is declared with let/const/var or is in scope.</div>
+      </div>
+
+      <div class="error-item">
+        <h4>SyntaxError: Unexpected token</h4>
+        <p>Missing bracket, comma, semicolon, or other syntax issue.</p>
+        <div class="fix"><strong>Fix:</strong> Check matching brackets. Look at the line number in the error message.</div>
+      </div>
+
+      <div class="error-item">
+        <h4>TypeError: x is not a function</h4>
+        <p>You're trying to call something that isn't a function.</p>
+        <div class="fix"><strong>Fix:</strong> Check if the function name is correct. Ensure the function is imported/defined before use.</div>
+      </div>
+
+      <div class="error-item">
+        <h4>CORS Error (Cross-Origin)</h4>
+        <p>Browser blocks requests to a different domain for security.</p>
+        <div class="fix"><strong>Fix:</strong> Use a proxy, CORS headers on the server, or fetch from your own backend.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Debugging Workflow</h2>
+      <div class="code-block">Step 1: READ the error message
+  → What type of error? What line number?
+
+Step 2: ADD console.log() around the problem area
+  → Print variable values before and after the issue
+
+Step 3: USE THE DEBUGGER
+  → Add "debugger;" statement in code
+  → Or set breakpoint in DevTools Sources tab
+  → Step through code line by line
+
+Step 4: CHECK THE NETWORK TAB
+  → Are API calls failing? (Red status codes)
+  → Is data coming back as expected?
+
+Step 5: SIMPLIFY
+  → Comment out code until the error disappears
+  → Add code back one line at a time</div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">DevTools Tabs You Need</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Tab</th><th>What It Shows</th><th>When to Use</th></tr>
+          <tr><td>Console</td><td>Log output, errors, warnings</td><td>Always — your first stop</td></tr>
+          <tr><td>Elements</td><td>HTML structure and live CSS</td><td>Layout issues, styling bugs</td></tr>
+          <tr><td>Sources</td><td>JavaScript code with breakpoints</td><td>Step-by-step debugging</td></tr>
+          <tr><td>Network</td><td>HTTP requests and responses</td><td>API issues, slow loading</td></tr>
+          <tr><td>Performance</td><td>Rendering and CPU usage</td><td>Slow pages, jank</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Golden Rule of Debugging</h4>
+      <p>If you've been stuck for more than 30 minutes, take a break. Walk away. Come back with fresh eyes. Most bugs are simple mistakes you're too close to see.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agency Resource List — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .resource-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .resource-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .resource-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 4px; }
+    .resource-item p { font-size: 13px; color: #4b5563; }
+    .resource-item .price { font-size: 12px; color: #666; font-style: italic; margin-top: 4px; }
+    .table-wrapper { overflow-x: auto; margin: 12px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #176B4D; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+    td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+    tr:nth-child(even) { background: #f9fafb; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Resource List</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Freelance to Agency Systems</div>
+      <h1>Agency Resource List</h1>
+      <p class="subtitle">Bonsai, HoneyBook, Asana, Slack, Loom, and essential agency tools</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Project Management</h2>
+      <div class="resource-grid">
+        <div class="resource-item"><h4>Asana</h4><p>Project management for agencies. Task templates, timelines, workload management. Great for client work.</p><div class="price">Free for 10 users / $10.99/user/mo Pro</div></div>
+        <div class="resource-item"><h4>Monday.com</h4><p>Visual project management. Good for client-facing dashboards. More visual than Asana.</p><div class="price">$8/seat/mo Basic / $16/seat/mo Standard</div></div>
+        <div class="resource-item"><h4>ClickUp</h4><p>All-in-one workspace. Docs, tasks, goals, whiteboards. Replaces multiple tools.</p><div class="price">Free / $7/user/mo Unlimited</div></div>
+        <div class="resource-item"><h4>Trello</h4><p>Simple Kanban boards. Good for small teams or simple workflows. Easy to learn.</p><div class="price">Free / $5/user/mo Standard</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Client Management (CRM)</h2>
+      <div class="resource-grid">
+        <div class="resource-item"><h4>HoneyBook</h4><p>CRM for service-based businesses. Contracts, invoices, scheduling, client portal. All-in-one.</p><div class="price">$19/mo Starter / $79/mo Essentials</div></div>
+        <div class="resource-item"><h4>Dubsado</h4><p>CRM with strong workflow automation. Custom forms, contracts, proposals. Great for agencies.</p><div class="price">$20/mo Starter / $40/mo Premier</div></div>
+        <div class="resource-item"><h4>Pipedrive</h4><p>Sales-focused CRM. Pipeline management, deal tracking, email integration. Good for B2B.</p><div class="price">$14/user/mo Essential / $29/user/mo Advanced</div></div>
+        <div class="resource-item"><h4>HubSpot</h4><p>Free CRM with marketing tools. Good for growing agencies. Scales to enterprise.</p><div class="price">Free CRM / $45/mo Starter</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Contracts &amp; Invoicing</h2>
+      <div class="resource-grid">
+        <div class="resource-item"><h4>Bonsai</h4><p>Freelancer/agency platform. Contracts, proposals, invoicing, time tracking, tax prep. All-in-one.</p><div class="price">$17/mo Starter / $32/mo Professional</div></div>
+        <div class="resource-item"><h4>FreshBooks</h4><p>Invoicing + accounting. Professional invoices, expense tracking, time tracking. Client-friendly.</p><div class="price">$8.50/mo Lite / $15/mo Plus</div></div>
+        <div class="resource-item"><h4>Wave</h4><p>Free invoicing + accounting. Good for starting out. Paid payroll and payment processing.</p><div class="price">Free / $16/mo for payroll</div></div>
+        <div class="resource-item"><h4>QuickBooks</h4><p>Industry-standard accounting. Full bookkeeping, tax prep, payroll. Best for larger agencies.</p><div class="price">$15/mo Simple Start / $30/mo Plus</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Communication &amp; Documentation</h2>
+      <div class="resource-grid">
+        <div class="resource-item"><h4>Slack</h4><p>Team communication. Channels for projects, clients, internal. Integrates with everything.</p><div class="price">Free / $7.25/user/mo Pro</div></div>
+        <div class="resource-item"><h4>Loom</h4><p>Video messaging. Record walkthroughs, tutorials, reports. Saves hours of meetings.</p><div class="price">Free (25 vids) / $12.50/user/mo Business</div></div>
+        <div class="resource-item"><h4>Notion</h4><p>Knowledge base + wiki. Document SOPs, playbooks, processes. Great for agencies.</p><div class="price">Free / $8/user/mo Plus</div></div>
+        <div class="resource-item"><h4>Google Workspace</h4><p>Email, docs, sheets, slides, drive. Professional email. Collaboration tools.</p><div class="price">$6/user/mo Business Starter</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Agency Tool Stack by Budget</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Budget</th><th>CRM</th><th>Projects</th><th>Invoicing</th><th>Communication</th></tr>
+          <tr><td>$0 (Free)</td><td>HubSpot Free</td><td>Trello/Asana Free</td><td>Wave</td><td>Slack Free</td></tr>
+          <tr><td>$50/mo</td><td>HoneyBook Starter</td><td>Asana Pro</td><td>FreshBooks Lite</td><td>Slack Pro</td></tr>
+          <tr><td>$150/mo</td><td>Dubsado Premier</td><td>Monday Standard</td><td>Bonsai Pro</td><td>Slack Pro + Loom</td></tr>
+          <tr><td>$300+/mo</td><td>HubSpot Starter</td><td>ClickUp Business</td><td>QuickBooks Plus</td><td>Full stack</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Start with free tools, upgrade as revenue justifies it. Don't pay for tools you're not using. The best tool is the one your team actually uses — a $100/mo tool nobody uses is worse than a free tool everyone uses. Reevaluate tool stack every 6 months.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        &copy; 2026 ZetaGrow &mdash; Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

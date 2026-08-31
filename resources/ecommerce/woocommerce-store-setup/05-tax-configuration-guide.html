@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Configuration Guide — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    .data-table th { background: #176B4D; color: white; padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600; }
+    .data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; font-size: 13px; }
+    .data-table tr:nth-child(even) { background: #f9fafb; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Guide</div>
+    </div>
+    
+    <div class="title-section">
+      <div class="resource-type">WooCommerce Store Setup</div>
+      <h1>Tax Configuration Guide</h1>
+      <p class="subtitle">Set up GST correctly — because tax compliance is non-negotiable</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">📊 GST Rates in India</h2>
+      
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Product Category</th>
+            <th>GST Rate</th>
+            <th>Example Products</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Essentials</strong></td>
+            <td>0%</td>
+            <td>Fresh vegetables, milk, eggs</td>
+          </tr>
+          <tr>
+            <td><strong>Packaged Food</strong></td>
+            <td>5%</td>
+            <td>Rice, flour, cooking oil</td>
+          </tr>
+          <tr>
+            <td><strong>Clothing (under ₹1000)</strong></td>
+            <td>5%</td>
+            <td>T-shirts, casual wear</td>
+          </tr>
+          <tr>
+            <td><strong>Clothing (over ₹1000)</strong></td>
+            <td>12%</td>
+            <td>Premium clothing, branded wear</td>
+          </tr>
+          <tr>
+            <td><strong>Electronics</strong></td>
+            <td>18%</td>
+            <td>Phones, laptops, accessories</td>
+          </tr>
+          <tr>
+            <td><strong>Services</strong></td>
+            <td>18%</td>
+            <td>Consulting, digital services</td>
+          </tr>
+          <tr>
+            <td><strong>Luxury Items</strong></td>
+            <td>28%</td>
+            <td>Cars, tobacco, aerated drinks</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">🔧 WooCommerce Tax Setup</h2>
+      
+      <div class="template-card">
+        <h3>Configuration Steps</h3>
+        <div class="template-content">1. Go to WooCommerce → Settings → Tax
+2. Enable taxes (check "Enable taxes")
+3. Set "Prices entered with tax" = Yes
+4. Set "Calculate tax based on" = Customer shipping address
+5. Add tax rates for each GST slab
+6. Set up tax classes for different product types
+7. Test with sample orders</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 GST Tips for E-Commerce</h4>
+      <p>• Register for GST if turnover exceeds ₹40 lakhs (₹20 lakhs for NE states)<br>
+      • File GST returns monthly (GSTR-1, GSTR-3B)<br>
+      • Use GST-compliant invoicing<br>
+      • Keep records for 6 years<br>
+      • Consult a CA for complex tax situations</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -67,6 +67,25 @@ export function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+export function isStrongPassword(password: string): { valid: boolean; error?: string } {
+  if (password.length < 8) {
+    return { valid: false, error: "Password must be at least 8 characters long" };
+  }
+  if (!/[A-Z]/.test(password)) {
+    return { valid: false, error: "Password must contain at least one uppercase letter" };
+  }
+  if (!/[a-z]/.test(password)) {
+    return { valid: false, error: "Password must contain at least one lowercase letter" };
+  }
+  if (!/[0-9]/.test(password)) {
+    return { valid: false, error: "Password must contain at least one number" };
+  }
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+    return { valid: false, error: "Password must contain at least one special character (!@#$%^&*)" };
+  }
+  return { valid: true };
+}
+
 function generateReferralCode(baseName: string): string {
   const base = baseName.replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 4) || "ZETA";
   const array = new Uint8Array(4);
@@ -231,8 +250,9 @@ export const signup = action({
     }
 
     // Server-side password policy (client mirrors this)
-    if (!args.password || args.password.length < 8) {
-      throw new Error("Password must be at least 8 characters long");
+    const passwordCheck = isStrongPassword(args.password);
+    if (!passwordCheck.valid) {
+      throw new Error(passwordCheck.error);
     }
 
     // Check if user already exists
@@ -716,8 +736,9 @@ export const changePassword = mutation({
     if (!valid) {
       throw new Error("Current password is incorrect");
     }
-    if (args.newPassword.length < 8) {
-      throw new Error("New password must be at least 8 characters");
+    const passwordCheck = isStrongPassword(args.newPassword);
+    if (!passwordCheck.valid) {
+      throw new Error(passwordCheck.error);
     }
     if (args.newPassword === args.currentPassword) {
       throw new Error("New password must be different from current password");
@@ -803,6 +824,17 @@ export const changeEmail = mutation({
       email,
       updatedAt: now,
     });
+
+    // Revoke all other sessions except the current one (email is a security-sensitive field)
+    const sessions = await ctx.db
+      .query("sessions")
+      .withIndex("by_userId", (q: any) => q.eq("userId", user._id))
+      .collect();
+    for (const s of sessions) {
+      if (s.token !== args.token) {
+        await ctx.db.delete(s._id);
+      }
+    }
 
     await ctx.db.insert("notifications", {
       userId: user._id,
@@ -1158,8 +1190,9 @@ export const resetPassword = action({
       throw new Error("Reset link has expired. Please request a new one.");
     }
 
-    if (!args.newPassword || args.newPassword.length < 8) {
-      throw new Error("Password must be at least 8 characters long");
+    const passwordCheck = isStrongPassword(args.newPassword);
+    if (!passwordCheck.valid) {
+      throw new Error(passwordCheck.error);
     }
 
     const salt = generateSalt();

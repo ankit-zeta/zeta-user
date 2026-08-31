@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { action, mutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { isValidImageUrl } from "../shared/src/utils";
 
 const TICKET_CATEGORIES = [
   "courses",
@@ -128,6 +129,19 @@ export const createTicket = mutation({
       throw new Error("Please describe the issue in at least 10 characters");
     }
 
+    // Validate all attachments are images only (no virus/malicious files)
+    if (args.attachments && args.attachments.length > 0) {
+      for (const attachment of args.attachments) {
+        if (attachment.type === "image" && !isValidImageUrl(attachment.url)) {
+          throw new Error("Invalid attachment: only image files are allowed");
+        }
+        // Block non-image attachment types entirely
+        if (attachment.type !== "image" && attachment.type !== "link") {
+          throw new Error("Invalid attachment type: only images and links are allowed");
+        }
+      }
+    }
+
     const trackingId = await generateUniqueTrackingId(ctx);
     const now = Date.now();
 
@@ -229,6 +243,18 @@ export const sendTicketReply = mutation({
     const message = args.message.trim();
     if (message.length < 1) {
       throw new Error("Reply cannot be empty");
+    }
+
+    // Validate all attachments are images only (no virus/malicious files)
+    if (args.attachments && args.attachments.length > 0) {
+      for (const attachment of args.attachments) {
+        if (attachment.type === "image" && !isValidImageUrl(attachment.url)) {
+          throw new Error("Invalid attachment: only image files are allowed");
+        }
+        if (attachment.type !== "image" && attachment.type !== "link") {
+          throw new Error("Invalid attachment type: only images and links are allowed");
+        }
+      }
     }
 
     await ctx.db.insert("ticketMessages", {

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Ads Launch Checklist — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+    .checklist li:last-child { border-bottom: none; }
+    .checkbox { width: 20px; height: 20px; border: 2px solid #d1d5db; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .checklist-content { flex: 1; }
+    .checklist-title { font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+    .checklist-desc { font-size: 14px; color: #666; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .checkbox { border: 1px solid #176B4D; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Checklist</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Google Ads Essentials</div>
+      <h1>Google Ads Launch Checklist</h1>
+      <p class="subtitle">Account setup, billing, conversion tracking, keyword research, ads, extensions, location targeting, device targeting, schedule</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Account Setup & Billing</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Google Ads account created</div><div class="checklist-desc">Expert mode (not Smart Campaign); correct timezone & currency (cannot change later)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Billing & payments configured</div><div class="checklist-desc">Payment method added; billing threshold understood; promotional credit applied if eligible</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Account linking</div><div class="checklist-desc">Google Analytics 4 (GA4), Google Business Profile, Merchant Center, YouTube, Search Console</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Manager account (MCC) setup</div><div class="checklist-desc">If agency/multi-brand: create MCC, link client accounts, set user permissions</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Auto-tagging enabled</div><div class="checklist-desc">Settings → Account Settings → Auto-tagging: ON (required for GA4 integration)</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Conversion Tracking</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Google Tag (gtag.js) installed</div><div class="checklist-desc">On all pages; in <head>; verify with Tag Assistant / GTM Preview</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Conversion actions created</div><div class="checklist-desc">Purchase, Lead, Sign-up, Phone Call, Store Visit — each with correct category, value, count, window</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Enhanced Conversions enabled</div><div class="checklist-desc">Hash email/phone/name for better matching; test in Tag Assistant</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Conversion window set</div><div class="checklist-desc">30 days (Search), 90 days (consideration), match sales cycle</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Attribution model selected</div><div class="checklist-desc">Data-Driven (default, best) — requires 300+ conversions/30d; else Last Click</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Test conversions firing</div><div class="checklist-desc">Tag Assistant / GTM Preview → complete test purchase/lead → verify in Conversions → Summary</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Offline conversion import ready</div><div class="checklist-desc">CRM → GCLID capture → scheduled upload (daily/weekly) for B2B/long cycles</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Consent Mode v2 (EU/UK)</div><div class="checklist-desc">If targeting EEA/UK: CMP integrated, consent_mode parameters firing</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Keyword Research Complete</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Keyword Planner research done</div><div class="checklist-desc">Seed keywords → search volume, competition, CPC estimates, seasonal trends</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Competitor keyword analysis</div><div class="checklist-desc">Tools: Semrush, Ahrefs, SpyFu, or manual Search Terms Report from test campaign</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Negative keyword list created</div><div class="checklist-desc">Universal: free, cheap, diy, tutorial, jobs, login, support, complaint, scam, review</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Keywords grouped by theme/intent</div><div class="checklist-desc">15-20 per ad group; separate Brand, Non-Brand, Competitor, Generic, Long-tail</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Match types assigned</div><div class="checklist-desc">Phrase (default) + Exact (high intent) + Broad (Smart Bidding only) + Negative</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Ads Written & Extensions Added</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">RSA: 15 headlines, 4 descriptions per ad group</div><div class="checklist-desc">Mix: Benefit, Feature, Offer, Social Proof, CTA, Brand, Keyword Insertion; Pin H1 if needed</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Ad Strength: Good or Excellent</div><div class="checklist-desc">Fix "Poor" warnings: add unique headlines, include keywords, vary description themes</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Sitelinks: 4+ per campaign</div><div class="checklist-desc">Deep links: Categories, Offers, About, Contact, Resources; descriptions added</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Callouts: 4+ per campaign</div><div class="checklist-desc">USPs: Free Shipping, 24/7 Support, Money-Back Guarantee, Expert Team</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Structured Snippets: 2+ headers</div><div class="checklist-desc">Types, Brands, Models, Services, Categories, Styles, Amenities</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Call / Location / Price / Promotion</div><div class="checklist-desc">As applicable: Call (tracking #), Location (GBP linked), Price (services/products), Promotion (seasonal)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Image Extensions uploaded</div><div class="checklist-desc">4-20 images; 1.91:1 and 1:1; high quality; brand consistent</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Targeting & Settings</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Location targeting correct</div><div class="checklist-desc">Target: People in/regularly in targeted locations (not "interested in")</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Language targeting matches ad copy</div><div class="checklist-desc">English ads → English language targeting</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Audience segments added (Observation)</div><div class="checklist-desc">Remarketing, In-Market, Affinity, Custom, Demographics — start with Observation</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Exclusion lists applied</div><div class="checklist-desc">Customers (all campaigns), Employees, Low-quality, Competitors (if known)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Device bid adjustments reviewed</div><div class="checklist-desc">Mobile often +20-50% for local/services; Desktop for B2B; Tablet usually -50%</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Ad schedule set (if applicable)</div><div class="checklist-desc">Business hours for call-driven; 24/7 for e-commerce; timezone verified</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Landing Page & Tracking</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Landing page loads < 3s mobile</div><div class="checklist-desc">PageSpeed > 90; LCP < 2.5s; no CLS; optimize images, CSS, JS</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Message match: Ad → LP congruent</div><div class="checklist-desc">Same headline, offer, imagery; keyword in H1; clear CTA above fold</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">GA4 events firing on LP</div><div class="checklist-desc">page_view, scroll, form_start, form_submit, purchase — verify in DebugView</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">UTM parameters on final URLs</div><div class="checklist-desc">utm_source=google&utm_medium=cpc&utm_campaign={campaignid}&utm_content={adgroupid}&utm_term={keyword}</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Tracking template set (account level)</div><div class="checklist-desc">{lpurl}?utm_source=google&utm_medium=cpc&utm_campaign={campaignid}&utm_content={adgroupid}&utm_term={keyword}</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Mobile experience tested</div><div class="checklist-desc">Thumb-friendly, no intrusive popups, Apple/Google Pay, click-to-call works</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Pre-Launch Verification</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Policy compliance check</div><div class="checklist-desc">No prohibited content; landing page compliant; no misleading claims; proper disclosures</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Budget & bid strategy confirmed</div><div class="checklist-desc">Daily budget sufficient for learning (50 conv/30d per campaign); bid strategy matches goal</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Automated rules for safety</div><div class="checklist-desc">Pause if CPA > 2x target 3 days; Pause if spend > 1.5x daily budget; Email alerts</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Weekly review calendar blocked</div><div class="checklist-desc">Monday: Search Terms → Negatives; Breakdowns → Bid Adjustments; Creatives → Pause/Launch</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Launch in "Observation" mode first</div><div class="checklist-desc">Audiences on Observation for 1 week → review → switch winners to Targeting</div></li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Launch with audiences on "Observation" only. Let data accumulate for 7 days, then apply bid adjustments to winning segments. Never launch with targeting restrictions you haven't validated.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

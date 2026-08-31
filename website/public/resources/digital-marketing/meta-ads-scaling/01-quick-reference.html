@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meta Ads Scaling Quick Reference — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .table-wrapper { overflow-x: auto; margin: 12px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #176B4D; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+    td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+    tr:nth-child(even) { background: #f9fafb; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .cheat-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .cheat-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .cheat-item p { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Quick Reference</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Meta Ads Scaling Strategies</div>
+      <h1>Meta Ads Scaling Quick Reference</h1>
+      <p class="subtitle">Campaign structures for scaling, budget allocation rules, bidding strategies, audience expansion tactics, creative testing frameworks</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Scaling Frameworks</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Framework</th><th>When to Use</th><th>Risk Level</th><th>Timeframe</th></tr>
+          <tr><td>Vertical Scaling</td><td>Winning campaign, stable ROAS, sufficient creative pipeline</td><td>High</td><td>2-4 weeks</td></tr>
+          <tr><td>Horizontal Scaling</td><td>Creative fatigue, audience saturation, stable CPA</td><td>Medium</td><td>1-2 weeks</td></tr>
+          <tr><td>Duplicate & Scale</td><td>Proven ad set with 50+ conv/week</td><td>Low-Medium</td><td>1 week</td></tr>
+          <tr><td>Advantage+ Scaling</td><td>E-commerce, sufficient Pixel data (50+ purchases/week)</td><td>Low</td><td>1-2 weeks</td></tr>
+          <tr><td>Portfolio Scaling</td><td>Multiple winning campaigns, cross-product scaling</td><td>Low</td><td>2-4 weeks</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Budget Allocation Rules</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>The 20% Rule</h4><p>Increase daily budget ≤ 20% every 3-4 days<br>Example: $100 → $120 → $144 → $173<br>Monitor CPA for 48h after each increase<br>If CPA rises > 15%: roll back to previous level</p></div>
+        <div class="cheat-item"><h4>Funnel Budget Split</h4><p>TOF (Prospecting): 50-60% of total budget<br>MOF (Warm): 20-25% of total budget<br>BOF (Retargeting): 15-25% of total budget<br>Adjust based on LTV and funnel velocity</p></div>
+        <div class="cheat-item"><h4>CBO vs ABO for Scaling</h4><p>CBO: Let Meta distribute to winners (default)<br>ABO: Manual control when testing specific audiences<br>Use CBO for scaling, ABO for testing<br>Min 3-5 ad sets per CBO campaign</p></div>
+        <div class="cheat-item"><h4>Budget Ceiling Indicators</h4><p>CPA > 1.5x target for 3+ days<br>Frequency > 3.5 (audience saturated)<br>ROAS < 1.2x (below breakeven)<br>Learning Limited status (too small)</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Bidding Strategies for Scaling</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Strategy</th><th>Best For Scaling</th><th>How to Adjust</th><th>When to Switch</th></tr>
+          <tr><td>Highest Volume</td><td>Aggressive scaling, stable campaigns</td><td>Just increase budget</td><td>Default for scaling winners</td></tr>
+          <tr><td>Cost Per Result Goal</td><td>Predictable CPA scaling</td><td>Increase cap 10-15% per round</td><td>When CPA varies day-to-day</td></tr>
+          <tr><td>ROAS Goal</td><td>E-commerce, value-based scaling</td><td>Lower target slightly (3.0 → 2.8)</td><td>When revenue tracking is solid</td></tr>
+          <tr><td>Bid Cap</td><td>Strict cost control at scale</td><td>Raise cap incrementally</td><td>Experienced advertisers only</td></tr>
+          <tr><td>Highest Value</td><td>Maximize revenue at scale</td><td>Just increase budget</td><td>AOV optimization enabled</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Audience Expansion Tactics</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Lookalike Progression</h4><p>Start: 1% Lookalike (highest quality)<br>Step 2: 2-3% Lookalike (balanced)<br>Step 3: 5-10% Lookalike (reach)<br>Step 4: Broad targeting (AI finds converters)</p></div>
+        <div class="cheat-item"><h4>Custom Audience Expansion</h4><p>Website visitors: 30d → 60d → 180d<br>Engagement: Video viewers → Post engagers<br>Customer list: Purchasers → All customers<br>Lookalike from each Custom Audience type</p></div>
+        <div class="cheat-item"><h4>Interest Stacking</h4><p>Layer 3-5 related interests per ad set<br>Test: Fitness + Yoga + Health Food<br>Test: Entrepreneur + SaaS + Startups<br>Use Advantage+ for auto-expansion</p></div>
+        <div class="cheat-item"><h4>Geographic Expansion</h4><p>Start: Top 3 cities → Country-wide<br>Step 2: Adjacent countries (similar culture)<br>Step 3: International (localize creative)<br>Always test: US → UK → CA → AU → EU</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Creative Testing Framework</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Phase</th><th>What to Test</th><th>Test Method</th><th>Success Criteria</th></tr>
+          <tr><td>Hook Testing</td><td>5-8 different opening hooks</td><td>Dynamic Creative or A/B Test</td><td>Hook Rate > 30% (3s video play)</td></tr>
+          <tr><td>Concept Testing</td><td>3-5 creative angles</td><td>Separate ad sets, same audience</td><td>CTR > 1.5%, CPA < target</td></tr>
+          <tr><td>Format Testing</td><td>Video vs Image vs Carousel</td><td>A/B Test (same creative, different format)</td><td>ROAS > target for 7+ days</td></tr>
+          <tr><td>UGC vs Brand</td><td>Creator content vs polished brand</td><td>Side-by-side in same ad set</td><td>Engagement rate > 3%</td></tr>
+          <tr><td>Placement Optimization</td><td>Feed vs Stories vs Reels</td><td>Breakdown by placement</td><td>CPL/CPA per placement below target</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Scaling Decision Matrix</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Scale Aggressively (Vertical)</h4><p>✅ ROAS > target for 14+ days<br>✅ CPA < target for 14+ days<br>✅ Frequency < 2.5<br>✅ 100+ conversions per week<br>✅ Creative pipeline ready (3+ concepts)</p></div>
+        <div class="cheat-item"><h4>Scale Cautiously (Horizontal)</h4><p>⚠️ ROAS near target (within 10%)<br>⚠️ CPA near target (within 15%)<br>⚠️ Frequency 2.5-3.5<br>⚠️ 50-100 conversions per week<br>⚠️ Limited creative pipeline</p></div>
+        <div class="cheat-item"><h4>Don't Scale (Optimize First)</h4><p>❌ ROAS below target for 7+ days<br>❌ CPA above target for 7+ days<br>❌ Frequency > 3.5<br>❌ < 50 conversions per week<br>❌ Creative fatigue signals</p></div>
+        <div class="cheat-item"><h4>Pause & Rebuild</h4><p>🛑 ROAS < breakeven for 14+ days<br>🛑 CPA > 2x target for 14+ days<br>🛑 Ad account issues/rejections<br>🛑 Attribution broken (iOS, CAPI)<br>🛑 Landing page/conversion issue</p></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Always scale horizontally FIRST (new audiences, creatives, campaigns). Vertical scaling hits diminishing returns fast. Horizontal builds a diversified portfolio that's resilient to creative fatigue and audience saturation.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

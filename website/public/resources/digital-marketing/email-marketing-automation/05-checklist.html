@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Marketing Checklist — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+    .checklist li:last-child { border-bottom: none; }
+    .checkbox { width: 20px; height: 20px; border: 2px solid #d1d5db; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .checklist-content { flex: 1; }
+    .checklist-title { font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+    .checklist-desc { font-size: 14px; color: #666; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .checkbox { border: 1px solid #176B4D; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Checklist</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Email Marketing Automation</div>
+      <h1>Email Marketing Checklist</h1>
+      <p class="subtitle">Tool setup, list building, sequence creation, deliverability, testing, and optimization checklists</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Setup: Tool &amp; Configuration</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Email platform selected and configured</div><div class="checklist-desc">ConvertKit, Mailchimp, or Beehiiv. Account settings, business info, sender name, reply-to email.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Custom sending domain configured</div><div class="checklist-desc">DNS records added (SPF, DKIM, DMARC). Domain verified. Not using free ESP domain.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Sender reputation established</div><div class="checklist-desc">Warm-up period complete (2-4 weeks). Initial sends to engaged contacts only. Monitor sender score.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Consent and compliance</div><div class="checklist-desc">Double opt-in enabled (if required). Privacy policy updated. Unsubscribe link in every email. CAN-SPAM/GDPR compliant.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Analytics and tracking</div><div class="checklist-desc">UTM parameters on all links. GA4 goals for email conversions. Revenue tracking connected.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Build: Sequences &amp; Segments</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Lead magnet created and landing page live</div><div class="checklist-desc">Valuable resource that solves a specific problem. Landing page with clear CTA. Tested and converting.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Welcome sequence built (5-7 emails)</div><div class="checklist-desc">Delivers lead magnet, sets expectations, builds trust, introduces brand. Automation triggered on signup.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Cart/abandon sequence built (if e-commerce)</div><div class="checklist-desc">3-4 emails over 72 hours. Product images, social proof, incentive on last email. 1-24-72 hour cadence.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Post-purchase sequence built</div><div class="checklist-desc">Thank you, onboarding, usage tips, feedback request, review request. Reduces refunds and churn.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Segments defined and populated</div><div class="checklist-desc">At minimum: engaged, unengaged, buyers, non-buyers. Tags applied based on behavior.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Optimize: Tests &amp; Deliverability</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Subject line A/B tests running</div><div class="checklist-desc">Test: length, personalization, curiosity, urgency. Minimum 1,000 sends per variation. 95%+ confidence.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Unengaged subscribers cleaned</div><div class="checklist-desc">Remove: no opens in 90+ days. Re-engagement sequence before removal. List hygiene monthly.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Send time optimization tested</div><div class="checklist-desc">Test different days and times. Segment by timezone. Use platform's send-time optimization if available.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Deliverability monitored</div><div class="checklist-desc">Bounce rate &lt; 2%. Spam complaint rate &lt; 0.1%. Inbox placement tested (mail-tester.com). Monthly check.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Revenue per email tracked</div><div class="checklist-desc">Email-attributed revenue documented. Compare: automation vs broadcast. Optimize highest-revenue sequences first.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Complete the Setup section before sending anything. Then Build your welcome sequence (most important). Then Build cart abandonment (if e-commerce). Then Optimize. Most people try to do everything at once and end up with poor deliverability and low engagement.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        &copy; 2026 ZetaGrow &mdash; Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

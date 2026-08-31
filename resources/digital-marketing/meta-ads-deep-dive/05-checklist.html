@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ad Launch Checklist — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+    .checklist li:last-child { border-bottom: none; }
+    .checkbox { width: 20px; height: 20px; border: 2px solid #d1d5db; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .checklist-content { flex: 1; }
+    .checklist-title { font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+    .checklist-desc { font-size: 14px; color: #666; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .checkbox { border: 1px solid #176B4D; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Checklist</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Meta Ads Deep Dive</div>
+      <h1>Ad Launch Checklist</h1>
+      <p class="subtitle">Complete pre-launch verification: Pixel, audiences, creative, copy, budget, tracking, UTM, landing page</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Tracking & Pixel Setup</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Meta Pixel installed on all pages</div><div class="checklist-desc">Base code in <head>; verify with Meta Pixel Helper extension</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Conversions API (CAPI) connected</div><div class="checklist-desc">Server-side events via partner integration (Shopify, WP, GTM) or custom</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Standard events firing correctly</div><div class="checklist-desc">PageView, ViewContent, AddToCart, InitiateCheckout, Purchase/Lead — test in Events Manager</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Event Match Quality ≥ 8/10</div><div class="checklist-desc">Send email, phone, first/last name, city, state, zip, country for best matching</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">AEM configured (8 events max)</div><div class="checklist-desc">Prioritize events in Events Manager → Aggregated Event Measurement</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Custom conversions created</div><div class="checklist-desc">For non-standard events (e.g., "High Value Purchase" > $200)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Test purchase/lead completed</div><div class="checklist-desc">Verify in Events Manager → Test Events; check deduplication</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Audience Research & Setup</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Custom Audiences created</div><div class="checklist-desc">Website visitors (30/60/180d), purchasers, leads, video viewers, engagers, customer list uploads</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Lookalike Audiences created</div><div class="checklist-desc">1%, 2-3%, 5% from best sources (purchasers > leads > visitors)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Exclusion audiences applied</div><div class="checklist-desc">Existing customers (all campaigns), employees, converters (in prospecting)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Audience overlap checked</div><div class="checklist-desc">Tools → Audience Overlap; keep overlap < 15% between prospecting ad sets</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Advantage+ Audience configured</div><div class="checklist-desc">Add suggestions (interests/demographics) not hard constraints; let AI optimize</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Creative Assets</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">All formats created for each concept</div><div class="checklist-desc">1:1 (Feed), 9:16 (Stories/Reels), 4:5 (Portrait), 1.91:1 (Link)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Video specs met</div><div class="checklist-desc">≤4GB, ≤240min, H.264, 30fps max, AAC audio, 1080p min</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Captions burned into videos</div><div class="checklist-desc">85% watch without sound; .srt files uploaded for accessibility</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Brand guidelines followed</div><div class="checklist-desc">Logo placement, colors, fonts, tone consistent across all assets</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Text overlay < 20% (legacy rule)</div><div class="checklist-desc">Meta no longer penalizes, but clean creative performs better</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Creative named per convention</div><div class="checklist-desc">Format_Hook_Variation (e.g., VID_Hook1_V1, CAR_Benefit_V2)</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Ad Copy & Compliance</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Primary text: ≤125 chars (truncated)</div><div class="checklist-desc">Hook in first 80 chars; full text expands on click</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Headline: ≤40 chars</div><div class="checklist-desc">Clear benefit or offer; matches landing page</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Description: ≤30 chars</div><div class="checklist-desc">Secondary benefit; shows in some placements</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">CTA button selected</div><div class="checklist-desc">Shop Now, Learn More, Sign Up, Book Now, Contact Us — matches intent</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">No prohibited content</div><div class="checklist-desc">No before/after (weight loss), misleading claims, crypto, weapons, adult, etc.</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Special Ad Category declared (if applicable)</div><div class="checklist-desc">Housing, Employment, Credit, Social Issues — limits targeting</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Disclosure for partnerships/sponsored</div><div class="checklist-desc">#ad, #sponsored, Paid Partnership tag for creator content</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Budget, Schedule & Bidding</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Budget type & amount confirmed</div><div class="checklist-desc">Daily vs Lifetime; amount matches plan; sufficient for learning (50 conv/week/ad set)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Bid strategy selected</div><div class="checklist-desc">Highest Volume (default), Cost Cap, ROAS Goal, Bid Cap — matches goals</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Campaign dates set</div><div class="checklist-desc">Start: immediate or scheduled; End: date or ongoing</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Ad scheduling (if lifetime budget)</div><div class="checklist-desc">Business hours for B2B; peak hours for DTC; timezone correct</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">CBO vs ABO decision made</div><div class="checklist-desc">CBO = Meta optimizes; ABO = you control. CBO default for new.</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Landing Page & UTM</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Landing page loads < 3s (mobile)</div><div class="checklist-desc">PageSpeed Insights > 90; LCP < 2.5s; no layout shift</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Message match: Ad → LP congruent</div><div class="checklist-desc">Same headline, offer, imagery, colors; no bait-and-switch</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">UTM parameters on ALL ad URLs</div><div class="checklist-desc">utm_source=meta&utm_medium=cpc&utm_campaign={{campaign.name}}&utm_content={{ad.name}}</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Dynamic UTM macros used</div><div class="checklist-desc">{{campaign.name}}, {{adset.name}}, {{ad.name}} auto-populate in Ads Manager</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Conversion tracking on thank you page</div><div class="checklist-desc">Purchase/Lead event fires; deduplication working (Pixel + CAPI)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Mobile experience flawless</div><div class="checklist-desc">Thumb-friendly, no popups, fast checkout, Apple/Google Pay</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Safety Guards & Monitoring</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Automated rules created</div><div class="checklist-desc">Pause if CPA > 2x target for 3 days; Pause if spend > daily cap; Notify if ROAS < 1.5</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Spend caps set</div><div class="checklist-desc">Account spending limit; Campaign spending limit (lifetime)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Notification preferences</div><div class="checklist-desc">Email/push for: disapprovals, spending limits, learning limited, payment issues</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Creative refresh calendar</div><div class="checklist-desc">Schedule new creative every 2-3 weeks; batch produce</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Weekly review calendar blocked</div><div class="checklist-desc">Monday 9am: Review breakdowns, pause losers, scale winners, plan new tests</div></li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Create a "Launch Checklist" template in Notion/ClickUp. Duplicate for every campaign. Never launch without 100% completion. The 30 minutes saved prevents 30 hours of troubleshooting.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

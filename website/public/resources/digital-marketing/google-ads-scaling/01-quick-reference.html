@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Ads Scaling Quick Reference — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .table-wrapper { overflow-x: auto; margin: 12px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #176B4D; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+    td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+    tr:nth-child(even) { background: #f9fafb; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .cheat-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .cheat-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .cheat-item p { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Quick Reference</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Google Ads Advanced Scaling</div>
+      <h1>Google Ads Scaling Quick Reference</h1>
+      <p class="subtitle">Campaign types, bidding strategies, keyword match types, audience signals, and scaling frameworks for Google Ads</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Campaign Types Overview</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Campaign Type</th><th>Best For</th><th>Scaling Potential</th><th>Min Budget</th></tr>
+          <tr><td>Search</td><td>High-intent keywords, lead gen, e-commerce</td><td>High — expand keywords, broaden match types</td><td>$50/day</td></tr>
+          <tr><td>Display</td><td>Brand awareness, remarketing, visual storytelling</td><td>Medium — expand placements, audience targeting</td><td>$30/day</td></tr>
+          <tr><td>Shopping</td><td>E-commerce product ads, ROAS-driven campaigns</td><td>High — product feed optimization, Smart Shopping</td><td>$50/day</td></tr>
+          <tr><td>Performance Max</td><td>Full-funnel automation across all Google channels</td><td>Very High — AI-driven asset and audience expansion</td><td>$50/day</td></tr>
+          <tr><td>YouTube</td><td>Video awareness, consideration, remarketing</td><td>High — audience expansion, ad format testing</td><td>$20/day</td></tr>
+          <tr><td>App</td><td>App installs, in-app actions, engagement</td><td>Medium — expand targeting, optimize for value</td><td>$30/day</td></tr>
+          <tr><td>Local</td><td>Store visits, calls, local actions</td><td>Medium — expand radius, add locations</td><td>$20/day</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Bidding Strategies for Scaling</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Strategy</th><th>Best For</th><th>When to Use</th><th>Scaling Adjustment</th></tr>
+          <tr><td>Maximize Conversions</td><td>Lead gen, e-commerce with sufficient data</td><td>Default for scaling — let Google optimize</td><td>Just increase budget</td></tr>
+          <tr><td>Maximize Conversion Value</td><td>E-commerce with value tracking (revenue)</td><td>AOV optimization, revenue scaling</td><td>Just increase budget</td></tr>
+          <tr><td>Target CPA</td><td>Predictable cost-per-acquisition scaling</td><td>When CPA varies day-to-day</td><td>Raise target 10-15% per round</td></tr>
+          <tr><td>Target ROAS</td><td>E-commerce, value-based scaling</td><td>When revenue tracking is solid</td><td>Lower target slightly (400% → 350%)</td></tr>
+          <tr><td>Maximize Clicks</td><td>Testing, traffic driving, top-of-funnel</td><td>Early stage or content promotion</td><td>Set CPC cap, increase budget</td></tr>
+          <tr><td>Manual CPC</td><td>Full control, experienced advertisers</td><td>Tight budget control, specific keyword bidding</td><td>Adjust bids per keyword</td></tr>
+          <tr><td>Enhanced CPC</td><td>Transition from manual to automated</td><td>When ready to let Google adjust bids</td><td>Switch to Target CPA/ROAS</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Keyword Match Types</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Exact Match [keyword]</h4><p>Triggers on the exact phrase and close variations<br>Most control, lowest volume, highest intent<br>Use for: proven converters, tight budget control<br>Example: [buy running shoes online]</p></div>
+        <div class="cheat-item"><h4>Phrase Match "keyword"</h4><p>Triggers when the phrase is included (in order)<br>Broader than exact, tighter than broad<br>Use for: scaling with moderate control<br>Example: "running shoes" → buy running shoes online</p></div>
+        <div class="cheat-item"><h4>Broad Match keyword</h4><p>Triggers on related terms, synonyms, and intent<br>Highest volume, lowest control, most learning<br>Use for: aggressive scaling with Smart Bidding<br>Example: running shoes → best sneakers for jogging</p></div>
+        <div class="cheat-item"><h4>Match Type Strategy</h4><p>Start: Exact + Phrase for control<br>Scale: Add Broad + Smart Bidding (Target CPA/ROAS)<br>Monitor: Search Terms report weekly<br>Clean: Add negatives for irrelevant queries</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Audience Signals for Scaling</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Audience Type</th><th>Description</th><th>Scaling Use</th></tr>
+          <tr><td>First-Party Data</td><td>Customer lists, website visitors, app users</td><td>Upload lists → Similar audiences, remarketing</td></tr>
+          <tr><td>Similar/Lookalike</td><td>Google's expansion of your best converters</td><td>Scale reach while maintaining intent</td></tr>
+          <tr><td>In-Market</td><td>Users actively researching your category</td><td>High-intent scaling for product categories</td></tr>
+          <tr><td>Affinity</td><td>Users with long-term interests matching your brand</td><td>Top-of-funnel awareness scaling</td></tr>
+          <tr><td>Demographic</td><td>Age, gender, household income, parental status</td><td>Narrow or expand for efficiency</td></tr>
+          <tr><td>Custom Intent</td><td>Keywords, URLs, and apps your audience uses</td><td>Target competitor audiences and intent signals</td></tr>
+          <tr><td>Life Events</td><td>Users going through major life changes</td><td>High-impact timing for relevant products</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Scaling Frameworks</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Vertical Scaling</h4><p>Increase budget on winning campaigns<br>Rule: +20% budget every 3-4 days<br>Monitor CPA for 48h after each increase<br>Stop if CPA rises > 15% above target</p></div>
+        <div class="cheat-item"><h4>Horizontal Scaling</h4><p>Expand to new keywords, audiences, campaigns<br>Lower risk than vertical scaling<br>Builds diversified campaign portfolio<br>Test 2-3 new variables per week</p></div>
+        <div class="cheat-item"><h4>Geographic Scaling</h4><p>Expand to new regions, cities, countries<br>Start: Top cities → Regional → National<br>Localize ad copy and landing pages<br>Separate campaigns per geo for budget control</p></div>
+        <div class="cheat-item"><h4>Channel Expansion</h4><p>Add new campaign types (Search → Shopping → PMax)<br>Each channel captures different intent levels<br>Performance Max as full-funnel amplifier<br>YouTube for awareness feeding Search demand</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Scaling Decision Matrix</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Scale Aggressively</h4><p>✅ ROAS > target for 14+ days<br>✅ CPA < target for 14+ days<br>✅ Quality Score 7+ on key terms<br>✅ 100+ conversions per month<br>✅ Conversion tracking fully verified</p></div>
+        <div class="cheat-item"><h4>Scale Cautiously</h4><p>⚠️ ROAS near target (within 10%)<br>⚠️ CPA near target (within 15%)<br>⚠️ Quality Score 5-7<br>⚠️ 30-100 conversions per month<br>⚠️ Limited creative/keyword pipeline</p></div>
+        <div class="cheat-item"><h4>Optimize First</h4><p>❌ ROAS below target for 7+ days<br>❌ CPA above target for 7+ days<br>❌ Quality Score < 5<br>❌ < 30 conversions per month<br>❌ Tracking issues or data gaps</p></div>
+        <div class="cheat-item"><h4>Pause & Rebuild</h4><p>🛑 ROAS < breakeven for 14+ days<br>🛑 CPA > 2x target for 14+ days<br>🛑 Account suspension or policy issues<br>🛑 Landing page broken or slow<br>🛑 Attribution completely broken</p></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Google Ads rewards quality. Before scaling budget, improve Quality Score by refining ad copy, landing page relevance, and expected CTR. A 1-point Quality Score improvement can reduce CPC by 10-15%, stretching your scaling budget further.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

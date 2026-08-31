@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Ads Scaling Cheat Sheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .cheat-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .cheat-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .cheat-item p { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Cheat Sheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Google Ads Advanced Scaling</div>
+      <h1>Google Ads Scaling Cheat Sheet</h1>
+      <p class="subtitle">Bidding strategies, match types, ad specs, Quality Score factors, scaling rules, and quick-reference formulas</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Bidding Strategy Quick Reference</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Target CPA</h4><p>Best for: Lead gen, predictable costs<br>Requires: 30+ conv/month<br>Scaling: Raise budget 20% every 3-4 days<br>Risk: May limit volume if target too tight<br>Adjustment: Raise target 10% to increase volume</p></div>
+        <div class="cheat-item"><h4>Target ROAS</h4><p>Best for: E-commerce with revenue tracking<br>Requires: 50+ conv/month, value tracking<br>Scaling: Lower ROAS target 10% to increase volume<br>Risk: May overspend on low-value conversions<br>Adjustment: Use Conversion Value Rules for margin tiers</p></div>
+        <div class="cheat-item"><h4>Maximize Conversions</h4><p>Best for: Testing, under 30 conv/month<br>Requires: Conversion tracking active<br>Scaling: Just increase budget<br>Risk: No cost control, CPA may fluctuate<br>Switch to: Target CPA once 30+ conv achieved</p></div>
+        <div class="cheat-item"><h4>Maximize Conversion Value</h4><p>Best for: E-commerce without ROAS history<br>Requires: Value tracking on conversions<br>Scaling: Increase budget, optimize product feed<br>Risk: May chase high-AOV, low-margin products<br>Switch to: Target ROAS once 50+ conv achieved</p></div>
+        <div class="cheat-item"><h4>Manual CPC</h4><p>Best for: Full control, small budgets<br>Requires: None<br>Scaling: Adjust bids per keyword manually<br>Risk: Time-intensive, no AI optimization<br>Transition to: Enhanced CPC → Smart Bidding</p></div>
+        <div class="cheat-item"><h4>Maximize Clicks</h4><p>Best for: Top-of-funnel, traffic testing<br>Requires: None<br>Scaling: Set CPC cap, increase budget<br>Risk: No conversion optimization<br>Switch to: Target CPA after collecting conversion data</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Match Type Scaling Rules</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Exact Match [keyword]</h4><p>Control: Highest<br>Volume: Lowest<br>Intent: Highest<br>Use for: Proven converters, tight CPA control<br>Scale by: Adding close variations, expanding to similar terms</p></div>
+        <div class="cheat-item"><h4>Phrase Match "keyword"</h4><p>Control: Medium<br>Volume: Medium<br>Intent: Medium-High<br>Use for: Balanced scaling with moderate control<br>Scale by: Adding related phrases, monitoring Search Terms weekly</p></div>
+        <div class="cheat-item"><h4>Broad Match keyword</h4><p>Control: Lowest<br>Volume: Highest<br>Intent: Variable<br>Use for: Aggressive scaling WITH Smart Bidding only<br>Rule: Never use Broad without Target CPA/ROAS<br>Scale by: Adding negatives aggressively weekly</p></div>
+        <div class="cheat-item"><h4>Match Type Progression</h4><p>Start: Exact + Phrase (control)<br>Scale: Add Broad + Smart Bidding<br>Monitor: Search Terms report weekly<br>Clean: Add negatives for irrelevant queries<br>Goal: 70% Exact, 20% Phrase, 10% Broad</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Ad Specs & Limits</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>RSA (Responsive Search Ad)</h4><p>Headlines: 15 max, 30 chars each<br>Descriptions: 4 max, 90 chars each<br>Pinned positions: 1, 2, or 3<br>Display URL paths: 2 (15 chars each)<br>Ad Strength: Aim for "Good" or "Excellent"</p></div>
+        <div class="cheat-item"><h4>Shopping Ads</h4><p>Title: 150 chars (optimize for 70)<br>Description: 5,000 chars (use 150)<br>Image: 1:1 ratio, white background<br>Price: Must be accurate, match LP<br>Brand: Required field in feed</p></div>
+        <div class="cheat-item"><h4>Performance Max</h4><p>Headlines: 5 (30 chars each)<br>Descriptions: 5 (90 chars each)<br>Images: 3-20 (1:1, 1.91:1, 4:5)<br>Videos: 0-5 (5s, 15s, 30s, 60s)<br>Logos: 1-5 (1:1, 4:1)</p></div>
+        <div class="cheat-item"><h4>YouTube Ads</h4><p>Skip after: 5 seconds (TrueView)<br>Recommended: 15-60 seconds<br>CTA: 10 chars overlay<br>Headline: 15 chars overlay<br>Landing page: Must match ad content</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Quality Score Quick Factors</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Expected CTR (35% of QS)</h4><p>Target: Above average for all keywords<br>Boost: Ad extensions, specific ad copy<br>Hurt: Generic ads, no extensions<br>Fix: Tighten ad groups, add DKI<br>Check: Keywords → Quality Score tab</p></div>
+        <div class="cheat-item"><h4>Ad Relevance (35% of QS)</h4><p>Target: Above average<br>Boost: Keyword in H1, intent match<br>Hurt: Generic ads across ad groups<br>Fix: Single-theme ad groups (STAGs)<br>Check: Ad Relevance column in KW view</p></div>
+        <div class="cheat-item"><h4>Landing Page Experience (30% of QS)</h4><p>Target: Above average<br>Boost: Speed (< 3s), relevance, mobile-first<br>Hurt: Slow load, no keyword, poor UX<br>Fix: LP optimization, message match<br>Check: Landing Page Experienc column</p></div>
+        <div class="cheat-item"><h4>Quality Score Impact</h4><p>QS 10: Pay ~50% less per click<br>QS 7: Pay ~20% less per click<br>QS 5: Pay baseline CPC<br>QS 3: Pay ~67% more per click<br>QS 1: Pay ~150% more (or won't show)</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Scaling Rules of Thumb</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Budget Increases</h4><p>Rule: +15-20% every 3-4 days<br>Max: Never increase > 25% in one change<br>Monitor: 48 hours after each increase<br>Stop: If CPA rises > 15% above target<br>Reset: Revert to previous budget, wait 7 days</p></div>
+        <div class="cheat-item"><h4>New Keyword Additions</h4><p>Rule: 2-3 new ad groups per week<br>Start: Phrase + Broad (Smart Bidding only)<br>Monitor: 7-14 days for data<br>Promote: Winners to Exact + own ad group<br>Cull: No conversions after 100 clicks</p></div>
+        <div class="cheat-item"><h4>Audience Expansion</h4><p>Rule: 1 new audience per week<br>Start: Observation mode always<br>Switch: To Targeting after 7 days of data<br>Bid Adjust: +10-50% based on performance<br>Exclude: Past converters from prospecting</p></div>
+        <div class="cheat-item"><h4>Geographic Scaling</h4><p>Rule: Top cities first, then regions<br>Separate: Campaigns per geo for budget control<br>Localize: Ad copy and landing pages<br>Monitor: CPA per region (may vary 20-40%)<br>Pause: Regions with CPA > 2x target</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Key Formulas</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>ROAS Formula</h4><p>ROAS = Revenue ÷ Ad Spend × 100<br>Break-even ROAS = 1 ÷ Profit Margin<br>Example: 60% margin → Break-even = 167%<br>Target: 300-500% for profitable scaling</p></div>
+        <div class="cheat-item"><h4>CPA Formula</h4><p>CPA = Total Spend ÷ Total Conversions<br>Max CPA = Customer LTV × Profit Margin<br>Example: $200 LTV × 60% = $120 max CPA<br>Target: 50% of max CPA for healthy scaling</p></div>
+        <div class="cheat-item"><h4>Impression Share</h4><p>IS = Your Impressions ÷ Total Eligible<br>Lost IS (Budget) = Can't afford more<br>Lost IS (Rank) = QS or bid too low<br>Target: 70%+ for scaling campaigns</p></div>
+        <div class="cheat-item"><h4>Conversion Rate</h4><p>CVR = Conversions ÷ Clicks × 100<br>Search benchmark: 3-5%<br>Display benchmark: 0.5-1.5%<br>E-commerce benchmark: 2-3%<br>Below benchmark = fix LP before scaling</p></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Print this cheat sheet and keep it next to your screen. The scaling rules (20% budget increases, 3-4 day intervals, 48-hour monitoring) are the difference between profitable scaling and wasted budget. When in doubt, scale slower.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

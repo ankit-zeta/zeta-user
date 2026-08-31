@@ -95,7 +95,6 @@ export default function CheckoutPage() {
     api.affiliates.processPurchaseWithAffiliate
   );
 
-  const [agreeNoRefund, setAgreeNoRefund] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [stage, setStage] = useState<Stage>("review");
   const [errorMsg, setErrorMsg] = useState("");
@@ -448,21 +447,6 @@ export default function CheckoutPage() {
                 <label className="flex items-start gap-2.5 cursor-pointer select-none">
                   <input
                     type="checkbox"
-                    checked={agreeNoRefund}
-                    onChange={(e) => setAgreeNoRefund(e.target.checked)}
-                    className="mt-0.5 accent-brand-600"
-                  />
-                  <span className="text-[11px] text-textMuted leading-relaxed">
-                    <strong className="text-textMain">No-refund policy.</strong> I understand that ZetaGrow sells
-                    digital learning content delivered instantly. Once payment succeeds and course access is granted,{" "}
-                    <strong className="text-textMain">the fee is strictly non-refundable</strong> — including change of mind,
-                    unused access, or failure to complete courses. Access is not transferable or shareable.
-                  </span>
-                </label>
-
-                <label className="flex items-start gap-2.5 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
                     checked={agreeTerms}
                     onChange={(e) => setAgreeTerms(e.target.checked)}
                     className="mt-0.5 accent-brand-600"
@@ -479,8 +463,7 @@ export default function CheckoutPage() {
 
                 <div className="rounded-lg bg-blue-50/60 border border-blue-100 p-3 text-[10px] text-blue-800 leading-relaxed">
                   <strong>TDS disclosure:</strong> if you later earn via work projects or affiliate commissions,
-                  Tax Deducted at Source applies as per Income Tax rules (currently 2% above ₹20,000/yr on affiliate
-                  commissions and 10% above ₹50,000/yr on work earnings, Apr–Mar). Course fees are one-time purchase
+                  Tax Deducted at Source applies as per Income Tax rules. Course fees are one-time purchase
                   prices; {gst?.enabled ? `${gst.rate}% ${gst.label} is added at checkout as shown in the order summary.` : "taxes are shown at checkout where applicable."}
                 </div>
               </div>
@@ -551,7 +534,7 @@ export default function CheckoutPage() {
                 ) : (
                   <button
                     onClick={startPayment}
-                    disabled={!agreeNoRefund || !agreeTerms || busy}
+                    disabled={!agreeTerms || busy}
                     className="btn-primary w-full py-3.5 text-sm font-semibold shadow-sm disabled:opacity-50"
                   >
                     {busy ? (

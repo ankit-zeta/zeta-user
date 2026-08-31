@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agency Cheat Sheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .cheat-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .cheat-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .cheat-item p { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .formula-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
+    .formula-label { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .formula { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+    .table-wrapper { overflow-x: auto; margin: 12px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #176B4D; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+    td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+    tr:nth-child(even) { background: #f9fafb; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Cheat Sheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Freelance to Agency Systems</div>
+      <h1>Agency Systems Cheat Sheet</h1>
+      <p class="subtitle">Pricing formulas, scope creep prevention, hiring, and financial management</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Pricing Formulas</h2>
+      <div class="formula-box"><div class="formula-label">Minimum Hourly Rate</div><div class="formula">(Monthly Income Goal + Monthly Costs + Profit Margin) ÷ Billable Hours = Minimum Rate</div></div>
+      <div class="formula-box"><div class="formula-label">Target Retainer Price</div><div class="formula">Monthly Hours Needed × Minimum Hourly Rate × 1.2 (buffer) = Retainer Price</div></div>
+      <div class="formula-box"><div class="formula-label">Value-Based Price</div><div class="formula">Client's Revenue Increase × Your % (10-25%) = Value-Based Price</div></div>
+      <div class="formula-box"><div class="formula-label">Project Price</div><div class="formula">Estimated Hours × Hourly Rate × 1.3 (scope buffer) = Project Price</div></div>
+      <div class="formula-box"><div class="formula-label">Break-Even Utilization</div><div class="formula">Fixed Costs ÷ (Revenue Per Hour × Available Hours) = Minimum Utilization %</div></div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Scope Creep Prevention</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Trigger Phrase</th><th>Response</th></tr>
+          <tr><td>"Can you also do...?"</td><td>"Happy to! Let me put together a change order with pricing for that."</td></tr>
+          <tr><td>"This should be included"</td><td>"The SOW covers [X]. What you're asking is outside scope. Here's the pricing."</td></tr>
+          <tr><td>"Quick favor..."</td><td>"I can do that! It'll be [X hours] at [rate]. Want me to proceed?"</td></tr>
+          <tr><td>"We need it faster"</td><td>"I can expedite. Rush fee is 50% premium. Want me to prioritize?"</td></tr>
+          <tr><td>"Just a small change"</td><td>"Small changes add up. Let me track and we can address in next month's scope."</td></tr>
+          <tr><td>"Other agencies include..."</td><td>"Our pricing is based on defined scope. Happy to add that to the next phase."</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Hiring Checklist</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Before You Hire</h4><p>Revenue supports salary for 6 months<br>You're at capacity (turning away work)<br>SOPs exist for the role<br>You can define the role clearly<br>You have a trial project ready</p></div>
+        <div class="cheat-item"><h4>Hiring Process</h4><p>Job post on 3 platforms<br>Skills assessment (paid trial)<br>Interview (2 rounds max)<br>Reference check (1 client)<br>2-week paid trial before full offer</p></div>
+        <div class="cheat-item"><h4>First 30 Days</h4><p>Day 1-7: Shadow you on all work<br>Day 8-14: Do work, you review<br>Day 15-21: Handle 1 client (test)<br>Day 22-30: Full workload + review<br>End of month: Performance review</p></div>
+        <div class="cheat-item"><h4>Red Flags</h4><p>Can't follow SOPs exactly<br>Needs constant supervision<br>Misses deadlines in trial<br>Doesn't ask questions<br>Poor communication</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Financial Management</h2>
+      <div class="formula-box"><div class="formula-label">Profit Margin Target</div><div class="formula">(Revenue - All Costs) ÷ Revenue ≥ 40% for healthy agency</div></div>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Revenue Benchmarks</h4><p>Solo: $80-150K/yr<br>2-person: $200-300K/yr<br>Micro (3-5): $500K-1M/yr<br>Small (6-10): $1-2M/yr<br>Per employee: $150-250K</p></div>
+        <div class="cheat-item"><h4>Cost Structure</h4><p>Labor: 40-50% of revenue<br>Tools/software: 5-8%<br>Marketing: 5-10%<br>Overhead: 5-10%<br>Profit: 25-40%</p></div>
+        <div class="cheat-item"><h4>Cash Flow Rules</h4><p>Collect 50% upfront always<br>Net 15 or Net 30 payment terms<br>Invoice immediately on delivery<br>Follow up at Day 1, 7, 14<br>Charge late fees (1.5%/mo)</p></div>
+        <div class="cheat-item"><h4>Emergency Fund</h4><p>Target: 3-6 months expenses<br>Calculate: Monthly costs × 6<br>Keep in separate account<br>Never touch for growth investments<br>Rebuild after any drawdown</p></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>The #1 agency killer is scope creep. Every "quick favor" erodes your margin. Track scope creep monthly — if it's happening repeatedly, your SOW is too vague or your pricing is too low. Both are fixable, but only if you measure it.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        &copy; 2026 ZetaGrow &mdash; Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

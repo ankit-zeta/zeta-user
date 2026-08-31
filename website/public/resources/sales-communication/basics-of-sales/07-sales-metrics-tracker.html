@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Metrics Tracker — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .metric-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+    .metric-card h3 { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; }
+    .metric-card p { font-size: 13px; color: #666; margin-bottom: 8px; }
+    .metric-formula { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 15px; font-family: 'Courier New', monospace; font-size: 13px; color: #176B4D; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    .data-table th { background: #176B4D; color: white; padding: 12px 15px; text-align: left; font-size: 13px; font-weight: 600; }
+    .data-table td { padding: 12px 15px; border-bottom: 1px solid #e5e7eb; font-size: 13px; }
+    .data-table tr:nth-child(even) { background: #f9fafb; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Tracker</div>
+    </div>
+    
+    <div class="title-section">
+      <div class="resource-type">Basics of Sales</div>
+      <h1>Sales Metrics Tracker</h1>
+      <p class="subtitle">Track the numbers that matter — because what gets measured gets improved</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">📊 Key Metrics to Track Weekly</h2>
+      
+      <div class="metric-card">
+        <h3>1. Lead Response Time</h3>
+        <p>How fast you respond to new leads. Speed wins — respond within 5 minutes for 10x higher conversion.</p>
+        <div class="metric-formula">Formula: Time from lead capture to first contact</div>
+      </div>
+
+      <div class="metric-card">
+        <h3>2. Conversion Rate (Lead → Customer)</h3>
+        <p>What percentage of leads become paying customers. Industry average: 2-5%.</p>
+        <div class="metric-formula">Formula: (Customers ÷ Total Leads) × 100</div>
+      </div>
+
+      <div class="metric-card">
+        <h3>3. Average Deal Size</h3>
+        <p>Average revenue per closed deal. Increase by upselling and offering packages.</p>
+        <div class="metric-formula">Formula: Total Revenue ÷ Number of Deals</div>
+      </div>
+
+      <div class="metric-card">
+        <h3>4. Sales Cycle Length</h3>
+        <p>Average days from first contact to closed deal. Shorter = more efficient.</p>
+        <div class="metric-formula">Formula: Total Days to Close ÷ Number of Deals</div>
+      </div>
+
+      <div class="metric-card">
+        <h3>5. Pipeline Value</h3>
+        <p>Total potential revenue in your pipeline. Your "forecast" of future income.</p>
+        <div class="metric-formula">Formula: Sum of (Deal Value × Probability %) for all active deals</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">📋 Weekly Tracking Template</h2>
+      
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Target</th>
+            <th>Actual</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Calls Made</td>
+            <td>50</td>
+            <td>_________</td>
+            <td>☐ Hit ☐ Missed</td>
+          </tr>
+          <tr>
+            <td>Emails Sent</td>
+            <td>100</td>
+            <td>_________</td>
+            <td>☐ Hit ☐ Missed</td>
+          </tr>
+          <tr>
+            <td>New Leads</td>
+            <td>20</td>
+            <td>_________</td>
+            <td>☐ Hit ☐ Missed</td>
+          </tr>
+          <tr>
+            <td>Meetings Booked</td>
+            <td>10</td>
+            <td>_________</td>
+            <td>☐ Hit ☐ Missed</td>
+          </tr>
+          <tr>
+            <td>Proposals Sent</td>
+            <td>5</td>
+            <td>_________</td>
+            <td>☐ Hit ☐ Missed</td>
+          </tr>
+          <tr>
+            <td>Deals Closed</td>
+            <td>2</td>
+            <td>_________</td>
+            <td>☐ Hit ☐ Missed</td>
+          </tr>
+          <tr>
+            <td>Revenue Generated</td>
+            <td>₹50,000</td>
+            <td>_________</td>
+            <td>☐ Hit ☐ Missed</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">📈 Monthly Dashboard</h2>
+      
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Month 1</th>
+            <th>Month 2</th>
+            <th>Month 3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Total Leads</td>
+            <td>_________</td>
+            <td>_________</td>
+            <td>_________</td>
+          </tr>
+          <tr>
+            <td>Conversion Rate</td>
+            <td>_________%</td>
+            <td>_________%</td>
+            <td>_________%</td>
+          </tr>
+          <tr>
+            <td>Revenue</td>
+            <td>₹_________</td>
+            <td>₹_________</td>
+            <td>₹_________</td>
+          </tr>
+          <tr>
+            <td>Avg Deal Size</td>
+            <td>₹_________</td>
+            <td>₹_________</td>
+            <td>₹_________</td>
+          </tr>
+          <tr>
+            <td>Sales Cycle (days)</td>
+            <td>_________</td>
+            <td>_________</td>
+            <td>_________</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Metrics That Matter Most for Beginners</h4>
+      <p>1. <strong>Calls Made</strong> — Activity is everything early on<br>
+      2. <strong>Response Time</strong> — Speed to lead wins deals<br>
+      3. <strong>Meetings Booked</strong> — Pipeline building metric<br>
+      4. <strong>Revenue</strong> — The ultimate scorecard</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

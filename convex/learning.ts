@@ -26,7 +26,7 @@ export const getCoursePlayerState = query({
   handler: async (ctx, args) => {
     const session = await ctx.db
       .query("sessions")
-      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .withIndex("by_token", (q: any) => q.eq("token", args.token))
       .first();
     if (!session || session.expiresAt < Date.now()) {
       throw new Error("Unauthorized");
@@ -106,6 +106,58 @@ export const getCoursePlayerState = query({
   },
 });
 
+// Fast single-lesson query for player
+export const getLessonById = query({
+  args: {
+    token: v.string(),
+    lessonId: v.id("lessons"),
+  },
+  handler: async (ctx, args) => {
+    const session = await ctx.db
+      .query("sessions")
+      .withIndex("by_token", (q: any) => q.eq("token", args.token))
+      .first();
+    if (!session || session.expiresAt < Date.now()) {
+      throw new Error("Unauthorized");
+    }
+
+    const lesson = await ctx.db.get(args.lessonId);
+    if (!lesson) throw new Error("Lesson not found");
+
+    const program = await ctx.db.get(lesson.programId);
+    if (!program) throw new Error("Program not found");
+
+    // Check enrollment
+    const purchase = await ctx.db
+      .query("purchases")
+      .withIndex("by_userId", (q) => q.eq("userId", session.userId))
+      .filter((q) => q.eq(q.field("programId"), program._id))
+      .first();
+
+    const sessionUser = await ctx.db.get(session.userId);
+    const isEnrolled = purchase?.status === "completed" || (sessionUser && sessionUser.role !== "user");
+
+    if (!isEnrolled) throw new Error("Not enrolled in this program");
+
+    // Get user progress for this lesson
+    const progress = await ctx.db
+      .query("lessonProgress")
+      .withIndex("by_user_lesson", (q) =>
+        q.eq("userId", session.userId).eq("lessonId", lesson._id)
+      )
+      .first();
+
+    return {
+      lesson: {
+        ...lesson,
+        isCompleted: progress?.completed ?? false,
+      },
+      program,
+      isEnrolled,
+    };
+  },
+});
+
 export const toggleLessonComplete = mutation({
   args: {
     token: v.string(),
@@ -147,12 +199,14 @@ export const toggleLessonComplete = mutation({
       .first();
 
     const now = Date.now();
-    let isCompleted = true;
 
     if (existing) {
-      isCompleted = !existing.completed;
+      // One-way: if already completed, do not allow un-completing
+      if (existing.completed) {
+        return { success: true, isCompleted: true };
+      }
       await ctx.db.patch(existing._id, {
-        completed: isCompleted,
+        completed: true,
         completedAt: now,
       });
     } else {
@@ -265,7 +319,7 @@ export const toggleLessonComplete = mutation({
       }
     }
 
-    return { success: true, isCompleted };
+    return { success: true, isCompleted: true };
   },
 });
 

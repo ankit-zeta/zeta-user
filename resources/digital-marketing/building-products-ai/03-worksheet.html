@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Product Planning Worksheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .worksheet-block { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .worksheet-block h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
+    .worksheet-block p { color: #4b5563; margin-bottom: 12px; }
+    .worksheet-block ul { margin-left: 20px; color: #374151; }
+    .worksheet-block li { margin-bottom: 6px; }
+    .field-group { margin-bottom: 16px; }
+    .field-label { font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; display: block; }
+    .field-input { width: 100%; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; color: #1a1a1a; background: white; }
+    .field-input:focus { outline: none; border-color: #176B4D; box-shadow: 0 0 0 3px rgba(23,107,77,0.1); }
+    textarea.field-input { min-height: 80px; resize: vertical; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .worksheet-block { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Worksheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Building Products With AI Tools</div>
+      <h1>AI Product Planning Worksheet</h1>
+      <p class="subtitle">Structured planning template for validating, designing, and launching AI-powered products</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Section 1: Problem Validation</h2>
+      <div class="worksheet-block">
+        <h3>Define the Problem You're Solving</h3>
+        <p>Before writing any code, validate that the problem is worth solving and that AI is the right solution.</p>
+        <div class="field-group">
+          <label class="field-label">Target User / Customer Persona</label>
+          <input type="text" class="field-input" placeholder="e.g., E-commerce store owners doing $50K-$500K/year">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Core Problem Statement</label>
+          <textarea class="field-input" placeholder="e.g., Store owners spend 3+ hours/day writing product descriptions manually, leading to inconsistent quality and delayed product launches"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Current Solution (What They Do Now)</label>
+          <input type="text" class="field-input" placeholder="e.g., Hire freelancers on Fiverr, use generic templates, or write manually">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Why Current Solutions Fall Short</label>
+          <textarea class="field-input" placeholder="e.g., Too expensive ($50-200 per product), slow turnaround (3-5 days), inconsistent quality, no SEO optimization"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Evidence of Demand (Talk to 5+ Users)</label>
+          <textarea class="field-input" placeholder="e.g., Interviewed 7 store owners — 6 said they would pay $20-50/month for automated product descriptions. 4 currently use freelancers."></textarea>
+        </div>
+        <div class="grid-2">
+          <div class="field-group">
+            <label class="field-label">Market Size Estimate</label>
+            <input type="text" class="field-input" placeholder="e.g., 2M+ Shopify stores globally">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Willingness to Pay</label>
+            <input type="text" class="field-input" placeholder="e.g., $29-79/month SaaS">
+          </div>
+        </div>
+      </div>
+
+      <div class="worksheet-block">
+        <h3>AI Necessity Check</h3>
+        <p>Answer honestly — does this product actually need AI, or would a simpler tool work?</p>
+        <ul>
+          <li><strong>Does the task involve unstructured data?</strong> (text, images, audio) — AI is ideal</li>
+          <li><strong>Does it require personalization at scale?</strong> — AI excels here</li>
+          <li><strong>Is there a pattern-recognition component?</strong> — ML models are perfect</li>
+          <li><strong>Could a simple if/else or rules engine handle it?</strong> — Skip AI if yes</li>
+          <li><strong>Do users expect "human-like" output?</strong> — LLMs are the right choice</li>
+        </ul>
+        <div class="field-group">
+          <label class="field-label">Why AI Is Necessary for This Product</label>
+          <textarea class="field-input" placeholder="e.g., Product descriptions require understanding context, brand voice, SEO keywords, and generating natural language — rules engines can't handle this variation"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Section 2: Technical Stack</h2>
+      <div class="worksheet-block">
+        <h3>AI Model Selection</h3>
+        <div class="grid-2">
+          <div class="field-group">
+            <label class="field-label">Primary AI Provider</label>
+            <select class="field-input">
+              <option value="">Select provider...</option>
+              <option>OpenAI (GPT-4o, GPT-4o-mini)</option>
+              <option>Anthropic (Claude 3.5 Sonnet)</option>
+              <option>Google (Gemini 1.5 Pro)</option>
+              <option>Mistral AI</option>
+              <option>Open Source (Llama, Mistral)</option>
+              <option>Multiple providers</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Model Choice</label>
+            <input type="text" class="field-input" placeholder="e.g., GPT-4o-mini for speed, GPT-4o for quality">
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Why This Model?</label>
+          <textarea class="field-input" placeholder="e.g., GPT-4o-mini: 80% lower cost, 3x faster — sufficient for product descriptions. GPT-4o for complex multi-product bundles."></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Estimated API Cost per User/Month</label>
+          <input type="text" class="field-input" placeholder="e.g., ~$2-5 per user (500 descriptions/month)">
+        </div>
+      </div>
+
+      <div class="worksheet-block">
+        <h3>Application Stack</h3>
+        <div class="grid-2">
+          <div class="field-group">
+            <label class="field-label">Frontend Framework</label>
+            <select class="field-input">
+              <option value="">Select...</option>
+              <option>Next.js (React)</option>
+              <option>Remix</option>
+              <option>SvelteKit</option>
+              <option>Nuxt (Vue)</option>
+              <option>Plain HTML/JS</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Backend / API</label>
+            <select class="field-input">
+              <option value="">Select...</option>
+              <option>Next.js API Routes</option>
+              <option>Node.js + Express</option>
+              <option>Python + FastAPI</option>
+              <option>Supabase Edge Functions</option>
+              <option>Serverless (Vercel/Netlify)</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field-group">
+            <label class="field-label">Database</label>
+            <select class="field-input">
+              <option value="">Select...</option>
+              <option>PostgreSQL (Supabase/Neon)</option>
+              <option>MongoDB</option>
+              <option>PlanetScale (MySQL)</option>
+              <option>Firebase</option>
+              <option>SQLite (Turso)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Vector Database (if RAG)</label>
+            <select class="field-input">
+              <option value="">Select (or N/A)...</option>
+              <option>Pinecone</option>
+              <option>Weaviate</option>
+              <option>ChromaDB</option>
+              <option>Qdrant</option>
+              <option>pgvector (PostgreSQL)</option>
+              <option>MongoDB Atlas</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field-group">
+            <label class="field-label">Auth Provider</label>
+            <select class="field-input">
+              <option value="">Select...</option>
+              <option>Clerk</option>
+              <option>NextAuth.js</option>
+              <option>Supabase Auth</option>
+              <option>Firebase Auth</option>
+              <option>Auth0</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Deployment Platform</label>
+            <select class="field-input">
+              <option value="">Select...</option>
+              <option>Vercel</option>
+              <option>Netlify</option>
+              <option>Railway</option>
+              <option>Fly.io</option>
+              <option>AWS</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="worksheet-block">
+        <h3>Project Structure</h3>
+        <div class="field-group">
+          <label class="field-label">Complete File/Folder Structure</label>
+          <textarea class="field-input" style="font-family: 'Courier New', monospace; font-size: 13px; min-height: 160px;" placeholder="my-ai-product/
+├── app/
+│   ├── page.tsx
+│   ├── layout.tsx
+│   ├── api/
+│   │   └── generate/
+│   │       └── route.ts
+│   └── dashboard/
+├── lib/
+│   ├── openai.ts
+│   ├── db.ts
+│   └── stripe.ts
+├── components/
+├── public/
+├── .env.local
+├── package.json
+└── tailwind.config.js"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Section 3: Monetization Model</h2>
+      <div class="worksheet-block">
+        <h3>Revenue Strategy</h3>
+        <div class="field-group">
+          <label class="field-label">Primary Monetization Model</label>
+          <select class="field-input">
+            <option value="">Select...</option>
+            <option>Subscription SaaS (monthly/annual)</option>
+            <option>Usage-based (pay per API call)</option>
+            <option>Freemium + Premium tiers</option>
+            <option>One-time purchase</option>
+            <option>Credits / token system</option>
+            <option>Marketplace commission</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Pricing Tiers (list each)</label>
+          <textarea class="field-input" placeholder="Free: 50 generations/month, basic models
+Pro: $29/month — 500 generations, GPT-4o, priority support
+Team: $79/month — 2000 generations, API access, custom models
+Enterprise: Custom pricing — unlimited, SLA, dedicated support"></textarea>
+        </div>
+        <div class="grid-2">
+          <div class="field-group">
+            <label class="field-label">Free Tier Limits</label>
+            <input type="text" class="field-input" placeholder="e.g., 50 generations/month">
+          </div>
+          <div class="field-group">
+            <label class="field-label">Target ARPU (Monthly)</label>
+            <input type="text" class="field-input" placeholder="e.g., $39/user/month">
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Payment Provider</label>
+          <select class="field-input">
+            <option value="">Select...</option>
+            <option>Stripe</option>
+            <option>Lemon Squeezy</option>
+            <option>Paddle</option>
+            <option>RevenueCat</option>
+            <option>Manual invoicing</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Unit Economics</label>
+          <textarea class="field-input" placeholder="e.g., API cost per user: $3/month | Hosting: $0.50/user | Support: $1/user | Gross margin: ~85%"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Section 4: MVP Features</h2>
+      <div class="worksheet-block">
+        <h3>Must-Have Features (MVP Only)</h3>
+        <p>Limit your MVP to 3-5 core features. Everything else is v2.</p>
+        <div class="field-group">
+          <label class="field-label">Feature 1: Core AI Generation</label>
+          <textarea class="field-input" placeholder="e.g., Input product details (name, category, features) → AI generates SEO-optimized product description in <10 seconds"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Feature 2: User Authentication & Dashboard</label>
+          <textarea class="field-input" placeholder="e.g., Sign up / login, view generation history, manage subscription, account settings"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Feature 3: Output Customization</label>
+          <textarea class="field-input" placeholder="e.g., Choose tone (professional/casual/luxury), set word count, select target marketplace (Amazon/Shopify/Etsy)"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Feature 4: Export & Integration</label>
+          <textarea class="field-input" placeholder="e.g., Copy to clipboard, CSV export, Shopify product import via API"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Feature 5: Billing & Usage Tracking</label>
+          <textarea class="field-input" placeholder="e.g., Stripe subscription, usage metering, plan upgrade flow, invoice history"></textarea>
+        </div>
+      </div>
+
+      <div class="worksheet-block">
+        <h3>What You're NOT Building (Yet)</h3>
+        <p>Be explicit about scope. These go on the product roadmap, not the MVP.</p>
+        <div class="field-group">
+          <label class="field-label">Deferred Features</label>
+          <textarea class="field-input" placeholder="e.g., Bulk generation, custom brand voice training, A/B testing descriptions, Shopify plugin, team collaboration, API access, image generation"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Section 5: Launch Checklist</h2>
+      <div class="worksheet-block">
+        <h3>Pre-Launch (Weeks 1-4)</h3>
+        <ul>
+          <li>Validate with 10+ potential users (interviews, not surveys)</li>
+          <li>Build core AI generation pipeline (prompt → API → output)</li>
+          <li>Set up auth, database, and payment integration</li>
+          <li>Create landing page with waitlist</li>
+          <li>Run internal testing with real product data</li>
+          <li>Set up error monitoring (Sentry) and logging</li>
+          <li>Configure rate limiting and API key management</li>
+          <li>Write terms of service and privacy policy</li>
+        </ul>
+      </div>
+
+      <div class="worksheet-block">
+        <h3>Launch Week</h3>
+        <ul>
+          <li>Deploy to production (Vercel/Railway)</li>
+          <li>Enable Stripe live mode</li>
+          <li>Set up analytics (PostHog or Mixpanel)</li>
+          <li>Send launch email to waitlist</li>
+          <li>Post on Product Hunt, Hacker News, Twitter</li>
+          <li>Monitor error rates and API costs closely</li>
+          <li>Respond to every user feedback within 2 hours</li>
+        </ul>
+      </div>
+
+      <div class="worksheet-block">
+        <h3>Post-Launch (Weeks 5-8)</h3>
+        <ul>
+          <li>Analyze usage data: which features get used most?</li>
+          <li>Collect and categorize user feedback</li>
+          <li>Optimize AI prompts based on output quality feedback</li>
+          <li>A/B test pricing page and onboarding flow</li>
+          <li>Fix top 3 reported bugs</li>
+          <li>Plan v1.1 based on user requests</li>
+          <li>Start content marketing (blog posts, tutorials)</li>
+        </ul>
+      </div>
+
+      <div class="field-group">
+        <label class="field-label">Launch Date Target</label>
+        <input type="text" class="field-input" placeholder="e.g., 6 weeks from today">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Success Metric at 30 Days Post-Launch</label>
+        <input type="text" class="field-input" placeholder="e.g., 50 paying users, $1,500 MRR, 40% week-2 retention">
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Ship the ugliest version that works. Your first 10 users care about the AI output quality, not your UI polish. Spend 80% of your time on prompt engineering and output quality, 20% on everything else.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

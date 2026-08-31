@@ -30,7 +30,7 @@ export default function AffiliateGuidelinesPage() {
       <div className="prose prose-sm max-w-none text-textMuted space-y-8 text-sm leading-relaxed">
         <div className="bg-brand-50 border border-brand-200 rounded-xl p-5 mb-8">
           <h2 className="font-bold text-textMain mb-2">Overview</h2>
-          <p className="text-textMuted">ZetaGrow is an education-first platform. Our Referral Program is a simple courtesy: enrolled members can share programs they have personally found valuable, and receive a thank-you commission when someone purchases a program through their link and receives full access to the curriculum. Commissions are additionally subject to genuine-consumption verification, a 30-day holding period and applicable taxes — see the <Link href="/variable-remuneration-policy" className="text-brand-700 underline">Variable Remuneration Policy</Link>.</p>
+          <p className="text-textMuted">ZetaGrow is an education-first platform. Our Referral Program is a simple courtesy: enrolled members can share programs they have personally found valuable, and receive a thank-you commission when someone purchases a program through their link and receives full access to the curriculum. Commissions are additionally subject to genuine-consumption verification, a standard holding period and applicable taxes — see the <Link href="/variable-remuneration-policy" className="text-brand-700 underline">Variable Remuneration Policy</Link>.</p>
         </div>
 
         <section className="space-y-3">
@@ -81,8 +81,8 @@ export default function AffiliateGuidelinesPage() {
           <h2 className="font-bold text-textMain">5. Commissions & Payouts</h2>
           <ul className="list-disc pl-6 space-y-2 text-textMuted">
             <li><strong>Trigger:</strong> Commission is earned when a new customer (someone without a prior ZetaGrow account) completes a program purchase via your link and receives full curriculum access.</li>
-            <li><strong>Holding period:</strong> Commissions are held for 30 days to cover the standard refund window before becoming available for withdrawal.</li>
-            <li><strong>Payout threshold:</strong> ₹1,000 minimum.</li>
+            <li><strong>Holding period:</strong> Commissions are held for a standard period to cover the refund window before becoming available for withdrawal.</li>
+            <li><strong>Payout threshold:</strong> Minimum withdrawal amount applies (shown in your dashboard).</li>
             <li><strong>Payment methods:</strong> Bank transfer (NEFT/IMPS) or UPI to a verified Indian bank account, with standard KYC (PAN and bank verification).</li>
             <li><strong>Tax compliance:</strong> TDS is deducted as required under the Indian Income Tax Act; Form 16A is provided. Each participant is responsible for their own tax filings.</li>
           </ul>
@@ -108,7 +108,7 @@ export default function AffiliateGuidelinesPage() {
 
         <section className="space-y-3">
           <h2 className="font-bold text-textMain">8. Contact</h2>
-          <p>Questions about the Referral Program? Contact <a href="mailto:support@zetagrow.com" className="text-brand-700 underline">support@zetagrow.com</a>.</p>
+          <p>Questions about the Referral Program? Contact <a href="mailto:hey@zetagrow.in" className="text-brand-700 underline">hey@zetagrow.in</a>.</p>
         </section>
 
         <div className="pt-8 border-t border-borderSubtle">

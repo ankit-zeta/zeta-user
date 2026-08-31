@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growth Analytics Resources — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .resource-list { list-style: none; }
+    .resource-list li { padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
+    .resource-list li:last-child { border-bottom: none; }
+    .resource-name { font-weight: 600; color: #1a1a1a; font-size: 15px; margin-bottom: 4px; }
+    .resource-desc { font-size: 13px; color: #666; margin-bottom: 6px; }
+    .resource-link { font-size: 13px; color: #176B4D; text-decoration: none; font-weight: 500; }
+    .resource-link:hover { text-decoration: underline; }
+    .resource-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag { background: #ecfdf5; color: #176B4D; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Resource List</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Growth Analytics &amp; Funnels</div>
+      <h1>Growth Analytics Resources</h1>
+      <p class="subtitle">GA4, Mixpanel, Amplitude, Hotjar, PostHog, courses, communities, and analytics tools</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Analytics Platforms</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Google Analytics 4 (GA4)</div>
+          <div class="resource-desc">Free web/app analytics. Events, conversions, audiences, funnels. The starting point for all growth analytics. Link to Google Ads.</div>
+          <a href="https://analytics.google.com" class="resource-link" target="_blank">analytics.google.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Essential</span><span class="tag">Google Ecosystem</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Mixpanel</div>
+          <div class="resource-desc">Product analytics: event tracking, funnels, cohorts, A/B testing. Free up to 20M events/month. Best for SaaS and apps.</div>
+          <a href="https://mixpanel.com" class="resource-link" target="_blank">mixpanel.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">Product Analytics</span><span class="tag">Free Tier</span><span class="tag">Funnels</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Amplitude</div>
+          <div class="resource-desc">Product analytics with behavioral cohorts, experiments, and journey mapping. Free up to 10M events/month. Enterprise features.</div>
+          <a href="https://amplitude.com" class="resource-link" target="_blank">amplitude.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">Behavioral</span><span class="tag">Free Tier</span><span class="tag">Cohorts</span></div>
+        </li>
+        <li>
+          <div class="resource-name">PostHog</div>
+          <div class="resource-desc">Open-source all-in-one: analytics, session recordings, feature flags, A/B testing. Free up to 1M events/month. Self-host or cloud.</div>
+          <a href="https://posthog.com" class="resource-link" target="_blank">posthog.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">Open Source</span><span class="tag">All-in-One</span><span class="tag">Free Tier</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">UX &amp; Conversion Tools</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Hotjar</div>
+          <div class="resource-desc">Heatmaps, session recordings, surveys, feedback widgets. See exactly how users interact. Free up to 35 sessions/day.</div>
+          <a href="https://hotjar.com" class="resource-link" target="_blank">hotjar.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">Heatmaps</span><span class="tag">Recordings</span><span class="tag">Free Tier</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Microsoft Clarity</div>
+          <div class="resource-desc">Free heatmaps and session recordings. Unlimited sessions, no limits. Great free alternative to Hotjar for visual insights.</div>
+          <a href="https://clarity.microsoft.com" class="resource-link" target="_blank">clarity.microsoft.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Unlimited</span><span class="tag">Heatmaps</span></div>
+        </li>
+        <li>
+          <div class="resource-name">VWO</div>
+          <div class="resource-desc">A/B testing, personalization, and conversion optimization. Visual editor, statistical engine, multi-page tests. From $200/month.</div>
+          <a href="https://vwo.com" class="resource-link" target="_blank">vwo.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">A/B Testing</span><span class="tag">CRO</span><span class="tag">Enterprise</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Data Visualization &amp; Dashboards</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Looker Studio</div>
+          <div class="resource-desc">Free dashboards connecting GA4, Sheets, BigQuery, and 500+ connectors. Automated reporting. The standard for growth dashboards.</div>
+          <a href="https://lookerstudio.google.com" class="resource-link" target="_blank">lookerstudio.google.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Dashboards</span><span class="tag">Automation</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Metabase</div>
+          <div class="resource-desc">Open-source business intelligence. SQL or visual queries, dashboards, embeddable charts. Self-host free, cloud from $85/month.</div>
+          <a href="https://metabase.com" class="resource-link" target="_blank">metabase.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">Open Source</span><span class="tag">BI</span><span class="tag">SQL</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Courses &amp; Learning</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Reforge</div>
+          <div class="resource-desc">Growth programs from industry experts. Cohort-based courses on retention, acquisition, product-led growth. The gold standard.</div>
+          <a href="https://reforge.com" class="resource-link" target="_blank">reforge.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">Advanced</span><span class="tag">Cohort</span><span class="tag">Paid</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Lenny's Newsletter</div>
+          <div class="resource-desc">Weekly newsletter on product, growth, and startups. Practical advice from top operators. Free and premium tiers.</div>
+          <a href="https://www.lennysnewsletter.com" class="resource-link" target="_blank">lennysnewsletter.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">Newsletter</span><span class="tag">Product</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">GrowthHackers</div>
+          <div class="resource-desc">Community and resources for growth practitioners. Case studies, frameworks, experiments. Free and premium content.</div>
+          <a href="https://growthhackers.com" class="resource-link" target="_blank">growthhackers.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">Community</span><span class="tag">Case Studies</span><span class="tag">Free</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Communities</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">r/GrowthHacking</div>
+          <div class="resource-desc">Reddit community for growth hacking discussions, experiments, and tools. Active moderation, real practitioners sharing results.</div>
+          <a href="https://reddit.com/r/GrowthHacking" class="resource-link" target="_blank">reddit.com/r/GrowthHacking &rarr;</a>
+          <div class="resource-tags"><span class="tag">Community</span><span class="tag">Q&A</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Demand Curve</div>
+          <div class="resource-desc">Growth community, newsletter, and training. Practical tactics from practitioners. Slack community with 10K+ members.</div>
+          <a href="https://demandcurve.com" class="resource-link" target="_blank">demandcurve.com &rarr;</a>
+          <div class="resource-tags"><span class="tag">Community</span><span class="tag">Slack</span><span class="tag">Training</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Start with GA4 (free) + Hotjar or Clarity (free) + Looker Studio (free). This covers 80% of growth analytics needs. Add Mixpanel or Amplitude when you need product-level event tracking. Don't pay for tools until you've maxed out the free tiers.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        &copy; 2026 ZetaGrow &mdash; Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

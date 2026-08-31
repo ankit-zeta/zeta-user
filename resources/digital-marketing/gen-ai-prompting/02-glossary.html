@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Tools Glossary — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .glossary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .glossary-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .glossary-term { font-size: 14px; font-weight: 600; color: #176B4D; margin-bottom: 4px; }
+    .glossary-def { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Glossary</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Gen AI & Prompting Mastery</div>
+      <h1>AI Tools Glossary</h1>
+      <p class="subtitle">Essential terminology for understanding AI models, tools, and capabilities</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">AI Model Types</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">LLM (Large Language Model)</div><div class="glossary-def">Neural network trained on text data. Predicts next token. GPT-4, Claude, Gemini, LLaMA. Powers chatbots, writing, code.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Diffusion Model</div><div class="glossary-def">Generates images from noise. DALL-E, Stable Diffusion, Midjourney. Text-to-image. Iterative denoising process.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Multimodal Model</div><div class="glossary-def">Processes text + images + audio. GPT-4o (text+image+audio), Gemini (text+image+video+audio). Understands multiple inputs.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Embedding Model</div><div class="glossary-def">Converts text to vectors (numbers). For search, clustering, recommendations. OpenAI ada-002, Cohere embed. Semantic similarity.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Fine-tuned Model</div><div class="glossary-def">Base model trained on domain-specific data. Custom GPTs, LoRA adapters. Better at specific tasks. Expensive to train.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Open Source vs Closed</div><div class="glossary-def">Open: LLaMA, Mistral, Stable Diffusion. Closed: GPT-4, Claude, DALL-E. Open = customizable. Closed = better quality.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Core Concepts</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Token</div><div class="glossary-def">Unit of text processing. ~4 chars = 1 token. "Hello" = 1 token. "ChatGPT" = 2 tokens. Pricing per 1M tokens.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Context Window</div><div class="glossary-def">Max tokens model can process at once. GPT-4: 128K. Claude: 200K. Gemini: 1M. Larger = handle longer texts.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Temperature</div><div class="glossary-def">Randomness (0-1). 0 = deterministic, 1 = creative. Low for facts, high for brainstorming. Affects output diversity.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Hallucination</div><div class="glossary-def">Model generates false information confidently. Always verify facts. Ask for sources. Cross-reference with known data.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Prompt Engineering</div><div class="glossary-def">Crafting inputs to get desired outputs. Few-shot, chain-of-thought, persona, format control. Critical skill for AI users.</div></div>
+        <div class="glossary-item"><div class="glossary-term">RAG (Retrieval Augmented Generation)</div><div class="glossary-def">Retrieves relevant docs before answering. Reduces hallucinations. Used in chatbots with knowledge bases. Vector DB + LLM.</div></div>
+        <div class="glossary-item"><div class="glossary-term">System Prompt</div><div class="glossary-def">Hidden instruction setting AI behavior. "You are a helpful assistant." Defines persona, rules, constraints. Not visible to users.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Chain of Thought</div><div class="glossary-def">Step-by-step reasoning. "Let me think through this..." Improves accuracy for complex tasks. Forces logical progression.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">AI Tools by Category</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Writing: ChatGPT, Claude, Jasper</div><div class="glossary-def">Long-form, copywriting, emails, articles. Claude best for nuanced writing. GPT-4 best for general tasks.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Image: DALL-E, Midjourney, Stable Diffusion</div><div class="glossary-def">Text-to-image generation. Midjourney: artistic. DALL-E: realistic. SD: open-source, customizable.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Code: GitHub Copilot, Cursor, Cody</div><div class="glossary-def">AI pair programming. Autocomplete, debugging, refactoring. Copilot: VS Code. Cursor: AI-native IDE.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Video: Runway, Pika, Sora</div><div class="glossary-def">Text-to-video, image-to-video. Runway: professional. Pika: fast. Sora: highest quality (limited access).</div></div>
+        <div class="glossary-item"><div class="glossary-term">Audio: ElevenLabs, Descript, Suno</div><div class="glossary-def">Voice cloning, text-to-speech, music generation. ElevenLabs: realistic voices. Suno: AI music.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Automation: Zapier AI, Make, LangChain</div><div class="glossary-def">AI workflows, agents, tool integration. Zapier: no-code. LangChain: code-based. Connect AI to any service.</div></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>AI literacy = career advantage. Learn to evaluate outputs, not just generate them. Always verify facts, check for hallucinations, and understand model limitations. Use AI as a tool, not a replacement for thinking.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

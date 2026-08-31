@@ -16,7 +16,7 @@ const LOGO_URL = `${SITE_URL}/email-logo.png`;
 const BRAND = {
   name: "ZetaGrow",
   tagline: "Learn. Work. Grow.",
-  supportEmail: "support@zetagrow.com",
+  supportEmail: "hey@zetagrow.in",
   primaryColor: "#176B4D",
   primaryHover: "#13573E",
   bgColor: "#FAFAF7",

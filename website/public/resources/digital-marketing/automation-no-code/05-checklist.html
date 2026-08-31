@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automation Setup Checklist — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+    .checklist li:last-child { border-bottom: none; }
+    .checkbox { width: 20px; height: 20px; border: 2px solid #d1d5db; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .checklist-content { flex: 1; }
+    .checklist-title { font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+    .checklist-desc { font-size: 14px; color: #666; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .checkbox { border: 1px solid #176B4D; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Checklist</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Automation & No-Code Tools</div>
+      <h1>Automation Setup Checklist</h1>
+      <p class="subtitle">Tool accounts created, integrations connected, workflows tested, error handling added, documentation written, team trained</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Account Setup & Access</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Automation platform accounts created</div><div class="checklist-desc">Zapier, Make, n8n — team/workspace plan selected based on volume needs</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">App accounts with admin access</div><div class="checklist-desc">HubSpot, Airtable, Slack, Stripe, Shopify, Calendly, Email platform — admin or integration permissions</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">API keys / tokens generated</div><div class="checklist-desc">Stored in password manager (1Password, Bitwarden); not in workflow code; rotation schedule set</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Webhook endpoints configured</div><div class="checklist-desc">Public URLs with SSL; signature verification enabled; test payloads received</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Team member access granted</div><div class="checklist-desc">Role-based: Admin (full), Editor (workflows), Viewer (monitoring); offboarding process documented</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Integration Connections</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Native connections tested</div><div class="checklist-desc">Each app connected via OAuth/API; test action succeeds (e.g., "Create Contact" in HubSpot)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Custom API connections working</div><div class="checklist-desc">HTTP requests: Auth headers, base URL, rate limit handling, pagination, error codes mapped</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Data mapping verified</div><div class="checklist-desc">Source → Destination fields mapped; transforms applied (date format, name split, calculations)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Bi-directional sync configured (if needed)</div><div class="checklist-desc">Airtable ↔ Notion, CRM ↔ Database; conflict resolution rules defined; deduplication keys set</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Webhook subscriptions active</div><div class="checklist-desc">Shopify orders, Stripe payments, Calendly bookings, Form submissions — all delivering payloads</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Workflow Testing</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Happy path tested end-to-end</div><div class="checklist-desc">Real data from trigger → all actions execute → correct result in destination apps</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Edge cases tested</div><div class="checklist-desc">Missing fields, duplicate data, API errors, rate limits, empty arrays, null values</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Error handling verified</div><div class="checklist-desc">Failed run → Alert sent (Slack/email) → Incomplete execution stored → Manual retry works</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Idempotency confirmed</div><div class="checklist-desc">Re-running same trigger payload = no duplicate records (unique keys: email, transaction_id)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Performance benchmarks met</div><div class="checklist-desc">Execution time < 30s (simple), < 5 min (complex); ops/tasks within plan limits</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Load test (if high volume)</div><div class="checklist-desc">Simulate 10x expected volume; check queue depth, memory, timeout settings</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Monitoring & Alerting</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Failure alerts configured</div><div class="checklist-desc">Slack channel #automation-alerts; Email to owner; PagerDuty for critical workflows</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Success metrics tracked</div><div class="checklist-desc">Runs/day, Success rate, Avg duration, Queue depth — dashboard in Make/Zapier or custom</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Usage alerts set</div><div class="checklist-desc">Tasks/operations > 80% of plan limit → notification; auto-upgrade or optimization triggered</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">SLA defined</div><div class="checklist-desc">Critical workflows: 99.9% uptime, < 5 min recovery; Standard: 99% uptime, < 1 hr recovery</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Documentation & Knowledge Transfer</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Workflow documentation complete</div><div class="checklist-desc">Name, Purpose, Trigger, Apps, Data Flow, Owner, Last Updated, Run History Link, Troubleshooting</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Architecture diagram created</div><div class="checklist-desc">Visual: Apps → Connections → Data Flow → Error Paths (Miro, FigJam, Draw.io)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Runbook for common issues</div><div class="checklist-desc">"If HubSpot create fails → check API limit → wait 5 min → retry"; "If webhook not firing → check endpoint SSL"</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Credentials documented (securely)</div><div class="checklist-desc">Which vault, which item names, rotation schedule, emergency access process</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Team training completed</div><div class="checklist-desc">Demo: How to view runs, how to replay, how to pause, how to escalate; recording saved</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Maintenance & Optimization</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Weekly review scheduled</div><div class="checklist-desc">Monday: Check failed runs, review metrics, optimize slow workflows, clean incomplete executions</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Monthly audit scheduled</div><div class="checklist-desc">Usage vs plan, unused workflows, deprecated API versions, new app features to adopt</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Quarterly architecture review</div><div class="checklist-desc">Consolidate duplicate workflows, migrate to newer tools, evaluate ROI, plan next automations</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Backup / export strategy</div><div class="checklist-desc">Workflow definitions exported (JSON); credentials backed up; disaster recovery tested</div></li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Create a "Automation Registry" in Notion/Airtable: one row per workflow with columns for all checklist items. Filter by status, owner, last reviewed. Single source of truth for your automation estate.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

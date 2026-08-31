@@ -557,3 +557,24 @@
 .group:hover .animate-marquee-right {
   animation-play-state: paused;
 }
+
+/* ── Confetti animation for completion screen ──────────────────────── */
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotateZ(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotateZ(720deg);
+    opacity: 0;
+  }
+}
+.animate-confetti {
+  animation: confetti 3s ease-in forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-confetti {
+    animation: none;
+    display: none;
+  }
+}

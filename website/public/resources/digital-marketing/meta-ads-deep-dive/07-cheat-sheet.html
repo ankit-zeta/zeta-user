@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scaling Cheat Sheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .cheat-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .cheat-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .cheat-item p { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Cheat Sheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Meta Ads Deep Dive</div>
+      <h1>Scaling Cheat Sheet</h1>
+      <p class="subtitle">When to scale, horizontal vs vertical scaling, budget increase rules, audience expansion, creative refresh, winning ad indicators</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Scaling Readiness Checklist</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>✅ Stable Performance (7-14 days)</h4><p>CPA/ROAS within 10% of target<br>Daily spend consistent (no wild swings)<br>Frequency < 2.5<br>No "Learning Limited" warnings</p></div>
+        <div class="cheat-item"><h4>✅ Sufficient Volume</h4><p>> 50 conversions/week per ad set<br>> $500+ weekly spend per ad set<br>Statistical significance achieved<br>Creative fatigue not present</p></div>
+        <div class="cheat-item"><h4>✅ Tracking Verified</h4><p>CAPI + Pixel both firing<br>Event Match Quality > 8/10<br>UTM data clean in GA4<br>Attribution window appropriate</p></div>
+        <div class="cheat-item"><h4>✅ Creative Pipeline Ready</h4><p>3+ new concepts in production<br>Winning creative identified<br>UGC/creator content scheduled<br>Refresh calendar blocked</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Horizontal Scaling (Expand Reach)</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>New Audiences</h4><p>• Lookalike 2-3% → 5-10%<br>• New interest clusters (test 5 at a time)<br>• Advantage+ with new suggestions<br>• Broad targeting (no interests, let AI find)<br>• International expansion (localize creative)</p></div>
+        <div class="cheat-item"><h4>New Placements</h4><p>• Add Reels if not using<br>• Add Stories if Feed only<br>• Test Audience Network (monitor quality)<br>• Messenger/Inbox for lead gen<br>• Facebook Reels (separate from IG)</p></div>
+        <div class="cheat-item"><h4>New Creatives</h4><p>• New hooks (test 5 per concept)<br>• New formats (static → video, carousel → collection)<br>• UGC/creator variations<br>• Localized creative for new geos<br>• Seasonal/holiday variants</p></div>
+        <div class="cheat-item"><h4>New Campaigns</h4><p>• Separate campaign per major audience<br>• Separate campaign per product line<br>• Separate campaign per funnel stage<br>• Advantage+ Shopping Campaigns (ASC)<br>• Advantage+ Catalog Ads</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Vertical Scaling (Increase Budget)</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>20% Rule (Daily Budget)</h4><p>Increase daily budget ≤ 20% every 3-4 days<br>Example: $100 → $120 → $144 → $173<br>Monitor CPA for 48h after each increase<br>If CPA degrades > 15%: roll back</p></div>
+        <div class="cheat-item"><h4>Lifetime Budget Scaling</h4><p>Extend end date + add budget proportionally<br>Or: Duplicate campaign with higher lifetime budget<br>Better for fixed-duration promotions<br>Avoids daily volatility</p></div>
+        <div class="cheat-item"><h4>Bid Strategy Adjustments</h4><p>Cost Cap → increase cap 10-15%<br>ROAS Goal → lower target slightly (3.0 → 2.8)<br>Highest Volume → just increase budget<br>Bid Cap → raise cap incrementally</p></div>
+        <div class="cheat-item"><h4>When NOT to Vertical Scale</h4><p>• Frequency > 3<br>• CPA trending up > 7 days<br>• Creative fatigue signals<br>• "Learning Limited" status<br>• Attribution issues (iOS 14+)</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Winning Ad Indicators (Scale These)</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Primary Signals</h4><p>• ROAS > target (consistent 7+ days)<br>• CPA < target (consistent 7+ days)<br>• High CTR (> 1.5% Feed, > 0.8% Stories)<br>• High Hook Rate (> 30% 3s video play)<br>• High Hold Rate (> 25% ThruPlay)</p></div>
+        <div class="cheat-item"><h4>Secondary Signals</h4><p>• Low CPM (efficient reach)<br>• High Engagement Rate (> 3%)<br>• High Save/Share ratio (viral potential)<br>• Positive comments/sentiment<br>• High landing page CVR (> 3%)</p></div>
+        <div class="cheat-item"><h4>Creative Attributes of Winners</h4><p>• Strong hook in first 1-2 seconds<br>• Clear value prop + social proof<br>• Native format (looks organic)<br>• Authentic / UGC style<br>• Single focused message</p></div>
+        <div class="cheat-item"><h4>Scale Winners By</h4><p>• Duplicating to new ad sets/campaigns<br>• Increasing budget on winning ad set<br>• Creating variations (new hook, new CTA)<br>• Whitelisting (if creator content)<br>• Adding to Dynamic Creative</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Creative Refresh Schedule</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Weekly</h4><p>• Review creative breakdowns<br>• Pause ads with CPA > 2x target<br>• Launch 1-2 new ad variations<br>• Check frequency per ad</p></div>
+        <div class="cheat-item"><h4>Bi-Weekly</h4><p>• Full creative audit<br>• Identify winning concepts<br>• Plan 3-5 new concepts<br>• Brief creative team</p></div>
+        <div class="cheat-item"><h4>Monthly</h4><p>• Major creative refresh (50%+ new)<br>• Seasonal/trend alignment<br>• Competitive creative audit<br>• UGC/creator collabs scheduled</p></div>
+        <div class="cheat-item"><h4>Quarterly</h4><p>• Complete creative overhaul<br>• New brand campaigns<br>• Platform feature adoption<br>• Strategy review with stakeholders</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Troubleshooting Scale Issues</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>CPM Rising</h4><p>• Expand audience (horizontal)<br>• Refresh creative (lower relevance cost)<br>• Check audience overlap<br>• Test Advantage+ Placements<br>• Reduce bid cap (if using)</p></div>
+        <div class="cheat-item"><h4>Frequency Too High</h4><p>• Expand audience size<br>• Add exclusion (recent converters)<br>• Frequency cap (if available)<br>• Rotate creative more aggressively<br>• Reduce daily budget temporarily</p></div>
+        <div class="cheat-item"><h4>ROAS Dropping</h4><p>• Check attribution (iOS, CAPI)<br>• Audit landing page (speed, offer)<br>• Test new offers/bundles<br>• Segment by placement (cut losers)<br>• Verify pixel/event firing</p></div>
+        <div class="cheat-item"><h4>Audience Saturation</h4><p>• First-time impression ratio < 40%<br>• Expand to broader lookalikes<br>• Test broad targeting (no interests)<br>• New geos / languages<br>• New product angles</p></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Scale horizontally FIRST (new audiences, creatives, campaigns). Vertical scaling hits diminishing returns fast. Horizontal builds a diversified portfolio that's resilient to creative fatigue and audience saturation.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/convex";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/lib/convex";
 import {
   Download,
@@ -23,6 +23,8 @@ import {
   Layers,
   ArrowRight,
   DownloadCloud,
+  Loader2,
+  Lock,
 } from "lucide-react";
 
 const FILE_STYLES: Record<
@@ -64,11 +66,17 @@ const FILE_STYLES: Record<
     badge: "bg-neutral-100 text-neutral-600 border-neutral-200",
     bg: "bg-neutral-100",
   },
+  html: {
+    icon: <FileText className="w-5 h-5" />,
+    badge: "bg-teal-50 text-teal-600 border-teal-200",
+    bg: "bg-teal-50",
+  },
 };
 
 const TYPE_FILTERS = [
   { value: "all", label: "All Types" },
   { value: "pdf", label: "PDF" },
+  { value: "html", label: "HTML" },
   { value: "template", label: "Templates" },
   { value: "xls", label: "Spreadsheets" },
   { value: "doc", label: "Documents" },
@@ -103,6 +111,7 @@ export default function ResourcesPage() {
     fileType: string;
     fileSize: string;
     fileUrl: string | null;
+    content: string | null;
     accessType: string;
     hasAccess: boolean;
     lockReason: string;
@@ -112,11 +121,60 @@ export default function ResourcesPage() {
     downloadCount: number;
   }> | undefined;
 
+  const recordDownload = useMutation(api.resources.recordDownload);
+
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewTitle, setPreviewTitle] = useState("");
+  const [previewResourceId, setPreviewResourceId] = useState<string | null>(null);
+  const [previewError, setPreviewError] = useState(false);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set());
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const handleDownload = async (resourceId: string, fileUrl: string, title: string, fileType: string) => {
+    setDownloadingId(resourceId);
+    try {
+      // Fetch the file from the signed URL
+      const response = await fetch(fileUrl);
+      if (!response.ok) throw new Error("Failed to fetch file");
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = title.replace(/[^a-z0-9]+/gi, "_") + getFileExtension(fileType);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      // Record the download (fire and forget)
+      try {
+        await recordDownload({ resourceId });
+      } catch {
+        // Non-critical
+      }
+    } catch {
+      // Fallback: open in new tab
+      window.open(fileUrl, "_blank");
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
+  function getFileExtension(fileType: string): string {
+    const extensions: Record<string, string> = {
+      pdf: ".pdf",
+      doc: ".docx",
+      xls: ".xlsx",
+      zip: ".zip",
+      template: ".html",
+      video: ".mp4",
+      link: "",
+    };
+    return extensions[fileType] || "";
+  }
 
   const grouped = useMemo(() => {
     if (!resources) return null;
@@ -352,6 +410,8 @@ export default function ResourcesPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
                     {folder.resources.map((r) => {
                       const style = fileStyle(r.fileType);
+                      const isDownloading = downloadingId === r._id;
+
                       return (
                         <div
                           key={r._id}
@@ -367,6 +427,9 @@ export default function ResourcesPage() {
                                   {r.fileType}
                                 </span>
                               </div>
+                              {!r.hasAccess && (
+                                <Lock className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                              )}
                             </div>
 
                             <h4 className="text-xs font-bold text-textMain leading-snug">{r.title}</h4>
@@ -380,26 +443,44 @@ export default function ResourcesPage() {
                                 {formatSize(r.fileSize)}
                               </span>
                               {typeof r.downloadCount === "number" && r.downloadCount > 0 && (
-                                <span>· {r.downloadCount} downloads</span>
+                                <span>{r.downloadCount} downloads</span>
                               )}
                             </div>
+
+                            {!r.hasAccess && r.lockReason && (
+                              <p className="text-[10px] text-amber-600 font-medium">{r.lockReason}</p>
+                            )}
                           </div>
 
                           <div className="pt-3 mt-3 border-t border-borderSubtle flex gap-2">
-                            {r.fileUrl ? (
+                            {r.hasAccess && (r.fileUrl || r.content) ? (
                               <>
-                                {r.fileType === "pdf" ? (
+                                {r.fileType === "pdf" && r.fileUrl ? (
                                   <button
                                     onClick={() => {
                                       setPreviewUrl(r.fileUrl);
                                       setPreviewTitle(r.title);
+                                      setPreviewResourceId(r._id);
+                                      setPreviewError(false);
                                     }}
                                     className="btn-primary flex-1 justify-center text-[11px] py-1.5 flex items-center gap-1"
                                   >
                                     <Eye className="w-3 h-3" />
                                     <span>View</span>
                                   </button>
-                                ) : (
+                                ) : r.fileType === "html" && r.content ? (
+                                  <button
+                                    onClick={() => {
+                                      const blob = new Blob([r.content!], { type: "text/html" });
+                                      const url = URL.createObjectURL(blob);
+                                      window.open(url, "_blank");
+                                    }}
+                                    className="btn-primary flex-1 justify-center text-[11px] py-1.5 flex items-center gap-1"
+                                  >
+                                    <Eye className="w-3 h-3" />
+                                    <span>View</span>
+                                  </button>
+                                ) : r.fileType === "link" && r.fileUrl ? (
                                   <a
                                     href={r.fileUrl}
                                     target="_blank"
@@ -407,18 +488,41 @@ export default function ResourcesPage() {
                                     className="btn-primary flex-1 justify-center text-[11px] py-1.5 flex items-center gap-1"
                                   >
                                     <ExternalLink className="w-3 h-3" />
-                                    <span>Open</span>
+                                    <span>Open Link</span>
                                   </a>
+                                ) : r.fileUrl ? (
+                                  <button
+                                    onClick={() => handleDownload(r._id, r.fileUrl!, r.title, r.fileType)}
+                                    disabled={isDownloading}
+                                    className="btn-primary flex-1 justify-center text-[11px] py-1.5 flex items-center gap-1"
+                                  >
+                                    {isDownloading ? (
+                                      <Loader2 className="w-3 h-3 animate-spin" />
+                                    ) : (
+                                      <Download className="w-3 h-3" />
+                                    )}
+                                    <span>{isDownloading ? "Downloading..." : "Download"}</span>
+                                  </button>
+                                ) : null}
+                                {r.fileType === "pdf" && r.fileUrl && (
+                                  <button
+                                    onClick={() => handleDownload(r._id, r.fileUrl!, r.title, r.fileType)}
+                                    disabled={isDownloading}
+                                    className="btn-secondary text-[11px] py-1.5 px-2.5 flex items-center justify-center"
+                                    title="Download"
+                                  >
+                                    {isDownloading ? (
+                                      <Loader2 className="w-3 h-3 animate-spin" />
+                                    ) : (
+                                      <Download className="w-3 h-3" />
+                                    )}
+                                  </button>
                                 )}
-                                <a
-                                  href={r.fileUrl}
-                                  download={r.title.replace(/[^a-z0-9]+/gi, "_")}
-                                  className="btn-secondary text-[11px] py-1.5 px-2.5 flex items-center justify-center"
-                                  title="Download"
-                                >
-                                  <Download className="w-3 h-3" />
-                                </a>
                               </>
+                            ) : !r.hasAccess ? (
+                              <span className="text-[11px] text-amber-600 font-medium flex items-center gap-1">
+                                <Lock className="w-3 h-3" /> Locked
+                              </span>
                             ) : (
                               <span className="text-[11px] text-textMuted">File not available</span>
                             )}
@@ -438,7 +542,11 @@ export default function ResourcesPage() {
       {previewUrl && (
         <div
           className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8"
-          onClick={() => setPreviewUrl(null)}
+          onClick={() => {
+            setPreviewUrl(null);
+            setPreviewResourceId(null);
+            setPreviewError(false);
+          }}
         >
           <div
             className="bg-white w-full max-w-4xl h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden"
@@ -450,28 +558,59 @@ export default function ResourcesPage() {
                 <h3 className="text-sm font-bold text-textMain truncate">{previewTitle}</h3>
               </div>
               <div className="flex items-center gap-2 shrink-0">
-                <a
-                  href={previewUrl}
-                  download={previewTitle.replace(/[^a-z0-9]+/gi, "_")}
-                  className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Download</span>
-                </a>
+                {previewResourceId && (
+                  <button
+                    onClick={() => {
+                      if (previewUrl) {
+                        handleDownload(previewResourceId, previewUrl, previewTitle, "pdf");
+                      }
+                    }}
+                    className="btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download</span>
+                  </button>
+                )}
                 <button
-                  onClick={() => setPreviewUrl(null)}
+                  onClick={() => {
+                    setPreviewUrl(null);
+                    setPreviewResourceId(null);
+                    setPreviewError(false);
+                  }}
                   className="p-2 rounded-lg border border-borderSubtle hover:bg-neutral-50 text-textMuted"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
-            <div className="flex-1 bg-neutral-100">
-              <iframe
-                src={`${previewUrl}#toolbar=1&navpanes=0`}
-                title={previewTitle}
-                className="w-full h-full border-0"
-              />
+            <div className="flex-1 bg-neutral-100 flex items-center justify-center">
+              {previewError ? (
+                <div className="text-center space-y-3 p-8">
+                  <FileText className="w-12 h-12 text-neutral-300 mx-auto" />
+                  <p className="text-sm font-semibold text-textMain">Unable to preview this file</p>
+                  <p className="text-xs text-textMuted">The file may be unavailable. Try downloading it instead.</p>
+                  {previewResourceId && (
+                    <button
+                      onClick={() => {
+                        if (previewUrl) {
+                          handleDownload(previewResourceId, previewUrl, previewTitle, "pdf");
+                        }
+                      }}
+                      className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download File</span>
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <iframe
+                  src={`${previewUrl}#toolbar=1&navpanes=0`}
+                  title={previewTitle}
+                  className="w-full h-full border-0"
+                  onError={() => setPreviewError(true)}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Website Launch Checklist — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+    .checklist li:last-child { border-bottom: none; }
+    .checkbox { width: 20px; height: 20px; border: 2px solid #d1d5db; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .checklist-content { flex: 1; }
+    .checklist-title { font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+    .checklist-desc { font-size: 14px; color: #666; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .checkbox { border: 1px solid #176B4D; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Checklist</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Build Your First Website</div>
+      <h1>Website Launch Checklist</h1>
+      <p class="subtitle">Complete pre-launch verification: cross-browser testing, mobile responsiveness, performance, SEO, and accessibility</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Cross-Browser Testing</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Chrome (latest)</div><div class="checklist-desc">Primary testing browser; check DevTools console for errors</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Firefox (latest)</div><div class="checklist-desc">Verify CSS Grid, Flexbox, and form styling</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Safari (latest)</div><div class="checklist-desc">Check -webkit prefixes, font rendering, touch events</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Edge (latest)</div><div class="checklist-desc">Chromium-based; similar to Chrome but verify anyway</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Mobile Chrome (Android)</div><div class="checklist-desc">Test touch interactions, viewport, address bar behavior</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Mobile Safari (iOS)</div><div class="checklist-desc">Critical for iOS users; check safe areas, input zoom</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Mobile Responsiveness</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">320px (iPhone SE)</div><div class="checklist-desc">Smallest common viewport; no horizontal scroll</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">375px (iPhone 12/13/14)</div><div class="checklist-desc">Most common mobile width</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">414px (iPhone Plus/Max)</div><div class="checklist-desc">Larger mobile screens</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">768px (iPad portrait)</div><div class="checklist-desc">Tablet breakpoint; navigation may change</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">1024px (iPad landscape)</div><div class="checklist-desc">Desktop-like but touch-enabled</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">1440px+ (Desktop)</div><div class="checklist-desc">Full desktop experience; max-width containers</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Orientation changes</div><div class="checklist-desc">Rotate device; layout should adapt smoothly</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Touch targets ≥ 44×44px</div><div class="checklist-desc">Buttons, links, form inputs meet Apple HIG</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">No horizontal overflow</div><div class="checklist-desc">Check body, containers, images, tables</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Image Optimization</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">WebP format with fallbacks</div><div class="checklist-desc"><picture> with AVIF, WebP, JPEG/PNG fallback</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Responsive images (srcset)</div><div class="checklist-desc">Multiple sizes for different device pixel ratios</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Lazy loading</div><div class="checklist-desc">loading="lazy" on below-fold images</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Alt text on all images</div><div class="checklist-desc">Descriptive, keyword-relevant for SEO/accessibility</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Optimized file sizes</div><div class="checklist-desc">Hero < 200KB, thumbnails < 50KB, icons SVG</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Meta Tags & SEO</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Unique title tag (50-60 chars)</div><div class="checklist-desc">Primary keyword near start; brand at end</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Meta description (150-160 chars)</div><div class="checklist-desc">Compelling summary with call-to-action</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Open Graph tags</div><div class="checklist-desc">og:title, og:description, og:image, og:url, og:type</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Twitter Card tags</div><div class="checklist-desc">twitter:card, twitter:title, twitter:image</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Canonical URL</div><div class="checklist-desc">Prevents duplicate content issues</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Robots meta tag</div><div class="checklist-desc">index, follow (or noindex for staging)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Structured data (JSON-LD)</div><div class="checklist-desc">Organization, Website, WebPage schemas</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">XML Sitemap</div><div class="checklist-desc">Generated and submitted to Search Console</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Robots.txt</div><div class="checklist-desc">Allows crawling; references sitemap</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Performance</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Lighthouse Performance ≥ 90</div><div class="checklist-desc">Run in incognito; mobile and desktop</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">LCP < 2.5s</div><div class="checklist-desc">Largest Contentful Paint — hero image optimization critical</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">INP < 200ms</div><div class="checklist-desc">Interaction to Next Paint — minimize main thread work</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">CLS < 0.1</div><div class="checklist-desc">Cumulative Layout Shift — reserve space for images/ads</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">TTFB < 600ms</div><div class="checklist-desc">Time to First Byte — CDN, caching, server optimization</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Minified CSS/JS</div><div class="checklist-desc">Remove whitespace, comments; enable compression</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Gzip/Brotli compression</div><div class="checklist-desc">Enabled on server/CDN for text assets</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Cache headers set</div><div class="checklist-desc">Static assets: 1 year; HTML: no-cache or short</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Accessibility (WCAG 2.1 AA)</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Semantic HTML structure</div><div class="checklist-desc">Proper heading hierarchy (h1 → h2 → h3)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Color contrast ≥ 4.5:1</div><div class="checklist-desc">Text vs background; 3:1 for large text</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Keyboard navigation</div><div class="checklist-desc">Tab order logical; focus visible on all interactive elements</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Focus indicators</div><div class="checklist-desc">Clear :focus-visible styles (not just outline: none)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">ARIA labels where needed</div><div class="checklist-desc">Icon buttons, form errors, live regions</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Form labels associated</div><div class="checklist-desc"><label for="id"> or aria-label on every input</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Skip to main content link</div><div class="checklist-desc">First focusable element; hidden until focused</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Functionality & Security</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Forms submit correctly</div><div class="checklist-desc">Validation, success/error states, spam protection</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Links work (no 404s)</div><div class="checklist-desc">Internal, external, anchor links all verified</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">HTTPS enforced</div><div class="checklist-desc">SSL certificate valid; HSTS header set</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Security headers</div><div class="checklist-desc">CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Favicon set (all sizes)</div><div class="checklist-desc">16×16, 32×32, 180×180, 192×192, 512×512, SVG</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">404 page custom</div><div class="checklist-desc">Helpful message, search link, site map</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Analytics installed</div><div class="checklist-desc">GA4 + Search Console verified; events firing</div></li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Create a "launch day" checklist duplicate — run through it again 24 hours post-launch to catch anything that broke during deployment.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics Resources — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .resource-list { list-style: none; }
+    .resource-list li { padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
+    .resource-list li:last-child { border-bottom: none; }
+    .resource-name { font-weight: 600; color: #1a1a1a; font-size: 15px; margin-bottom: 4px; }
+    .resource-desc { font-size: 13px; color: #666; margin-bottom: 6px; }
+    .resource-link { font-size: 13px; color: #176B4D; text-decoration: none; font-weight: 500; }
+    .resource-link:hover { text-decoration: underline; }
+    .resource-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag { background: #ecfdf5; color: #176B4D; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Resource List</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Analytics & Tracking Setup</div>
+      <h1>Analytics Resources</h1>
+      <p class="subtitle">GA4 help center, Google Tag Manager tutorials, Data Studio templates, third-party analytics tools, conversion tracking guides</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Official Google Resources</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">GA4 Help Center</div>
+          <div class="resource-desc">Official documentation. Search any feature: events, conversions, audiences, Explore, BigQuery. Always current.</div>
+          <a href="https://support.google.com/analytics/answer/10089681" class="resource-link" target="_blank">GA4 Help →</a>
+          <div class="resource-tags"><span class="tag">Official</span><span class="tag">Reference</span></div>
+        </li>
+        <li>
+          <div class="resource-name">GA4 Dimensions & Metrics Explorer</div>
+          <div class="resource-desc">Interactive reference for every dimension/metric. Shows scope (user/session/event), API name, description. Essential for Explore reports.</div>
+          <a href="https://ga-dev-tools.web.app/ga4/dimensions-metrics-explorer" class="resource-link" target="_blank">ga-dev-tools.web.app →</a>
+          <div class="resource-tags"><span class="tag">Reference</span><span class="tag">API</span><span class="tag">Explorer</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Google Tag Manager Help</div>
+          <div class="resource-desc">GTM documentation: triggers, variables, data layer, server-side, templates, environments, version control.</div>
+          <a href="https://support.google.com/tagmanager" class="resource-link" target="_blank">GTM Help →</a>
+          <div class="resource-tags"><span class="tag">Official</span><span class="tag">GTM</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Google Analytics 4 Demo Account</div>
+          <div class="resource-desc">Fully functional GA4 property with real data (Google Merch Store). Explore reports, Explore, Advertising without touching your data.</div>
+          <a href="https://support.google.com/analytics/answer/6367342" class="resource-link" target="_blank">Demo Account →</a>
+          <div class="resource-tags"><span class="tag">Learning</span><span class="tag">Free</span><span class="tag">Safe</span></div>
+        </li>
+        <li>
+          <div class="resource-name">GA4 Migration Guide</div>
+          <div class="resource-desc">UA → GA4 migration: events mapping, custom dimensions, reports, APIs, BigQuery. Step-by-step.</div>
+          <a href="https://support.google.com/analytics/answer/11583528" class="resource-link" target="_blank">Migration Guide →</a>
+          <div class="resource-tags"><span class="tag">Migration</span><span class="tag">UA to GA4</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Google Tag Manager Resources</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">GTM Templates Gallery</div>
+          <div class="resource-desc">Community templates: GA4 events, Enhanced Ecommerce, Consent Mode, Scroll Depth, YouTube Video, Element Visibility. Import in one click.</div>
+          <a href="https://tagmanager.google.com/gallery" class="resource-link" target="_blank">GTM Gallery →</a>
+          <div class="resource-tags"><span class="tag">Templates</span><span class="tag">Community</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">MeasureSchool (Julian Juenemann)</div>
+          <div class="resource-desc">Best GTM/GA4 YouTube channel. Weekly tutorials: server-side GTM, custom events, consent mode, ecommerce, debugging. Free + paid courses.</div>
+          <a href="https://measureschool.com" class="resource-link" target="_blank">measureschool.com →</a>
+          <div class="resource-tags"><span class="tag">YouTube</span><span class="tag">Tutorials</span><span class="tag">Expert</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Analytics Mania (Julius Fedorovicius)</div>
+          <div class="resource-desc">Deep-dive GTM/GA4 blog. Recipes: scroll tracking, timer triggers, data layer, custom events, debugging. Very practical.</div>
+          <a href="https://analyticsmania.com" class="resource-link" target="_blank">analyticsmania.com →</a>
+          <div class="resource-tags"><span class="tag">Blog</span><span class="tag">Recipes</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Simo Ahava's Blog</div>
+          <div class="resource-desc">Technical GTM/GA4 deep dives. Custom templates, server-side, data layer, consent mode, BigQuery. Advanced but gold standard.</div>
+          <a href="https://simoahava.com" class="resource-link" target="_blank">simoahava.com →</a>
+          <div class="resource-tags"><span class="tag">Advanced</span><span class="tag">Technical</span><span class="tag">Expert</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Looker Studio (Data Studio) Templates</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Looker Studio Template Gallery</div>
+          <div class="resource-desc">Official templates: GA4 Overview, Ecommerce, Funnel, Cohort, Ads, Search Console. Copy and connect your data.</div>
+          <a href="https://lookerstudio.google.com/templates" class="resource-link" target="_blank">Templates Gallery →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Official</span><span class="tag">Dashboards</span></div>
+        </li>
+        <li>
+          <div class="resource-name">GA4 Looker Studio Connector</div>
+          <div class="resource-desc">Native connector. Drag-and-drop dimensions/metrics. Blend with Ads, Sheets, BigQuery. Calculated fields, filters, date ranges.</div>
+          <a href="https://lookerstudio.google.com/datasources/create" class="resource-link" target="_blank">Create Data Source →</a>
+          <div class="resource-tags"><span class="tag">Native</span><span class="tag">Blend</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Porter Metrics / Two Minute Reports</div>
+          <div class="resource-desc">Pre-built GA4 dashboards for agencies. White-label, automated email delivery, client portals. From $19/mo.</div>
+          <a href="https://porterm.io" class="resource-link" target="_blank">porterm.io →</a>
+          <div class="resource-tags"><span class="tag">Agency</span><span class="tag">White-label</span><span class="tag">Automated</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Third-Party Analytics Tools</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Mixpanel</div>
+          <div class="resource-desc">Product analytics: funnels, retention, cohorts, user profiles. Better for product teams than GA4. Free up to 100K MTU.</div>
+          <a href="https://mixpanel.com" class="resource-link" target="_blank">mixpanel.com →</a>
+          <div class="resource-tags"><span class="tag">Product Analytics</span><span class="tag">Funnels</span><span class="tag">Cohorts</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Amplitude</div>
+          <div class="resource-desc">Product analytics with behavioral cohorts, pathfinder, notebooks. Enterprise-grade. Free starter plan.</div>
+          <a href="https://amplitude.com" class="resource-link" target="_blank">amplitude.com →</a>
+          <div class="resource-tags"><span class="tag">Product Analytics</span><span class="tag">Behavioral</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Heap</div>
+          <div class="resource-desc">Autocapture all interactions (no tagging). Retroactive analysis. Virtual events. Free up to 10K sessions/mo.</div>
+          <a href="https://heap.io" class="resource-link" target="_blank">heap.io →</a>
+          <div class="resource-tags"><span class="tag">Autocapture</span><span class="tag">Retroactive</span><span class="tag">Free Tier</span></div>
+        </li>
+        <li>
+          <div class="resource-name">PostHog</div>
+          <div class="resource-desc">Open-source product analytics. Self-host or cloud. Feature flags, session replay, surveys. Free tier generous.</div>
+          <a href="https://posthog.com" class="resource-link" target="_blank">posthog.com →</a>
+          <div class="resource-tags"><span class="tag">Open Source</span><span class="tag">Self-host</span><span class="tag">Feature Flags</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Plausible / Fathom / Simple Analytics</div>
+          <div class="resource-desc">Privacy-first, lightweight alternatives. No cookies, GDPR compliant. Simple dashboards. From $9-14/mo.</div>
+          <a href="https://plausible.io" class="resource-link" target="_blank">plausible.io →</a>
+          <div class="resource-tags"><span class="tag">Privacy</span><span class="tag">Lightweight</span><span class="tag">Simple</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Conversion Tracking & Attribution</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Google Ads Conversion Tracking</div>
+          <div class="resource-desc">Setup guide: conversion actions, enhanced conversions, offline import, consent mode, validation. Required for Smart Bidding.</div>
+          <a href="https://support.google.com/google-ads/answer/1722054" class="resource-link" target="_blank">Ads Conversion Tracking →</a>
+          <div class="resource-tags"><span class="tag">Essential</span><span class="tag">Ads</span><span class="tag">Smart Bidding</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Meta CAPI (Conversions API)</div>
+          <div class="resource-desc">Server-side events for Meta Ads. Better matching, privacy-compliant. GTM server-side template available.</div>
+          <a href="https://developers.facebook.com/docs/marketing-api/conversions-api" class="resource-link" target="_blank">Meta CAPI →</a>
+          <div class="resource-tags"><span class="tag">Server-side</span><span class="tag">Meta Ads</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Attribution Tools (Northbeam, Triple Whale, Rockerbox)</div>
+          <div class="resource-desc">Multi-touch attribution across channels. True ROAS, incrementality testing. From $500/mo. E-commerce focused.</div>
+          <a href="https://northbeam.io" class="resource-link" target="_blank">northbeam.io →</a>
+          <div class="resource-tags"><span class="tag">Attribution</span><span class="tag">E-commerce</span><span class="tag">Multi-touch</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Learning & Certifications</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Google Analytics 4 Certification (Skillshop)</div>
+          <div class="resource-desc">Free official certification. Covers: setup, events, conversions, reports, Explore, administration. Industry-recognized.</div>
+          <a href="https://skillshop.withgoogle.com" class="resource-link" target="_blank">Skillshop →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Certification</span><span class="tag">Official</span></div>
+        </li>
+        <li>
+          <div class="resource-name">CXL Institute — GA4 Course</div>
+          <div class="resource-desc">Deep-dive course: implementation, analysis, attribution, CRO integration. Expert instructors. Paid.</div>
+          <a href="https://cxl.com/institute" class="resource-link" target="_blank">cxl.com →</a>
+          <div class="resource-tags"><span class="tag">Course</span><span class="tag">Expert</span><span class="tag">Paid</span></div>
+        </li>
+        <li>
+          <div class="resource-name">MeasureSchool GA4 Mastery</div>
+          <div class="resource-desc">Comprehensive GTM + GA4 course. Beginner to advanced. Lifetime access. Community included.</div>
+          <a href="https://measureschool.com/ga4-mastery" class="resource-link" target="_blank">measureschool.com →</a>
+          <div class="resource-tags"><span class="tag">Course</span><span class="tag">GTM+GA4</span><span class="tag">Community</span></div>
+        </li>
+        <li>
+          <div class="resource-name">r/GA4 / r/GoogleTagManager</div>
+          <div class="resource-desc">Reddit communities. Troubleshooting, feature discussions, implementation help, migration questions.</div>
+          <a href="https://reddit.com/r/GA4" class="resource-link" target="_blank">reddit.com/r/GA4 →</a>
+          <div class="resource-tags"><span class="tag">Community</span><span class="tag">Q&A</span><span class="tag">Free</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Start with GA4 Demo Account + MeasureSchool YouTube. Implement via GTM (not hardcoded gtag). Use GTM templates for standard events. Only add third-party tools when GA4 limits block you.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

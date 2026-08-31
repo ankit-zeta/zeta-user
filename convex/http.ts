@@ -18,6 +18,7 @@ import { internal } from "./_generated/api";
 //   - All state transitions are idempotent (paid/consumed orders are never
 //     overwritten; cancelled orders ARE upgraded if money was captured).
 //   - Nothing from the payload is logged — no PII leaves the handler.
+//   - CORS headers restrict to Razorpay origins only.
 //
 // Note: http.ts runs in the default Convex runtime (no "use node"), so the
 // HMAC uses the Web Crypto API instead of node:crypto.
@@ -47,10 +48,18 @@ function timingSafeEqualHex(a: string, b: string): boolean {
   return diff === 0;
 }
 
-function jsonResponse(body: object, status: number): Response {
+function jsonResponse(body: object, status: number, extraHeaders?: Record<string, string>): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      // CORS: restrict to Razorpay webhook origins only
+      "Access-Control-Allow-Origin": "https://api.razorpay.com",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, x-razorpay-signature",
+      "Access-Control-Max-Age": "86400",
+      ...extraHeaders,
+    },
   });
 }
 
@@ -136,6 +145,23 @@ async function handleRazorpayWebhook(ctx: any, request: Request) {
 }
 
 const http = httpRouter();
+
+// CORS preflight handler for webhook endpoint
+http.route({
+  path: "/razorpay-webhook",
+  method: "OPTIONS",
+  handler: httpAction(async () => {
+    return new Response(null, {
+      status: 204,
+      headers: {
+        "Access-Control-Allow-Origin": "https://api.razorpay.com",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, x-razorpay-signature",
+        "Access-Control-Max-Age": "86400",
+      },
+    });
+  }),
+});
 
 http.route({
   path: "/razorpay-webhook",

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growth Analytics Templates — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .template-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 15px; }
+    .template-card h3 { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 10px; }
+    .template-content { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; color: #374151; white-space: pre-wrap; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .template-card { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Templates</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Growth Analytics &amp; Funnels</div>
+      <h1>Growth Analytics Templates</h1>
+      <p class="subtitle">Dashboard layout, funnel visualization, A/B test documentation, and weekly report templates</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Growth Dashboard Layout</h2>
+      <div class="template-card">
+        <h3>Weekly Growth Dashboard Structure</h3>
+        <div class="template-content">
+ROW 1: NORTH STAR METRICS
+├── MRR / Revenue ($ and % change WoW)
+├── Active Users (DAU/WAU/MAU)
+├── Conversion Rate (visitor to customer)
+└── NPS Score
+
+ROW 2: ACQUISITION
+├── Traffic by Source (organic, paid, direct, referral)
+├── New Users (and % change)
+├── CAC by Channel
+└── Top Landing Pages + CVR
+
+ROW 3: ACTIVATION
+├── Activation Rate (% completing key action)
+├── Time to Value (avg time to first success)
+├── Onboarding Completion Rate
+└── Free-to-Paid Conversion Rate
+
+ROW 4: RETENTION
+├── Day 1 / Day 7 / Day 30 Retention
+├── Churn Rate (monthly)
+├── Cohort Retention Curves (last 4 cohorts)
+└── NPS Trend (last 4 weeks)
+
+ROW 5: REVENUE
+├── LTV by Cohort
+├── ARPU (Avg Revenue Per User)
+├── Expansion Revenue %
+└── Refund Rate
+</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Funnel Visualization Template</h2>
+      <div class="template-card">
+        <h3>Funnel Report Structure</h3>
+        <div class="template-content">
+FUNNEL: [Product Name] — [Date Range]
+==========================================
+
+Stage 1: AWARENESS
+  Impressions: [Number]
+  Unique Visitors: [Number]
+  CTR: [%]
+
+Stage 2: INTEREST
+  Page Views: [Number]
+  Bounce Rate: [%]
+  Avg Session: [Duration]
+  Pages/Session: [Number]
+
+Stage 3: CONSIDERATION
+  Signups/Leads: [Number]
+  Conversion Rate: [%]
+  Drop-off from previous: [%]
+
+Stage 4: ACTIVATION
+  Completed Key Action: [Number]
+  Activation Rate: [%]
+  Drop-off from previous: [%]
+
+Stage 5: CONVERSION
+  Paid Customers: [Number]
+  Close Rate: [%]
+  CAC: [$]
+
+Stage 6: RETENTION
+  Day 30 Returning: [%]
+  Churn Rate: [%]
+  NPS: [Score]
+
+BIGGEST LEAK: [Stage with highest drop-off]
+IMPACT: [Revenue lost at this leak]
+FIX: [Hypothesis to address]
+</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">A/B Test Documentation Template</h2>
+      <div class="template-card">
+        <h3>Experiment Report</h3>
+        <div class="template-content">
+EXPERIMENT: [Test Name]
+Date: [Start] to [End]
+Owner: [Name]
+
+HYPOTHESIS:
+If we [change X], then [metric Y] will [improve by Z%] because [reason].
+
+VARIATIONS:
+Control (A): [Current version]
+Variant (B): [New version]
+
+PRIMARY METRIC: [Metric name]
+GUARDRAIL METRICS: [Secondary metrics to watch]
+
+RESULTS:
+  Control: [Metric value] ([sample size])
+  Variant: [Metric value] ([sample size])
+  Lift: [% change]
+  Confidence: [% statistical significance]
+  Duration: [Days running]
+
+DECISION:
+[ ] Implement winner
+[ ] Keep testing (inconclusive)
+[ ] Revert to control
+
+LEARNINGS:
+What worked: [Insight]
+What didn't: [Insight]
+Next test: [Follow-up experiment]
+</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Weekly Growth Report Template</h2>
+      <div class="template-card">
+        <h3>Monday Morning Growth Report</h3>
+        <div class="template-content">
+WEEKLY GROWTH REPORT — [Week of Date]
+======================================
+
+SUMMARY (3 bullets max):
+• [Biggest win this week]
+• [Biggest challenge / concern]
+• [Top priority for next week]
+
+KEY METRICS:
+  Revenue: [$X] ([+/- %] vs last week)
+  Users: [X] ([+/- %])
+  Conversion: [X%] ([+/- pp])
+  CAC: [$X] ([+/- %])
+  Churn: [X%] ([+/- pp])
+
+EXPERIMENTS:
+  Active: [Test name] — [Status]
+  Last week result: [Test name] — [Result]
+  Planned: [Test name] — [Start date]
+
+INSIGHTS:
+• [Data-driven insight 1]
+• [Data-driven insight 2]
+• [Data-driven insight 3]
+
+ACTION ITEMS:
+• [ ] [Task] — [Owner] — [Due]
+• [ ] [Task] — [Owner] — [Due]
+• [ ] [Task] — [Owner] — [Due]
+</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>These templates work best in Google Sheets (free, collaborative) or Looker Studio (free, visual). Start with the Weekly Growth Report — it forces you to look at data every week. The dashboard and funnel templates become natural additions.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        &copy; 2026 ZetaGrow &mdash; Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

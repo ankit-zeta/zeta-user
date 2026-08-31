@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { BookOpen, Award, Briefcase, CheckCircle, ShieldCheck, ArrowRight, Video, Sparkles } from "lucide-react";
+import { BookOpen, Award, Briefcase, CheckCircle, ShieldCheck, ArrowRight, Video } from "lucide-react";
 
 export default function HowItWorksPage() {
   const steps = [
@@ -60,7 +60,6 @@ export default function HowItWorksPage() {
           <strong className="text-brand-700">free courses</strong> launching shortly, so anyone
           can start learning at zero cost.
         </p>
-        <Sparkles className="w-4 h-4 text-brand-500 ml-auto shrink-0 hidden sm:block" />
       </div>
 
       {/* Steps */}

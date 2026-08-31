@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growth Analytics Quick Reference — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .cheat-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .cheat-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .cheat-item p { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .table-wrapper { overflow-x: auto; margin: 12px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #176B4D; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+    td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+    tr:nth-child(even) { background: #f9fafb; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Quick Reference</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Growth Analytics & Funnels</div>
+      <h1>Growth Analytics Quick Reference</h1>
+      <p class="subtitle">Funnel stages, key metrics, A/B testing, cohort analysis, attribution models, and growth frameworks</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Funnel Stages & Key Metrics</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Stage</th><th>Goal</th><th>Key Metrics</th><th>Benchmark</th></tr>
+          <tr><td>Awareness</td><td>Get discovered</td><td>Impressions, Reach, Traffic, CPM</td><td>CPM $5-15 (varies by industry)</td></tr>
+          <tr><td>Interest</td><td>Engage visitors</td><td>Time on site, Pages/session, Bounce rate</td><td>Bounce rate &lt; 50%, 2+ pages/session</td></tr>
+          <tr><td>Consideration</td><td>Capture leads</td><td>Conversion rate, CPL, Email signups</td><td>2-5% landing page CVR, CPL &lt; 10% of LTV</td></tr>
+          <tr><td>Intent</td><td>Qualify prospects</td><td>MQL rate, Demo requests, Free trials</td><td>20-30% lead-to-MQL, 15-25% trial activation</td></tr>
+          <tr><td>Conversion</td><td>Close the deal</td><td>Close rate, CAC, Revenue</td><td>2-5% trial-to-paid, CAC &lt; 33% of LTV</td></tr>
+          <tr><td>Retention</td><td>Keep customers</td><td>Churn rate, NPS, Repeat purchases</td><td>&lt; 5% monthly churn, NPS &gt; 50</td></tr>
+          <tr><td>Referral</td><td>Growth loop</td><td>Referral rate, Viral coefficient, K-factor</td><td>K &gt; 1.0 = viral growth</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">A/B Testing Framework</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>What to Test (Priority Order)</h4><p>1. Value proposition / headline<br>2. CTA (text, color, placement)<br>3. Social proof (testimonials, logos, numbers)<br>4. Page layout / form length<br>5. Pricing display / tiers<br>6. Images / videos<br>7. Urgency elements (countdown, scarcity)</p></div>
+        <div class="cheat-item"><h4>A/B Test Requirements</h4><p>Sample size: 1,000+ visitors per variation<br>Duration: Minimum 2 weeks (full business cycle)<br>Statistical significance: 95%+ confidence<br>One variable: Test only ONE thing at a time<br>Document: Record hypothesis, results, learnings</p></div>
+        <div class="cheat-item"><h4>Test Documentation Template</h4><p>Hypothesis: "If we [change], then [metric] will [improve] because [reason]"<br>Metric: Primary (CVR) + Secondary (AOV, Bounce)<br>Duration: [Start] to [End]<br>Result: [Win/Lose/Inconclusive]<br>Lift: [% change in metric]<br>Confidence: [% statistical significance]</p></div>
+        <div class="cheat-item"><h4>Common A/B Test Mistakes</h4><p>❌ Stopping too early (need 2+ weeks)<br>❌ Testing too many things at once<br>❌ Ignoring statistical significance<br>❌ Testing trivial changes (button radius)<br>❌ Not having a clear hypothesis<br>✅ Test high-impact changes first</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Cohort Analysis</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>What is Cohort Analysis?</h4><p>Groups users by shared characteristic (signup date, first purchase, acquisition channel) and tracks their behavior over time. Reveals trends hidden in aggregate data.</p></div>
+        <div class="cheat-item"><h4>Key Cohort Metrics</h4><p>Retention curve: % returning over time<br>Revenue per cohort: Which cohorts spend most<br>LTV by cohort: Long-term value comparison<br>Churn curve: When users drop off<br>Activation rate: % completing key action</p></div>
+        <div class="cheat-item"><h4>Cohort Analysis Use Cases</h4><p>Compare: Pre/post product change impact<br>Channel: Which acquisition source has best LTV<br>Seasonality: Q1 vs Q4 customer behavior<br>Pricing: Impact of price change on retention<br>Onboarding: Before/after onboarding redesign</p></div>
+        <div class="cheat-item"><h4>Cohort Retention Benchmarks</h4><p>SaaS Day 1: 40-60% return<br>SaaS Day 7: 20-30% return<br>SaaS Day 30: 10-20% return<br>E-commerce 30-day: 15-25% repeat<br>E-commerce 90-day: 25-40% repeat</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Attribution Models</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Model</th><th>How It Works</th><th>Best For</th><th>Weakness</th></tr>
+          <tr><td>Last Click</td><td>100% credit to last touchpoint</td><td>Simple, transactional</td><td>Ignores upper funnel</td></tr>
+          <tr><td>First Click</td><td>100% credit to first touchpoint</td><td>Awareness channels</td><td>Ignores conversion path</td></tr>
+          <tr><td>Linear</td><td>Equal credit to all touchpoints</td><td>Balanced view</td><td>Over-credits low-impact touches</td></tr>
+          <tr><td>Time Decay</td><td>More credit to recent touches</td><td>Long sales cycles</td><td>May undervalue discovery</td></tr>
+          <tr><td>Position-Based</td><td>40% first, 40% last, 20% middle</td><td>Balanced first/last focus</td><td>Arbitrary percentages</td></tr>
+          <tr><td>Data-Driven</td><td>ML-based, actual impact weighting</td><td>Most accurate (GA4 default)</td><td>Requires 300+ conversions</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Growth analytics is about finding the biggest bottleneck and fixing it. Don't track 50 metrics — pick 3-5 that directly impact revenue. CAC, LTV, and conversion rate at each funnel stage tell you exactly where to focus.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

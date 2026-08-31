@@ -25,7 +25,8 @@ import {
   X,
   Lock,
   ShieldCheck,
-  Cookie
+  Cookie,
+  ImageIcon
 } from "lucide-react";
 
 export default function AdminDashboardLayout({
@@ -69,6 +70,7 @@ export default function AdminDashboardLayout({
     { name: "Payment Orders", href: "/payments", icon: CreditCard },
     { name: "Expenses", href: "/expenses", icon: Receipt },
     { name: "Communications", href: "/communications", icon: MessageSquare },
+    { name: "Banners", href: "/banners", icon: ImageIcon },
     { name: "Platform Settings", href: "/settings", icon: Settings },
     { name: "Cookie Consent", href: "/cookie-consent", icon: Cookie },
     { name: "Audit Trail", href: "/audit-logs", icon: FileText },

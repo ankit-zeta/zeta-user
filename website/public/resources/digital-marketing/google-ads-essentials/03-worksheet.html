@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campaign Setup Worksheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .worksheet { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .worksheet h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .worksheet p { color: #4b5563; margin-bottom: 12px; }
+    .worksheet label { display: block; font-weight: 600; margin-bottom: 6px; color: #374151; }
+    .worksheet input, .worksheet textarea, .worksheet select { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; font-size: 14px; margin-bottom: 16px; background: white; }
+    .worksheet textarea { min-height: 80px; resize: vertical; }
+    .worksheet-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .worksheet-table th, .worksheet-table td { border: 1px solid #e5e7eb; padding: 10px 12px; text-align: left; }
+    .worksheet-table th { background: #176B4D; color: white; font-weight: 600; font-size: 13px; }
+    .worksheet-table td { font-size: 13px; color: #374151; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .worksheet { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Worksheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Google Ads Essentials</div>
+      <h1>Campaign Setup Worksheet</h1>
+      <p class="subtitle">Account structure planning, keyword research, ad group organization, ad copy variations, bid strategy, budget allocation</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 1: Campaign Foundation</h2>
+      <div class="worksheet">
+        <h3>Define campaign settings</h3>
+        <table class="worksheet-table">
+          <tr><th>Setting</th><th>Your Input</th></tr>
+          <tr><td>Campaign Name</td><td><input type="text" placeholder="SRCH_US_ProductName_Broad_Jan24"></td></tr>
+          <tr><td>Campaign Type</td><td><select><option>Search</option><option>Performance Max</option><option>Shopping</option><option>Display</option><option>Video</option></select></td></tr>
+          <tr><td>Network</td><td><select><option>Search Network only</option><option>Search + Display (not recommended)</option></select></td></tr>
+          <tr><td>Locations</td><td><input type="text" placeholder="United States, Canada, or radius targeting"></td></tr>
+          <tr><td>Languages</td><td><input type="text" placeholder="English, Spanish"></td></tr>
+          <tr><td>Bid Strategy</td><td><select><option>Maximize Conversions (Target CPA)</option><option>Maximize Conversion Value (Target ROAS)</option><option>Maximize Clicks</option><option>Manual CPC</option></select></td></tr>
+          <tr><td>Target CPA / ROAS</td><td><input type="text" placeholder="$50 CPA or 4.0 ROAS"></td></tr>
+          <tr><td>Daily Budget</td><td><input type="text" placeholder="$100/day"></td></tr>
+          <tr><td>Ad Schedule</td><td><input type="text" placeholder="All days, all hours (or business hours for B2B)"></td></tr>
+          <tr><td>Start/End Date</td><td><input type="text" placeholder="Start: Jan 15 / End: None (ongoing)"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 2: Keyword Research & Organization</h2>
+      <div class="worksheet">
+        <h3>Brainstorm → Group → Assign Match Types</h3>
+        <p>Use Keyword Planner, competitor tools, search terms. Group by theme/intent. 15-20 keywords per ad group max.</p>
+        <table class="worksheet-table">
+          <tr><th>Ad Group Name</th><th>Theme / Intent</th><th>Keywords (comma-separated)</th><th>Match Types</th><th>Negative Keywords</th></tr>
+          <tr><td><input type="text" value="Running_Shoes"></td><td>Product Category</td><td><input type="text" placeholder="running shoes, best running shoes, running shoes for men, trail running shoes, marathon shoes"></td><td>Phrase + Broad</td><td><input type="text" placeholder="free, cheap, used, diy, repair"></td></tr>
+          <tr><td><input type="text" value="Running_Shoes_Brand"></td><td>Brand + Product</td><td><input type="text" placeholder="nike running shoes, adidas running shoes, hoka running shoes, brooks running shoes"></td><td>Phrase + Exact</td><td><input type="text" placeholder="fake, replica, counterfeit"></td></tr>
+          <tr><td><input type="text" value="Running_Advice"></td><td>Informational / Top of Funnel</td><td><input type="text" placeholder="how to choose running shoes, running shoe fit guide, pronation running shoes, running shoe lifespan"></td><td>Broad (Smart Bidding)</td><td><input type="text" placeholder="free, pdf, template"></td></tr>
+          <tr><td><input type="text" value="Competitor_Brands"></td><td>Conquesting</td><td><input type="text" placeholder="competitor brand terms (use carefully)"></td><td>Exact only</td><td><input type="text" placeholder="reviews, complaints, lawsuit"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 3: Ad Copy Variations (RSA)</h2>
+      <div class="worksheet">
+        <h3>Write 15 headlines (30 chars), 4 descriptions (90 chars)</h3>
+        <p>Pin Headline 1 for brand/offer. Mix: Benefit, Feature, Offer, Social Proof, CTA, Keyword insertion.</p>
+        
+        <h4 style="margin-top: 16px; color: #176B4D;">Headlines (15 max, min 3)</h4>
+        <table class="worksheet-table">
+          <tr><th>#</th><th>Headline (≤30 chars)</th><th>Type</th><th>Pin?</th></tr>
+          <tr><td>1</td><td><input type="text" placeholder="Best Running Shoes 2024"></td><td>Benefit</td><td><input type="checkbox" checked></td></tr>
+          <tr><td>2</td><td><input type="text" placeholder="Free Shipping + Returns"></td><td>Offer</td><td><input type="checkbox"></td></tr>
+          <tr><td>3</td><td><input type="text" placeholder="Top Rated by 10K+ Runners"></td><td>Social Proof</td><td><input type="checkbox"></td></tr>
+          <tr><td>4</td><td><input type="text" placeholder="Find Your Perfect Fit"></td><td>CTA</td><td><input type="checkbox"></td></tr>
+          <tr><td>5</td><td><input type="text" placeholder="Nike, Hoka, Brooks, Asics"></td><td>Brands</td><td><input type="checkbox"></td></tr>
+          <tr><td>6</td><td><input type="text" placeholder="Running Shoes from $89"></td><td>Price</td><td><input type="checkbox"></td></tr>
+          <tr><td>7</td><td><input type="text" placeholder="Expert Fitting Guide"></td><td>Resource</td><td><input type="checkbox"></td></tr>
+          <tr><td>8</td><td><input type="text" placeholder="Shop New Arrivals"></td><td>Newness</td><td><input type="checkbox"></td></tr>
+          <tr><td>9</td><td><input type="text" placeholder="Trail & Road Options"></td><td>Variety</td><td><input type="checkbox"></td></tr>
+          <tr><td>10</td><td><input type="text" placeholder="60-Day Risk-Free Trial"></td><td>Guarantee</td><td><input type="checkbox"></td></tr>
+          <tr><td>11</td><td><input type="text" placeholder="{KeyWord:Running Shoes}"></td><td>DKI</td><td><input type="checkbox"></td></tr>
+          <tr><td>12</td><td><input type="text" placeholder="Award-Winning Designs"></td><td>Authority</td><td><input type="checkbox"></td></tr>
+          <tr><td>13</td><td><input type="text" placeholder="Carbon-Neutral Shipping"></td><td>Values</td><td><input type="checkbox"></td></tr>
+          <tr><td>14</td><td><input type="text" placeholder="Trusted by Marathoners"></td><td>Niche Authority</td><td><input type="checkbox"></td></tr>
+          <tr><td>15</td><td><input type="text" placeholder="Your Next PR Starts Here"></td><td>Emotional</td><td><input type="checkbox"></td></tr>
+        </table>
+
+        <h4 style="margin-top: 16px; color: #176B4D;">Descriptions (4 max, min 2, ≤90 chars)</h4>
+        <table class="worksheet-table">
+          <tr><th>#</th><th>Description</th><th>Focus</th></tr>
+          <tr><td>1</td><td><input type="text" placeholder="Shop top brands. Free 2-day shipping. 60-day returns. Expert support."></td><td>Benefits + Offer</td></tr>
+          <tr><td>2</td><td><input type="text" placeholder="Find your perfect fit with our fitting guide. 10,000+ 5-star reviews."></td><td>Resource + Proof</td></tr>
+          <tr><td>3</td><td><input type="text" placeholder="Nike, Hoka, Brooks, Asics & more. Price match guarantee. Shop now."></td><td>Brands + Guarantee</td></tr>
+          <tr><td>4</td><td><input type="text" placeholder="New spring colors dropped. Limited stock. Free returns if not perfect."></td><td>Urgency + Safety</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 4: Ad Extensions (Assets) Setup</h2>
+      <div class="worksheet">
+        <h3>Add at least 4 extensions per campaign</h3>
+        <table class="worksheet-table">
+          <tr><th>Extension</th><th>Content</th><th>Status</th></tr>
+          <tr><td>Sitelinks (min 4)</td><td><textarea placeholder="1. Men's Running Shoes → /mens-running
+2. Women's Running Shoes → /womens-running
+3. Fitting Guide → /fitting-guide
+4. Sale & Clearance → /sale
+5. New Arrivals → /new-arrivals"></textarea></td><td><select><option>Not Started</option><option>Done</option></select></td></tr>
+          <tr><td>Callouts (min 4)</td><td><textarea placeholder="Free Shipping on $75+
+Free 60-Day Returns
+Expert Fitting Advice
+Price Match Guarantee
+Carbon-Neutral Delivery
+24/7 Customer Support"></textarea></td><td><select><option>Not Started</option><option>Done</option></select></td></tr>
+          <tr><td>Structured Snippets</td><td><textarea placeholder="Header: Brands → Nike, Hoka, Brooks, Asics, New Balance, Saucony
+Header: Types → Road, Trail, Track, Racing, Recovery
+Header: Features → Cushioned, Stability, Lightweight, Waterproof"></textarea></td><td><select><option>Not Started</option><option>Done</option></select></td></tr>
+          <tr><td>Call Extension</td><td><input type="text" placeholder="1-800-XXX-XXXX (tracking number)"></td><td><select><option>Not Started</option><option>Done</option></select></td></tr>
+          <tr><td>Location Extension</td><td><input type="text" placeholder="Link Google Business Profile"></td><td><select><option>Not Started</option><option>Done</option></select></td></tr>
+          <tr><td>Price Extension</td><td><textarea placeholder="Road Running Shoes — From $89
+Trail Running Shoes — From $109
+Racing Flats — From $129
+Recovery Slides — From $49"></textarea></td><td><select><option>Not Started</option><option>Done</option></select></td></tr>
+          <tr><td>Promotion Extension</td><td><input type="text" placeholder="20% Off Select Styles — Code: SPRING20 — Ends Mar 31"></td><td><select><option>Not Started</option><option>Done</option></select></td></tr>
+          <tr><td>Image Extension</td><td><input type="text" placeholder="Upload 4-20 images (1.91:1, 1:1)"></td><td><select><option>Not Started</option><option>Done</option></select></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 5: Audience & Targeting</h2>
+      <div class="worksheet">
+        <h3>Layer audiences for bid adjustments (Observation) or targeting</h3>
+        <table class="worksheet-table">
+          <tr><th>Audience</th><th>Type</th><th>Mode</th><th>Bid Adj.</th><th>Notes</th></tr>
+          <tr><td>All Visitors 30d</td><td>Remarketing</td><td><select><option>Observation</option><option>Targeting</option></select></td><td><input type="text" value="+20%"></td><td>RLSA</td></tr>
+          <tr><td>Cart Abandoners 7d</td><td>Remarketing</td><td><select><option>Observation</option><option>Targeting</option></select></td><td><input type="text" value="+50%"></td><td>High intent</td></tr>
+          <tr><td>Past Purchasers 180d</td><td>Customer Match</td><td><select><option>Observation</option><option>Targeting</option></select></td><td><input type="text" value="-100% (Exclude)"></td><td>Exclude from prospecting</td></tr>
+          <tr><td>In-Market: Athletic Footwear</td><td>In-Market</td><td><select><option>Observation</option><option>Targeting</option></select></td><td><input type="text" value="+15%"></td><td>Search + Display</td></tr>
+          <tr><td>Affinity: Fitness Enthusiasts</td><td>Affinity</td><td><select><option>Observation</option><option>Targeting</option></select></td><td><input type="text" value="+10%"></td><td>Display/Video</td></tr>
+          <tr><td>Custom: Competitor Visitors</td><td>Custom Segment</td><td><select><option>Observation</option><option>Targeting</option></select></td><td><input type="text" value="+25%"></td><td>URLs: competitor sites</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 6: Budget Allocation (Multi-Campaign)</h2>
+      <div class="worksheet">
+        <h3>Distribute budget across campaign types</h3>
+        <table class="worksheet-table">
+          <tr><th>Campaign</th><th>Type</th><th>Goal</th><th>Budget %</th><th>Daily $</th><th>Target KPI</th></tr>
+          <tr><td>Search - Core</td><td>Search</td><td>Direct Response</td><td><input type="text" value="50%"></td><td><input type="text" value="$500"></td><td><input type="text" value="CPA < $50"></td></tr>
+          <tr><td>Search - Brand</td><td>Search</td><td>Brand Defense</td><td><input type="text" value="10%"></td><td><input type="text" value="$100"></td><td><input type="text" value="IS > 90%"></td></tr>
+          <tr><td>PMax - Acquisition</td><td>Performance Max</td><td>New Customers</td><td><input type="text" value="25%"></td><td><input type="text" value="$250"></td><td><input type="text" value="ROAS > 3.0"></td></tr>
+          <tr><td>Shopping</td><td>Shopping</td><td>Product Sales</td><td><input type="text" value="10%"></td><td><input type="text" value="$100"></td><td><input type="text" value="ROAS > 4.0"></td></tr>
+          <tr><td>Display/Video - Retarget</td><td>Display</td><td>Retargeting</td><td><input type="text" value="5%"></td><td><input type="text" value="$50"></td><td><input type="text" value="CPA < $30"></td></tr>
+        </table>
+        <p style="font-size: 13px; color: #666; margin-top: 12px;">Total Daily Budget: $1,000 | Adjust based on performance after 2 weeks</p>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Complete this worksheet BEFORE opening Google Ads. It forces strategic thinking and prevents "default settings" campaigns. Duplicate for each new product/service.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

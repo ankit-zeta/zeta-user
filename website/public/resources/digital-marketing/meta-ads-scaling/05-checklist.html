@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meta Ads Scaling Checklist — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+    .checklist li:last-child { border-bottom: none; }
+    .checkbox { width: 20px; height: 20px; border: 2px solid #d1d5db; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .checklist-content { flex: 1; }
+    .checklist-title { font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+    .checklist-desc { font-size: 14px; color: #666; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .checkbox { border: 1px solid #176B4D; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Checklist</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Meta Ads Scaling Strategies</div>
+      <h1>Meta Ads Scaling Checklist</h1>
+      <p class="subtitle">Pre-scale (pixel setup, conversions API, audience building), Scale (budget increases, creative testing, audience expansion), Optimize (analysis, iteration, scaling rules)</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Pre-Scale: Tracking & Infrastructure</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Meta Pixel installed on ALL pages</div><div class="checklist-desc">Base code in &lt;head&gt;; verify with Meta Pixel Helper extension. Every page, not just landing pages.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Conversions API (CAPI) connected alongside Pixel</div><div class="checklist-desc">Server-side tracking via partner integration (Shopify, WP, GTM) or custom implementation. Both Pixel + CAPI required for maximum data accuracy.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Standard events firing correctly</div><div class="checklist-desc">PageView, ViewContent, AddToCart, InitiateCheckout, Purchase/Lead — test in Events Manager → Test Events tool.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Event Match Quality ≥ 8/10</div><div class="checklist-desc">Send email, phone, first/last name, city, state, zip, country with every event for best matching.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Aggregated Event Measurement (AEM) prioritized</div><div class="checklist-desc">8 events max per domain. Prioritize: Purchase > InitiateCheckout > AddToCart > ViewContent > Lead > CompleteRegistration.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">UTM parameters on ALL ad URLs</div><div class="checklist-desc">utm_source=meta&utm_medium=cpc&utm_campaign={{campaign.name}}&utm_content={{ad.name}} — use dynamic macros.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">GA4 tracking verified alongside Meta</div><div class="checklist-desc">Cross-reference Meta conversions with GA4. Discrepancy < 10% is normal; > 20% indicates tracking issue.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Landing page speed optimized</div><div class="checklist-desc">Mobile load time < 3 seconds. PageSpeed Insights > 90. No layout shift. Checkout friction minimal.</div></li></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Pre-Scale: Audience Foundation</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Custom Audiences built from all data sources</div><div class="checklist-desc">Website visitors (30/60/180d), purchasers, leads, video viewers (25%/50%/75%), page engagers, customer list uploads.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Lookalike Audiences created (1%, 2-3%, 5%)</div><div class="checklist-desc">From best sources: Purchasers > High-value customers > Leads > Website visitors. Each gets its own Lookalike.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Exclusion audiences applied</div><div class="checklist-desc">Existing customers excluded from prospecting. Employees excluded from all. Recent converters (7d) excluded from retargeting.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Audience overlap checked</div><div class="checklist-desc">Tools → Audience Overlap. Keep overlap < 15% between prospecting ad sets to avoid auction competition.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Audience sizes validated</div><div class="checklist-desc">Lookalike 1%: 1-3M ideal. Broad: 5M+. Custom Audience: 1K+ for retargeting. Under 1K = too small to exit learning.</div></li></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Pre-Scale: Creative Pipeline</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Minimum 8-12 creative concepts ready</div><div class="checklist-desc">3-5 hooks per concept. Mix of formats: video, image, carousel. Different angles: problem, benefit, social proof, demo.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Winning creative identified</div><div class="checklist-desc">At least one creative with ROAS > target for 7+ days, CPA < target, CTR > 1.5%. This is your scaling anchor.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Creative refresh calendar created</div><div class="checklist-desc">New concepts every 2-3 weeks. Batch production. Seasonal/trend alignment. Creator partnerships scheduled.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Creative briefs standardized</div><div class="checklist-desc">Template for hooks, body, CTA, visual direction. Enables rapid iteration and team delegation.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">UGC/creator pipeline active</div><div class="checklist-desc">2-3 creators producing content monthly. Whitelisting set up. Content rights secured for ad usage.</div></li></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Scale: Budget Increases</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">20% rule followed</div><div class="checklist-desc">Increase daily budget ≤ 20% every 3-4 days. Monitor CPA for 48h after each increase. Roll back if CPA rises > 15%.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">CPA stability confirmed before each increase</div><div class="checklist-desc">7-day rolling CPA within 10% of target. No upward trend for 3+ consecutive days. Sufficient conversion volume.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Frequency monitored</div><div class="checklist-desc">Frequency < 3.0 for prospecting. < 5.0 for retargeting. Above limits = pause budget increase, expand audience instead.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">No "Learning Limited" status</div><div class="checklist-desc">If learning limited, fix audience size or budget before scaling. Consolidate ad sets if needed.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Automated rules set for cost guards</div><div class="checklist-desc">Pause if CPA > 2x target for 3 days. Pause if spend > daily cap. Alert if ROAS < 1.5x.</div></li></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Scale: Creative Testing</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">1-2 new ad variations launched per week</div><div class="checklist-desc">Test new hooks, new CTAs, new formats. Never stop the creative pipeline — it's the growth engine.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">A/B tests running with statistical significance</div><div class="checklist-desc">50+ conversions per variant before declaring winner. Use Meta Experiments for controlled tests.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Creative breakdowns reviewed weekly</div><div class="checklist-desc">Check performance by individual ad, not just ad set. Pause CPA > 2x target. Scale winners to new ad sets.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Winning concepts iterated</div><div class="checklist-desc">Take winning hook + test new body. Take winning visual + test new copy. Compound what works.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Creative fatigue signals monitored</div><div class="checklist-desc">Rising CPM, falling CTR, rising frequency = fatigue. Trigger creative refresh before performance degrades.</div></li></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Scale: Audience Expansion</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Lookalike percentages expanded</div><div class="checklist-desc">1% → 2-3% → 5-10%. Each at 50+ conversions/week before expanding further. Separate campaigns for each.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">New audience sources tested</div><div class="checklist-desc">Lookalike from: Purchasers, Leads, High-value customers, Video viewers, Page engagers. Test 2-3 at a time.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Broad targeting validated</div><div class="checklist-desc">No interests, no Lookalikes — pure AI optimization. Requires 50+ conversions/week. Often beats manual targeting.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Geographic expansion planned</div><div class="checklist-desc">Adjacent markets (similar culture) first. Localize creative if needed. Separate campaigns per geo for budget control.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Advantage+ Shopping Campaign tested</div><div class="checklist-desc">E-commerce: ASC auto-optimizes across audiences. Requires 50+ purchases/week. Often scales 2-3x faster than manual.</div></li></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Optimize: Analysis & Iteration</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Weekly performance review scheduled</div><div class="checklist-desc">Monday 9am: Review breakdowns, pause losers, scale winners, plan new tests. Block calendar, make it ritual.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Placement breakdown analyzed</div><div class="checklist-desc">Check CPA/ROAS by Feed, Stories, Reels, Audience Network. Cut underperforming placements. Double down on winners.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Demographic breakdown reviewed</div><div class="checklist-desc">Age, gender, device performance. Adjust targeting or creative for underperforming segments.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Landing page conversion rate tracked</div><div class="checklist-desc">CVR < 2% = landing page issue, not ad issue. A/B test headlines, offers, page speed. Post-click optimization matters.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Attribution verified monthly</div><div class="checklist-desc">Compare Meta reported ROAS with GA4 / backend data. iOS changes affect attribution. Adjust expectations accordingly.</div></li></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Optimize: Scaling Rules</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Scale winners within 7 days of proof</div><div class="checklist-desc">ROAS > target for 7+ days = scale. Don't wait. First-mover advantage in auction. Delay = competitor catches up.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Kill losers within 14 days of underperformance</div><div class="checklist-desc">CPA > 1.5x target for 14+ days = kill. Don't "hope it recovers." Reallocate budget to winners immediately.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Diversify before hitting ceiling</div><div class="checklist-desc">Add new audiences, creatives, campaigns BEFORE current ones saturate. Proactive > reactive scaling.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Document every test and result</div><div class="checklist-desc">Spreadsheet: What you tested, result, decision, learnings. Prevents repeating failed tests. Enables compound learning.</div></li></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Set monthly scale targets</div><div class="checklist-desc">Revenue target → required ROAS → required spend → required conversion volume. Work backwards from business goals.</div></li></li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Print this checklist and keep it next to your screen. Review it before every scaling decision. The 5 minutes spent verifying each item prevents 5 hours of troubleshooting broken campaigns.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

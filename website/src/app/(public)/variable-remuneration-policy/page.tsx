@@ -16,7 +16,7 @@ const sections = [
     h: "2. Core Principles",
     list: [
       "Product-only basis — a commission exists only after a completed, paid course purchase by another person. No payment is made for sign-ups, clicks, traffic or recruitment.",
-      "Single level — commissions are paid only on purchases made by learners you personally referred. There are no downline, upline, team, generation or override structures of any kind.",
+      "Single level — commissions are paid only on purchases made by learners you personally referred. There are no team, group, or override structures of any kind.",
       "Genuine consumption required — every sale must pass a consumption check before the associated commission becomes active (see Section 4).",
       "No guarantees — participation does not guarantee any referral activity, income or outcome. Commissions are variable and depend entirely on third-party purchase decisions.",
     ],
@@ -34,7 +34,6 @@ const sections = [
     list: [
       "Commission percentage and calculation method are configured by ZetaGrow administration and shown in your affiliate dashboard.",
       "Where enabled, a per-sale cap may limit the maximum commission payable on any single sale; current values are visible in admin-configured settings.",
-      "Chain or multi-level bonuses are not offered under this policy.",
     ],
   },
   {
@@ -93,7 +92,7 @@ export default function VariableRemunerationPolicyPage() {
           <h2 className="font-bold text-textMain">10. Contact</h2>
           <p>
             Questions about this policy? Contact{" "}
-            <a href="mailto:support@zetagrow.com" className="text-brand-700 underline">support@zetagrow.com</a>.
+            <a href="mailto:hey@zetagrow.in" className="text-brand-700 underline">hey@zetagrow.in</a>.
           </p>
         </section>
 

@@ -181,34 +181,39 @@ function formatINR(value: number) {
 export default function HomePage() {
   const plans = useQuery(api.plans.getPublicPlans);
   const gst = useGst();
-  const jobs = useQuery(api.jobs.getPublicJobs) as Array<{
-    _id: string;
-    _creationTime: number;
-    title: string;
-    slug: string;
-    shortDescription: string;
-    description: string;
-    category: string;
-    skills: string[];
-    requirements: string[];
-    requiredProgramId: string | undefined;
-    requiredAchievementId: string | undefined;
-    payment: number;
-    paymentType: string;
-    workType: string;
-    difficulty: string;
-    estimatedDuration: string;
-    deadline: string;
-    openings: number;
-    status: string;
-    applicationQuestions: string[];
-    attachments: string[] | undefined;
-    company: string | undefined;
-    coverImageStorageId: string | undefined;
-    createdAt: number;
-    updatedAt: number;
-    coverImageUrl: string | null;
-  }> | undefined;
+  const jobsResult = useQuery(api.jobs.getPublicJobs) as {
+    jobs: Array<{
+      _id: string;
+      _creationTime: number;
+      title: string;
+      slug: string;
+      shortDescription: string;
+      description: string;
+      category: string;
+      skills: string[];
+      requirements: string[];
+      requiredProgramId: string | undefined;
+      requiredAchievementId: string | undefined;
+      payment: number;
+      paymentType: string;
+      workType: string;
+      difficulty: string;
+      estimatedDuration: string;
+      deadline: string;
+      openings: number;
+      status: string;
+      applicationQuestions: string[];
+      attachments: string[] | undefined;
+      company: string | undefined;
+      coverImageStorageId: string | undefined;
+      createdAt: number;
+      updatedAt: number;
+      coverImageUrl: string | null;
+    }>;
+    total: number;
+    hasMore: boolean;
+  } | undefined;
+  const jobs = jobsResult?.jobs;
 
   // Live stats derived from database
   const courseCount =
@@ -331,72 +336,56 @@ export default function HomePage() {
                   <span>Browse Programs</span>
                 </Link>
               </div>
-
-              {/* Simple trust line — live numbers */}
-              <div className="pt-6 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-borderSubtle">
-                <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 text-amber-500" aria-hidden="true" />
-                  <span className="text-sm font-semibold text-textMain">
-                    {courseCount}{" "}
-                  </span>
-                  <span className="text-textMuted font-normal">
-                    Courses Across {plans?.length ?? 0} Plans
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-brand-700" aria-hidden="true" />
-                  <span className="text-sm font-medium text-textMain">
-                    {jobs ? jobs.length : "—"}
-                  </span>
-                  <span className="text-textMuted font-normal">
-                    Open Work Opportunities
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <BadgeCheck className="w-4 h-4 text-brand-700" aria-hidden="true" />
-                  <span className="text-sm font-medium text-textMain">
-                    Verified{" "}
-                  </span>
-                  <span className="text-textMuted font-normal">Certificates with Public IDs</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ============================================================
-         2. STATS BAND — Inline on all devices
+         2. STATS BAND — Beautiful inline stats
          ============================================================ */}
-      <section className="bg-white border-b border-borderSubtle" aria-labelledby="stats-title">
+      <section className="relative overflow-hidden" aria-labelledby="stats-title">
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-600 via-brand-700 to-emerald-700" />
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <h2 id="stats-title" className="sr-only">Platform Statistics</h2>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
-                <BookOpen className="w-5 h-5 text-brand-700" aria-hidden="true" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-0">
+            {/* Courses */}
+            <div className="flex items-center gap-4 sm:px-10">
+              <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center shrink-0 border border-white/20">
+                <BookOpen className="w-6 h-6 text-white" aria-hidden="true" />
               </div>
               <div className="text-left">
-                <p className="text-2xl sm:text-3xl font-extrabold text-textMain tracking-tight">56</p>
-                <p className="text-xs font-medium text-textMuted uppercase tracking-wider">Courses Across Learning Plans</p>
+                <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">{courseCount || "—"}</p>
+                <p className="text-[11px] sm:text-xs font-semibold text-white/70 uppercase tracking-wider leading-tight">Courses Across {plans?.length ?? 0} Plans</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
-                <Briefcase className="w-5 h-5 text-brand-700" aria-hidden="true" />
+
+            {/* Divider */}
+            <div className="hidden sm:block w-px h-14 bg-white/20" />
+
+            {/* Work */}
+            <div className="flex items-center gap-4 sm:px-10">
+              <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center shrink-0 border border-white/20">
+                <Briefcase className="w-6 h-6 text-white" aria-hidden="true" />
               </div>
               <div className="text-left">
-                <p className="text-2xl sm:text-3xl font-extrabold text-textMain tracking-tight">112</p>
-                <p className="text-xs font-medium text-textMuted uppercase tracking-wider">Open Work Opportunities</p>
+                <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">{jobs ? jobs.length : "—"}</p>
+                <p className="text-[11px] sm:text-xs font-semibold text-white/70 uppercase tracking-wider leading-tight">Open Work Opportunities</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center shrink-0">
-                <BadgeCheck className="w-5 h-5 text-brand-700" aria-hidden="true" />
+
+            {/* Divider */}
+            <div className="hidden sm:block w-px h-14 bg-white/20" />
+
+            {/* Certificates */}
+            <div className="flex items-center gap-4 sm:px-10">
+              <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-sm flex items-center justify-center shrink-0 border border-white/20">
+                <BadgeCheck className="w-6 h-6 text-white" aria-hidden="true" />
               </div>
               <div className="text-left">
-                <p className="text-2xl sm:text-3xl font-extrabold text-textMain tracking-tight text-brand-700">Verified</p>
-                <p className="text-xs font-medium text-textMuted uppercase tracking-wider">Certificates with Public IDs</p>
+                <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Verified</p>
+                <p className="text-[11px] sm:text-xs font-semibold text-white/70 uppercase tracking-wider leading-tight">Certificates with Public IDs</p>
               </div>
             </div>
           </div>

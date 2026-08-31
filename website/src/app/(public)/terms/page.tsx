@@ -46,6 +46,24 @@ export default function TermsPage() {
           <p><strong>Purchases are entirely voluntary.</strong> You are never required, pressured, or expected to purchase any Program or Plan in order to create an account, remain on the Platform, apply to Work Marketplace listings, or receive payouts for approved deliverables. Education is what we sell; opportunity access is not conditioned on buying it.</p>
         </section>
 
+        <div className="bg-green-50 border border-green-200 rounded-xl p-5 my-6">
+          <h2 className="font-bold text-green-800 mb-2">Our Commitment: No Pressure, No Force Selling</h2>
+          <p className="text-green-700 text-sm leading-relaxed">
+            <strong>ZetaGrow does not engage in force selling, high-pressure tactics, or aggressive sales practices.</strong> We are an education platform with a work portal — nothing more. Here is what this means for you:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 text-green-700 text-sm mt-3">
+            <li><strong>Complete freedom of choice:</strong> Every purchase decision is entirely yours. You are never required, obligated, or pressured to buy any course, plan, or service.</li>
+            <li><strong>No mandatory purchases:</strong> You can create an account, access free content, apply to work opportunities, and use platform features without spending any money.</li>
+            <li><strong>No pressure to earn:</strong> The affiliate referral program is completely optional. You never have to recruit, sell, or promote anything to anyone.</li>
+            <li><strong>No hidden obligations:</strong> There are no hidden fees, mandatory upsells, or required purchases to maintain your account or access features.</li>
+            <li><strong>Respectful communication:</strong> We will never use fear, urgency, guilt, or misleading claims to encourage purchases. Our marketing is informational, not coercive.</li>
+            <li><strong>Right to walk away:</strong> You may stop using the Platform at any time. There are no cancellation fees, no lock-in periods, and no penalties for not purchasing.</li>
+          </ul>
+          <p className="text-green-700 text-sm mt-3">
+            If you ever feel pressured or coerced into making a purchase, please contact us immediately at <a href="mailto:hey@zetagrow.in" className="underline font-medium">hey@zetagrow.in</a>. We take such complaints seriously and will investigate promptly.
+          </p>
+        </div>
+
         <section className="space-y-3">
           <h2 className="font-bold text-textMain">4. Work Marketplace — No Employment Guarantee</h2>
           <p>The Work Marketplace is a <strong>curated marketplace</strong> connecting qualified Users with Clients posting project opportunities. Participation is governed by the following principles:</p>
@@ -63,12 +81,12 @@ export default function TermsPage() {
           <h2 className="font-bold text-textMain">5. Referral Program — Optional & Product-Centric</h2>
           <p>Our optional Referral Program allows Users to earn referral commissions by referring new Customers who purchase Programs. The program operates under these strict principles:</p>
           <ul className="list-disc pl-6 space-y-2 text-textMuted">
-            <li><strong>ZetaGrow is not an MLM, pyramid, network-marketing, recruitment, or investment scheme.</strong> We sell one thing: education. There are no positions to buy, no downlines to build, no earnings from sign-ups alone, and no returns promised on any payment. Any suggestion otherwise misrepresents the Platform.</li>
+            <li><strong>ZetaGrow is not an MLM, pyramid, network-marketing, recruitment, or investment scheme.</strong> We sell one thing: education. There are no positions to buy, no teams to build, no earnings from sign-ups alone, and no returns promised on any payment. Any suggestion otherwise misrepresents the Platform.</li>
             <li><strong>Nothing to Sell:</strong> You are never asked, incentivized beyond stated commissions, or required to sell, recruit, promote, or market anything to anyone. Treating referrals as anything other than a minor courtesy is against these Terms.</li>
             <li><strong>Product-Centric:</strong> Commissions are generated <strong>only</strong> upon the genuine retail purchase of a legitimate Program by a new Customer who receives full access to the curriculum. No commission is paid for recruitment, enrollment, or sign-ups alone.</li>
             <li><strong>Voluntary Participation:</strong> Enrollment is optional and auxiliary to the genuine educational value of the Programs. You may use the Platform fully without participating.</li>
             <li><strong>Prohibited Conduct:</strong> Self-referrals, circular referrals, fraudulent loops, misleading income representations, promising guaranteed earnings, presenting the Referral Program as an investment or passive income opportunity, and any form of spam or deceptive marketing are strictly prohibited and will result in immediate account termination and forfeiture of pending commissions.</li>
-            <li><strong>Commission Holding Period:</strong> Commissions are held for a defined holding period (typically 30 days) to account for refund windows and chargebacks before becoming available for withdrawal.</li>
+            <li><strong>Commission Holding Period:</strong> Commissions are held for a standard period to account for refund windows and chargebacks before becoming available for withdrawal.</li>
           </ul>
         </section>
 

@@ -47,7 +47,7 @@ export default function DisclaimerPage() {
             <li>A "financial freedom" system</li>
             <li>An "investment" with guaranteed returns</li>
             <li>A "business opportunity" with guaranteed income</li>
-            <li>Any form of multi-level marketing (MLM), pyramid scheme, chain referral, or network marketing program</li>
+            <li>Any form of multi-level marketing (MLM), pyramid scheme, or network marketing program</li>
           </ul>
           <p>Any statements by ZetaGrow, its employees, or affiliates suggesting otherwise are unauthorized and do not reflect the Platform's policies.</p>
         </section>

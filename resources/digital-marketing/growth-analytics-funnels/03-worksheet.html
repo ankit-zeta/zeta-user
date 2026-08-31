@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growth Analytics Worksheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .worksheet { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .worksheet h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .worksheet p { color: #4b5563; margin-bottom: 12px; }
+    .worksheet label { display: block; font-weight: 600; margin-bottom: 6px; color: #374151; }
+    .worksheet input, .worksheet textarea, .worksheet select { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-family: inherit; font-size: 14px; margin-bottom: 16px; background: white; }
+    .worksheet textarea { min-height: 80px; resize: vertical; }
+    .worksheet-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    .worksheet-table th, .worksheet-table td { border: 1px solid #e5e7eb; padding: 10px 12px; text-align: left; }
+    .worksheet-table th { background: #176B4D; color: white; font-weight: 600; font-size: 13px; }
+    .worksheet-table td { font-size: 13px; color: #374151; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .worksheet { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Worksheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Growth Analytics & Funnels</div>
+      <h1>Growth Analytics Worksheet</h1>
+      <p class="subtitle">Funnel mapping, metric tracking, A/B test planning, and cohort analysis templates</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 1: Funnel Mapping</h2>
+      <div class="worksheet">
+        <h3>Map your complete user journey</h3>
+        <table class="worksheet-table">
+          <tr><th>Funnel Stage</th><th>Current Metric</th><th>Target Metric</th><th>Biggest Leak</th></tr>
+          <tr><td>Awareness (Impressions/Traffic)</td><td><input type="text" placeholder="e.g. 50K/mo"></td><td><input type="text" placeholder="e.g. 100K/mo"></td><td><input type="text" placeholder="e.g. Low CTR"></td></tr>
+          <tr><td>Interest (Engagement)</td><td><input type="text" placeholder="e.g. 45% bounce"></td><td><input type="text" placeholder="e.g. 35% bounce"></td><td><input type="text" placeholder="e.g. Slow load time"></td></tr>
+          <tr><td>Consideration (Leads)</td><td><input type="text" placeholder="e.g. 2% CVR"></td><td><input type="text" placeholder="e.g. 4% CVR"></td><td><input type="text" placeholder="e.g. Weak CTA"></td></tr>
+          <tr><td>Intent (Qualified)</td><td><input type="text" placeholder="e.g. 20% MQL"></td><td><input type="text" placeholder="e.g. 30% MQL"></td><td><input type="text" placeholder="e.g. No qualification criteria"></td></tr>
+          <tr><td>Conversion (Sale)</td><td><input type="text" placeholder="e.g. 3% close"></td><td><input type="text" placeholder="e.g. 5% close"></td><td><input type="text" placeholder="e.g. Price objection"></td></tr>
+          <tr><td>Retention (Repeat)</td><td><input type="text" placeholder="e.g. 40% Day 30"></td><td><input type="text" placeholder="e.g. 60% Day 30"></td><td><input type="text" placeholder="e.g. Poor onboarding"></td></tr>
+        </table>
+        <label>Biggest bottleneck to fix first (highest ROI):</label>
+        <input type="text" placeholder="e.g. Landing page CVR — doubling it doubles revenue">
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 2: Key Metrics Dashboard</h2>
+      <div class="worksheet">
+        <h3>Document your baseline metrics</h3>
+        <table class="worksheet-table">
+          <tr><th>Metric</th><th>Formula</th><th>Current</th><th>Target</th></tr>
+          <tr><td>CAC</td><td>Marketing Spend ÷ New Customers</td><td><input type="text" placeholder="$"></td><td><input type="text" placeholder="$"></td></tr>
+          <tr><td>LTV</td><td>Avg Revenue × Avg Lifespan</td><td><input type="text" placeholder="$"></td><td><input type="text" placeholder="$"></td></tr>
+          <tr><td>LTV:CAC</td><td>LTV ÷ CAC</td><td><input type="text" placeholder="e.g. 2.5"></td><td><input type="text" placeholder="e.g. 3.0+"></td></tr>
+          <tr><td>Conversion Rate</td><td>Conversions ÷ Visitors × 100</td><td><input type="text" placeholder="%"></td><td><input type="text" placeholder="%"></td></tr>
+          <tr><td>Churn Rate</td><td>Lost ÷ Starting × 100</td><td><input type="text" placeholder="%"></td><td><input type="text" placeholder="%"></td></tr>
+          <tr><td>MRR</td><td>Sum of Monthly Subscriptions</td><td><input type="text" placeholder="$"></td><td><input type="text" placeholder="$"></td></tr>
+          <tr><td>NPS</td><td>%Promoters - %Detractors</td><td><input type="text" placeholder="score"></td><td><input type="text" placeholder="50+"></td></tr>
+          <tr><td>Avg Session Duration</td><td>GA4 metric</td><td><input type="text" placeholder="e.g. 2:30"></td><td><input type="text" placeholder="e.g. 3:30"></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 3: A/B Test Planning</h2>
+      <div class="worksheet">
+        <h3>Plan your next 3 experiments</h3>
+        <table class="worksheet-table">
+          <tr><th>Test</th><th>Hypothesis</th><th>Metric</th><th>Sample Needed</th><th>Duration</th></tr>
+          <tr><td><input type="text" placeholder="e.g. New headline"></td><td><input type="text" placeholder="If X, then Y will Z because..."></td><td><input type="text" placeholder="CVR"></td><td><input type="text" placeholder="2,000"></td><td><input type="text" placeholder="2 weeks"></td></tr>
+          <tr><td><input type="text" placeholder="e.g. Social proof section"></td><td><input type="text" placeholder="If X, then Y will Z because..."></td><td><input type="text" placeholder="CVR"></td><td><input type="text" placeholder="2,000"></td><td><input type="text" placeholder="2 weeks"></td></tr>
+          <tr><td><input type="text" placeholder="e.g. Shorter form"></td><td><input type="text" placeholder="If X, then Y will Z because..."></td><td><input type="text" placeholder="CVR"></td><td><input type="text" placeholder="2,000"></td><td><input type="text" placeholder="2 weeks"></td></tr>
+        </table>
+        <label>Test Priority Rule:</label>
+        <p>High impact × Low effort = Test first. Focus on headline, CTA, and social proof before layout changes.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Step 4: Cohort Analysis Setup</h2>
+      <div class="worksheet">
+        <h3>Define your cohort tracking</h3>
+        <table class="worksheet-table">
+          <tr><th>Cohort Type</th><th>Definition</th><th>Track For</th><th>Tool</th></tr>
+          <tr><td>Acquisition Date</td><td>Users who signed up in [Month]</td><td>Retention over time</td><td><select><option>GA4</option><option>Mixpanel</option><option>Amplitude</option><option>PostHog</option></select></td></tr>
+          <tr><td>Acquisition Channel</td><td>Users from [Google/FB/Email/Referral]</td><td>LTV by source</td><td><select><option>GA4</option><option>Mixpanel</option><option>Amplitude</option><option>PostHog</option></select></td></tr>
+          <tr><td>Activation Event</td><td>Users who [completed key action]</td><td>Retention correlation</td><td><select><option>GA4</option><option>Mixpanel</option><option>Amplitude</option><option>PostHog</option></select></td></tr>
+          <tr><td>Plan/Price Tier</td><td>Users on [Free/Basic/Pro]</td><td>Revenue per cohort</td><td><select><option>GA4</option><option>Mixpanel</option><option>Amplitude</option><option>PostHog</option></select></td></tr>
+        </table>
+        <label>What question are you trying to answer with cohort analysis?</label>
+        <textarea placeholder="e.g. Which acquisition channel brings customers with the highest LTV?"></textarea>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Start with Step 1 (funnel mapping) only. Most businesses never finish a funnel map because they try to track everything at once. Map the funnel, find the biggest leak, fix it, then move to the next leak. One leak at a time.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

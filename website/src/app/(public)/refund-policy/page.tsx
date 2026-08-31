@@ -12,6 +12,13 @@ export default function RefundPolicyPage() {
       </div>
 
       <div className="prose prose-sm max-w-none text-textMuted space-y-8 text-sm leading-relaxed">
+        <div className="bg-green-50 border border-green-200 rounded-xl p-5 mb-8">
+          <h2 className="font-bold text-green-800 mb-2">No Pressure, No Force Selling</h2>
+          <p className="text-green-700">
+            <strong>ZetaGrow does not force, pressure, or coerce anyone into purchasing courses or any other service.</strong> Every purchase is entirely voluntary and made at your own discretion. We are an education platform — we sell courses, and that is all. You are never required to buy anything to use our platform, access free content, or apply to work opportunities. If you ever feel pressured into making a purchase, contact us immediately at <a href="mailto:hey@zetagrow.in" className="underline font-medium">hey@zetagrow.in</a>.
+          </p>
+        </div>
+
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
           <h2 className="font-bold text-textMain mb-2">Important: Digital Programs Are Non-Refundable</h2>
           <p className="text-textMuted">All ZetaGrow programs are digital products. Upon completing payment, you receive immediate, lifetime access to the full course content and the complete resource bundle (content libraries, AI prompt packs, templates, checklists, action plans, and resource libraries).</p>
@@ -77,7 +84,7 @@ export default function RefundPolicyPage() {
         <section className="space-y-3">
           <h2 className="font-bold text-textMain">6. Contact Before Purchasing</h2>
           <p>We strongly encourage you to review the program syllabus, duration, included resources, and outcomes carefully before purchasing. Our support team is happy to clarify what is included in any Program to ensure you make an informed decision.</p>
-          <p>Contact us at <a href="mailto:support@zetagrow.com" className="text-brand-700 underline">support@zetagrow.com</a> with any pre-purchase questions.</p>
+          <p>Contact us at <a href="mailto:hey@zetagrow.in" className="text-brand-700 underline">hey@zetagrow.in</a> with any pre-purchase questions.</p>
         </section>
 
         <div className="pt-8 border-t border-borderSubtle">

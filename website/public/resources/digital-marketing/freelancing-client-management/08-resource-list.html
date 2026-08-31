@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Freelancing Tools — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .resource-list { list-style: none; }
+    .resource-list li { padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
+    .resource-list li:last-child { border-bottom: none; }
+    .resource-name { font-weight: 600; color: #1a1a1a; font-size: 15px; margin-bottom: 4px; }
+    .resource-desc { font-size: 13px; color: #666; margin-bottom: 6px; }
+    .resource-link { font-size: 13px; color: #176B4D; text-decoration: none; font-weight: 500; }
+    .resource-link:hover { text-decoration: underline; }
+    .resource-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag { background: #ecfdf5; color: #176B4D; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Resource List</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Freelancing & Client Management</div>
+      <h1>Freelancing Tools</h1>
+      <p class="subtitle">Invoicing, project management, contracts, time tracking, proposals, and business operations tools</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Invoicing & Payments</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Stripe</div>
+          <div class="resource-desc">Online payments: Invoicing, subscriptions, payment links, international. 2.9% + 30¢. Dashboard + API. Essential for freelancers.</div>
+          <a href="https://stripe.com" class="resource-link" target="_blank">stripe.com →</a>
+          <div class="resource-tags"><span class="tag">Payments</span><span class="tag">Invoicing</span><span class="tag">Subscriptions</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Wise (TransferWise)</div>
+          <div class="resource-desc">International transfers at mid-market rate. Multi-currency account. Local bank details in US, UK, EU, AU. Cheaper than PayPal.</div>
+          <a href="https://wise.com" class="resource-link" target="_blank">wise.com →</a>
+          <div class="resource-tags"><span class="tag">International</span><span class="tag">Low Fees</span><span class="tag">Multi-currency</span></div>
+        </li>
+        <li>
+          <div class="resource-name">HoneyBook / Dubsado</div>
+          <div class="resource-desc">All-in-one: Proposals, contracts, invoices, payments, scheduling, client portal. ~$19-39/mo. Great for service businesses.</div>
+          <a href="https://honeybook.com" class="resource-link" target="_blank">honeybook.com →</a>
+          <div class="resource-tags"><span class="tag">All-in-one</span><span class="tag">Client Portal</span><span class="tag">Contracts</span></div>
+        </li>
+        <li>
+          <div class="resource-name">FreshBooks / Wave</div>
+          <div class="resource-desc">Accounting + invoicing. FreshBooks: ~$15/mo, great UX. Wave: Free, basic features. Both: expense tracking, reports, tax prep.</div>
+          <a href="https://freshbooks.com" class="resource-link" target="_blank">freshbooks.com →</a>
+          <div class="resource-tags"><span class="tag">Accounting</span><span class="tag">Invoicing</span><span class="tag">Free Option</span></div>
+        </li>
+        <li>
+          <div class="resource-name">PayPal / Payoneer</div>
+          <div class="resource-desc">Widely accepted. PayPal: 3.49% + 49¢, instant access. Payoneer: Better for marketplace payouts, mass pay. Higher fees.</div>
+          <a href="https://paypal.com" class="resource-link" target="_blank">paypal.com →</a>
+          <div class="resource-tags"><span class="tag">Universal</span><span class="tag">Marketplace</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Project Management</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Asana</div>
+          <div class="resource-desc">Tasks, projects, timelines, workload, forms, portfolios. Free: 15 users. Paid: $10.99/user. Great for client-facing projects.</div>
+          <a href="https://asana.com" class="resource-link" target="_blank">asana.com →</a>
+          <div class="resource-tags"><span class="tag">Free Tier</span><span class="tag">Client-Facing</span><span class="tag">Timeline</span></div>
+        </li>
+        <li>
+          <div class="resource-name">ClickUp</div>
+          <div class="resource-desc">All-in-one: Tasks, docs, goals, chat, whiteboards, time tracking. Very customizable. Free forever plan generous. $7/user.</div>
+          <a href="https://clickup.com" class="resource-link" target="_blank">clickup.com →</a>
+          <div class="resource-tags"><span class="tag">Feature-Rich</span><span class="tag">Customizable</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Notion</div>
+          <div class="resource-desc">Wiki + projects + CRM. Databases, views, relations, formulas. Free personal. Plus: $10. Best for knowledge + project hybrid.</div>
+          <a href="https://notion.so" class="resource-link" target="_blank">notion.so →</a>
+          <div class="resource-tags"><span class="tag">Knowledge Base</span><span class="tag">Databases</span><span class="tag">Flexible</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Linear</div>
+          <div class="resource-desc">Issues, projects, cycles, roadmaps. Fast, keyboard-first. Built for product/eng teams. Free: 250 issues. $8/user.</div>
+          <a href="https://linear.app" class="resource-link" target="_blank">linear.app →</a>
+          <div class="resource-tags"><span class="tag">Fast</span><span class="tag">Dev-Focused</span><span class="tag">Cycles</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Trello</div>
+          <div class="resource-desc">Kanban boards, simple, visual. Power-ups for calendar, voting, custom fields. Free: 10 boards. $5/user.</div>
+          <a href="https://trello.com" class="resource-link" target="_blank">trello.com →</a>
+          <div class="resource-tags"><span class="tag">Kanban</span><span class="tag">Simple</span><span class="tag">Visual</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Contracts & Proposals</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">PandaDoc</div>
+          <div class="resource-desc">Proposals, contracts, e-sign, payments, tracking. Templates, CRM integration. ~$19/mo. Analytics: viewed, signed, time spent.</div>
+          <a href="https://pandadoc.com" class="resource-link" target="_blank">pandadoc.com →</a>
+          <div class="resource-tags"><span class="tag">E-sign</span><span class="tag">Tracking</span><span class="tag">Templates</span></div>
+        </li>
+        <li>
+          <div class="resource-name">DocuSign</div>
+          <div class="resource-desc">Industry standard e-sign. Legally binding globally. Templates, bulk send, identity verification. ~$10/mo personal.</div>
+          <a href="https://docusign.com" class="resource-link" target="_blank">docusign.com →</a>
+          <div class="resource-tags"><span class="tag">E-sign</span><span class="tag">Legal</span><span class="tag">Standard</span></div>
+        </li>
+        <li>
+          <div class="resource-name">HelloSign (Dropbox Sign)</div>
+          <div class="resource-desc">Simple e-sign API + UI. Templates, team, audit trail. Free: 3 docs/mo. $15/mo. Great for simple contracts.</div>
+          <a href="https://hellosign.com" class="resource-link" target="_blank">hellosign.com →</a>
+          <div class="resource-tags"><span class="tag">Simple</span><span class="tag">API</span><span class="tag">Free Tier</span></div>
+        </li>
+        <li>
+          <resource-name>Proposify</resource-name>
+          <div class="resource-desc">Proposal-specific: Interactive pricing, live chat, analytics, CRM sync. ~$49/mo. Best for high-volume proposals.</div>
+          <a href="https://proposify.com" class="resource-link" target="_blank">proposify.com →</a>
+          <div class="resource-tags"><span class="tag">Proposals</span><span class="tag">Analytics</span><span class="tag">Interactive</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Canva / Figma</div>
+          <div class="resource-desc">Design proposals visually. Canva: Templates, brand kit, PDF export. Figma: Collaborative, components, developer handoff.</div>
+          <a href="https://canva.com" class="resource-link" target="_blank">canva.com →</a>
+          <div class="resource-tags"><span class="tag">Design</span><span class="tag">Templates</span><span class="tag">Visual</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Time Tracking</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Toggl Track</div>
+          <div class="resource-desc">Simple timer, projects, tags, reports, team. Free: 5 users. $9/user. Browser extension, mobile, Pomodoro.</div>
+          <a href="https://toggl.com/track" class="resource-link" target="_blank">toggl.com/track →</a>
+          <div class="resource-tags"><span class="tag">Simple</span><span class="tag">Reports</span><span class="tag">Free Tier</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Harvest</div>
+          <div class="resource-desc">Time + expenses + invoicing. Visual reports, budget alerts, retainer tracking. Integrates: Asana, Notion, QuickBooks. $12/user.</div>
+          <a href="https://harvestapp.com" class="resource-link" target="_blank">harvestapp.com →</a>
+          <div class="resource-tags"><span class="tag">Invoicing</span><span class="tag">Budgets</span><span class="tag">Integrations</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Clockify</div>
+          <div class="resource-desc">Free unlimited users, projects, reports. Timer, timesheet, kiosk, GPS. Paid: $3.99/user for advanced.</div>
+          <a href="https://clockify.me" class="resource-link" target="_blank">clockify.me →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Unlimited</span><span class="tag">Team</span></div>
+        </li>
+        <li>
+          <div class="resource-name">RescueTime</div>
+          <div class="resource-desc">Automatic tracking: apps, websites, categories. Focus sessions, goals, weekly reports. Free. Premium: $12/mo.</div>
+          <a href="https://rescuetime.com" class="resource-link" target="_blank">rescuetime.com →</a>
+          <div class="resource-tags"><span class="tag">Automatic</span><span class="tag">Focus</span><span class="tag">Productivity</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Legal & Business Setup</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Stripe Atlas / Clerky / Firstbase</div>
+          <div class="resource-desc">Incorporate US company (LLC/C-Corp) from anywhere. Bank account, EIN, legal docs. $500-1000. For international founders.</div>
+          <a href="https://stripe.com/atlas" class="resource-link" target="_blank">stripe.com/atlas →</a>
+          <div class="resource-tags"><span class="tag">Incorporation</span><span class="tag">US Entity</span><span class="tag">Bank Account</span></div>
+        </li>
+        <li>
+          <div class="resource-name">IRS EIN Application</div>
+          <div class="resource-desc">Free Employer ID Number. Required for: Business bank account, hiring, S-Corp election, vendor forms. Instant online.</div>
+          <a href="https://irs.gov/businesses/small-businesses-self-employed/apply-for-an-employer-identification-number-ein-online" class="resource-link" target="_blank">IRS EIN →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Official</span><span class="tag">Required</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Business Bank Accounts (Mercury, Novo, Relay, Chase)</div>
+          <div class="resource-desc">Mercury: Startup-friendly, API, virtual cards. Novo: No fees, integrations. Relay: Sub-accounts for profit first. Chase: Branches, credit.</div>
+          <a href="https://mercury.com" class="resource-link" target="_blank">mercury.com →</a>
+          <div class="resource-tags"><span class="tag">Startup</span><span class="tag">API</span><span class="tag">No Fees</span></div>
+        </li>
+        <li>
+          <div class="resource-name">QuickBooks Online / Xero</div>
+          <div class="resource-desc">Full accounting: Bank sync, reconciliation, payroll, tax, reports. QBO: ~$30/mo. Xero: ~$15/mo. Accountant access free.</div>
+          <a href="https://quickbooks.intuit.com" class="resource-link" target="_blank">quickbooks.intuit.com →</a>
+          <div class="resource-tags"><span class="tag">Accounting</span><span class="tag">Tax</span><span class="tag">Payroll</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Collective / Heard / Bench</div>
+          <div class="resource-desc">Bookkeeping + tax for freelancers/S-corps. Collective: S-Corp setup + payroll + tax. ~$200-300/mo. Saves 10+ hrs/mo.</div>
+          <a href="https://collective.com" class="resource-link" target="_blank">collective.com →</a>
+          <div class="resource-tags"><span class="tag">S-Corp</span><span class="tag">Tax</span><span class="tag">Bookkeeping</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Client Acquisition & CRM</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">HubSpot CRM (Free)</div>
+          <div class="resource-desc">Contacts, deals, pipeline, email tracking, meeting scheduler, forms, chat. Free forever. Paid: Marketing/Sales hubs.</div>
+          <a href="https://hubspot.com/products/crm" class="resource-link" target="_blank">hubspot.com/crm →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Pipeline</span><span class="tag">Email Tracking</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Pipedrive</div>
+          <div class="resource-desc">Sales-focused CRM. Visual pipeline, activities, email sync, automation. $14.90/user. Great for service sales.</div>
+          <a href="https://pipedrive.com" class="resource-link" target="_blank">pipedrive.com →</a>
+          <div class="resource-tags"><span class="tag">Sales</span><span class="tag">Pipeline</span><span class="tag">Visual</span></div>
+        </li>
+        <li>
+          <div class="resource-name">LinkedIn Sales Navigator</div>
+          <div class="resource-desc">Advanced search, lead alerts, InMail, CRM sync. $79/mo. Essential for B2B outreach. Team: $134/user.</div>
+          <a href="https://linkedin.com/sales" class="resource-link" target="_blank">linkedin.com/sales →</a>
+          <div class="resource-tags"><span class="tag">B2B</span><span class="tag">Outreach</span><span class="tag">Leads</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Apollo.io / ZoomInfo</div>
+          <div class="resource-desc">B2B database: Emails, phones, intent data, sequencing. Apollo: Free tier generous. ZoomInfo: Enterprise, expensive.</div>
+          <a href="https://apollo.io" class="resource-link" target="_blank">apollo.io →</a>
+          <div class="resource-tags"><span class="tag">Database</span><span class="tag">Sequencing</span><span class="tag">Intent</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Calendly / Cal.com / SavvyCal</div>
+          <div class="resource-desc">Scheduling links, routing, payments, reminders, team. Calendly: Standard. Cal.com: Open-source, self-host. SavvyCal: Best UX.</div>
+          <a href="https://calendly.com" class="resource-link" target="_blank">calendly.com →</a>
+          <div class="resource-tags"><span class="tag">Scheduling</span><span class="tag">Routing</span><span class="tag">Payments</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Learning & Communities</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">Freelancer's Union / IPSE</div>
+          <div class="resource-desc">Advocacy, benefits (insurance, retirement), contracts, community. US: Freelancers Union. UK: IPSE. Membership ~$200/yr.</div>
+          <a href="https://freelancersunion.org" class="resource-link" target="_blank">freelancersunion.org →</a>
+          <div class="resource-tags"><span class="tag">Advocacy</span><span class="tag">Benefits</span><span class="tag">Community</span></div>
+        </li>
+        <li>
+          <div class="resource-name">r/freelance / r/consulting</div>
+          <div class="resource-desc">Reddit communities. Pricing discussions, client horror stories, contract reviews, tax questions, tool recommendations.</div>
+          <a href="https://reddit.com/r/freelance" class="resource-link" target="_blank">reddit.com/r/freelance →</a>
+          <div class="resource-tags"><span class="tag">Community</span><span class="tag">Q&A</span><span class="tag">Free</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Indie Hackers / Starter Story</div>
+          <div class="resource-desc">Founder interviews, revenue breakdowns, growth strategies. Many started as freelancers. Inspiration + tactics.</div>
+          <a href="https://indiehackers.com" class="resource-link" target="_blank">indiehackers.com →</a>
+          <div class="resource-tags"><span class="tag">Case Studies</span><span class="tag">Revenue</span><span class="tag">Growth</span></div>
+        </li>
+        <li>
+          <div class="resource-name">The Futur / Chris Do</div>
+          <div class="resource-desc">Pricing, sales, mindset for creatives. YouTube, courses, community. "Charge what you're worth" philosophy.</div>
+          <a href="https://thefutur.com" class="resource-link" target="_blank">thefutur.com →</a>
+          <div class="resource-tags"><span class="tag">Pricing</span><span class="tag">Sales</span><span class="tag">Mindset</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Double Your Freelancing (Brennan Dunn)</div>
+          <div class="resource-desc">Course + newsletter: Value pricing, proposals, funnels, automation. Practical, tactical, proven. Paid course ~$500.</div>
+          <a href="https://doubleyourfreelancing.com" class="resource-link" target="_blank">doubleyourfreelancing.com →</a>
+          <div class="resource-tags"><span class="tag">Course</span><span class="tag">Value Pricing</span><span class="tag">Funnels</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Start free: HubSpot CRM + Toggl Track + Stripe + Wise + Notion. Add PandaDoc when proposals > 5/mo. Add Harvest when you need invoicing from time tracking. Upgrade only when free tier limits hurt.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

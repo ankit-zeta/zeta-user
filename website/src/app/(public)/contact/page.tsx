@@ -71,7 +71,7 @@ export default function ContactPage() {
                 <Mail className="w-4 h-4 text-brand-600 shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-textMain block">Email Support</strong>
-                  <span>support@zetagrow.com</span>
+                  <span>hey@zetagrow.in</span>
                 </div>
               </div>
 
@@ -79,7 +79,7 @@ export default function ContactPage() {
                 <Phone className="w-4 h-4 text-brand-600 shrink-0 mt-0.5" />
                 <div>
                   <strong className="text-textMain block">Phone Inquiries</strong>
-                  <span>+91 (080) 4567-8900</span>
+                  <span>+91 72340 51567</span>
                 </div>
               </div>
 
@@ -186,7 +186,7 @@ export default function ContactPage() {
         <h3 className="text-sm font-bold text-textMain">Business Information</h3>
         <p className="text-xs text-textMuted font-semibold">Zetagrow Edutech and Solutions</p>
         <p className="text-xs text-textMuted">Shop No. 06, Vrindavan Marriage Lawn, Dobhiyara, NH-330A, Sultanpur City, Lucknow District, Uttar Pradesh – 224229, India</p>
-        <p className="text-xs text-textMuted">Phone: +91 75218 40759 · Email: support@zetagrow.com</p>
+        <p className="text-xs text-textMuted">Phone: +91 72340 51567 · Email: hey@zetagrow.in</p>
         <p className="text-xs text-textMuted">MSME (Udyam) Registration: UDYAM-UP-73-0047816</p>
       </div>
     </div>

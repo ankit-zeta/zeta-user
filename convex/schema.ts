@@ -188,8 +188,9 @@ sessions: defineTable({
     title: v.string(),
     description: v.string(),
     fileUrl: v.string(),
-    fileType: v.string(), // "pdf" | "zip" | "template" | "doc" | "video" | "link"
+    fileType: v.string(), // "pdf" | "zip" | "template" | "doc" | "video" | "link" | "html"
     fileSize: v.string(),
+    content: v.optional(v.string()), // HTML content for inline display
     programId: v.optional(v.id("programs")),
     moduleId: v.optional(v.id("programModules")),
     accessType: v.string(), // "public" | "enrolled" | "achievement_locked"
@@ -284,6 +285,7 @@ sessions: defineTable({
     attachments: v.optional(v.array(v.string())),
     company: v.optional(v.string()),
     coverImageStorageId: v.optional(v.string()),
+    applicantCount: v.optional(v.number()), // displayed applicant count
     createdAt: v.number(),
     updatedAt: v.number(),
   })
@@ -518,6 +520,20 @@ sessions: defineTable({
     priority: v.string(), // "normal" | "high" | "urgent"
     createdAt: v.number(),
   }).index("by_isActive", ["isActive"]),
+
+  // Dashboard Banners (admin-uploaded images shown on affiliate & work dashboards)
+  banners: defineTable({
+    title: v.string(),
+    imageUrl: v.string(),
+    linkUrl: v.optional(v.string()),
+    targetPage: v.string(), // "affiliate" | "work" | "both"
+    isActive: v.boolean(),
+    sortOrder: v.number(),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_targetPage", ["targetPage", "isActive"])
+    .index("by_sortOrder", ["sortOrder"]),
 
   // Admin Configurable Settings
   adminSettings: defineTable({

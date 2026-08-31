@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growth Analytics Checklist — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+    .checklist li:last-child { border-bottom: none; }
+    .checkbox { width: 20px; height: 20px; border: 2px solid #d1d5db; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .checklist-content { flex: 1; }
+    .checklist-title { font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+    .checklist-desc { font-size: 14px; color: #666; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .checkbox { border: 1px solid #176B4D; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Checklist</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Growth Analytics &amp; Funnels</div>
+      <h1>Growth Analytics Checklist</h1>
+      <p class="subtitle">Analytics setup, funnel analysis, cohort tracking, A/B testing, and optimization checklists</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Setup: Tracking &amp; Dashboards</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">GA4 installed and configured</div><div class="checklist-desc">gtag.js on all pages, enhanced measurement enabled, conversion events created, filters applied.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Key events defined and firing</div><div class="checklist-desc">page_view, scroll, form_start, form_submit, purchase, sign_up — verify in DebugView.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Product analytics tool configured</div><div class="checklist-desc">Mixpanel, Amplitude, or PostHog. User properties set. Events mapped to funnel stages.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Session recording tool installed</div><div class="checklist-desc">Hotjar or Microsoft Clarity (free). Heatmaps on key pages. Recordings filtered to conversion pages.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">UTM parameters standardized</div><div class="checklist-desc">utm_source, utm_medium, utm_campaign naming convention documented. Team trained on usage.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Dashboard created</div><div class="checklist-desc">Looker Studio or spreadsheet. Shows: traffic, conversion rate, CAC, LTV, revenue. Updated weekly.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Analyze: Funnels &amp; Cohorts</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Complete funnel mapped</div><div class="checklist-desc">All stages from awareness to retention. Conversion rates at each stage. Biggest drop-off identified.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Top 3 funnel leaks identified</div><div class="checklist-desc">Ranked by impact (revenue lost). Root cause hypothesis for each. Prioritized by effort vs impact.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Cohort analysis set up</div><div class="checklist-desc">At least 2 cohort types: acquisition date + acquisition channel. Tracking retention curves.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Activation event defined</div><div class="checklist-desc">The one action that predicts retention. Tracked and measured. Baseline documented.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">CAC and LTV calculated</div><div class="checklist-desc">By channel, by cohort. LTV:CAC ratio calculated. Benchmarked against industry standards.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Weekly analytics review scheduled</div><div class="checklist-desc">30 min every Monday. Review funnel, check anomalies, plan tests. Calendar invite sent.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Optimize: Tests &amp; Iterations</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">A/B test backlog created</div><div class="checklist-desc">10+ test ideas ranked by impact. Each has hypothesis, metric, sample size, duration.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">First A/B test launched</div><div class="checklist-desc">Highest-impact test running. Statistical significance calculator ready. 2-week minimum duration.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Test results documented</h4><div class="checklist-desc">Hypothesis, result, lift, confidence, learning. Winner implemented or next test started.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Guardrail metrics monitored</div><div class="checklist-desc">During tests, watching for unintended consequences. NPS, churn, support tickets tracked.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Top 3 leaks addressed</div><div class="checklist-desc">Fixes shipped for biggest funnel problems. Impact measured post-fix. Revenue impact documented.</div></div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Next month test plan ready</div><div class="checklist-desc">Minimum 2 tests planned. Resources allocated. Dependencies identified. Start dates set.</div></div></li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Don't try to do everything at once. Complete the Setup section first (Week 1), then Analyze (Week 2), then Optimize (Week 3+). Most businesses skip setup and jump to testing — they end up making decisions on bad data.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        &copy; 2026 ZetaGrow &mdash; Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

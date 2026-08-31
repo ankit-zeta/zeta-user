@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tracking Implementation Checklist — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .checklist { list-style: none; }
+    .checklist li { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+    .checklist li:last-child { border-bottom: none; }
+    .checkbox { width: 20px; height: 20px; border: 2px solid #d1d5db; border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+    .checklist-content { flex: 1; }
+    .checklist-title { font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+    .checklist-desc { font-size: 14px; color: #666; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .checkbox { border: 1px solid #176B4D; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Checklist</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Analytics & Tracking Setup</div>
+      <h1>Tracking Implementation Checklist</h1>
+      <p class="subtitle">GA4 installed, events configured, conversions marked, UTM builder ready, dashboard created, alerts set, monthly review scheduled</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">GA4 Property Setup</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">GA4 property created</div><div class="checklist-desc">Correct timezone, currency, data retention (26 months recommended)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Data stream configured</div><div class="checklist-desc">Web stream URL correct; Enhanced Measurement enabled (review each)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Measurement ID deployed</div><div class="checklist-desc">G-XXXXXXXXXX in gtag.js or GTM on all pages</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Cross-domain tracking</div><div class="checklist-desc">All user-traversed domains added in stream settings</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Internal traffic filters</div><div class="checklist-desc">Office IPs, staging domains, developer traffic excluded</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Google Signals enabled</div><div class="checklist-desc">Demographics, cross-device, remarketing audiences</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">BigQuery export linked</div><div class="checklist-desc">Daily export for historical analysis; streaming for real-time</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Event Configuration</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Naming convention documented</div><div class="checklist-desc">snake_case, past tense, object_action (view_item not item_view)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Standard events firing</div><div class="checklist-desc">page_view, scroll, click, video_play, file_download, form_start, form_submit, search</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Custom events implemented</div><div class="checklist-desc">generate_lead, sign_up, purchase, add_to_cart, begin_checkout, etc. via GTM</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Event parameters populated</div><div class="checklist-desc">page_location, item_id, value, currency, form_id, button_location, etc.</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Custom dimensions registered</div><div class="checklist-desc">Event-scoped (max 50): form_type, lead_source, button_location, plan_type, user_type...</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">User-scoped dimensions registered</div><div class="checklist-desc">user_id, customer_tier, lifetime_value_bucket (max 25)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Data layer structure defined</div><div class="checklist-desc">window.dataLayer.push({event: 'name', param: 'value'}); consistent across site</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Conversion Setup</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Key events marked as conversions</div><div class="checklist-desc">Admin → Events → Mark as conversion: purchase, generate_lead, sign_up, begin_checkout</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Count method set correctly</div><div class="checklist-desc">Once per session (leads) vs Once per event (purchases)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Conversion values configured</div><div class="checklist-desc">Dynamic (event value) for purchase; static estimated value for leads</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Attribution model selected</div><div class="checklist-desc">Data-Driven (default) — requires 300 conv/30d; else Last Click</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Lookback window configured</div><div class="checklist-desc">30 days default; adjust to match sales cycle (max 90 days)</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">UTM & Campaign Tracking</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">UTM Master Sheet created</div><div class="checklist-desc">Shared Google Sheet with validation: Channel, Source, Medium, Campaign Pattern, Content, Owner</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Naming conventions enforced</div><div class="checklist-desc">Lowercase, underscores only, no spaces/special chars</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">URL Builder tool bookmarked</div><div class="checklist-desc">ga-dev-tools.web.app/campaign-url-builder for every link</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Auto-tagging enabled (Google Ads)</div><div class="checklist-desc">Settings → Account Settings → Auto-tagging: ON</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Consent Mode v2 (EU/UK)</div><div class="checklist-desc">CMP integrated; ad_storage, analytics_storage consent signals firing</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">E-Commerce & Monetization</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Ecommerce events implemented</div><div class="checklist-desc">view_item, add_to_cart, remove_from_cart, begin_checkout, add_payment_info, purchase, refund</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Items array populated correctly</div><div class="checklist-desc">item_id, item_name, price, quantity, item_brand, item_category, item_variant</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Transaction IDs unique</div><div class="checklist-desc">String format; prevents duplicate purchase counting</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Currency codes ISO 4217</div><div class="checklist-desc">USD, EUR, GBP — required for monetary events</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Promotion tracking</div><div class="checklist-desc">view_promotion, select_promotion with promotion_id, creative_name, creative_slot</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Debugging & Validation</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">GA Debugger extension installed</div><div class="checklist-desc">Chrome extension; logs all hits to console with parameters</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">GTM Preview mode tested</div><div class="checklist-desc">All tags firing correctly; variable values as expected</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">GA4 DebugView verified</div><div class="checklist-desc">Admin → DebugView; test device shows event stream</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Realtime report confirmed</div><div class="checklist-desc">Active users, Events (last 30 min), Conversions firing live</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Conversion count matches backend</div><div class="checklist-desc">GA4 conversions ↔ CRM/orders within 5% tolerance</div></li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Reporting & Monitoring</h2>
+      <ul class="checklist">
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Executive dashboard created</div><div class="checklist-desc">Looker Studio: 8-12 KPIs (Users, Engagement Rate, Leads, Revenue, ROAS, CAC, LTV, Churn)</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Marketing dashboard created</div><div class="checklist-desc">Channel performance, Campaign ROI, Funnel visualization</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Scheduled email delivery</div><div class="checklist-desc">Monday 8am to stakeholders; PDF + live link</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Custom alerts configured</div><div class="checklist-desc">GA4 Admin → Custom Alerts: Traffic drop >50%, Conversion spike, Revenue anomaly</div></li>
+        <li><div class="checkbox"></div><div class="checklist-content"><div class="checklist-title">Monthly review calendar blocked</div><div class="checklist-desc">First Monday: Data review → insights → budget reallocation → test planning</div></li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Run this checklist monthly. Score each section 1-5. Focus on lowest scores. Track progress over quarters. Analytics is a product — iterate on it like one.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automation Cheat Sheet — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .cheat-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .cheat-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .cheat-item p { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .cheat-item code { background: #e5e7eb; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Cheat Sheet</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Automation & No-Code Tools</div>
+      <h1>Automation Cheat Sheet</h1>
+      <p class="subtitle">Common Zapier recipes, Make scenarios, data mapping patterns, error handling, rate limits, testing workflows</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Essential Zapier Recipes (Ready to Copy)</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Form → HubSpot Contact</h4><p>Trigger: Typeform/Tally/Google Forms New Entry<br>Action: HubSpot Create/Update Contact<br>Map: Email, Name, Company, Custom Fields<br>Filter: Email not in HubSpot (Search step)</p></div>
+        <div class="cheat-item"><h4>Stripe Payment → Invoice + Slack</h4><p>Trigger: Stripe Checkout Completed<br>Action: Documint/PDFMonkey Generate Invoice<br>Action: Gmail Send Email (with PDF)<br>Action: Slack Post to #sales</p></div>
+        <div class="cheat-item"><h4>Calendly Booking → CRM Activity</h4><p>Trigger: Calendly Invitee Created<br>Action: HubSpot Create Engagement (Meeting)<br>Action: Google Calendar Create Event<br>Action: Slack Notify Owner</p></div>
+        <div class="cheat-item"><h4>New Blog Post → Social Posts</h4><p>Trigger: RSS Feed (New Item) / Webflow CMS<br>Action: ChatGPT Summarize for LinkedIn/Twitter<br>Action: Buffer/Later Create Posts<br>Delay: Stagger posting times</p></div>
+        <div class="cheat-item"><h4>Airtable Record → Notion Page</h4><p>Trigger: Airtable New Record (View: "Publish to Notion")<br>Action: Notion Create Page (Database)<br>Map: Title, Properties, Content Blocks<br>Action: Airtable Update "Synced" checkbox</p></div>
+        <div class="cheat-item"><h4>Support Form → Linear Issue</h4><p>Trigger: Typeform/Tally Submission<br>Action: Linear Create Issue<br>Map: Title, Description, Labels, Team, Priority<br>Action: Slack Post to #support</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Essential Make Scenarios (Blueprints)</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Shopify Order → Airtable → ShipStation</h4><p>Webhook: Shopify Order Created<br>Router: Validate → Create Airtable Order<br>Iterator: Line Items → Create Airtable Line Items<br>Webhook Response: 200 OK<br>Scheduler: Daily → ShipStation Create Shipments</p></div>
+        <div class="cheat-item"><h4>Content Repurposing Pipeline</h4><p>RSS/Notion: New Blog Post<br>OpenAI: Generate LinkedIn, Twitter, Threads versions<br>Router: Per Platform → Buffer/Later Schedule<br>Aggregator: Collect Post IDs → Update Source Record<br>Error Handler: Slack Alert + Store for Retry</p></div>
+        <div class="cheat-item"><h4>Lead Enrichment (Clearbit/Apollo)</h4><p>Trigger: New HubSpot Contact (Email only)<br>HTTP: Clearbit Enrichment API (Email → Company, Role, Size)<br>Router: If enriched → Update HubSpot; Else → Flag Manual<br>Slack: Notify SDR "Enriched: {{Name}} at {{Company}}"</p></div>
+        <div class="cheat-item"><h4>Bidirectional Airtable ↔ Notion Sync</h4><p>Scheduler: Every 15 min<br>Airtable: Search Modified Records (Last Run Time)<br>Notion: Search Modified Pages (Last Edited Time)<br>Router: Direction Detection → Upsert in Other<br>Data Store: Track Last Sync Timestamp per Table</p></div>
+        <div class="cheat-item"><h4>Stripe Subscription Lifecycle</h4><p>Webhook: invoice.paid, customer.subscription.updated, .deleted<br>Router: Event Type → Handle Each<br>Actions: Provision Access, Send Welcome, Update Airtable, Revoke Access<br>Error: Retry 3x → Dead Letter Queue → Alert</p></div>
+        <div class="cheat-item"><h4>Weekly Report Generator</h4><p>Scheduler: Monday 6am<br>HTTP: GA4 RunReport, Ads API, Stripe Balance<br>Tools: Aggregate, Calculate WoW/MoM %, Format Table<br>Google Docs: Create Report from Template<br>Gmail: Send to Stakeholders + Slack Summary</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Data Mapping Patterns</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Name Splitting</h4><p>Full Name → First/Last<br><code>First: split(" ")[0]</code><br><code>Last: slice(1).join(" ")</code><br>Handle: "Dr. John Smith Jr."</p></div>
+        <div class="cheat-item"><h4>Date Formatting</h4><p>ISO → Locale / Custom<br><code>formatDate(now, "YYYY-MM-DD")</code><br><code>formatDate(date, "MMMM D, YYYY")</code><br>Timezone: <code>setTimezone("America/New_York")</code></p></div>
+        <div class="cheat-item"><h4>Currency Conversion</h4><p>Cents → Dollars<br><code>{{amount}} / 100</code><br>With decimals: <code>numberFormat(amount/100, 2)</code><br>Multi-currency: Store ISO code + amount</p></div>
+        <div class="cheat-item"><h4>Array → Text (Email/Slack)</h4><p>Line Items → Bullet List<br><code>map(items, "name + ': ' + quantity")</code><br><code>join("\n• ")</code><br>HTML: <code>join("<li>")</code></p></div>
+        <div class="cheat-item"><h4>Conditional Fields</h4><p>Only map if value exists<br><code>if(empty(field), "N/A", field)</code><br><code>field ?? "Default Value"</code><br>Nested: <code>get(obj, "path.to.field", "fallback")</code></p></div>
+        <div class="cheat-item"><h4>Deduplication Keys</h4><p>Unique identifiers per app<br>HubSpot: Email (contact), Domain (company)<br>Airtable: Record ID, Custom "External ID" field<br>Stripe: Customer ID, Subscription ID<br>Linear: Issue ID, Customer Email + Title Hash</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Error Handling Patterns</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Zapier: Auto Replay</h4><p>Settings → Auto Replay: ON<br>Failed runs retry: 5 min, 30 min, 2 hr, 8 hr<br>Filter: Only replay "Rate Limit" & "Timeout" errors</p></div>
+        <div class="cheat-item"><h4>Make: Error Handlers</h4><p>Add "Error Handler" module to any module<br>Types: Break, Resume, Ignore, Custom<br>Resume: Provide fallback data → Continue flow<br>Custom: Slack Alert → Data Store → Manual Retry</p></div>
+        <div class="cheat-item"><h4>Rate Limit Handling</h4><p>HTTP 429 → Wait: <code>Retry-After</code> header<br>Exponential Backoff: 1s, 2s, 4s, 8s, 16s (max 5 retries)<br>Queue: Make Data Store or Zapier Queue (beta)</p></div>
+        <div class="cheat-item"><h4>Partial Failure Recovery</h4><p>Scenario fails at Step 5 of 10<br>Make: Incomplete Execution → Fix Data → Resume from Step 5<br>Zapier: Replay from failed step (if idempotent)</p></div>
+        <div class="cheat-item"><h4>Dead Letter Queue</h4><p>Failed after max retries → Store in Airtable/Sheets<br>Fields: Payload, Error, Timestamp, Workflow, Retry Count<br>Daily Review: Manual fix → Replay via "Reprocess" workflow</p></div>
+        <div class="cheat-item"><h4>Monitoring Alerts</h4><p>Zapier: Filter by Status = "Error" → Slack/Email<br>Make: Scenario Settings → Notifications → On Error<br>Custom: Daily Run → Count Errors → Alert if > Threshold</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Rate Limits & Optimization</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Zapier Limits</h4><p>Free: 100 tasks/mo, 15 min polling<br>Starter: 750 tasks, 15 min<br>Professional: 2,000 tasks, 2 min<br>Team: 50,000 tasks, 1 min<br>Optimize: Combine steps, use Code step</p></div>
+        <div class="cheat-item"><h4>Make Limits</h4><p>Free: 1,000 ops/mo, 15 min<br>Core: 10,000 ops, 5 min<br>Pro: 40,000 ops, 1 min<br>Teams: 100,000 ops, 1 min<br>Ops = Module executions (1 scenario = many ops)</p></div>
+        <div class="cheat-item"><h4>API Rate Limits (Common)</h4><p>HubSpot: 100 req/10s (burst), 400/day (free)<br>Airtable: 5 req/s/base<br>Notion: 3 req/s (avg)<br>Slack: 50+ methods, tiered<br>Google Sheets: 500 req/100s/user</p></div>
+        <div class="cheat-item"><h4>Optimization Tips</h4><p>• Batch API calls (array input vs loop)<br>• Cache lookups (Data Store, Zapier Storage)<br>• Filter early (don't fetch what you'll discard)<br>• Use webhooks over polling<br>• Schedule non-urgent at off-peak</p></div>
+        <div class="cheat-item"><h4>Testing Without Burning Ops</h4><p>Make: "Run Once" with test data<br>Zapier: "Test" button + Sample Data<br>Both: Dedicated "Sandbox" accounts<br>Mock: Use RequestBin/Webhook.site for HTTP</p></div>
+        <div class="cheat-item"><h4>Cost Control</h4><p>Monthly Audit: Tasks/Ops per Workflow<br>Kill: Unused, Duplicate, High-cost/Low-value<br>Consolidate: Multiple Zaps → 1 Make Scenario<br>Negotiate: Annual plans save 20-30%</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Testing Checklist (Before Going Live)</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>✅ Happy Path</h4><p>Real trigger data → All steps execute → Correct output in destination</p></div>
+        <div class="cheat-item"><h4>✅ Missing Required Fields</h4><p>Trigger with empty name/email → Filter/Error handling works → No crash</p></div>
+        <div class="cheat-item"><h4>✅ Duplicate Trigger</h4><p>Same payload twice → No duplicate records created (idempotent)</p></div>
+        <div class="cheat-item"><h4>✅ API Errors</h4><p>Destination down / 500 / 429 → Alert sent → Retry works → No data loss</p></div>
+        <div class="cheat-item"><h4>✅ Large Payloads</h4><p>Many line items / Large files → No timeout / Memory error</p></div>
+        <div class="cheat-item"><h4>✅ Edge Cases</h4><p>Special chars in names, Emojis, Very long text, Null values, Timezone edge</p></div>
+        <div class="cheat-item"><h4>✅ Permissions</h4><p>Connected accounts have correct scopes; Token not expired; 2FA not blocking</p></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Create a "Recipe Library" in Notion: each recipe = page with Trigger, Steps, Field Mappings, Test Data, Known Issues. Tag by: Platform, Complexity, Department. Team can duplicate & customize in minutes.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

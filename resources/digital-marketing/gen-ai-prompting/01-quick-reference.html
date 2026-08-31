@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Prompting Quick Reference — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .table-wrapper { overflow-x: auto; margin: 12px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #176B4D; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+    td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+    tr:nth-child(even) { background: #f9fafb; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .cheat-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .cheat-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .cheat-item p { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Quick Reference</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Gen AI & Prompting Mastery</div>
+      <h1>AI Prompting Quick Reference</h1>
+      <p class="subtitle">Prompt frameworks, techniques, and templates for ChatGPT, Claude, Gemini, and Midjourney</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Prompting Frameworks</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Framework</th><th>Best For</th><th>Structure</th><th>Example</th></tr>
+          <tr><td>CRISPE</td><td>Complex tasks</td><td>Capacity, Role, Insight, Statement, Personality, Experiment</td><td>You are a senior copywriter. Write 5 subject lines for a Black Friday sale for an e-commerce store selling organic skincare...</td></tr>
+          <tr><td>BROKE</td><td>Structured output</td><td>Background, Role, Objectives, Key results, Evolve</td><td>Background: SaaS startup. Role: Growth marketer. Objective: Launch campaign. Key results: 500 signups in 30 days. Evolve: iterate based on data...</td></tr>
+          <tr><td>Chain of Thought</td><td>Reasoning</td><td>Step-by-step thinking</td><td>"Let me think through this step by step..." or "Think carefully before answering..."</td></tr>
+          <tr><td>Few-Shot</td><td>Consistent format</td><td>2-3 examples + task</td><td>Example 1: Input → Output. Example 2: Input → Output. Now: Input → ?</td></tr>
+          <tr><td>Persona + Task</td><td>Role-specific</td><td>"Act as X. Do Y."</td><td>"Act as a CRO expert. Analyze this landing page and suggest 5 improvements..."</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Prompt Power Words</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Accuracy Boosters</h4><p>Be specific, factual, precise, accurate, cite sources, step-by-step, think carefully, double-check</p></div>
+        <div class="cheat-item"><h4>Creativity Triggers</h4><p>Think outside the box, unconventional, creative, surprising, bold, innovative, lateral thinking</p></div>
+        <div class="cheat-item"><h4>Quality Controls</h4><p>Expert level, senior, professional, best practices, industry standard, thorough, comprehensive</p></div>
+        <div class="cheat-item"><h4>Format Instructions</h4><p>As a table, bullet points, numbered list, JSON, markdown, code block, CSV, comparison format</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Model Comparison</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Model</th><th>Strengths</th><th>Best For</th><th>Context Window</th></tr>
+          <tr><td>GPT-4o</td><td>Fast, multimodal, good at most tasks</td><td>General writing, analysis, code</td><td>128K</td></tr>
+          <tr><td>Claude 3.5 Sonnet</td><td>Long-form, nuanced, follows complex instructions</td><td>Writing, analysis, coding, research</td><td>200K</td></tr>
+          <tr><td>Gemini 1.5 Pro</td><td>Long context, multimodal, Google integration</td><td>Document analysis, video, long text</td><td>1M</td></tr>
+          <tr><td>GPT-4o Mini</td><td>Fast, cheap, good enough for simple tasks</td><td>Summarization, classification, drafts</td><td>128K</td></tr>
+          <tr><td>Claude Haiku</td><td>Fast, cheap, handles structured tasks</td><td>Classification, extraction, simple Q&A</td><td>200K</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Prompt Templates by Use Case</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Content Writing</h4><p>"Act as a [role]. Write a [type] about [topic]. Target audience: [who]. Tone: [tone]. Length: [words]. Include: [specific requirements]."</p></div>
+        <div class="cheat-item"><h4>Email Campaign</h4><p>"Write [number] email subject lines for [product/offer]. Audience: [segment]. Goal: [open/click/conversion]. Tone: [urgent/curious/value]."</p></div>
+        <div class="cheat-item"><h4>Social Media</h4><p>"Create [number] [platform] posts about [topic]. Include: hook, value, CTA. Tone: [casual/professional]. Hashtags: [relevant ones]."</p></div>
+        <div class="cheat-item"><h4>Ad Copy</h4><p>"Write [platform] ad copy for [product]. Headline: [max chars]. Primary text: [max chars]. CTA: [action]. Audience: [who]. Benefit: [main value]."</p></div>
+        <div class="cheat-item"><h4>Data Analysis</h4><p>"Analyze this data: [paste data]. Find patterns, trends, outliers. Explain in plain English. Suggest 3 actionable insights."</p></div>
+        <div class="cheat-item"><h4>Code Review</h4><p>"Review this code for: bugs, performance, security, readability. Suggest improvements. Explain each issue clearly."</p></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>The best prompt is a conversation, not a command. Start broad, refine based on output. Use "instead of X, try Y" to iterate. Save your best prompts in a personal library organized by use case.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

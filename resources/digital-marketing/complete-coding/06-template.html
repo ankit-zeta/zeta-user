@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Full-Stack Template — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .code-block { background: #1a1a1a; color: #e5e7eb; padding: 20px; border-radius: 10px; overflow-x: auto; margin: 12px 0; font-family: 'Fira Code', monospace; font-size: 13px; line-height: 1.5; }
+    .code-label { font-size: 12px; font-weight: 600; color: #176B4D; margin-bottom: 6px; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .code-block { background: #f3f4f6; color: #1a1a1a; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Template</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Complete Coding: Basics to Advanced</div>
+      <h1>Full-Stack Project Template</h1>
+      <p class="subtitle">Copy-paste starter files for Next.js + Prisma + Auth + Tailwind projects</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Project Structure</h2>
+      <div class="code-label">Folder Layout</div>
+      <div class="code-block">project/
+├── src/
+│   ├── app/
+│   │   ├── (auth)/login/page.tsx
+│   │   ├── (auth)/signup/page.tsx
+│   │   ├── (dashboard)/dashboard/page.tsx
+│   │   ├── api/[...route]/route.ts
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components/
+│   │   ├── ui/ (button, input, card, modal)
+│   │   └── layout/ (header, sidebar, footer)
+│   ├── lib/
+│   │   ├── db.ts (Prisma client)
+│   │   ├── auth.ts (Session helpers)
+│   │   └── utils.ts (Formatting, validation)
+│   └── types/ (TypeScript interfaces)
+├── prisma/
+│   ├── schema.prisma
+│   └── seed.ts
+├── public/ (Images, favicon)
+├── .env.local
+├── tailwind.config.ts
+├── tsconfig.json
+└── package.json</div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Prisma Schema</h2>
+      <div class="code-label">prisma/schema.prisma</div>
+      <div class="code-block">generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  role      Role     @default(USER)
+  posts     Post[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([authorId])
+  @@index([published, createdAt])
+}
+
+enum Role {
+  USER
+  ADMIN
+}</div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Auth Helpers</h2>
+      <div class="code-label">src/lib/auth.ts</div>
+      <div class="code-block">import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
+export async function requireAuth() {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect("/login");
+  return session;
+}
+
+export async function requireAdmin() {
+  const session = await requireAuth();
+  if (session.user.role !== "ADMIN") redirect("/dashboard");
+  return session;
+}
+
+export async function getCurrentUser() {
+  return getServerSession(authOptions);
+}</div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">API Route Pattern</h2>
+      <div class="code-label">src/app/api/posts/route.ts</div>
+      <div class="code-block">import { NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import { requireAuth } from "@/lib/auth";
+import { z } from "zod";
+
+const postSchema = z.object({
+  title: z.string().min(1).max(200),
+  content: z.string().optional(),
+  published: z.boolean().default(false),
+});
+
+export async function GET() {
+  const posts = await prisma.post.findMany({
+    where: { published: true },
+    include: { author: { select: { name: true, email: true } } },
+    orderBy: { createdAt: "desc" },
+  });
+  return NextResponse.json(posts);
+}
+
+export async function POST(req: Request) {
+  const session = await requireAuth();
+  const body = await req.json();
+  const data = postSchema.parse(body);
+
+  const post = await prisma.post.create({
+    data: { ...data, authorId: session.user.id },
+  });
+  return NextResponse.json(post, { status: 201 });
+}</div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Environment Variables</h2>
+      <div class="code-label">.env.local</div>
+      <div class="code-block"># Database
+DATABASE_URL="postgresql://user:pass@localhost:5432/mydb"
+
+# Auth
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="your-secret-here"
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+
+# App
+NEXT_PUBLIC_APP_URL="http://localhost:3000"</div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Start every project with this template. Add 3-5 core features. Deploy. Get feedback. Only add complexity (payments, real-time, analytics) after validating the core idea has users.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

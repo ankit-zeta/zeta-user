@@ -113,7 +113,7 @@ export const seedDatabase = internalMutation({
     if ((await ctx.db.query("adminSettings").collect()).length === 0) {
       await ctx.db.insert("adminSettings", { key: "general", value: {
         brandName: "ZetaGrow", tagline: "Learn. Work. Grow.",
-        supportEmail: "support@zetagrow.com", supportPhone: "+91 (080) 4567-8900",
+        supportEmail: "hey@zetagrow.in", supportPhone: "+91 72340 51567",
         primaryColor: "#176B4D", maintenanceMode: false,
       }, updatedAt: now });
       await ctx.db.insert("adminSettings", { key: "affiliate", value: {

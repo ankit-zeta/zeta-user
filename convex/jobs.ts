@@ -49,19 +49,32 @@ export const generateJobCoverUploadUrl = action({
 });
 
 export const getPublicJobs = query({
-  args: {},
-  handler: async (ctx) => {
+  args: {
+    limit: v.optional(v.number()),
+    offset: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const limit = Math.min(args.limit ?? 50, 100); // Max 100 per page
+    const offset = Math.max(args.offset ?? 0, 0);
+
     const jobs = await ctx.db
       .query("jobs")
       .withIndex("by_status", (q) => q.eq("status", "published"))
       .collect();
 
-    return Promise.all(
-      jobs.map(async (job) => ({
-        ...job,
-        coverImageUrl: await resolveCover(ctx, job.coverImageStorageId),
-      }))
-    );
+    // Apply pagination
+    const paginatedJobs = jobs.slice(offset, offset + limit);
+
+    return {
+      jobs: await Promise.all(
+        paginatedJobs.map(async (job) => ({
+          ...job,
+          coverImageUrl: await resolveCover(ctx, job.coverImageStorageId),
+        }))
+      ),
+      total: jobs.length,
+      hasMore: offset + limit < jobs.length,
+    };
   },
 });
 
@@ -504,5 +517,85 @@ export const autoCloseExpiredJobs = internalMutation({
     }
 
     return { closedCount };
+  },
+});
+
+// Seed helper — updates a job with realistic data
+export const updateJobFromSeed = mutation({
+  args: {
+    jobId: v.id("jobs"),
+    requiredProgramId: v.optional(v.id("programs")),
+    payment: v.number(),
+    applicantCount: v.number(),
+    openings: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.jobId, {
+      requiredProgramId: args.requiredProgramId,
+      payment: args.payment,
+      applicantCount: args.applicantCount,
+      openings: args.openings,
+      updatedAt: Date.now(),
+    });
+    return { ok: true };
+  },
+});
+
+// Bulk create jobs for seeding (no auth required — one-time use)
+export const bulkCreateJobs = mutation({
+  args: {
+    jobs: v.array(
+      v.object({
+        title: v.string(),
+        slug: v.string(),
+        shortDescription: v.string(),
+        description: v.string(),
+        category: v.string(),
+        skills: v.array(v.string()),
+        requirements: v.array(v.string()),
+        requiredProgramId: v.optional(v.string()),
+        payment: v.number(),
+        paymentType: v.string(),
+        workType: v.string(),
+        difficulty: v.string(),
+        estimatedDuration: v.string(),
+        deadline: v.string(),
+        openings: v.number(),
+        applicationQuestions: v.array(v.string()),
+        company: v.optional(v.string()),
+        applicantCount: v.number(),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+    const ids = [];
+    for (const job of args.jobs) {
+      const id = await ctx.db.insert("jobs", {
+        title: job.title,
+        slug: job.slug,
+        shortDescription: job.shortDescription,
+        description: job.description,
+        category: job.category,
+        skills: job.skills,
+        requirements: job.requirements,
+        requiredProgramId: job.requiredProgramId as any || undefined,
+        payment: job.payment,
+        paymentType: job.paymentType,
+        workType: job.workType,
+        difficulty: job.difficulty,
+        estimatedDuration: job.estimatedDuration,
+        deadline: job.deadline,
+        openings: job.openings,
+        status: "published",
+        applicationQuestions: job.applicationQuestions,
+        company: job.company,
+        applicantCount: job.applicantCount,
+        createdAt: now,
+        updatedAt: now,
+      });
+      ids.push(id);
+    }
+    return { success: true, count: ids.length };
   },
 });

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics Implementation Case Study — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .case-study { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+    .case-study h3 { font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
+    .case-study p { color: #374151; margin-bottom: 12px; }
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+    .metric { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; text-align: center; }
+    .metric-value { font-size: 28px; font-weight: 800; color: #176B4D; }
+    .metric-label { font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+    .phase-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px 0; }
+    .phase-item { background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .phase-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .phase-item p { font-size: 13px; color: #4b5563; }
+    .highlight-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .highlight-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .highlight-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .case-study { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Case Study</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Analytics & Tracking Setup</div>
+      <h1>Analytics Implementation Case Study</h1>
+      <p class="subtitle">How a business went from zero tracking to data-driven decisions: setup, event tracking, conversion optimization, reporting</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Background: "GrowthMarketing Co."</h2>
+      <div class="case-study">
+        <h3>B2B Marketing Agency — 15 employees, $2.4M ARR</h3>
+        <p><strong>Before:</strong> GA3 (Universal Analytics) with basic page views only. No event tracking, no conversions, no UTM governance. Marketing decisions based on gut feel. 40% of ad spend wasted on non-converting channels.</p>
+        <p><strong>Goal:</strong> Full-funnel visibility from impression → lead → customer. Data-driven budget allocation. Monthly reporting to leadership.</p>
+        
+        <div class="metrics">
+          <div class="metric"><div class="metric-value">67%</div><div class="metric-label">Ad Waste Eliminated</div></div>
+          <div class="metric"><div class="metric-value">3.2x</div><div class="metric-label">ROAS Improvement</div></div>
+          <div class="metric"><div class="metric-value">$180K</div><div class="metric-label">Annual Savings</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Phase 1: Foundation (Weeks 1-2)</h2>
+      <div class="case-study">
+        <h3>GA4 Setup & Governance</h3>
+        <div class="phase-grid">
+          <div class="phase-item"><h4>Property Structure</h4><p>• 1 Property: "GrowthMarketing Production"<br>• Data Stream: Web (primary), iOS App, Android App<br>• Data Retention: 14 months → 26 months<br>• BigQuery Export: Daily (for historical analysis)</p></div>
+          <div class="phase-item"><h4>Enhanced Measurement</h4><p>• Enabled: Scroll, Video, Download, Form, Search<br>• Disabled: Outbound Clicks (too noisy)<br>• Custom: Form submit → generate_lead event</p></div>
+          <div class="phase-item"><h4>Internal Traffic Filter</h4><p>• Office IP ranges (3 locations)<br>• Employee home IPs (voluntary)<br>• Staging/Dev subdomains excluded<br>• Test traffic parameter: ?gtm_debug=x</p></div>
+          <div class="phase-item"><h4>UTM Governance Doc</h4><p>• Shared Google Sheet: "UTM Master"<br>• Columns: Channel, Source, Medium, Campaign Pattern, Content, Owner<br>• Dropdown validation for Source/Medium<br>• Quarterly audit calendar invite</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Phase 2: Event Architecture (Weeks 3-4)</h2>
+      <div class="case-study">
+        <h3>Custom Event Implementation via GTM</h3>
+        <div class="phase-grid">
+          <div class="phase-item"><h4>Lead Funnel Events</h4><p>• form_start (Enhanced Measurement)<br>• form_submit → generate_lead (conversion)<br>• Parameters: form_type, lead_source, page_location<br>• CTAs tracked: button_click (header, hero, footer, sidebar)</p></div>
+          <div class="phase-item"><h4>Content Engagement</h4><p>• blog_read (scroll 75% + 30s dwell)<br>• case_study_view (custom event)<br>• whitepaper_download (file_download + custom)<br>• webinar_register / webinar_attend</p></div>
+          <div class="phase-item"><h4>Account Events</h4><p>• sign_up (method: email/google/sso, plan_type)<br>• login (method, user_type)<br>• trial_started (plan_type, source)<br>• upgrade_initiated / upgrade_completed</p></div>
+          <div class="phase-item"><h4>Custom Dimensions (25 registered)</h4><p>• form_type, lead_source, button_location<br>• plan_type, user_type, content_category<br>• author, content_length, topic_cluster</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Phase 3: Conversion & Attribution (Weeks 5-6)</h2>
+      <div class="case-study">
+        <h3>Conversion Definitions & Offline Import</h3>
+        <div class="phase-grid">
+          <div class="phase-item"><h4>GA4 Conversions</h4><p>• generate_lead (Once per session)<br>• sign_up (Once per event)<br>• purchase (Once per event, dynamic value)<br>• begin_checkout (Once per session, funnel)</p></div>
+          <div class="phase-item"><h4>Attribution Model</h4><p>• Data-Driven (default, 600+ conversions)<br>• Lookback: 30 days (sales cycle ~45 days)<br>• Model Comparison: DDA vs Last Click weekly<br>• Cross-channel in Advertising section</p></div>
+          <div class="phase-item"><h4>Offline Conversion Import</h4><p>• CRM (HubSpot) → GA4 via Measurement Protocol<br>• Events: qualified_lead, opportunity_created, deal_won<br>• GCLID captured on form submit (hidden field)<br>• Daily automated sync via Cloud Function</p></div>
+          <div class="phase-item"><h4>Enhanced Conversions (Ads)</h4><p>• Email + Phone hashed sent with conversions<br>• User-provided data from forms<br>• Improved match rate: 72% → 94%</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Phase 4: Reporting & Action (Weeks 7-8)</h2>
+      <div class="case-study">
+        <h3>Dashboards & Optimization Loop</h3>
+        <div class="phase-grid">
+          <div class="phase-item"><h4>Looker Studio Dashboards</h4><p>• Executive: 8 KPIs (Users, Engagement, Leads, Revenue, ROAS, CAC, LTV, Churn)<br>• Marketing: Channel performance, Campaign ROI, Funnel visualization<br>• Content: Top posts, Engagement by topic, Author performance<br>• Auto-emailed Monday 8am to leadership</p></div>
+          <div class="phase-item"><h4>Monthly Optimization Cycle</h4><p>• Week 1: Data review → identify waste<br>• Week 2: Budget reallocation (cut bottom 20%)<br>• Week 3: Creative/landing page tests launch<br>• Week 4: Results review → document learnings</p></div>
+          <div class="phase-item"><h4>Key Insights Discovered</h4><p>• Organic Social → 3x higher LTV than Paid Social<br>• Email nurture → 40% of deals influenced (not last-click)<br>• Long-form content (>3000 words) → 5x more leads<br>• Tuesday/Thursday 10am → peak B2B engagement</p></div>
+          <div class="phase-item"><h4>Budget Reallocation Results</h4><p>• Cut: Display prospecting (-$8K/mo)<br>• Cut: Broad match generic keywords (-$5K/mo)<br>• Increase: LinkedIn Ads retargeting (+$6K/mo)<br>• Increase: Email automation (+$2K/mo)<br>• Net: $180K annual savings, revenue +15%</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Implementation Checklist Used</h2>
+      <div class="case-study">
+        <h3>Weekly QA Routine</h3>
+        <ul>
+          <li>☐ GA4 DebugView: Test all custom events fire correctly</li>
+          <li>☐ GTM Preview: Verify tags firing on key pages</li>
+          <li>☐ Realtime Report: Confirm live data flowing</li>
+          <li>☐ Conversion Count: Match GA4 ↔ CRM (within 5%)</li>
+          <li>☐ UTM Audit: Filter Traffic Acquisition by source → check naming</li>
+          <li>☐ BigQuery: Verify daily export completed</li>
+          <li>☐ Looker Studio: Dashboard refresh successful</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Lessons Learned</h2>
+      <div class="case-study">
+        <h3>What Worked</h3>
+        <ul>
+          <li><strong>Measurement Plan First:</strong> Documented events, parameters, conversions BEFORE coding. Saved 3 weeks of rework.</li>
+          <li><strong>UTM Governance Sheet:</strong> Single source of truth. Eliminated "utm_source=FB" vs "facebook" chaos.</li>
+          <li><strong>Offline Import:</strong> Connecting CRM → GA4 unlocked true attribution. Marketing could finally prove influence.</li>
+          <li><strong>BigQuery Export:</strong> Enabled cohort analysis impossible in GA4 UI (e.g., "LTV by first content topic").</li>
+        </ul>
+        <h3>What Didn't Work</h3>
+        <ul>
+          <li><strong>Too Many Custom Events Initially:</strong> 47 events → noise. Consolidated to 22 core events.</li>
+          <li><strong>No User ID at Launch:</strong> Added Month 3. Lost 2 months of cross-device data.</li>
+          <li><strong>GA4 UI Limitations:</strong> Funnel exploration limited. Moved complex analysis to BigQuery/Looker.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <h4>Key Insight</h4>
+      <p>Analytics is not a "set and forget" project. It's a product: plan → build → measure → iterate. The companies that win treat their data stack like a product with a roadmap, not a one-time implementation.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

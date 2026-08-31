@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML & CSS Quick Reference — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .code-block { background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 12px 0; font-family: 'Courier New', monospace; font-size: 13px; overflow-x: auto; }
+    .code-block .comment { color: #6b7280; }
+    .code-block .keyword { color: #176B4D; font-weight: 600; }
+    .code-block .string { color: #dc2626; }
+    .lang-label { display: inline-block; background: #176B4D; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-bottom: 8px; }
+    .table-wrapper { overflow-x: auto; margin: 12px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #176B4D; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+    td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+    tr:nth-child(even) { background: #f9fafb; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .badge { border: 1px solid #176B4D; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Quick Reference</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Build Your First Website</div>
+      <h1>HTML & CSS Quick Reference</h1>
+      <p class="subtitle">Essential tags, selectors, box model, flexbox, grid, and responsive design basics</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">HTML5 Semantic Tags</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Tag</th><th>Purpose</th><th>Example</th></tr>
+          <tr><td><header></td><td>Page or section header</td><td><header>Logo</header></td></tr>
+          <tr><td><nav></td><td>Navigation links</td><td><nav><a href="#">Home</a></nav></td></tr>
+          <tr><td><main></td><td>Main content area</td><td><main>Content</main></td></tr>
+          <tr><td><section></td><td>Thematic grouping</td><td><section>About</section></td></tr>
+          <tr><td><article></td><td>Self-contained content</td><td><article>Blog post</article></td></tr>
+          <tr><td><aside></td><td>Sidebar content</td><td><aside>Related</aside></td></tr>
+          <tr><td><footer></td><td>Page or section footer</td><td><footer>Copyright</footer></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">CSS Box Model</h2>
+      <span class="lang-label">CSS</span>
+      <div class="code-block">
+.box {
+  <span class="keyword">width</span>: 300px;
+  <span class="keyword">padding</span>: 20px;
+  <span class="keyword">border</span>: 2px solid #176B4D;
+  <span class="keyword">margin</span>: 10px;
+  <span class="keyword">box-sizing</span>: border-box; <span class="comment">/* includes padding & border in width */</span>
+}
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Flexbox Quick Reference</h2>
+      <span class="lang-label">CSS</span>
+      <div class="code-block">
+.container {
+  <span class="keyword">display</span>: flex;
+  <span class="keyword">justify-content</span>: center; <span class="comment">/* horizontal alignment */</span>
+  <span class="keyword">align-items</span>: center;     <span class="comment">/* vertical alignment */</span>
+  <span class="keyword">gap</span>: 20px;
+  <span class="keyword">flex-wrap</span>: wrap;
+}
+.item {
+  <span class="keyword">flex</span>: 1; <span class="comment">/* grow shrink basis */</span>
+}
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">CSS Grid Quick Reference</h2>
+      <span class="lang-label">CSS</span>
+      <div class="code-block">
+.grid {
+  <span class="keyword">display</span>: grid;
+  <span class="keyword">grid-template-columns</span>: repeat(3, 1fr);
+  <span class="keyword">grid-template-rows</span>: auto 1fr auto;
+  <span class="keyword">gap</span>: 20px;
+}
+.header { <span class="keyword">grid-column</span>: 1 / -1; }
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Responsive Breakpoints</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Device</th><th>Width</th><th>Media Query</th></tr>
+          <tr><td>Mobile</td><td>< 640px</td><td>@media (max-width: 639px)</td></tr>
+          <tr><td>Tablet</td><td>640px - 1023px</td><td>@media (min-width: 640px)</td></tr>
+          <tr><td>Desktop</td><td>1024px - 1279px</td><td>@media (min-width: 1024px)</td></tr>
+          <tr><td>Large Desktop</td><td>>= 1280px</td><td>@media (min-width: 1280px)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Common CSS Properties</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Property</th><th>Values</th><th>Example</th></tr>
+          <tr><td>color</td><td>hex, rgb, hsl, named</td><td>color: #176B4D;</td></tr>
+          <tr><td>font-family</td><td>font stack</td><td>font-family: 'Inter', sans-serif;</td></tr>
+          <tr><td>font-size</td><td>px, rem, em</td><td>font-size: 1.125rem;</td></tr>
+          <tr><td>line-height</td><td>unitless, px, %</td><td>line-height: 1.6;</td></tr>
+          <tr><td>text-align</td><td>left, center, right</td><td>text-align: center;</td></tr>
+          <tr><td>background</td><td>color, image, gradient</td><td>background: linear-gradient(45deg, #176B4D, #0f4d36);</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Always use <code>box-sizing: border-box</code> globally — it makes layout calculations intuitive by including padding and border in the element's width/height.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meta Ads Glossary — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .glossary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .glossary-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .glossary-term { font-size: 14px; font-weight: 600; color: #176B4D; margin-bottom: 4px; }
+    .glossary-def { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Glossary</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Meta Ads Deep Dive</div>
+      <h1>Meta Ads Glossary</h1>
+      <p class="subtitle">Essential terminology for Facebook, Instagram, and Meta advertising platform</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Core Metrics</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">CPM</div><div class="glossary-def">Cost Per Mille (thousand impressions). Standard pricing for awareness campaigns. CPM = (Spend ÷ Impressions) × 1000</div></div>
+        <div class="glossary-item"><div class="glossary-term">CPC</div><div class="glossary-def">Cost Per Click. Price paid for each link click. CPC = Spend ÷ Link Clicks. Varies by objective, audience, creative.</div></div>
+        <div class="glossary-item"><div class="glossary-term">CTR</div><div class="glossary-def">Click-Through Rate. (Link Clicks ÷ Impressions) × 100. Measures ad relevance and creative strength. Benchmark: 1-2% (Feed), 0.5-1% (Stories).</div></div>
+        <div class="glossary-item"><div class="glossary-term">ROAS</div><div class="glossary-def">Return on Ad Spend. Revenue ÷ Ad Spend. Expressed as ratio (3.0 = 3:1) or percentage (300%). Target varies by margin.</div></div>
+        <div class="glossary-item"><div class="glossary-term">CPA / CPL</div><div class="glossary-def">Cost Per Acquisition / Cost Per Lead. Spend ÷ Conversions (or Leads). Primary efficiency metric for conversion campaigns.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Frequency</div><div class="glossary-def">Average times each person saw your ad. Impressions ÷ Reach. >3 risks ad fatigue; >5 usually needs creative refresh.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Relevance Score (Deprecated)</div><div class="glossary-def">Replaced by Quality Ranking, Engagement Rate Ranking, Conversion Rate Ranking (three diagnostic metrics).</div></div>
+        <div class="glossary-item"><div class="glossary-term">Quality Ranking</div><div class="glossary-def">Perceived quality vs competing ads for same audience. Below Average / Average / Above Average.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Tracking & Measurement</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Meta Pixel</div><div class="glossary-def">JavaScript code on website tracking visitor actions (page views, purchases, leads). Enables conversion optimization, retargeting, attribution.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Conversions API (CAPI)</div><div class="glossary-def">Server-side tracking sending events directly to Meta. More reliable than Pixel (browsers block cookies). Use both for maximum coverage.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Standard Events</div><div class="glossary-def">Predefined Pixel events: Purchase, Lead, CompleteRegistration, AddToCart, InitiateCheckout, Contact, Subscribe, etc.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Custom Events</div><div class="glossary-def">User-defined events for unique actions. Use sparingly; standard events preferred for optimization.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Event Match Quality</div><div class="glossary-def">Score (0-10) showing how well customer data matches Meta profiles. Higher = better attribution. Improve with email, phone, name, location.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Attribution Window</div><div class="glossary-def">Timeframe for crediting conversions: 1-day click, 7-day click, 1-day view, 7-day click + 1-day view (default).</div></div>
+        <div class="glossary-item"><div class="glossary-term">Aggregated Event Measurement (AEM)</div><div class="glossary-def">iOS 14+ privacy framework. Limits to 8 conversion events per domain. Prioritize events in Events Manager.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Audience Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Custom Audience</div><div class="glossary-def">Audience from your data: website visitors, customer lists, app users, engagement, offline events. Min 100 people to create.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Lookalike Audience</div><div class="glossary-def">New audience similar to source Custom Audience. Percentage = similarity vs reach tradeoff. 1% = most similar.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Advantage+ Audience</div><div class="glossary-def">AI-powered targeting. Provide suggestions (interests, demographics), Meta finds converters. Replaces detailed targeting expansion.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Detailed Targeting</div><div class="glossary-def">Manual interest/behavior/demographic selection. Being phased out in favor of Advantage+. Still works for specific niches.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Retargeting / Remarketing</div><div class="glossary-def">Showing ads to people who previously interacted. Source: website visitors, video watchers, engagers, customer list.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Exclusion Audience</div><div class="glossary-def">Audience to EXCLUDE from targeting (e.g., existing customers, employees, converters). Prevents waste and annoyance.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Audience Overlap</div><div class="glossary-def">When same people in multiple ad sets. Causes auction competition, higher costs. Check in Audience Overlap tool.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Audience Saturation</div><div class="glossary-def">When most people in audience have seen ads. First-time impression ratio drops. Signal to expand or refresh.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Creative & Testing</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Dynamic Creative</div><div class="glossary-def">Upload multiple images, headlines, texts, CTAs → Meta auto-combines best permutations. Good for testing many combos.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Creative Testing</div><div class="glossary-def">Controlled A/B test: identical ad sets, different creatives. Statistical significance reported. Use for major creative tests.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Ad Fatigue / Creative Fatigue</div><div class="glossary-def">Performance decline from overexposure. Signs: rising CPM, falling CTR/ROAS, frequency >3. Fix: new creative, expand audience, pause.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Hook</div><div class="glossary-def">First 3 seconds of video / first line of copy. Stops scroll. Test multiple hooks per creative concept.</div></div>
+        <div class="glossary-item"><div class="glossary-term">UGC (User-Generated Content)</div><div class="glossary-def">Content from real customers/creators. Higher trust, lower production cost. Source: reviews, ambassador programs, contests.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Whitelisting / Partnership Ads</div><div class="glossary-def">Run ads from creator's handle (not brand). Higher trust, access to creator's audience. Set up in Meta Business Suite.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Spark Ads (TikTok term, similar concept)</div><div class="glossary-def">Boost organic post as ad. On Meta: "Boost Post" or Partnership Ads with creator permission.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Campaign Management</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">CBO (Campaign Budget Optimization)</div><div class="glossary-def">Budget set at campaign level. Meta allocates to best-performing ad sets in real-time. Default for new campaigns.</div></div>
+        <div class="glossary-item"><div class="glossary-term">ABO (Ad Set Budget Optimization)</div><div class="glossary-def">Budget set at ad set level. Manual control. Disable CBO to use. Good for testing specific audiences.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Learning Phase</div><div class="glossary-def">Period after launch/edit where Meta explores (50 optimization events needed). Performance unstable. Avoid edits during.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Learning Limited</div><div class="glossary-def">Ad set unlikely to exit learning (too small audience/budget). May not optimize well. Fix: expand audience, increase budget, consolidate.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Automated Rules</div><div class="glossary-def">If/then rules for auto-pause, budget changes, notifications. E.g., "If CPA > $50 for 3 days → pause ad set."</div></div>
+        <div class="glossary-item"><div class="glossary-term">Breakdown Reports</div><div class="glossary-def">Segment performance by: Age, Gender, Placement, Device, Region, Time, Creative. Find winning segments.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Ad Scheduling</div><div class="glossary-def">Run ads only specific days/hours. Lifetime budget only. Use for B2B (business hours), time-sensitive offers.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Bid Multipliers</div><div class="glossary-def">Adjust bids for specific placements/devices. E.g., +20% for Instagram Stories, -30% for Audience Network.</div></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Bookmark Meta's Ads Guide (developers.facebook.com/docs/marketing-api) and Ads Manager Help Center. They're the definitive sources when platform changes break your workflow.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

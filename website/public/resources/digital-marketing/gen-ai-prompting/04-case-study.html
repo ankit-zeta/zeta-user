@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Case Study — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .case-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px; margin-bottom: 15px; }
+    .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .case-name { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+    .case-type { font-size: 11px; font-weight: 600; color: #176B4D; background: #ecfdf5; padding: 3px 10px; border-radius: 20px; }
+    .case-desc { font-size: 13px; color: #4b5563; margin-bottom: 10px; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Case Study</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Gen AI & Prompting Mastery</div>
+      <h1>AI Prompting Case Studies</h1>
+      <p class="subtitle">Real examples of AI transforming business workflows and output quality</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Case Study 1: Content Agency 10x Output</h2>
+      <div class="case-card">
+        <div class="case-header"><span class="case-name">ContentPilot AI</span><span class="case-type">Content Marketing</span></div>
+        <div class="case-desc"><strong>Challenge:</strong> 3-person content team producing 4 blog posts/week. Clients wanted 20+. Hiring was slow and expensive.</div>
+        <div class="case-desc"><strong>AI Solution:</strong> Built custom GPT workflow. Claude for research + outlines, GPT-4 for drafts, human editors for quality. Prompt library of 50+ templates.</div>
+        <div class="case-desc"><strong>Results:</strong> Output: 4 → 25 posts/week. Costs: 60% lower. Revenue: 3x. Quality: 94% client satisfaction. Team stayed at 3 people.</div>
+        <div class="case-desc"><strong>Key Lesson:</strong> AI replaced first drafts, not editors. Human judgment still essential for quality, brand voice, and strategy.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Case Study 2: E-commerce Product Descriptions</h2>
+      <div class="case-card">
+        <div class="case-header"><span class="case-name">ShopSmart</span><span class="case-type">E-commerce</span></div>
+        <div class="case-desc"><strong>Challenge:</strong> 10,000+ SKUs with thin, manufacturer-copied descriptions. SEO was terrible. Conversion low.</div>
+        <div class="case-desc"><strong>AI Solution:</strong> Custom prompt templates per category. GPT-4 generates unique, SEO-optimized descriptions from product specs. Batch processing via API.</div>
+        <div class="case-desc"><strong>Results:</strong> Organic traffic: +340% in 6 months. Conversion: +28%. Bounce rate: -45%. Time to publish: 2 hours vs 3 days per batch.</div>
+        <div class="case-desc"><strong>Key Lesson:</strong> Scale doesn't mean quality sacrifice. Good prompts + human review = better than either alone.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Case Study 3: Customer Support Automation</h2>
+      <div class="case-card">
+        <div class="case-header"><span class="case-name">SaaS HelpDesk</span><span class="case-type">Customer Service</span></div>
+        <div class="case-desc"><strong>Challenge:</strong> Support team handling 500 tickets/day. Average response time: 4 hours. CSAT dropping.</div>
+        <div class="case-desc"><strong>AI Solution:</strong> RAG system with Claude. Trained on knowledge base. AI answers common questions (60% of tickets). Humans handle complex issues. Escalation triggers.</div>
+        <div class="case-desc"><strong>Results:</strong> Response time: 4 hours → 2 minutes. CSAT: 3.2 → 4.7. Support cost: -50%. Human agents focus on high-value conversations.</div>
+        <div class="case-desc"><strong>Key Lesson:</strong> AI handled volume. Humans handled empathy. The combination improved everything.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Case Study 4: Freelancer Efficiency</h2>
+      <div class="case-card">
+        <div class="case-header"><span class="case-name">Solo Marketing Consultant</span><span class="case-type">Freelancing</span></div>
+        <div class="case-desc"><strong>Challenge:</strong> Working 60+ hours/week. Admin, research, writing, proposals eating into billable time.</div>
+        <div class="case-desc"><strong>AI Solution:</strong> ChatGPT for research, Claude for writing, AI for proposals, meeting summaries, social content. Saved 15+ hours/week on non-billable work.</div>
+        <div class="case-desc"><strong>Results:</strong> Billable hours: 25 → 40/week. Revenue: +60%. Took on 2 new clients. Still working 45 hours but less stress.</div>
+        <div class="case-desc"><strong>Key Lesson:</strong> AI didn't replace the consultant. It freed them to do more of what they're best at.</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Start with your biggest time sink. What task takes 2+ hours/week? Build a prompt for it. Test for 2 weeks. Measure time saved and quality maintained. Then move to the next task. Don't try to AI-ize everything at once.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

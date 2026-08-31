@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Template Library — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .code-block { background: #1a1a1a; color: #e5e7eb; padding: 20px; border-radius: 10px; overflow-x: auto; margin: 12px 0; font-family: 'Fira Code', monospace; font-size: 13px; line-height: 1.5; white-space: pre-wrap; }
+    .code-label { font-size: 12px; font-weight: 600; color: #176B4D; margin-bottom: 6px; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } .code-block { background: #f3f4f6; color: #1a1a1a; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Template</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Gen AI & Prompting Mastery</div>
+      <h1>Prompt Template Library</h1>
+      <p class="subtitle">Copy-paste prompt templates for every marketing use case</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Email Marketing</h2>
+      <div class="code-label">Welcome Email Sequence</div>
+      <div class="code-block">Act as an email marketing specialist. Write a 5-email welcome sequence for [product/service].
+
+Context: New subscriber signed up for [lead magnet] on [date].
+Audience: [description of subscriber].
+Goal: Educate, build trust, convert to paying customer.
+Brand voice: [professional/friendly/technical].
+
+For each email provide:
+1. Subject line (under 50 chars)
+2. Preview text (under 90 chars)
+3. Email body (150-250 words)
+4. CTA button text
+5. Send timing (day + time)
+
+Emails should follow: Day 0 (Welcome) → Day 1 (Value) → Day 3 (Social proof) → Day 5 (Objection handling) → Day 7 (Offer).</div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Social Media Content</h2>
+      <div class="code-label">LinkedIn Thought Leadership Post</div>
+      <div class="code-block">Act as a LinkedIn content strategist. Write a thought leadership post about [topic].
+
+Context: I'm a [role] at [company] with [X years] experience.
+Audience: [who reads my LinkedIn].
+Goal: [engagement / leads / brand awareness].
+
+Format:
+- Hook (first line that stops the scroll)
+- Story or insight (2-3 paragraphs)
+- Key takeaway (bolded)
+- Question to drive comments
+- 3-5 relevant hashtags
+
+Tone: Professional but conversational. Share real experience, not theory.
+Length: 150-200 words (ideal for LinkedIn).
+Avoid: Emojis in body, clickbait, generic advice.</div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Ad Copywriting</h2>
+      <div class="code-label">Meta Ads Copy</div>
+      <div class="code-block">Act as a performance marketer specializing in Meta Ads. Write ad copy for [product].
+
+Product: [what you're selling]
+Price: [price or "free trial"]
+Target audience: [demographics + interests + pain points]
+Campaign objective: [conversions / leads / traffic]
+Unique value proposition: [what makes it different]
+
+Provide:
+1. Primary text (3 variants: curiosity, urgency, value)
+2. Headline (under 40 chars, 3 variants)
+3. Description (under 30 chars, 2 variants)
+4. CTA button recommendation
+
+Rules:
+- No claims without proof
+- Include social proof where possible
+- Match landing page message
+- Under 125 chars for primary text in mobile view</div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Blog Content</h2>
+      <div class="code-label">SEO Blog Post Outline</div>
+      <div class="code-block">Act as an SEO content strategist. Create a blog post outline for the keyword "[target keyword]".
+
+Search intent: [informational / commercial / transactional]
+Target audience: [who]
+Word count target: [1500-2500]
+Competitor analysis: [top 3 ranking URLs]
+
+Provide:
+1. Title (with keyword, under 60 chars)
+2. Meta description (under 155 chars)
+3. H2 headings (5-8 sections)
+4. H3 subheadings under each H2
+5. Key points to cover under each section
+6. Internal linking opportunities
+7. FAQ section (5 questions)
+8. Featured snippet opportunity
+
+Include: stats to cite, expert quotes to reference, visual content suggestions.</div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Research & Analysis</h2>
+      <div class="code-label">Competitor Analysis</div>
+      <div class="code-block">Act as a market research analyst. Analyze the competitor: [competitor name/URL].
+
+Research and provide:
+1. Value proposition (one sentence)
+2. Target audience (who they serve)
+3. Pricing model (free/freemium/subscription/one-time)
+4. Key features (top 5)
+5. Content strategy (blog, social, email, ads)
+6. Strengths (what they do well)
+7. Weaknesses (gaps we can exploit)
+8. Customer reviews summary (from G2, Trustpilot, etc.)
+
+Present as a comparison table if possible.
+Flag any information you're unsure about.</div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Replace [bracketed text] with your specific details. The more specific your inputs, the better the output. Save your best customized versions as templates for reuse.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

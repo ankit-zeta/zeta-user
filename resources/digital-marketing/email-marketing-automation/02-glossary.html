@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Marketing Glossary — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .glossary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .glossary-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .glossary-term { font-size: 14px; font-weight: 600; color: #176B4D; margin-bottom: 4px; }
+    .glossary-def { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Glossary</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Email Marketing Automation</div>
+      <h1>Email Marketing Glossary</h1>
+      <p class="subtitle">Open rate, CTR, bounce, unsubscribe, segmentation, automation, drip, welcome series, and deliverability terms</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Core Email Metrics</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Open Rate</div><div class="glossary-def">Percentage of delivered emails that were opened. Formula: Unique Opens ÷ Delivered × 100. Benchmark: 20-30%. Measures subject line effectiveness.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Click-Through Rate (CTR)</div><div class="glossary-def">Percentage of recipients who clicked a link. Formula: Unique Clicks ÷ Delivered × 100. Benchmark: 2-5%. Measures content and CTA effectiveness.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Click-to-Open Rate (CTOR)</div><div class="glossary-def">Percentage of openers who clicked. Formula: Unique Clicks ÷ Unique Opens × 100. Benchmark: 10-20%. Better measure of email content quality than CTR.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Bounce Rate</div><div class="glossary-def">Percentage of emails that couldn't be delivered. Hard bounce: invalid address. Soft bounce: temporary issue. Target: &lt; 2%. Clean bounces immediately.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Unsubscribe Rate</div><div class="glossary-def">Percentage who opted out. Formula: Unsubscribes ÷ Delivered × 100. Benchmark: &lt; 0.5%. Above 1% = content or frequency problem.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Spam Complaint Rate</div><div class="glossary-def">Percentage who marked as spam. Target: &lt; 0.1%. Above 0.1% = serious deliverability risk. Monitor in ESP dashboard.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Automation Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Drip Campaign</div><div class="glossary-def">Pre-written email sequence sent on a schedule. Triggered by user action (signup, purchase) or time delay. Automated, consistent, scalable.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Welcome Series</div><div class="glossary-def">Automated sequence for new subscribers. Sets expectations, delivers value, introduces brand. 5-7 emails over 10-14 days. Highest open rates of any sequence.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Automation Trigger</div><div class="glossary-def">The event that starts an automated sequence. Examples: form submission, purchase, cart abandonment, link click, tag added, date-based.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Segmentation</div><div class="glossary-def">Dividing your list into targeted groups based on behavior, demographics, or engagement. Segmented emails get 14% higher open rates and 100% more clicks than non-segmented.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Tag</div><div class="glossary-def">Label applied to subscribers based on behavior or attributes. Used for segmentation and triggering automations. Example: "purchased-course," "visited-pricing."</div></div>
+        <div class="glossary-item"><div class="glossary-term">Merge Tag</div><div class="glossary-def">Dynamic placeholder that inserts subscriber data. Example: {{first_name}} becomes "John." Used for personalization. Increases open rates 10-20%.</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Deliverability Terms</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Deliverability</div><div class="glossary-def">Percentage of emails that reach the inbox (not spam). Formula: Inbox Deliveries ÷ Total Sent × 100. Target: 95%+. Affected by sender reputation, content, authentication.</div></div>
+        <div class="glossary-item"><div class="glossary-term">Sender Reputation</div><div class="glossary-def">Score assigned by ISPs based on sending behavior. Factors: bounce rate, complaint rate, engagement, volume consistency. Good reputation = inbox placement.</div></div>
+        <div class="glossary-item"><div class="glossary-term">SPF (Sender Policy Framework)</div><div class="glossary-def">DNS record listing authorized sending servers. Prevents spoofing. Required for deliverability. Add to DNS: v=spf1 include:_spf.google.com ~all</div></div>
+        <div class="glossary-item"><div class="glossary-term">DKIM (DomainKeys Identified Mail)</div><div class="glossary-def">Cryptographic signature verifying email authenticity. Proves email wasn't modified in transit. Required by Gmail, Yahoo. Set up in ESP settings.</div></div>
+        <div class="glossary-item"><div class="glossary-term">DMARC</div><div class="glossary-def">Policy for handling failed SPF/DKIM checks. Options: none (monitor), quarantine (spam), reject (block). Start with "none" then move to "quarantine."</div></div>
+        <div class="glossary-item"><div class="glossary-term">Warm-up</div><div class="glossary-def">Gradually increasing email volume to build sender reputation. Start with engaged subscribers, increase daily. Takes 2-4 weeks. Required for new domains/IPs.</div></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Focus on these three terms first: Open Rate (subject lines), CTR (content quality), and Deliverability (inbox placement). Everything else builds on these three. A 30% open rate and 5% CTR with good deliverability is a profitable email program.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        &copy; 2026 ZetaGrow &mdash; Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

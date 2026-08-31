@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coding Resources — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .resource-list { list-style: none; }
+    .resource-list li { padding: 16px 0; border-bottom: 1px solid #f3f4f6; }
+    .resource-list li:last-child { border-bottom: none; }
+    .resource-name { font-weight: 600; color: #1a1a1a; font-size: 15px; margin-bottom: 4px; }
+    .resource-desc { font-size: 13px; color: #666; margin-bottom: 6px; }
+    .resource-link { font-size: 13px; color: #176B4D; text-decoration: none; font-weight: 500; }
+    .resource-link:hover { text-decoration: underline; }
+    .resource-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag { background: #ecfdf5; color: #176B4D; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Resource List</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Complete Coding: Basics to Advanced</div>
+      <h1>Coding Resources</h1>
+      <p class="subtitle">Best free and paid resources to learn full-stack development from zero to advanced</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Structured Courses (Beginner)</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">The Odin Project</div>
+          <div class="resource-desc">Free, open-source full curriculum. HTML/CSS → JavaScript → React/Ruby on Rails. Project-based. Community Discord. Best free option.</div>
+          <a href="https://theodinproject.com" class="resource-link" target="_blank">theodinproject.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Full Curriculum</span><span class="tag">Projects</span></div>
+        </li>
+        <li>
+          <div class="resource-name">freeCodeCamp</div>
+          <div class="resource-desc">Free, certification-based. Responsive, JS, Frontend, Backend, Data. 3000+ hours. Responsive design, algorithms, APIs. Great for beginners.</div>
+          <a href="https://freecodecamp.org" class="resource-link" target="_blank">freecodecamp.org →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Certifications</span><span class="tag">Beginner</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Full Stack Open (Helsinki)</div>
+          <div class="resource-desc">University-level. React, Node, MongoDB, Testing, CI/CD, GraphQL, TypeScript. Free. Excellent exercises and grading system.</div>
+          <a href="https://fullstackopen.com" class="resource-link" target="_blank">fullstackopen.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">University</span><span class="tag">Modern Stack</span></div>
+        </li>
+        <li>
+          <div class="resource-name">CS50 Web (Harvard)</div>
+          <div class="resource-desc">Harvard's CS50 for web. Python, Django, SQL, JavaScript, React. Free. Problem sets + final project. Academic rigor.</div>
+          <a href="https://cs50.harvard.edu/web" class="resource-link" target="_blank">cs50.harvard.edu/web →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Harvard</span><span class="tag">Python/Django</span></div>
+        </li>
+        <li>
+          <div class="resource-name">100 Days of Code (Angela Yu)</div>
+          <div class="resource-desc">Udemy: Python, web, APIs, databases. One project per day. Beginner-friendly. ~$15 on sale. Best structured daily habit.</div>
+          <a href="https://udemy.com/course/100-days-of-code" class="resource-link" target="_blank">udemy.com →</a>
+          <div class="resource-tags"><span class="tag">Paid</span><span class="tag">Daily</span><span class="tag">Python</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Intermediate / Advanced</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">JavaScript.info</div>
+          <div class="resource-desc">Complete JS reference + tutorial. Modern ES6+, Promises, async, modules. Interactive exercises. Free. Best JS reference.</div>
+          <a href="https://javascript.info" class="resource-link" target="_blank">javascript.info →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Reference</span><span class="tag">ES6+</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Total TypeScript (Matt Pocock)</div>
+          <div class="resource-desc">Advanced TypeScript: Generics, Utility types, Type narrowing, Zod integration. ~$200. Best for going beyond basics.</div>
+          <a href="https://totaltypescript.com" class="resource-link" target="_blank">totaltypescript.com →</a>
+          <div class="resource-tags"><span class="tag">Paid</span><span class="tag">Advanced</span><span class="tag">TypeScript</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Egghead.io</div>
+          <div class="resource-desc">Video tutorials: React, Next.js, Node, GraphQL. Industry experts. Short, focused courses. Free + paid. $25/mo unlimited.</div>
+          <a href="https://egghead.io" class="resource-link" target="_blank">egghead.io →</a>
+          <div class="resource-tags"><span class="tag">Videos</span><span class="tag">Expert</span><span class="tag">Short</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Frontend Masters</div>
+          <div class="resource-desc">Premium video courses. React, Node, System Design, Performance. Industry experts. $39/mo. Worth it for serious learners.</div>
+          <a href="https://frontendmasters.com" class="resource-link" target="_blank">frontendmasters.com →</a>
+          <div class="resource-tags"><span class="tag">Premium</span><span class="tag">Video</span><span class="tag">Expert</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Boot.dev</div>
+          <div class="resource-desc">Backend-focused: Python, Go, SQL, APIs. Gamified: XP, levels, quests. Free tier. $29/mo. Great for backend specifically.</div>
+          <a href="https://boot.dev" class="resource-link" target="_blank">boot.dev →</a>
+          <div class="resource-tags"><span class="tag">Backend</span><span class="tag">Gamified</span><span class="tag">Python/Go</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Practice & Challenges</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">LeetCode</div>
+          <div class="resource-desc">Algorithm challenges. Interview prep. 2000+ problems. Free. Discuss solutions. Premium: $35/mo. Essential for big tech interviews.</div>
+          <a href="https://leetcode.com" class="resource-link" target="_blank">leetcode.com →</a>
+          <div class="resource-tags"><span class="tag">Algorithms</span><span class="tag">Interviews</span><span class="tag">Free Tier</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Exercism</div>
+          <div class="resource-desc">Practice tracks: 50+ languages. Mentoring available. Free. Strong fundamentals. Not interview prep — pure skill building.</div>
+          <a href="https://exercism.org" class="resource-link" target="_blank">exercism.org →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">50+ Languages</span><span class="tag">Mentoring</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Codewars</div>
+          <div class="resource-desc">Kata challenges. Rank from 8kyu to 1kyu. Competitive. Free. Good for daily practice habit. Many languages.</div>
+          <a href="https://codewars.com" class="resource-link" target="_blank">codewars.com →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Gamified</span><span class="tag">Daily</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Frontend Mentor</div>
+          <div class="resource-desc">Real-world HTML/CSS/JS projects. Professional designs. Free. Beginner to advanced. Build portfolio while learning.</div>
+          <a href="https://frontendmentor.io" class="resource-link" target="_blank">frontendmentor.io →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Real Projects</span><span class="tag">Portfolio</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Documentation & References</h2>
+      <ul class="resource-list">
+        <li>
+          <div class="resource-name">MDN Web Docs</div>
+          <div class="resource-desc">Mozilla's web reference. HTML, CSS, JS, HTTP, Web APIs. Official, comprehensive. Free. The Bible of web development.</div>
+          <a href="https://developer.mozilla.org" class="resource-link" target="_blank">developer.mozilla.org →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Official</span><span class="tag">Reference</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Next.js Docs</div>
+          <div class="resource-desc">Official. App Router, API routes, SSR, ISR, middleware, deployment. Excellent examples. Free. Read before using Next.js.</div>
+          <a href="https://nextjs.org/docs" class="resource-link" target="_blank">nextjs.org/docs →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Official</span><span class="tag">Next.js</span></div>
+        </li>
+        <li>
+          <div class="resource-name">Prisma Docs</div>
+          <div class="resource-desc">ORM documentation. Schema, queries, migrations, deployment, performance. Great examples. Free. Best ORM docs.</div>
+          <a href="https://prisma.io/docs" class="resource-link" target="_blank">prisma.io/docs →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">ORM</span><span class="tag">Database</span></div>
+        </li>
+        <li>
+          <div class="resource-name">TypeScript Handbook</div>
+          <div class="resource-desc">Official TS guide. Types, interfaces, generics, utility types, configuration. Interactive examples. Free. Essential.</div>
+          <a href="https://typescriptlang.org/docs/handbook" class="resource-link" target="_blank">typescriptlang.org →</a>
+          <div class="resource-tags"><span class="tag">Free</span><span class="tag">Official</span><span class="tag">TypeScript</span></div>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Don't tutorial-hop. Pick ONE structured course (The Odin Project or Full Stack Open). Complete it. Then use docs + challenges to fill gaps. Build 3 portfolio projects. Apply for jobs.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

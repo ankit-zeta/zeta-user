@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Development Glossary — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .glossary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .glossary-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .glossary-term { font-size: 14px; font-weight: 600; color: #176B4D; margin-bottom: 4px; }
+    .glossary-def { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Glossary</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Build Your First Website</div>
+      <h1>Web Development Glossary</h1>
+      <p class="subtitle">Essential terminology for HTML, CSS, and web development fundamentals</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">HTML & Structure</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">DOCTYPE</div><div class="glossary-def">Document type declaration telling browsers which HTML version to use (<code><!DOCTYPE html></code>)</div></div>
+        <div class="glossary-item"><div class="glossary-term">Semantic HTML</div><div class="glossary-def">HTML that uses meaningful tags (<header>, <main>, <footer>) instead of generic <div> tags</div></div>
+        <div class="glossary-item"><div class="glossary-term">Viewport</div><div class="glossary-def">The visible area of a web page on a device; controlled via <meta name="viewport"> tag</div></div>
+        <div class="glossary-item"><div class="glossary-term">Alt Text</div><div class="glossary-def">Alternative text for images; essential for accessibility and SEO</div></div>
+        <div class="glossary-item"><div class="glossary-term">Anchor Tag</div><div class="glossary-def"><a> element for creating hyperlinks; uses href attribute for destination</div></div>
+        <div class="glossary-item"><div class="glossary-term">Form Elements</div><div class="glossary-def"><input>, <textarea>, <select>, <button> — interactive elements for user data collection</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">CSS Fundamentals</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">CSS Specificity</div><div class="glossary-def">Weight calculation determining which styles apply; inline > ID > class > element</div></div>
+        <div class="glossary-item"><div class="glossary-term">Inheritance</div><div class="glossary-def">Child elements inheriting certain CSS properties from parents (color, font-family, line-height)</div></div>
+        <div class="glossary-item"><div class="glossary-term">Cascade</div><div class="glossary-def">Algorithm resolving conflicting CSS rules based on origin, specificity, and source order</div></div>
+        <div class="glossary-item"><div class="glossary-term">Box Model</div><div class="glossary-def">Content + padding + border + margin = total element size; controlled by box-sizing</div></div>
+        <div class="glossary-item"><div class="glossary-term">Flexbox</div><div class="glossary-def">One-dimensional layout system for distributing space along a single axis (row or column)</div></div>
+        <div class="glossary-item"><div class="glossary-term">CSS Grid</div><div class="glossary-def">Two-dimensional layout system for creating complex grid-based designs</div></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Responsive & Deployment</h2>
+      <div class="glossary-grid">
+        <div class="glossary-item"><div class="glossary-term">Breakpoint</div><div class="glossary-def">Screen width where layout changes via media queries; common: 640px, 1024px, 1280px</div></div>
+        <div class="glossary-item"><div class="glossary-term">Media Query</div><div class="glossary-def">@media rule applying styles based on device characteristics (width, orientation, resolution)</div></div>
+        <div class="glossary-item"><div class="glossary-term">Mobile-First</div><div class="glossary-def">Design approach starting with mobile styles, then enhancing for larger screens</div></div>
+        <div class="glossary-item"><div class="glossary-term">CDN</div><div class="glossary-def">Content Delivery Network — distributed servers caching content closer to users for faster delivery</div></div>
+        <div class="glossary-item"><div class="glossary-term">Hosting</div><div class="glossary-def">Service storing website files on servers accessible via the internet</div></div>
+        <div class="glossary-item"><div class="glossary-term">Domain</div><div class="glossary-def">Human-readable address (example.com) mapped to server IP via DNS</div></div>
+        <div class="glossary-item"><div class="glossary-term">SSL/TLS</div><div class="glossary-def">Encryption protocols securing data transfer; enables HTTPS and padlock icon</div></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>💡 Pro Tip</h4>
+      <p>Bookmark this glossary — understanding these terms will make learning frameworks (React, Vue) and advanced CSS much easier.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        © 2026 ZetaGrow — Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

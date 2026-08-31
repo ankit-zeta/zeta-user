@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Marketing Quick Reference — ZetaGrow</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.6; background: #ffffff; }
+    .page { max-width: 800px; margin: 0 auto; padding: 40px; }
+    .header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 20px; border-bottom: 3px solid #176B4D; margin-bottom: 30px; }
+    .logo { font-size: 24px; font-weight: 800; color: #176B4D; }
+    .logo span { color: #1a1a1a; }
+    .badge { background: #176B4D; color: white; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .title-section { margin-bottom: 30px; }
+    .resource-type { font-size: 12px; font-weight: 600; color: #176B4D; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    h1 { font-size: 28px; font-weight: 800; color: #1a1a1a; line-height: 1.2; margin-bottom: 12px; }
+    .subtitle { font-size: 16px; color: #666; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 18px; font-weight: 700; color: #176B4D; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid #e5e7eb; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .cheat-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 15px; }
+    .cheat-item h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .cheat-item p { font-size: 13px; color: #4b5563; line-height: 1.5; }
+    .table-wrapper { overflow-x: auto; margin: 12px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #176B4D; color: white; padding: 10px 12px; text-align: left; font-weight: 600; }
+    td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+    tr:nth-child(even) { background: #f9fafb; }
+    .tip-box { background: #ecfdf5; border: 1px solid #a7f3d0; border-left: 4px solid #176B4D; border-radius: 8px; padding: 15px 20px; margin: 20px 0; }
+    .tip-box h4 { font-size: 13px; font-weight: 600; color: #176B4D; margin-bottom: 8px; }
+    .tip-box p { font-size: 13px; color: #065f46; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; }
+    .footer-text { font-size: 12px; color: #9ca3af; }
+    .footer-link { color: #176B4D; text-decoration: none; font-weight: 600; }
+    @media print { .page { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="header">
+      <div class="logo">Zeta<span>Grow</span></div>
+      <div class="badge">Quick Reference</div>
+    </div>
+
+    <div class="title-section">
+      <div class="resource-type">Email Marketing Automation</div>
+      <h1>Email Marketing Quick Reference</h1>
+      <p class="subtitle">List building, segmentation, automation flows, deliverability, and key email marketing metrics</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Essential Email Sequences</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Sequence</th><th>Purpose</th><th>Length</th><th>Key Metric</th></tr>
+          <tr><td>Welcome Series</td><td>Introduce brand, deliver value, set expectations</td><td>5-7 emails over 10-14 days</td><td>Open rate 50%+, CTR 10%+</td></tr>
+          <tr><td>Nurture Sequence</td><td>Build trust, educate, move toward purchase</td><td>7-12 emails over 3-4 weeks</td><td>Engagement rate, reply rate</td></tr>
+          <tr><td>Cart Abandonment</td><td>Recover abandoned checkouts</td><td>3-4 emails over 48-72 hours</td><td>Recovery rate 5-15%</td></tr>
+          <tr><td>Post-Purchase</td><td>Onboarding, reduce refunds, get reviews</td><td>5-7 emails over 14-21 days</td><td>Retention, review rate</td></tr>
+          <tr><td>Re-engagement</td><td>Win back inactive subscribers</td><td>3-5 emails over 7-14 days</td><td>Reactivation rate 10-20%</td></tr>
+          <tr><td>Launch Sequence</td><td>Product/service launch promotion</td><td>6-8 emails over 10-14 days</td><td>Revenue per email sent</td></tr>
+          <tr><td>Newsletter</td><td>Ongoing value, brand building</td><td>Weekly or biweekly</td><td>Open rate, CTR, list growth</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">List Building Strategies</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Lead Magnets (High Conversion)</h4><p>Checklists, templates, cheat sheets<br>Ebooks, guides, toolkits<br>Free tools, calculators<br>Video courses, webinars<br>Discount codes (e-commerce)<br>Target: 20-40% landing page CVR</p></div>
+        <div class="cheat-item"><h4>Content Upgrades</h4><p>Blog post + related resource<br>"Download the template from this post"<br>"Get the checklist version"<br>"Access the spreadsheet"<br>Target: 5-15% of blog readers<br>Works: Within blog posts, exit popups</p></div>
+        <div class="cheat-item"><h4>Opt-in Placement</h4><p>Header bar (always visible)<br>Exit-intent popup (last chance)<br>In-content forms (within blog)<br>Footer signup (persistent)<br>Slide-in (scroll-triggered)<br>Homepage hero section</p></div>
+        <div class="cheat-item"><h4>Referral &amp; Viral Growth</h4><p>"Share with a friend, get X"<br>Refer 3 friends = bonus<br>Social sharing incentives<br>Referral program with rewards<br>Target: K-factor &gt; 0.5<br>Best: After user achieves value</p></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Segmentation Strategy</h2>
+      <div class="table-wrapper">
+        <table>
+          <tr><th>Segment</th><th>Criteria</th><th>Email Strategy</th></tr>
+          <tr><td>New Subscribers</td><td>Joined in last 7 days</td><td>Welcome series, quick value delivery</td></tr>
+          <tr><td>Engaged</td><td>Opened 3+ emails in 30 days</td><td>Full offers, upsells, referrals</td></tr>
+          <tr><td>Unengaged</td><td>No opens in 60+ days</td><td>Re-engagement sequence, then suppress</td></tr>
+          <tr><td>Buyers</td><td>Completed purchase</td><td>Post-purchase, cross-sell, loyalty</td></tr>
+          <tr><td>Cart Abandoners</td><td>Added to cart, didn't buy</td><td>Cart recovery sequence</td></tr>
+          <tr><td>High-Value</td><td>LTV &gt; 2x average</td><td>VIP offers, early access, personal outreach</td></tr>
+          <tr><td>By Source</td><td>Where they signed up</td><td>Customize message to match source intent</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Deliverability Quick Guide</h2>
+      <div class="cheat-grid">
+        <div class="cheat-item"><h4>Authentication (Set Up Once)</h4><p>SPF: Authorizes your sending servers<br>DKIM: Signs emails to verify identity<br>DMARC: Policy for failed authentication<br>Custom domain: Not free domain emails<br>Verify: Use mail-tester.com to check</p></div>
+        <div class="cheat-item"><h4>Reputation Management</h4><p>Clean list monthly (remove bounces)<br>Segment by engagement (suppress cold)<br>Warm new IPs (start with engaged)<br>Monitor sender score (above 90)<br>Avoid spam traps (never buy lists)</p></div>
+        <div class="cheat-item"><h4>Content Best Practices</h4><p>Subject line: 30-50 characters<br>Preheader: 40-100 characters<br>Text-to-image ratio: 80:20<br>Single clear CTA per email<br>Mobile-first design (60%+ open on mobile)</p></div>
+        <div class="cheat-item"><h4>Send Time Optimization</h4><p>B2B: Tuesday-Thursday, 9-11 AM<br>B2C: Saturday morning, weekday evenings<br>Test: Your audience may differ<br>Use: Send-time optimization features<br>Avoid: Monday morning, Friday afternoon</p></div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <h4>Pro Tip</h4>
+      <p>Email marketing ROI is $36 for every $1 spent. Focus on list quality over quantity. 1,000 engaged subscribers outperform 100,000 inactive ones. Start with a welcome series and newsletter — add automation as you grow.</p>
+    </div>
+
+    <div class="footer">
+      <p class="footer-text">
+        &copy; 2026 ZetaGrow &mdash; Professional Digital Skills Platform<br>
+        <a href="https://zetagrow.in" class="footer-link">zetagrow.in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

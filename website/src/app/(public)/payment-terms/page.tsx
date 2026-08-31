@@ -31,7 +31,7 @@ export default function PaymentTermsPage() {
             <li><strong>Escrow Model:</strong> Client payments for accepted deliverables are held in escrow and released upon Client acceptance or automatic approval (72 hours after submission if no action).</li>
             <li><strong>Platform Fee:</strong> ZetaGrow deducts a platform fee (percentage disclosed on the Work Marketplace) from each completed project payout.</li>
             <li><strong>Payout Schedule:</strong> Approved payouts are processed within 2-3 business days to your verified wallet.</li>
-            <li><strong>Minimum Withdrawal:</strong> ₹1,000 minimum withdrawal threshold.</li>
+            <li><strong>Minimum Withdrawal:</strong> Minimum withdrawal threshold applies (shown in your dashboard).</li>
             <li><strong>Payment Methods:</strong> Bank transfer (NEFT/IMPS) or UPI to verified Indian bank account.</li>
           </ul>
         </section>
@@ -59,8 +59,8 @@ export default function PaymentTermsPage() {
         <section className="space-y-3">
           <h2 className="font-bold text-textMain">5. Tax Compliance</h2>
           <ul className="list-disc pl-6 space-y-2 text-textMuted">
-            <li><strong>GST:</strong> Program prices include applicable GST (18% for educational services).</li>
-            <li><strong>TDS on Payouts:</strong> TDS deducted as per Section 194J/194O of the Income Tax Act, 1961 (as applicable) on Work Marketplace payouts and affiliate commissions.</li>
+            <li><strong>GST:</strong> Program prices include applicable GST as per Indian tax regulations.</li>
+            <li><strong>TDS on Payouts:</strong> TDS deducted as per applicable sections of the Income Tax Act, 1961 on Work Marketplace payouts and affiliate commissions.</li>
             <li><strong>Form 16A:</strong> Provided quarterly for TDS deducted.</li>
             <li><strong>User Responsibility:</strong> You are solely responsible for your own income tax filings, advance tax, and compliance with applicable tax laws.</li>
           </ul>
@@ -69,7 +69,7 @@ export default function PaymentTermsPage() {
         <section className="space-y-3">
           <h2 className="font-bold text-textMain">6. Withdrawals</h2>
           <ul className="list-disc pl-6 space-y-2 text-textMuted">
-            <li>Minimum withdrawal: ₹1,000.</li>
+            <li>Minimum withdrawal amount applies (shown in your dashboard).</li>
             <li>Withdrawals processed within 2-3 business days.</li>
             <li>KYC (PAN + bank verification) required before first withdrawal.</li>
             <li>Withdrawal to verified Indian bank account (NEFT/IMPS) or UPI only.</li>
