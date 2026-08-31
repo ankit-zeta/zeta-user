@@ -57,6 +57,27 @@ export default function ProgramDetailPage() {
     [plans, slug]
   );
 
+  // Early returns for loading/error states BEFORE any program property access
+  if (program === undefined) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-16 animate-pulse space-y-8">
+        <div className="h-10 bg-neutral-200 rounded w-1/3" />
+        <div className="h-64 bg-neutral-200 rounded" />
+      </div>
+    );
+  }
+
+  if (program === null) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-20 text-center space-y-4">
+        <h1 className="text-2xl font-bold text-textMain">Program Not Found</h1>
+        <p className="text-sm text-textMuted">The requested curriculum does not exist or has been archived.</p>
+        <Link href="/programs" className="btn-primary inline-flex">Browse All Programs</Link>
+      </div>
+    );
+  }
+
+  // Safe to access program properties now - program is guaranteed to exist
   const isAlreadyEnrolled = user?.enrolledProgramIds?.includes(program._id);
   const totalLessons = program?.stats?.lessonCount ?? 0;
   const moduleCount = program?.stats?.moduleCount ?? program?.modules?.length ?? 0;
@@ -83,25 +104,6 @@ export default function ProgramDetailPage() {
     if (!parentPlan) return;
     router.push(`/checkout/${parentPlan.slug}`);
   };
-
-  if (program === undefined) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-16 animate-pulse space-y-8">
-        <div className="h-10 bg-neutral-200 rounded w-1/3" />
-        <div className="h-64 bg-neutral-200 rounded" />
-      </div>
-    );
-  }
-
-  if (program === null) {
-    return (
-      <div className="max-w-3xl mx-auto px-4 py-20 text-center space-y-4">
-        <h1 className="text-2xl font-bold text-textMain">Program Not Found</h1>
-        <p className="text-sm text-textMuted">The requested curriculum does not exist or has been archived.</p>
-        <Link href="/programs" className="btn-primary inline-flex">Browse All Programs</Link>
-      </div>
-    );
-  }
 
   return (
     <div className="pb-24 lg:pb-8">
