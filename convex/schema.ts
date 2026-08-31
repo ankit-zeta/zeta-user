@@ -369,6 +369,7 @@ sessions: defineTable({
     parentSaleId: v.optional(v.id("affiliateSales")),
     chainLevel: v.optional(v.number()), // 1 = upline of the direct referrer
     baseCommissionAmount: v.optional(v.number()), // the direct commission the chain % was applied to
+    ref: v.optional(v.string()), // Affiliate referral code from link
   })
     .index("by_referrerUserId", ["referrerUserId"])
     .index("by_buyerUserId", ["buyerUserId"])

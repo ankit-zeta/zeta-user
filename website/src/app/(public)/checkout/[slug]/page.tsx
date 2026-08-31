@@ -4,7 +4,7 @@ import { friendlyError } from "@/lib/errors";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "convex/react";
 import { useMutation, useAction } from "convex/react";
 import { api } from "@/lib/convex";
@@ -78,6 +78,8 @@ export default function CheckoutPage() {
   const params = useParams();
   const slug = params?.slug as string;
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const refCodeFromUrl = searchParams.get("ref") || "";
   const { user, token } = useAuth();
 
   const plan: any = useQuery(
@@ -98,6 +100,13 @@ export default function CheckoutPage() {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [stage, setStage] = useState<Stage>("review");
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Preserve ref code in localStorage for guest checkout flow
+  useEffect(() => {
+    if (refCodeFromUrl) {
+      localStorage.setItem("affiliate_ref", refCodeFromUrl.toUpperCase());
+    }
+  }, [refCodeFromUrl]);
 
   // Mirror of `stage` for use inside Razorpay callbacks without stale
   // closures (the callbacks are created once per payment attempt).
@@ -208,11 +217,13 @@ export default function CheckoutPage() {
 
           // 5. Unlock the courses (existing enrollment pipeline)
           setStage("enrolling");
+          const storedRef = localStorage.getItem("affiliate_ref") || refCodeFromUrl || "";
           await completePurchase({
             token,
             planId: plan._id,
             paymentMethod: "razorpay",
             orderId: v.orderDbId,
+            ref: storedRef || undefined,
           });
 
           setStage("done");
@@ -233,11 +244,13 @@ export default function CheckoutPage() {
     setErrorMsg("");
     setStage("enrolling");
     try {
+      const storedRef = localStorage.getItem("affiliate_ref") || refCodeFromUrl || "";
       await completePurchase({
         token,
         planId: plan._id,
         paymentMethod: "razorpay",
         orderId: pendingPaidOrder.orderId,
+        ref: storedRef || undefined,
       });
       setStage("done");
     } catch (err: any) {
@@ -246,7 +259,7 @@ export default function CheckoutPage() {
         friendlyError(err, "Activation failed. Please contact support with your payment id.")
       );
     }
-  }, [token, plan, pendingPaidOrder, completePurchase]);
+  }, [token, plan, pendingPaidOrder, completePurchase, refCodeFromUrl]);
 
   // ── Loading / guards ──
   if (plan === undefined || !user) {

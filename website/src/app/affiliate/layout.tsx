@@ -20,6 +20,7 @@ import {
   ArrowLeft,
   Timer,
   Crown,
+  Link2,
 } from "lucide-react";
 
 const AFFILIATE_SESSION_MS = 10 * 60 * 1000; // 10 minutes
@@ -123,18 +124,19 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
   const isGrowthPartner = !!(user as any)?.partnerTier;
 
   const navSections = [
-    {
-      title: "Affiliate",
-      items: [
-        { name: "Overview", href: "/affiliate", icon: TrendingUp },
-        { name: "My Referrals", href: "/affiliate/referrals", icon: Users },
-        { name: "Commission Ledger", href: "/affiliate/earnings", icon: CreditCard },
-        { name: "Earnings Dashboard", href: "/affiliate/wallet", icon: Wallet },
-        ...(isGrowthPartner
-          ? [{ name: "Partnership", href: "/affiliate/achievements", icon: Zap }]
-          : []),
-      ],
-    },
+{
+        title: "Affiliate",
+        items: [
+          { name: "Overview", href: "/affiliate", icon: TrendingUp },
+          { name: "My Links", href: "/affiliate/link", icon: Link2 },
+          { name: "My Referrals", href: "/affiliate/referrals", icon: Users },
+          { name: "Commission Ledger", href: "/affiliate/earnings", icon: CreditCard },
+          { name: "Earnings Dashboard", href: "/affiliate/wallet", icon: Wallet },
+          ...(isGrowthPartner
+            ? [{ name: "Partnership", href: "/affiliate/achievements", icon: Zap }]
+            : []),
+        ],
+      },
     {
       title: "Account",
       items: [

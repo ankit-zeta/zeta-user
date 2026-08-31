@@ -129,6 +129,7 @@ export const processPurchaseWithAffiliate = mutation({
     planId: v.optional(v.id("plans")),
     paymentMethod: v.string(),
     orderId: v.optional(v.id("paymentOrders")),
+    ref: v.optional(v.string()), // Affiliate referral code from link
   },
   handler: async (ctx, args) => {
     const session = await ctx.db
@@ -310,6 +311,7 @@ export const processPurchaseWithAffiliate = mutation({
                 createdAt: now,
                 updatedAt: now,
                 kind: "direct",
+                ref: args.ref || undefined,
               });
               await ctx.db.insert("notifications", {
                 userId: referrer._id,
