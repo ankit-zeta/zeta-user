@@ -121,13 +121,13 @@ export default function PlanDetailPage() {
   }
 
   return (
-    <div className="space-y-16 pb-32 lg:pb-20">
+    <div className="space-y-16 pb-32 lg:pb-20 pt-16 lg:pt-24">
       {/* Hero - Two column layout on desktop: image left, purchase right */}
       <section className="bg-white border-b border-borderSubtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Two column layout: Image left, Purchase right */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            {/* Left: Cover Image - Sticky on desktop */}
+            {/* Left: Cover Image - Sticky on desktop, 16:9 on desktop */}
             <div className="relative aspect-video lg:aspect-video w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-neutral-100 lg:sticky lg:top-24 lg:h-[600px] max-h-[300px] lg:max-h-[600px]">
               {imageUrl ? (
                 <Image
@@ -147,6 +147,47 @@ export default function PlanDetailPage() {
 
             {/* Right: Purchase Card - Sticky on desktop */}
             <div className="lg:sticky lg:top-24">
+              {/* Plan Title & Meta - Above Purchase Card */}
+              <div className="space-y-4 max-w-xl mb-6">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
+                    {plan.courses?.length || 0} Courses · {totalLessons} Lessons
+                  </span>
+                  {plan.tagline && (
+                    <span className="text-xs text-brand-700 bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
+                      {plan.tagline}
+                    </span>
+                  )}
+                </div>
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-textMain leading-tight">
+                  {plan.name}
+                </h1>
+                <p className="text-base sm:text-lg text-textMuted leading-relaxed max-w-3xl">
+                  {plan.description}
+                </p>
+
+                {/* Highlights */}
+                {(plan.highlights || []).length > 0 && (
+                  <div className="space-y-2 pt-2">
+                    <h3 className="text-xs font-semibold uppercase tracking-wider text-textMain">
+                      What This Plan Includes
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {(plan.highlights || []).map((h: string, i: number) => (
+                        <span
+                          key={i}
+                          className="inline-flex items-center gap-1.5 text-xs text-textMuted bg-neutral-50 border border-neutral-200 px-3 py-1.5 rounded-full"
+                        >
+                          <CheckCircle2 className="w-3.5 h-3.5 text-brand-600 shrink-0" />
+                          <span>{h}</span>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Purchase Card - Sticky on desktop */}
               <div className="card-surface p-6 sm:p-8 space-y-6 shadow-sm border-brand-200 bg-brand-50/30">
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-textMuted">One-Time Plan Price{gst?.enabled ? " (excl. GST)" : ""}</p>
