@@ -126,7 +126,7 @@ export default function PlanDetailPage() {
       <section className="bg-white border-b border-borderSubtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Image - Full width, no overlay */}
-          <div className="relative aspect-video lg:aspect-[16/9] w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-neutral-100">
+          <div className="relative aspect-video lg:aspect-[2/1] w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-neutral-100 max-h-[300px] lg:max-h-[400px]">
             {imageUrl ? (
               <Image
                 src={imageUrl}
