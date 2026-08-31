@@ -128,7 +128,7 @@ export default function PlanDetailPage() {
           {/* Two column layout: Image left, Purchase right */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
             {/* Left: Cover Image - Sticky on desktop, 16:9 on desktop */}
-            <div className="relative aspect-video lg:aspect-video w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-neutral-100 lg:sticky lg:top-24 lg:h-[600px] max-h-[300px] lg:max-h-[600px]">
+            <div className="relative aspect-video lg:aspect-video w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-neutral-100 lg:sticky lg:top-24 lg:h-auto max-h-[300px] lg:max-h-none">
               {imageUrl ? (
                 <Image
                   src={imageUrl}
