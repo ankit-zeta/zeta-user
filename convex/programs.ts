@@ -1,5 +1,5 @@
 ﻿import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalMutation } from "./_generated/server";
 
 async function requireAdmin(ctx: any, token: string) {
   const session = await ctx.db
@@ -338,6 +338,23 @@ export const updateProgram = mutation({
       timestamp: now,
     });
 
+    return { success: true };
+  },
+});
+
+// Internal mutation for updating program images without admin auth (one-time use)
+export const updateProgramImageInternal = mutation({
+  args: {
+    programId: v.id("programs"),
+    thumbnail: v.optional(v.string()),
+    bannerImage: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+    const updates: any = { updatedAt: now };
+    if (args.thumbnail !== undefined) updates.thumbnail = args.thumbnail;
+    if (args.bannerImage !== undefined) updates.bannerImage = args.bannerImage;
+    await ctx.db.patch(args.programId, updates);
     return { success: true };
   },
 });
