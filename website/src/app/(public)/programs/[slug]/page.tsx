@@ -88,6 +88,8 @@ export default function ProgramDetailPage() {
 
   const [imgError, setImgError] = useState(false);
   const hasImage = !imgError && (program.thumbnail || program.bannerImage);
+  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "https://terrific-dove-836.convex.cloud";
+  const getStorageUrl = (storageId: string) => `${convexUrl}/api/storage/${storageId}`;
 
   return (
     <div className="pb-24 lg:pb-8">
@@ -102,7 +104,7 @@ export default function ProgramDetailPage() {
                 {hasImage ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={program.thumbnail || program.bannerImage}
+                    src={getStorageUrl(program.thumbnail || program.bannerImage!)}
                     alt={program.name}
                     loading="eager"
                     className="absolute inset-0 h-full w-full object-cover"
