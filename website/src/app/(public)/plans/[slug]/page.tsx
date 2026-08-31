@@ -122,176 +122,141 @@ export default function PlanDetailPage() {
 
   return (
     <div className="space-y-16 pb-32 lg:pb-20">
-      {/* Hero - Full width image, no text overlay */}
+      {/* Hero - Two column layout on desktop: image left, purchase right */}
       <section className="bg-white border-b border-borderSubtle">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Hero Image - Full width, no overlay */}
-          <div className="relative aspect-video lg:aspect-[2/1] w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-neutral-100 max-h-[300px] lg:max-h-[400px]">
-            {imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt={plan.name}
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 90vw"
-              />
-            ) : (
-              <div className="absolute inset-0 bg-gradient-to-br from-brand-600 to-brand-900 flex items-center justify-center">
-                <span className="text-white/90 text-2xl sm:text-3xl font-bold px-6 text-center">{plan.name}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Plan Title & Meta */}
-          <div className="mt-8 space-y-4 max-w-4xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
-                {plan.courses?.length || 0} Courses · {totalLessons} Lessons
-              </span>
-              {plan.tagline && (
-                <span className="text-xs text-brand-700 bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
-                  {plan.tagline}
-                </span>
-              )}
-            </div>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-textMain leading-tight">
-              {plan.name}
-            </h1>
-            <p className="text-base sm:text-lg text-textMuted leading-relaxed max-w-3xl">
-              {plan.description}
-            </p>
-
-            {/* Highlights */}
-            {(plan.highlights || []).length > 0 && (
-              <div className="space-y-2 pt-2">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-textMain">
-                  What This Plan Includes
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {(plan.highlights || []).map((h: string, i: number) => (
-                    <span
-                      key={i}
-                      className="inline-flex items-center gap-1.5 text-xs text-textMuted bg-neutral-50 border border-neutral-200 px-3 py-1.5 rounded-full"
-                    >
-                      <CheckCircle2 className="w-3.5 h-3.5 text-brand-600 shrink-0" />
-                      <span>{h}</span>
-                    </span>
-                  ))}
+          {/* Two column layout: Image left, Purchase right */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+            {/* Left: Cover Image - Sticky on desktop */}
+            <div className="relative aspect-video lg:aspect-[4/5] w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-neutral-100 lg:sticky lg:top-24 lg:h-[600px] max-h-[300px] lg:max-h-[600px]">
+              {imageUrl ? (
+                <Image
+                  src={imageUrl}
+                  alt={plan.name}
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-600 to-brand-900 flex items-center justify-center">
+                  <span className="text-white/90 text-2xl sm:text-3xl font-bold px-6 text-center">{plan.name}</span>
                 </div>
-              </div>
-            )}
-          </div>
-
-          {/* Price & Purchase Card - Full Width */}
-          <div className="mt-10 max-w-4xl card-surface p-6 sm:p-8 space-y-6 border-brand-200 bg-brand-50/30">
-            <div className="space-y-2">
-              <p className="text-xs font-medium text-textMuted">One-Time Plan Price{gst?.enabled ? " (excl. GST)" : ""}</p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-4xl sm:text-5xl font-extrabold text-textMain">
-                  ₹{plan.price.toLocaleString("en-IN")}
-                </span>
-                {plan.compareAtPrice && (
-                  <span className="text-xl text-textMuted line-through">
-                    ₹{plan.compareAtPrice.toLocaleString("en-IN")}
-                  </span>
-                )}
-              </div>
-              {gst?.enabled && (
-                <p className="text-[11px] text-textMuted">
-                  + {gst.rate}% {gst.label} added at checkout — you pay{" "}
-                  <span className="font-semibold text-textMain">
-                    ₹{(withGst(plan.price, gst).total / 100).toLocaleString("en-IN", { maximumFractionDigits: 2 })}
-                  </span>
-                </p>
               )}
-              <p className="text-sm text-textMuted">
-                Unlocks all {plan.courses?.length} courses + resources forever.
-              </p>
             </div>
 
-            {/* Purchase / Access Buttons */}
-            {hasFullAccess ? (
-              <Link
-                href={firstOwnedCourse ? `/dashboard/learning/${firstOwnedCourse._id}` : "/dashboard/programs"}
-                className="btn-primary w-full text-center justify-center py-3.5 text-sm font-semibold block"
-              >
-                Start Learning
-              </Link>
-            ) : hasPartialAccess ? (
-              <div className="space-y-3">
-                <div className="p-4 rounded-lg bg-brand-50 border border-brand-200 flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-brand-600 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-semibold text-brand-800">
-                      You already own {ownedCount} of {totalCourses} courses in this plan.
+            {/* Right: Purchase Card - Sticky on desktop */}
+            <div className="lg:sticky lg:top-24">
+              <div className="card-surface p-6 sm:p-8 space-y-6 shadow-sm border-brand-200 bg-brand-50/30">
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-textMuted">One-Time Plan Price{gst?.enabled ? " (excl. GST)" : ""}</p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl sm:text-5xl font-extrabold text-textMain">
+                      ₹{plan.price.toLocaleString("en-IN")}
+                    </span>
+                    {plan.compareAtPrice && (
+                      <span className="text-xl text-textMuted line-through">
+                        ₹{plan.compareAtPrice.toLocaleString("en-IN")}
+                      </span>
+                    )}
+                  </div>
+                  {gst?.enabled && (
+                    <p className="text-[11px] text-textMuted">
+                      + {gst.rate}% {gst.label} added at checkout — you pay{" "}
+                      <span className="font-semibold text-textMain">
+                        ₹{(withGst(plan.price, gst).total / 100).toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                      </span>
                     </p>
-                    <p className="text-xs text-brand-700 mt-0.5">
-                      Upgrade to unlock the remaining {totalCourses - ownedCount} course{totalCourses - ownedCount === 1 ? "" : "s"}.
+                  )}
+                  <p className="text-sm text-textMuted">
+                    Unlocks all {plan.courses?.length} courses + resources forever.
+                  </p>
+                </div>
+
+                {/* Purchase / Access Buttons */}
+                {hasFullAccess ? (
+                  <Link
+                    href={firstOwnedCourse ? `/dashboard/learning/${firstOwnedCourse._id}` : "/dashboard/programs"}
+                    className="btn-primary w-full text-center justify-center py-3.5 text-sm font-semibold block"
+                  >
+                    Start Learning
+                  </Link>
+                ) : hasPartialAccess ? (
+                  <div className="space-y-3">
+                    <div className="p-4 rounded-lg bg-brand-50 border border-brand-200 flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-brand-600 shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-semibold text-brand-800">
+                          You already own {ownedCount} of {totalCourses} courses in this plan.
+                        </p>
+                        <p className="text-xs text-brand-700 mt-0.5">
+                          Upgrade to unlock the remaining {totalCourses - ownedCount} course{totalCourses - ownedCount === 1 ? "" : "s"}.
+                        </p>
+                      </div>
+                    </div>
+                    <Link
+                      href={firstOwnedCourse ? `/dashboard/learning/${firstOwnedCourse._id}` : "/dashboard/programs"}
+                      className="btn-primary w-full text-center justify-center py-3.5 text-sm font-semibold block"
+                    >
+                      Start Learning
+                    </Link>
+                    <button
+                      onClick={handlePurchase}
+                      className="btn-secondary w-full justify-center py-3.5 text-sm font-semibold"
+                    >
+                      Unlock the remaining {totalCourses - ownedCount} course{totalCourses - ownedCount === 1 ? "" : "s"}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    <button
+                      onClick={handlePurchase}
+                      className="btn-primary w-full justify-center py-3.5 text-sm font-semibold shadow-sm text-base"
+                    >
+                      Get {plan.name} — ₹{plan.price.toLocaleString("en-IN")}
+                      <span className="font-normal">{gstSuffix(gst)}</span>
+                    </button>
+                    <p className="text-center text-[11px] text-textMuted">
+                      Secure checkout via Razorpay · UPI, cards & NetBanking
                     </p>
                   </div>
+                )}
+
+                {/* Trust Signals */}
+                <div className="space-y-2.5 pt-2 border-t border-brand-200/50">
+                  <div className="flex items-center gap-3 text-sm text-textMuted">
+                    <ShieldCheck className="w-5 h-5 text-brand-600 shrink-0" />
+                    <span>Instant access to every course included</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-textMuted">
+                    <ShieldCheck className="w-5 h-5 text-brand-600 shrink-0" />
+                    <span>Digital product — non-refundable once accessed</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-textMuted">
+                    <Award className="w-5 h-5 text-brand-600 shrink-0" />
+                    <span>Certificate per course after passing its test</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-textMuted">
+                    <BookOpen className="w-5 h-5 text-brand-600 shrink-0" />
+                    <span>100% text-based lessons — learn at your pace</span>
+                  </div>
                 </div>
-                <Link
-                  href={firstOwnedCourse ? `/dashboard/learning/${firstOwnedCourse._id}` : "/dashboard/programs"}
-                  className="btn-primary w-full text-center justify-center py-3.5 text-sm font-semibold block"
-                >
-                  Start Learning
-                </Link>
-                <button
-                  onClick={handlePurchase}
-                  className="btn-secondary w-full justify-center py-3.5 text-sm font-semibold"
-                >
-                  Unlock the remaining {totalCourses - ownedCount} course{totalCourses - ownedCount === 1 ? "" : "s"}
-                </button>
               </div>
-            ) : (
-              <div className="space-y-3">
+            </div>
+
+            {/* Mobile Sticky Buy Bar */}
+            {!hasFullAccess && (
+              <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-borderSubtle px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
                 <button
                   onClick={handlePurchase}
-                  className="btn-primary w-full justify-center py-3.5 text-sm font-semibold shadow-sm text-base"
+                  className="btn-primary w-full justify-center py-3.5 text-sm font-semibold shadow-lg shadow-brand-600/20"
                 >
                   Get {plan.name} — ₹{plan.price.toLocaleString("en-IN")}
                   <span className="font-normal">{gstSuffix(gst)}</span>
                 </button>
-                <p className="text-center text-[11px] text-textMuted">
-                  Secure checkout via Razorpay · UPI, cards & NetBanking
-                </p>
               </div>
             )}
-
-            {/* Trust Signals */}
-            <div className="space-y-2.5 pt-2 border-t border-brand-200/50">
-              <div className="flex items-center gap-3 text-sm text-textMuted">
-                <ShieldCheck className="w-5 h-5 text-brand-600 shrink-0" />
-                <span>Instant access to every course included</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-textMuted">
-                <ShieldCheck className="w-5 h-5 text-brand-600 shrink-0" />
-                <span>Digital product — non-refundable once accessed</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-textMuted">
-                <Award className="w-5 h-5 text-brand-600 shrink-0" />
-                <span>Certificate per course after passing its test</span>
-              </div>
-              <div className="flex items-center gap-3 text-sm text-textMuted">
-                <BookOpen className="w-5 h-5 text-brand-600 shrink-0" />
-                <span>100% text-based lessons — learn at your pace</span>
-              </div>
-            </div>
           </div>
-
-          {/* Mobile Sticky Buy Bar */}
-          {!hasFullAccess && (
-            <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-borderSubtle px-4 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
-              <button
-                onClick={handlePurchase}
-                className="btn-primary w-full justify-center py-3.5 text-sm font-semibold shadow-lg shadow-brand-600/20"
-              >
-                Get {plan.name} — ₹{plan.price.toLocaleString("en-IN")}
-                <span className="font-normal">{gstSuffix(gst)}</span>
-              </button>
-            </div>
-          )}
         </div>
       </section>
 
