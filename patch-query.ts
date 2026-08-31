@@ -1,9 +1,0 @@
-export default query({
-  handler: async (ctx) => {
-    await ctx.db.patch('kx7f4p85wz5rqjmh49fmmfbcn18cy46v', { 
-      thumbnail: 'kg2emn38d4aqj5wzsat9cqnhgn8dhgyt', 
-      bannerImage: 'kg2emn38d4aqj5wzsat9cqnhgn8dhgyt' 
-    }); 
-    return 'updated';
-  }
-});
