@@ -1,13 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
   "framework": "nextjs",
-  "regions": ["bom1"],
   "installCommand": "npm install",
-  "buildCommand": "next build",
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }]
-    }
-  ]
+  "devCommand": "npm run dev",
+  "regions": ["iad1"]
 }
