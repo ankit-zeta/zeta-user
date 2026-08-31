@@ -103,7 +103,7 @@ export default function AffiliateLinkPage() {
         <StatCard
           icon={<DollarSign className="w-4 h-4" />}
           label="Total Earnings"
-          value={`₹{(stats?.totalCommissions ?? 0).toLocaleString("en-IN")}`}
+          value={stats?.totalCommissions ? `₹${stats.totalCommissions.toLocaleString("en-IN")}` : "₹0"}
           sub="Lifetime affiliate commissions"
         />
         <StatCard
@@ -115,7 +115,7 @@ export default function AffiliateLinkPage() {
         <StatCard
           icon={<CreditCard className="w-4 h-4" />}
           label="Pending"
-          value={`₹{(stats?.pendingCommissions ?? 0).toLocaleString("en-IN")}`}
+          value={stats?.pendingCommissions ? `₹${stats.pendingCommissions.toLocaleString("en-IN")}` : "₹0"}
           sub="In holding period"
         />
         <StatCard

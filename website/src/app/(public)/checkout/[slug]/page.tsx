@@ -262,7 +262,7 @@ export default function CheckoutPage() {
   }, [token, plan, pendingPaidOrder, completePurchase, refCodeFromUrl]);
 
   // ── Loading / guards ──
-  if (plan === undefined || !user) {
+  if (plan === undefined) {
     return (
       <div className="max-w-5xl mx-auto px-4 py-16 animate-pulse space-y-6">
         <div className="h-8 bg-neutral-200 rounded w-64"></div>
