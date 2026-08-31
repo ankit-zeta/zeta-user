@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useQuery } from "convex/react";
 import { api, useAuth } from "@/lib/convex";
 import { useGst, gstSuffix } from "@/lib/gst";
@@ -27,6 +28,9 @@ import {
   Tag,
 } from "lucide-react";
 
+const CONVEX_URL = process.env.NEXT_PUBLIC_CONVEX_URL || "https://terrific-dove-836.convex.cloud";
+const getStorageUrl = (storageId: string) => `${CONVEX_URL}/api/storage/${storageId}`;
+
 export default function ProgramDetailPage() {
   const params = useParams();
   const slug = params?.slug as string;
@@ -37,11 +41,40 @@ export default function ProgramDetailPage() {
   const plans = useQuery(api.plans.getPublicPlans);
   const gst = useGst();
 
-  const parentPlan = plans?.find((p: any) =>
-    (p.courses || []).some((c: any) => c.slug === slug)
+  const [openModuleIndex, setOpenModuleIndex] = useState<number | null>(0);
+  const [imgError, setImgError] = useState(false);
+
+  const parentPlan = useMemo(() => 
+    plans?.find((p: any) => (p.courses || []).some((c: any) => c.slug === slug)),
+    [plans, slug]
   );
 
-  const [openModuleIndex, setOpenModuleIndex] = useState<number | null>(0);
+  const isAlreadyEnrolled = user?.enrolledProgramIds?.includes(program._id);
+  const totalLessons = program?.stats?.lessonCount ?? 0;
+  const moduleCount = program?.stats?.moduleCount ?? program?.modules?.length ?? 0;
+  const totalMinutes = program?.stats?.totalMinutes ?? 0;
+  const timeDisplay = totalMinutes >= 60
+    ? `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m`
+    : `${totalMinutes} min`;
+
+  const savings = parentPlan?.compareAtPrice
+    ? parentPlan.compareAtPrice - parentPlan.price
+    : 0;
+  const savingsPercent = parentPlan?.compareAtPrice
+    ? Math.round(((parentPlan.compareAtPrice - parentPlan.price) / parentPlan.compareAtPrice) * 100)
+    : 0;
+
+  const hasImage = !imgError && (program?.thumbnail || program?.bannerImage);
+  const imageUrl = hasImage ? getStorageUrl(program.thumbnail || program.bannerImage!) : null;
+
+  const handleEnrollment = () => {
+    if (!token) {
+      router.push(`/login?redirect=/checkout/${parentPlan?.slug || slug}`);
+      return;
+    }
+    if (!parentPlan) return;
+    router.push(`/checkout/${parentPlan.slug}`);
+  };
 
   if (program === undefined) {
     return (
@@ -62,35 +95,6 @@ export default function ProgramDetailPage() {
     );
   }
 
-  const isAlreadyEnrolled = user?.enrolledProgramIds?.includes(program._id);
-  const totalLessons = program.stats?.lessonCount ?? 0;
-  const moduleCount = program.stats?.moduleCount ?? program.modules?.length ?? 0;
-  const totalMinutes = program.stats?.totalMinutes ?? 0;
-  const timeDisplay = totalMinutes >= 60
-    ? `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m`
-    : `${totalMinutes} min`;
-
-  const handleEnrollment = () => {
-    if (!token) {
-      router.push(`/login?redirect=/checkout/${parentPlan?.slug || slug}`);
-      return;
-    }
-    if (!parentPlan) return;
-    router.push(`/checkout/${parentPlan.slug}`);
-  };
-
-  const savings = parentPlan?.compareAtPrice
-    ? parentPlan.compareAtPrice - parentPlan.price
-    : 0;
-  const savingsPercent = parentPlan?.compareAtPrice
-    ? Math.round(((parentPlan.compareAtPrice - parentPlan.price) / parentPlan.compareAtPrice) * 100)
-    : 0;
-
-  const [imgError, setImgError] = useState(false);
-  const hasImage = !imgError && (program.thumbnail || program.bannerImage);
-  const convexUrl = process.env.NEXT_PUBLIC_CONVEX_URL || "https://terrific-dove-836.convex.cloud";
-  const getStorageUrl = (storageId: string) => `${convexUrl}/api/storage/${storageId}`;
-
   return (
     <div className="pb-24 lg:pb-8">
       {/* ─── Hero Section ──────────────────────────────────────────── */}
@@ -101,13 +105,14 @@ export default function ProgramDetailPage() {
             <div className="lg:col-span-3 space-y-6">
               {/* Cover Image */}
               <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-borderSubtle bg-neutral-100 shadow-sm">
-                {hasImage ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={getStorageUrl(program.thumbnail || program.bannerImage!)}
+                {hasImage && imageUrl ? (
+                  <Image
+                    src={imageUrl}
                     alt={program.name}
-                    loading="eager"
-                    className="absolute inset-0 h-full w-full object-cover"
+                    fill
+                    priority
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 60vw"
                     onError={() => setImgError(true)}
                   />
                 ) : (
@@ -268,7 +273,7 @@ export default function ProgramDetailPage() {
 
                       {!isAlreadyEnrolled && (
                         <p className="text-center text-[10px] text-textMuted">
-                          Secure checkout via Razorpay · UPI, cards &amp; NetBanking
+                          Secure checkout via Razorpay · UPI, cards & NetBanking
                         </p>
                       )}
 
