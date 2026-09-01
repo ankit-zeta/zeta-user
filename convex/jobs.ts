@@ -165,12 +165,8 @@ export const getJobsWithEligibility = query({
 
         const applicationStatus = userApplications.get(job._id.toString()) || null;
 
-        // Applicant count
-        const apps = await ctx.db
-          .query("jobApplications")
-          .withIndex("by_jobId", (q) => q.eq("jobId", job._id))
-          .collect();
-        const applicantCount = apps.length;
+        // Applicant count — use stored field on job document as the displayed count
+        const applicantCount = (job as any).applicantCount || 0;
 
         return {
           ...job,
