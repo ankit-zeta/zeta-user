@@ -338,7 +338,7 @@ export default function AdminBannersPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search banners..."
+            placeholder="Search banners by title..."
             className="input-field pl-9 w-full"
           />
         </div>
@@ -383,236 +383,248 @@ export default function AdminBannersPage() {
 
       {/* Create / Edit Form */}
       {showForm && (
-        <div className="card-surface p-6 space-y-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-textMain">
-              {editingBanner ? "Edit Banner" : "Create New Banner"}
-            </h2>
-            <button onClick={resetForm} className="p-1 text-textMuted hover:text-textMain">
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* Title */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-textMain">Banner Title *</label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Holiday Sale Banner"
-                className="input-field"
-              />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-y-auto">
+          <div className="card-surface max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl bg-white">
+            <div className="sticky top-0 flex items-center justify-between border-b border-neutral-200 px-6 py-4 bg-white z-10">
+              <h2 className="text-base font-bold text-textMain">
+                {editingBanner ? "Edit Banner" : "Create New Banner"}
+              </h2>
+              <button onClick={resetForm} className="p-1.5 rounded-lg text-textMuted hover:text-textMain hover:bg-neutral-100 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            {/* Subtitle */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-textMain">Subtitle</label>
-              <input
-                type="text"
-                value={subtitle}
-                onChange={(e) => setSubtitle(e.target.value)}
-                placeholder="e.g. Limited time offer"
-                className="input-field"
-              />
-            </div>
+            <div className="p-6 space-y-6">
+              {/* Main Fields */}
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-xs font-semibold text-textMain mb-1.5">Banner Title *</label>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="e.g. Holiday Sale Banner"
+                    className="w-full input-field text-base"
+                    required
+                    autoFocus
+                  />
+                </div>
 
-            {/* Target Page */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-textMain">Display On</label>
-              <select
-                value={targetPage}
-                onChange={(e) => setTargetPage(e.target.value)}
-                className="input-field"
-              >
-                <option value="both">Both (Affiliate + Work)</option>
-                <option value="affiliate">Affiliate Dashboard Only</option>
-                <option value="work">Work Dashboard Only</option>
-              </select>
-            </div>
+                <div>
+                  <label className="block text-xs font-semibold text-textMain mb-1.5">Subtitle</label>
+                  <input
+                    type="text"
+                    value={subtitle}
+                    onChange={(e) => setSubtitle(e.target.value)}
+                    placeholder="e.g. Limited time offer"
+                    className="w-full input-field"
+                  />
+                </div>
 
-            {/* Sort Order */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-textMain">Sort Order</label>
-              <input
-                type="number"
-                value={sortOrder}
-                onChange={(e) => setSortOrder(Number(e.target.value))}
-                className="input-field"
-              />
-            </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-textMain mb-1.5">Display On</label>
+                    <select
+                      value={targetPage}
+                      onChange={(e) => setTargetPage(e.target.value)}
+                      className="w-full input-field"
+                    >
+                      <option value="both">Both (Affiliate + Work)</option>
+                      <option value="affiliate">Affiliate Dashboard Only</option>
+                      <option value="work">Work Dashboard Only</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-textMain mb-1.5">Sort Order</label>
+                    <input
+                      type="number"
+                      value={sortOrder}
+                      onChange={(e) => setSortOrder(Number(e.target.value))}
+                      className="w-full input-field"
+                    />
+                  </div>
+                </div>
 
-            {/* Image URL */}
-            <div className="space-y-1.5 sm:col-span-2">
-              <label className="text-xs font-semibold text-textMain">Image URL *</label>
-              <input
-                type="url"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="https://example.com/banner.jpg or Convex storage URL"
-                className="input-field"
-              />
-              <p className="text-[10px] text-textMuted">
-                Recommended size: 1200 x 400px. Use a hosted image URL or Convex storage link.
-              </p>
-            </div>
+                <div>
+                  <label className="block text-xs font-semibold text-textMain mb-1.5">Image URL *</label>
+                  <input
+                    type="url"
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    placeholder="https://example.com/banner.jpg or Convex storage URL"
+                    className="w-full input-field"
+                    required
+                  />
+                  <p className="text-[10px] text-textMuted mt-1">
+                    Recommended size: 1200 × 400px. Use a hosted image URL or Convex storage link.
+                  </p>
+                </div>
 
-            {/* Link URL */}
-            <div className="space-y-1.5 sm:col-span-2">
-              <label className="text-xs font-semibold text-textMain">Click-through URL (optional)</label>
-              <input
-                type="url"
-                value={linkUrl}
-                onChange={(e) => setLinkUrl(e.target.value)}
-                placeholder="https://example.com/landing-page"
-                className="input-field"
-              />
-            </div>
+                <div>
+                  <label className="block text-xs font-semibold text-textMain mb-1.5">Click-through URL (optional)</label>
+                  <input
+                    type="url"
+                    value={linkUrl}
+                    onChange={(e) => setLinkUrl(e.target.value)}
+                    placeholder="https://example.com/landing-page"
+                    className="w-full input-field"
+                  />
+                </div>
 
-            {/* CTA Text */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-textMain">Button Text (optional)</label>
-              <input
-                type="text"
-                value={ctaText}
-                onChange={(e) => setCtaText(e.target.value)}
-                placeholder="e.g. Learn More"
-                className="input-field"
-              />
-            </div>
-
-            {/* CTA Color */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-textMain">Button Color</label>
-              <div className="flex gap-2">
-                <input
-                  type="color"
-                  value={ctaColor}
-                  onChange={(e) => setCtaColor(e.target.value)}
-                  className="w-10 h-10 rounded border border-borderSubtle cursor-pointer"
-                />
-                <input
-                  type="text"
-                  value={ctaColor}
-                  onChange={(e) => setCtaColor(e.target.value)}
-                  className="input-field flex-1"
-                />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-textMain mb-1.5">Button Text (optional)</label>
+                    <input
+                      type="text"
+                      value={ctaText}
+                      onChange={(e) => setCtaText(e.target.value)}
+                      placeholder="e.g. Learn More"
+                      className="w-full input-field"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-textMain mb-1.5">Button Color</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="color"
+                        value={ctaColor}
+                        onChange={(e) => setCtaColor(e.target.value)}
+                        className="w-10 h-10 rounded-lg border border-borderSubtle cursor-pointer"
+                        title="Pick a color"
+                      />
+                      <input
+                        type="text"
+                        value={ctaColor}
+                        onChange={(e) => setCtaColor(e.target.value)}
+                        className="input-field flex-1 font-mono text-xs"
+                        placeholder="#16a34a"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            {/* Start Date */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-textMain">Start Date (optional)</label>
-              <input
-                type="datetime-local"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="input-field"
-              />
-            </div>
+              {/* Schedule & Options */}
+              <div className="rounded-xl border border-neutral-200 bg-neutral-50/50 p-4 space-y-4">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-textMain flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4 text-brand-600" />
+                  Schedule & Options
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-semibold text-textMain">Start Date (optional)</label>
+                    <input
+                      type="datetime-local"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="w-full input-field"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="block text-xs font-semibold text-textMain">End Date (optional)</label>
+                    <input
+                      type="datetime-local"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="w-full input-field"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-textMain mb-1.5">Link Target</label>
+                    <button
+                      type="button"
+                      onClick={() => setOpenInNewTab(!openInNewTab)}
+                      className={`w-full input-field flex items-center justify-center gap-2 py-2.5 ${
+                        openInNewTab ? "text-brand-700 bg-brand-50 border-brand-200" : "text-neutral-500 border-neutral-200"
+                      }`}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      {openInNewTab ? "Open in new tab" : "Open in same tab"}
+                    </button>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-textMain mb-1.5">Status</label>
+                    <button
+                      type="button"
+                      onClick={() => setIsActive(!isActive)}
+                      className={`w-full input-field flex items-center justify-center gap-2 py-2.5 ${
+                        isActive ? "text-green-700 bg-green-50 border-green-200" : "text-neutral-500 border-neutral-200"
+                      }`}
+                    >
+                      {isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                      {isActive ? "Active (visible to users)" : "Inactive (hidden)"}
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-            {/* End Date */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-textMain">End Date (optional)</label>
-              <input
-                type="datetime-local"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="input-field"
-              />
-            </div>
-
-            {/* Open in New Tab */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-textMain">Link Target</label>
-              <button
-                type="button"
-                onClick={() => setOpenInNewTab(!openInNewTab)}
-                className={`input-field flex items-center gap-2 ${
-                  openInNewTab ? "text-brand-700 bg-brand-50" : "text-neutral-500"
-                }`}
-              >
-                <ExternalLink className="w-4 h-4" />
-                {openInNewTab ? "Open in new tab" : "Open in same tab"}
-              </button>
-            </div>
-
-            {/* Active Toggle */}
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-textMain">Status</label>
-              <button
-                type="button"
-                onClick={() => setIsActive(!isActive)}
-                className={`input-field flex items-center gap-2 ${
-                  isActive ? "text-green-700 bg-green-50" : "text-neutral-500"
-                }`}
-              >
-                {isActive ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                {isActive ? "Active (visible to users)" : "Inactive (hidden)"}
-              </button>
-            </div>
-          </div>
-
-          {/* Preview */}
-          {imageUrl && (
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-textMain">Preview</label>
-              <div className="rounded-lg overflow-hidden border border-borderSubtle bg-neutral-50 relative">
-                <img
-                  src={imageUrl}
-                  alt={title || "Banner preview"}
-                  className="w-full h-[200px] object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
-                  }}
-                />
-                {(title || subtitle || ctaText) && (
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
-                )}
-                {(title || subtitle || ctaText) && (
-                  <div className="absolute inset-0 flex flex-col justify-center px-8">
-                    {title && (
-                      <h3 className="text-lg sm:text-2xl font-bold text-white drop-shadow-lg">
-                        {title}
-                      </h3>
+              {/* Live Preview */}
+              {imageUrl && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-textMain flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-brand-600" />
+                    Live Preview
+                  </h3>
+                  <div className="rounded-xl overflow-hidden border border-neutral-200 bg-neutral-50 relative aspect-[3/1]">
+                    <img
+                      src={imageUrl}
+                      alt={title || "Banner preview"}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                    {(title || subtitle || ctaText) && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/10" />
                     )}
-                    {subtitle && (
-                      <p className="text-xs sm:text-sm text-white/90 mt-1 sm:mt-2 max-w-md drop-shadow-md">
-                        {subtitle}
-                      </p>
-                    )}
-                    {ctaText && (
-                      <div
-                        className="mt-3 sm:mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-white shadow-lg w-fit"
-                        style={{ backgroundColor: ctaColor || "#16a34a" }}
-                      >
-                        {ctaText}
-                        <ArrowRight className="w-4 h-4" />
+                    {(title || subtitle || ctaText) && (
+                      <div className="absolute inset-0 flex flex-col justify-center px-6 sm:px-8">
+                        {title && (
+                          <h3 className="text-base sm:text-xl lg:text-2xl font-bold text-white drop-shadow-lg leading-tight">
+                            {title}
+                          </h3>
+                        )}
+                        {subtitle && (
+                          <p className="text-xs sm:text-sm text-white/90 mt-1 max-w-md drop-shadow-md">
+                            {subtitle}
+                          </p>
+                        )}
+                        {ctaText && (
+                          <div
+                            className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-white shadow-lg w-fit"
+                            style={{ backgroundColor: ctaColor || "#16a34a" }}
+                          >
+                            {ctaText}
+                            <ArrowRight className="w-4 h-4" />
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
-                )}
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="sticky bottom-0 flex gap-3 pt-4 border-t border-neutral-200 bg-white/95 backdrop-blur-sm">
+                <button
+                  onClick={handleSave}
+                  disabled={saving || !title.trim() || !imageUrl.trim()}
+                  className="btn-primary flex-1 sm:flex-none text-sm py-3 px-6 flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {saving ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Upload className="w-4 h-4" />
+                  )}
+                  {editingBanner ? "Update Banner" : "Create Banner"}
+                </button>
+                <button onClick={resetForm} className="btn-secondary flex-1 sm:flex-none text-sm py-3 px-6">
+                  Cancel
+                </button>
               </div>
             </div>
-          )}
-
-          <div className="flex gap-3 pt-2">
-            <button
-              onClick={handleSave}
-              disabled={saving || !title.trim() || !imageUrl.trim()}
-              className="btn-primary text-xs py-2 px-5 flex items-center gap-2 disabled:opacity-50"
-            >
-              {saving ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <Upload className="w-4 h-4" />
-              )}
-              {editingBanner ? "Update Banner" : "Create Banner"}
-            </button>
-            <button onClick={resetForm} className="btn-secondary text-xs py-2 px-5">
-              Cancel
-            </button>
           </div>
         </div>
       )}
