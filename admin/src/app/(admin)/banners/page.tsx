@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useCallback } from "react";
 import { useAdminAuth } from "@/lib/convex";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/lib/convex";
 import {
   ImageIcon,
@@ -80,6 +80,46 @@ export default function AdminBannersPage() {
   const reorderBanners = useMutation(api.banners.reorderBanners);
   const duplicateBanner = useMutation(api.banners.duplicateBanner);
   const bulkToggleActive = useMutation(api.banners.bulkToggleActive);
+  const generateUploadUrl = useAction(api.resources.generateUploadUrl);
+
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const uploadImage = async (file: File): Promise<string> => {
+    setUploadingImage(true);
+    try {
+      const uploadUrl = await generateUploadUrl();
+      const put = await fetch(uploadUrl, {
+        method: "POST",
+        headers: { "Content-Type": file.type || "application/octet-stream" },
+        body: file,
+      });
+      if (!put.ok) throw new Error("Upload failed");
+      const { storageId } = await put.json();
+      return storageId as string;
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+    try {
+      const storageId = await uploadImage(file);
+      setImageUrl(storageId);
+      toast.success("Image uploaded");
+    } catch (err: any) {
+      toast.error(err.message || "Upload failed");
+    }
+  };
 
   const resetForm = () => {
     setTitle("");
@@ -446,18 +486,45 @@ export default function AdminBannersPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-textMain mb-1.5">Image URL *</label>
-                  <input
-                    type="url"
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="https://example.com/banner.jpg or Convex storage URL"
-                    className="w-full input-field"
-                    required
-                  />
-                  <p className="text-[10px] text-textMuted mt-1">
-                    Recommended size: 1200 × 400px. Use a hosted image URL or Convex storage link.
-                  </p>
+                  <label className="block text-xs font-semibold text-textMain mb-1.5">Banner Image *</label>
+                  <div className="space-y-2">
+                    <div className="flex gap-2">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="w-full input-field text-xs"
+                        disabled={uploadingImage}
+                        id="banner-image-upload"
+                      />
+                      <label
+                        htmlFor="banner-image-upload"
+                        className="px-4 py-2 rounded-lg border border-brand-200 bg-brand-50 text-brand-700 text-xs font-semibold flex items-center justify-center gap-1.5 hover:bg-brand-100 transition-colors cursor-pointer shrink-0"
+                      >
+                        <Upload className="w-3.5 h-3.5" />
+                        Upload
+                      </label>
+                    </div>
+                    <p className="text-[10px] text-textMuted">
+                      Recommended: 1200 × 400px, max 5MB. Or paste a URL below.
+                    </p>
+                    <div className="relative">
+                      <input
+                        type="url"
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                        placeholder="https://example.com/banner.jpg or Convex storage URL"
+                        className="w-full input-field pr-10"
+                        required
+                      />
+                      {uploadingImage && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-xs text-brand-600">
+                          <div className="w-3 h-3 border-2 border-brand-600 border-t-transparent rounded-full animate-spin" />
+                          Uploading...
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 <div>
