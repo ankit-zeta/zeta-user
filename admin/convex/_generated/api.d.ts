@@ -15,6 +15,7 @@ import type * as analyticsAdmin from "../analyticsAdmin.js";
 import type * as applications from "../applications.js";
 import type * as auditLogs from "../auditLogs.js";
 import type * as auth from "../auth.js";
+import type * as banners from "../banners.js";
 import type * as certificates from "../certificates.js";
 import type * as contact from "../contact.js";
 import type * as cookieConsent from "../cookieConsent.js";
@@ -67,6 +68,7 @@ declare const fullApi: ApiFromModules<{
   applications: typeof applications;
   auditLogs: typeof auditLogs;
   auth: typeof auth;
+  banners: typeof banners;
   certificates: typeof certificates;
   contact: typeof contact;
   cookieConsent: typeof cookieConsent;

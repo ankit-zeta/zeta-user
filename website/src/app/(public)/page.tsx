@@ -197,7 +197,7 @@ function getNewCoursesForPlan(plan: any, allPlans: any[]): any[] {
 export default function HomePage() {
   const plans = useQuery(api.plans.getPublicPlans);
   const gst = useGst();
-  const jobsResult = useQuery(api.jobs.getPublicJobs) as {
+  const jobsResult = useQuery(api.jobs.getPublicJobs, { limit: 200 }) as {
     jobs: Array<{
       _id: string;
       _creationTime: number;
@@ -385,7 +385,7 @@ const resourceCount =
                 <Briefcase className="w-6 h-6 text-white" aria-hidden="true" />
               </div>
               <div className="text-left">
-                <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">{jobs ? jobs.length : "—"}</p>
+                <p className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">{jobsResult?.total ?? jobs?.length ?? "—"}</p>
                 <p className="text-[11px] sm:text-xs font-semibold text-white/70 uppercase tracking-wider leading-tight">Open Work Opportunities</p>
               </div>
             </div>
