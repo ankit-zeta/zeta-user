@@ -78,6 +78,10 @@ export default function AdminPlansPage() {
     api.programs.getAllProgramsAdmin,
     token ? { token } : "skip"
   );
+  const gst: any = useQuery(
+    api.paymentsConfig.getGstConfig,
+    token ? { token } : "skip"
+  );
 
   const createPlan = useMutation(api.plans.createPlan);
   const updatePlan = useMutation(api.plans.updatePlan);
@@ -419,6 +423,26 @@ export default function AdminPlansPage() {
                   onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg border border-borderSubtle bg-white font-bold"
                 />
+                {gst?.enabled && form.price && (
+                  <div className="mt-2 p-3 rounded-lg bg-neutral-50 border border-neutral-200 text-[11px] space-y-1">
+                    <div className="flex justify-between text-neutral-600">
+                      <span>Base price (excl. GST)</span>
+                      <span className="font-semibold text-textMain">
+                        ₹{Math.round(Number(form.price) / (1 + (gst.rate || 18) / 100)).toLocaleString("en-IN")}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-neutral-600">
+                      <span>{gst.label || "GST"} @ {(gst.rate || 18)}%</span>
+                      <span className="font-semibold text-textMain">
+                        ₹{(Number(form.price) - Math.round(Number(form.price) / (1 + (gst.rate || 18) / 100))).toLocaleString("en-IN")}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-neutral-900 font-bold border-t border-neutral-200 pt-1">
+                      <span>Total (incl. GST)</span>
+                      <span>₹{Number(form.price).toLocaleString("en-IN")}</span>
+                    </div>
+                  </div>
+                )}
               </label>
               <label className="block space-y-1">
                 <span className="font-semibold text-textMain">Compare-at price (₹)</span>
