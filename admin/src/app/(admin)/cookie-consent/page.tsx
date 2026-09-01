@@ -26,7 +26,7 @@ export default function CookieConsentPage() {
 
   const consentRecords = useQuery(
     api.cookieConsent.getAllConsentAdmin,
-    token ? {} : "skip"
+    token ? { token } : "skip"
   ) as Array<{
     _id: string;
     fingerprint: string;

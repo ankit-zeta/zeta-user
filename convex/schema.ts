@@ -525,11 +525,17 @@ sessions: defineTable({
   // Dashboard Banners (admin-uploaded images shown on affiliate & work dashboards)
   banners: defineTable({
     title: v.string(),
+    subtitle: v.optional(v.string()),
     imageUrl: v.string(),
     linkUrl: v.optional(v.string()),
     targetPage: v.string(), // "affiliate" | "work" | "both"
     isActive: v.boolean(),
     sortOrder: v.number(),
+    ctaText: v.optional(v.string()),
+    ctaColor: v.optional(v.string()),
+    startDate: v.optional(v.number()),
+    endDate: v.optional(v.number()),
+    openInNewTab: v.optional(v.boolean()),
     createdAt: v.number(),
     updatedAt: v.number(),
   })

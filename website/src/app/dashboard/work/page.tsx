@@ -490,7 +490,7 @@ export default function DashboardWorkPage() {
                         {!isFreeApply && (job.requiredProgramName || job.requiredProgramNames) && (
                           <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 shrink-0 flex items-center gap-1">
                             <Award className="w-3 h-3" />
-                            Certificate Required
+                            {job.requiredProgramName || job.requiredProgramNames?.[0]}
                           </span>
                         )}
                       </div>

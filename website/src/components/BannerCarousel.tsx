@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 type BannerCarouselProps = {
   targetPage: "affiliate" | "work";
@@ -54,7 +54,11 @@ export default function BannerCarousel({ targetPage }: BannerCarouselProps) {
           const isActive = idx === current;
           const Wrapper = banner.linkUrl ? "a" : "div";
           const wrapperProps = banner.linkUrl
-            ? { href: banner.linkUrl, target: "_blank", rel: "noopener noreferrer" }
+            ? {
+                href: banner.linkUrl,
+                target: banner.openInNewTab ? "_blank" : "_self",
+                rel: banner.openInNewTab ? "noopener noreferrer" : undefined,
+              }
             : {};
 
           return (
@@ -71,8 +75,34 @@ export default function BannerCarousel({ targetPage }: BannerCarouselProps) {
                 className="w-full h-full object-cover"
                 loading={idx === 0 ? "eager" : "lazy"}
               />
-              {/* Subtle gradient overlay for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+              {/* Content overlay */}
+              {(banner.title || banner.subtitle || banner.ctaText) && (
+                <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent pointer-events-none" />
+              )}
+              {/* Text content */}
+              {(banner.title || banner.subtitle || banner.ctaText) && (
+                <div className="absolute inset-0 flex flex-col justify-center px-8 sm:px-12 pointer-events-none">
+                  {banner.title && (
+                    <h3 className="text-lg sm:text-2xl font-bold text-white drop-shadow-lg leading-tight">
+                      {banner.title}
+                    </h3>
+                  )}
+                  {banner.subtitle && (
+                    <p className="text-xs sm:text-sm text-white/90 mt-1 sm:mt-2 max-w-md drop-shadow-md">
+                      {banner.subtitle}
+                    </p>
+                  )}
+                  {banner.ctaText && banner.linkUrl && (
+                    <div
+                      className="mt-3 sm:mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-white shadow-lg pointer-events-auto"
+                      style={{ backgroundColor: banner.ctaColor || "#16a34a" }}
+                    >
+                      {banner.ctaText}
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  )}
+                </div>
+              )}
             </Wrapper>
           );
         })}

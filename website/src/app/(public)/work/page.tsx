@@ -313,7 +313,7 @@ export default function PublicWorkPage() {
                         </span>
                         {job.requiredProgramName && (
                           <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 flex items-center gap-0.5">
-                            <Flame className="w-2.5 h-2.5" /> Certificate Required
+                            <Flame className="w-2.5 h-2.5" /> {job.requiredProgramName}
                           </span>
                         )}
                       </div>

@@ -595,3 +595,53 @@ export const bulkCreateJobs = mutation({
     return { success: true, count: ids.length };
   },
 });
+
+// Batch update requiredProgramId for multiple jobs (admin token required)
+export const bulkUpdateJobPrograms = mutation({
+  args: {
+    token: v.string(),
+    updates: v.array(
+      v.object({
+        jobId: v.id("jobs"),
+        requiredProgramId: v.optional(v.id("programs")),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx, args.token);
+    const now = Date.now();
+    let updated = 0;
+    for (const u of args.updates) {
+      await ctx.db.patch(u.jobId, {
+        requiredProgramId: u.requiredProgramId,
+        updatedAt: now,
+      });
+      updated++;
+    }
+    return { success: true, updated };
+  },
+});
+
+// Internal batch update (for CLI/admin use)
+export const bulkUpdateJobProgramsInternal = internalMutation({
+  args: {
+    updates: v.array(
+      v.object({
+        jobId: v.id("jobs"),
+        requiredProgramId: v.optional(v.id("programs")),
+      })
+    ),
+  },
+  handler: async (ctx, args) => {
+    const now = Date.now();
+    let updated = 0;
+    for (const u of args.updates) {
+      await ctx.db.patch(u.jobId, {
+        requiredProgramId: u.requiredProgramId,
+        updatedAt: now,
+      });
+      updated++;
+    }
+    return { success: true, updated };
+  },
+});

@@ -408,6 +408,61 @@ const resourceCount =
       </section>
 
       {/* ============================================================
+         4. LEARNING PLANS — live from database
+         ============================================================ */}
+      <section id="programs" aria-labelledby="programs-title" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
+        <header className="text-center mb-10">
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold uppercase tracking-wider"><GraduationCap className="w-3.5 h-3.5" aria-hidden="true" /> Learning Plans</span>
+          <h2 id="programs-title" className="text-3xl sm:text-4xl font-extrabold tracking-tight text-textMain mt-3">One plan. Every course inside it.</h2>
+          <p className="text-sm text-textMuted mt-2 max-w-lg mx-auto">Each plan bundles complete courses with resources and certificates — one payment unlocks the full set.</p>
+          <Link href="/plans" className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 hover:text-brand-800 mt-4"><span>Compare all plans</span> <ChevronRight className="w-4 h-4" aria-hidden="true" /></Link>
+        </header>
+
+        {plans === undefined ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-pulse">
+            {Array.from({ length: 4 }).map((_, i) => <ProgramCardSkeleton key={i} />)}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {(plans as any[]).map((plan) => {
+              const totalLessons = (plan.courses || []).reduce((s: number, c: any) => s + (c.lessonCount || 0), 0);
+              const totalMinutes = (plan.courses || []).reduce((s: number, c: any) => s + (c.totalMinutes || 0), 0);
+              const hours = totalMinutes >= 60 ? `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m` : `${totalMinutes} min`;
+              return (
+                <article key={plan._id} itemScope itemType="https://schema.org/Product" className="card-surface overflow-hidden flex flex-col hover:border-brand-200 hover:shadow-md transition-all duration-200 group">
+                  <Link href={`/plans/${plan.slug}`} className="relative h-36 overflow-hidden bg-brand-50 block">
+                    {plan.thumbnail ? (<Image src={plan.thumbnail} alt={`${plan.name} learning plan cover`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" /> ) : ( <div className="w-full h-full flex items-center justify-center"><BookOpen className="w-10 h-10 text-brand-300" aria-hidden="true" /></div> )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                    <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between">
+                      <span className="text-[10px] font-semibold text-white bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full flex items-center gap-1"><Layers className="w-2.5 h-2.5" aria-hidden="true" />{plan.courses?.length || 0} Courses</span>
+                      {plan.price === 8000 && (<span className="text-[9px] font-bold uppercase tracking-wider text-white bg-brand-600 px-2 py-0.5 rounded-full">Popular</span>)}
+                    </div>
+                  </Link>
+                  <div className="p-4 flex flex-col flex-1">
+                    <h3 itemProp="name" className="text-sm font-bold text-textMain leading-snug line-clamp-1">{plan.name}</h3>
+                    <p className="text-[11px] text-textMuted mt-0.5 line-clamp-1">{plan.tagline}</p>
+                    <div className="flex items-baseline gap-1.5 mt-2">
+                      <span itemProp="offers" itemType="https://schema.org/Offer" itemScope className="text-xl font-extrabold text-textMain"><meta itemProp="priceCurrency" content="INR" /><meta itemProp="price" content={String(plan.price)} />{formatINR(plan.price)}</span>
+                      {plan.compareAtPrice && (<span className="text-xs text-textMuted line-through">{formatINR(plan.compareAtPrice)}</span>)}
+                      <span className="text-[10px] text-textMuted">{gstSuffix(gst)}</span>
+                    </div>
+                    <ul className="mt-3 space-y-1" role="list">
+                      <li className="flex items-center gap-1.5 text-[11px] text-textMuted"><BookOpen className="w-3 h-3 text-brand-600 shrink-0" aria-hidden="true" />{totalLessons} lessons · {hours}</li>
+                      <li className="flex items-center gap-1.5 text-[11px] text-textMuted"><Layers className="w-3 h-3 text-brand-600 shrink-0" aria-hidden="true" />{(plan.resourceList || []).length} resource kits</li>
+                      <li className="flex items-center gap-1.5 text-[11px] text-textMuted"><BadgeCheck className="w-3 h-3 text-brand-600 shrink-0" aria-hidden="true" />Verified certificate</li>
+                    </ul>
+                    <div className="mt-auto pt-3 border-t border-borderSubtle">
+                      <Link href={`/plans/${plan.slug}`} className="btn-primary w-full text-center justify-center text-xs py-2"><span>View Plan</span><ArrowRight className="w-3 h-3 ml-1" aria-hidden="true" /></Link>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* ============================================================
          3. HOW IT WORKS
          ============================================================ */}
       <section id="journey" aria-labelledby="journey-title" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
@@ -518,61 +573,6 @@ const resourceCount =
           })}
         </section>
       )}
-
-      {/* ============================================================
-         4. LEARNING PLANS — live from database
-         ============================================================ */}
-      <section id="programs" aria-labelledby="programs-title" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24">
-        <header className="text-center mb-10">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-xs font-semibold uppercase tracking-wider"><GraduationCap className="w-3.5 h-3.5" aria-hidden="true" /> Learning Plans</span>
-          <h2 id="programs-title" className="text-3xl sm:text-4xl font-extrabold tracking-tight text-textMain mt-3">One plan. Every course inside it.</h2>
-          <p className="text-sm text-textMuted mt-2 max-w-lg mx-auto">Each plan bundles complete courses with resources and certificates — one payment unlocks the full set.</p>
-          <Link href="/plans" className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 hover:text-brand-800 mt-4"><span>Compare all plans</span> <ChevronRight className="w-4 h-4" aria-hidden="true" /></Link>
-        </header>
-
-        {plans === undefined ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-pulse">
-            {Array.from({ length: 4 }).map((_, i) => <ProgramCardSkeleton key={i} />)}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {(plans as any[]).map((plan) => {
-              const totalLessons = (plan.courses || []).reduce((s: number, c: any) => s + (c.lessonCount || 0), 0);
-              const totalMinutes = (plan.courses || []).reduce((s: number, c: any) => s + (c.totalMinutes || 0), 0);
-              const hours = totalMinutes >= 60 ? `${Math.floor(totalMinutes / 60)}h ${totalMinutes % 60}m` : `${totalMinutes} min`;
-              return (
-                <article key={plan._id} itemScope itemType="https://schema.org/Product" className="card-surface overflow-hidden flex flex-col hover:border-brand-200 hover:shadow-md transition-all duration-200 group">
-                  <Link href={`/plans/${plan.slug}`} className="relative h-36 overflow-hidden bg-brand-50 block">
-                    {plan.thumbnail ? (<Image src={plan.thumbnail} alt={`${plan.name} learning plan cover`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" /> ) : ( <div className="w-full h-full flex items-center justify-center"><BookOpen className="w-10 h-10 text-brand-300" aria-hidden="true" /></div> )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                    <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between">
-                      <span className="text-[10px] font-semibold text-white bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full flex items-center gap-1"><Layers className="w-2.5 h-2.5" aria-hidden="true" />{plan.courses?.length || 0} Courses</span>
-                      {plan.price === 8000 && (<span className="text-[9px] font-bold uppercase tracking-wider text-white bg-brand-600 px-2 py-0.5 rounded-full">Popular</span>)}
-                    </div>
-                  </Link>
-                  <div className="p-4 flex flex-col flex-1">
-                    <h3 itemProp="name" className="text-sm font-bold text-textMain leading-snug line-clamp-1">{plan.name}</h3>
-                    <p className="text-[11px] text-textMuted mt-0.5 line-clamp-1">{plan.tagline}</p>
-                    <div className="flex items-baseline gap-1.5 mt-2">
-                      <span itemProp="offers" itemType="https://schema.org/Offer" itemScope className="text-xl font-extrabold text-textMain"><meta itemProp="priceCurrency" content="INR" /><meta itemProp="price" content={String(plan.price)} />{formatINR(plan.price)}</span>
-                      {plan.compareAtPrice && (<span className="text-xs text-textMuted line-through">{formatINR(plan.compareAtPrice)}</span>)}
-                      <span className="text-[10px] text-textMuted">{gstSuffix(gst)}</span>
-                    </div>
-                    <ul className="mt-3 space-y-1" role="list">
-                      <li className="flex items-center gap-1.5 text-[11px] text-textMuted"><BookOpen className="w-3 h-3 text-brand-600 shrink-0" aria-hidden="true" />{totalLessons} lessons · {hours}</li>
-                      <li className="flex items-center gap-1.5 text-[11px] text-textMuted"><Layers className="w-3 h-3 text-brand-600 shrink-0" aria-hidden="true" />{(plan.resourceList || []).length} resource kits</li>
-                      <li className="flex items-center gap-1.5 text-[11px] text-textMuted"><BadgeCheck className="w-3 h-3 text-brand-600 shrink-0" aria-hidden="true" />Verified certificate</li>
-                    </ul>
-                    <div className="mt-auto pt-3 border-t border-borderSubtle">
-                      <Link href={`/plans/${plan.slug}`} className="btn-primary w-full text-center justify-center text-xs py-2"><span>View Plan</span><ArrowRight className="w-3 h-3 ml-1" aria-hidden="true" /></Link>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        )}
-      </section>
 
 {/* ============================================================
           5. WHAT YOU'LL GAIN — Sleek Glassmorphism Card
