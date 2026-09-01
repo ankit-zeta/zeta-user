@@ -780,19 +780,19 @@ const resourceCount =
          8. CTA — Final conversion
          ============================================================ */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-20">
-        <div className="relative overflow-hidden rounded-3xl bg-brand-50 p-10 sm:p-12 lg:p-16 text-center">
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-brand-50 p-6 sm:p-10 lg:p-16 text-center">
           {/* Subtle green radial accents */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(23,107,77,0.08),transparent_50%)]" aria-hidden="true" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(23,107,77,0.06),transparent_50%)]" aria-hidden="true" />
           {/* Glass card */}
-          <div className="relative bg-white/70 backdrop-blur-lg border border-white/80 rounded-2xl p-10 sm:p-12 lg:p-14 shadow-[0_8px_32px_rgba(23,107,77,0.08)]">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-brand-800">Ready to build your digital career?</h2>
-            <p className="text-brand-600/70 max-w-xl mx-auto text-base sm:text-lg leading-relaxed mt-5">Start with one program. Learn, earn your credentials, and qualify for real client work. Your journey begins with a single step.</p>
-            <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/signup" className="px-8 py-3.5 rounded-xl bg-brand-600 text-white font-semibold text-sm hover:bg-brand-700 transition-all shadow-lg shadow-brand-600/20 w-full sm:w-auto">Create Your Free Account</Link>
-              <Link href="/programs" className="px-8 py-3.5 rounded-xl border border-brand-200 text-brand-700 font-medium text-sm hover:bg-brand-50 transition-all w-full sm:w-auto">Browse All Programs</Link>
+          <div className="relative bg-white/70 backdrop-blur-lg border border-white/80 rounded-xl sm:rounded-2xl p-6 sm:p-10 lg:p-14 shadow-[0_8px_32px_rgba(23,107,77,0.08)]">
+            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold tracking-tight text-brand-800 leading-tight">Ready to build your digital career?</h2>
+            <p className="text-brand-600/70 max-w-xl mx-auto text-sm sm:text-lg leading-relaxed mt-4 sm:mt-5">Start with one program. Learn, earn your credentials, and qualify for real client work. Your journey begins with a single step.</p>
+            <div className="pt-6 sm:pt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <Link href="/signup" className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl bg-brand-600 text-white font-semibold text-sm hover:bg-brand-700 transition-all shadow-lg shadow-brand-600/20 w-full sm:w-auto">Create Your Free Account</Link>
+              <Link href="/programs" className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl border border-brand-200 text-brand-700 font-medium text-sm hover:bg-brand-50 transition-all w-full sm:w-auto">Browse All Programs</Link>
             </div>
-            <p className="text-[11px] text-brand-400 pt-6">No income promises — just real skills, real work, and real growth.</p>
+            <p className="text-[11px] text-brand-400 pt-4 sm:pt-6">No income promises — just real skills, real work, and real growth.</p>
           </div>
         </div>
       </section>
