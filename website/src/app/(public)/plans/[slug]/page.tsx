@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
 import { useAuth } from "@/lib/convex";
-import { useGst, gstSuffix, withGst } from "@/lib/gst";
+import { useGst, fromGstInclusive } from "@/lib/gst";
 import {
   CheckCircle2,
   Award,
@@ -190,7 +190,7 @@ export default function PlanDetailPage() {
               {/* Purchase Card - Sticky on desktop */}
               <div className="card-surface p-6 sm:p-8 space-y-6 shadow-sm border-brand-200 bg-brand-50/30">
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-textMuted">One-Time Plan Price{gst?.enabled ? " (excl. GST)" : ""}</p>
+                  <p className="text-xs font-medium text-textMuted">One-Time Plan Price{gst?.enabled ? " (incl. GST)" : ""}</p>
                   <div className="flex items-baseline gap-2">
                     <span className="text-4xl sm:text-5xl font-extrabold text-textMain">
                       ₹{plan.price.toLocaleString("en-IN")}
@@ -203,10 +203,11 @@ export default function PlanDetailPage() {
                   </div>
                   {gst?.enabled && (
                     <p className="text-[11px] text-textMuted">
-                      + {gst.rate}% {gst.label} added at checkout — you pay{" "}
+                      Inclusive of {gst.rate}% {gst.label} — base price{" "}
                       <span className="font-semibold text-textMain">
-                        ₹{(withGst(plan.price, gst).total / 100).toLocaleString("en-IN", { maximumFractionDigits: 2 })}
-                      </span>
+                        ₹{Math.round(fromGstInclusive(plan.price, gst).base / 100).toLocaleString("en-IN")}
+                      </span>{" "}
+                      + {gst.label} ₹{Math.round(fromGstInclusive(plan.price, gst).tax / 100).toLocaleString("en-IN")}
                     </p>
                   )}
                   <p className="text-sm text-textMuted">
@@ -255,7 +256,7 @@ export default function PlanDetailPage() {
                       className="btn-primary w-full justify-center py-3.5 text-sm font-semibold shadow-sm text-base"
                     >
                       Get {plan.name} — ₹{plan.price.toLocaleString("en-IN")}
-                      <span className="font-normal">{gstSuffix(gst)}</span>
+                      {gst?.enabled && <span className="font-normal text-xs ml-1">(incl. GST)</span>}
                     </button>
                     <p className="text-center text-[11px] text-textMuted">
                       Secure checkout via Razorpay · UPI, cards & NetBanking
@@ -293,7 +294,7 @@ export default function PlanDetailPage() {
                   className="btn-primary w-full justify-center py-3.5 text-sm font-semibold shadow-lg shadow-brand-600/20"
                 >
                   Get {plan.name} — ₹{plan.price.toLocaleString("en-IN")}
-                  <span className="font-normal">{gstSuffix(gst)}</span>
+                  {gst?.enabled && <span className="font-normal text-xs ml-1">(incl. GST)</span>}
                 </button>
               </div>
             )}

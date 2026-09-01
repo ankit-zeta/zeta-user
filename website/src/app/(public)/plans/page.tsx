@@ -446,7 +446,7 @@ function PlanCard({
           </div>
           {gst?.enabled && (
             <p className="text-[10px] text-textMuted">
-              + {gst.rate}% {gst.label} at checkout
+              Inclusive of {gst.rate}% {gst.label}
             </p>
           )}
           <p className="text-[11px] text-textMuted">One-time payment</p>
@@ -575,7 +575,7 @@ function ComparisonTable({ plans }: { plans: any[] }) {
                   ₹{p.price.toLocaleString("en-IN")}
                   {gst?.enabled && (
                     <p className="text-[10px] text-textMuted font-normal">
-                      + {gst.rate}% {gst.label}
+                      Incl. {gst.rate}% {gst.label}
                     </p>
                   )}
                 </td>

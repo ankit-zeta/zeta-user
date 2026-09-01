@@ -411,7 +411,7 @@ export default function AdminPlansPage() {
                 />
               </label>
               <label className="block space-y-1">
-                <span className="font-semibold text-textMain">Price (₹, excl. GST) *</span>
+                <span className="font-semibold text-textMain">Price (₹, incl. GST) *</span>
                 <input
                   type="number"
                   min="0"

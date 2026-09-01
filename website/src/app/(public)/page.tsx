@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
-import { useGst, gstSuffix } from "@/lib/gst";
+import { useGst } from "@/lib/gst";
 import {
   ArrowRight,
   CheckCircle2,
@@ -444,7 +444,7 @@ const resourceCount =
                     <div className="flex items-baseline gap-1.5 mt-2">
                       <span itemProp="offers" itemType="https://schema.org/Offer" itemScope className="text-xl font-extrabold text-textMain"><meta itemProp="priceCurrency" content="INR" /><meta itemProp="price" content={String(plan.price)} />{formatINR(plan.price)}</span>
                       {plan.compareAtPrice && (<span className="text-xs text-textMuted line-through">{formatINR(plan.compareAtPrice)}</span>)}
-                      <span className="text-[10px] text-textMuted">{gstSuffix(gst)}</span>
+                      <span className="text-[10px] text-textMuted">{gst?.enabled ? `incl. ${gst.rate}% ${gst.label}` : ""}</span>
                     </div>
                     <ul className="mt-3 space-y-1" role="list">
                       <li className="flex items-center gap-1.5 text-[11px] text-textMuted"><BookOpen className="w-3 h-3 text-brand-600 shrink-0" aria-hidden="true" />{totalLessons} lessons · {hours}</li>
@@ -564,7 +564,7 @@ const resourceCount =
                     <Link href={`/plans/${plan.slug}`} className="card-surface flex flex-col items-center justify-center text-center p-6 space-y-2 hover:border-brand-300 hover:shadow-lg transition-all group min-h-[180px]">
                       <Layers className="w-7 h-7 text-brand-600" aria-hidden="true" />
                       <p className="text-xs font-bold text-textMain">Unlock all {plan.courses?.length} courses</p>
-                      <span className="text-xs font-bold text-brand-700">₹{plan.price.toLocaleString("en-IN")}{gstSuffix(gst)} →</span>
+                      <span className="text-xs font-bold text-brand-700">₹{plan.price.toLocaleString("en-IN")}{gst?.enabled ? " incl. GST" : ""} →</span>
                     </Link>
                   )}
                 </div>

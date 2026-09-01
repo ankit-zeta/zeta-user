@@ -622,8 +622,8 @@ export default function AdminSettingsPage() {
                 <div className="p-4 rounded-xl bg-blue-50 border border-blue-100 text-[11px] text-blue-800">
                   <p className="font-semibold mb-1">How it works</p>
                   <p className="leading-relaxed">
-                    When GST is enabled, a program listed at ₹1,000 will show as ₹1,000 + 18% GST = ₹1,180 at checkout.
-                    Razorpay collects ₹1,180. Your recorded revenue is ₹1,000 (excl. GST). Changes apply to new orders only.
+                    Prices entered in Programs are GST-inclusive. A program listed at ₹1,000 charges ₹1,000 at checkout.
+                    Razorpay collects ₹1,000. Your recorded revenue is ₹847 (excl. GST) with ₹153 GST. Changes apply to new orders only.
                   </p>
                 </div>
               </div>

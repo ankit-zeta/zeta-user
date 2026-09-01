@@ -4,7 +4,7 @@ import { v } from "convex/values";
 import { action } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { gstSplit } from "./paymentsConfig";
+import { gstSplitInclusive } from "./paymentsConfig";
 
 // Razorpay checkout actions. Keys live ONLY in the Convex environment:
 //   npx convex env set RAZORPAY_KEY_ID rzp_test_xxxxxxxx
@@ -50,11 +50,10 @@ export const createRazorpayOrder = action({
 
     const { keyId, keySecret } = razorpayCredentials();
 
-    // GST is added on top of the listed price. The server-side config is the
-    // single source of truth — the checkout preview reads the same value, and
-    // this breakdown is what actually gets charged.
+    // Price is GST-INCLUSIVE. Extract base and tax for revenue tracking.
+    // The stored price IS the total amount charged — no GST added on top.
     const gst: any = await ctx.runQuery(internal.paymentsData.getGstInternal, {});
-    const { base, tax, total } = gstSplit(plan.price, gst);
+    const { base, tax, total } = gstSplitInclusive(plan.price, gst);
     const amountInPaise = total;
 
     const receipt = `ZG_${Date.now()}_${Math.random()

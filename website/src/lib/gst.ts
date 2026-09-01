@@ -34,6 +34,24 @@ export function withGst(
   return { base: basePaise, tax, total: basePaise + tax };
 }
 
+// Extract base price and GST tax from a GST-INCLUSIVE price (in rupees).
+// prices stored in plans.price are now GST-inclusive. This returns paise.
+export function fromGstInclusive(
+  inclusiveRupees: number,
+  gst: GstConfig | undefined | null
+): { base: number; tax: number; total: number } {
+  const totalPaise = Math.round(inclusiveRupees * 100);
+  const enabled = !!gst?.enabled;
+  const rate = enabled ? gst!.rate : 0;
+  if (!enabled || rate === 0) {
+    return { base: totalPaise, tax: 0, total: totalPaise };
+  }
+  // base = total / (1 + rate/100), rounded to nearest paise
+  const base = Math.round(totalPaise / (1 + rate / 100));
+  const tax = totalPaise - base;
+  return { base, tax, total: totalPaise };
+}
+
 // "₹4,999 + 18% GST" suffix used across pricing surfaces.
 export function gstSuffix(gst: GstConfig | undefined | null): string {
   return gst?.enabled ? ` + ${gst.rate}% ${gst.label}` : "";

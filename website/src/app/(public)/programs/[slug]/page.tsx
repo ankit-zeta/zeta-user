@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useQuery } from "convex/react";
 import { api, useAuth } from "@/lib/convex";
-import { useGst, gstSuffix } from "@/lib/gst";
+import { useGst } from "@/lib/gst";
 import {
   CheckCircle2,
   Clock,

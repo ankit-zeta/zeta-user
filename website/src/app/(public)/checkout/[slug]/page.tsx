@@ -9,7 +9,7 @@ import { useQuery } from "convex/react";
 import { useMutation, useAction } from "convex/react";
 import { api } from "@/lib/convex";
 import { useAuth } from "@/lib/convex";
-import { useGst, withGst } from "@/lib/gst";
+import { useGst, fromGstInclusive } from "@/lib/gst";
 import {
   ShieldCheck,
   Lock,
@@ -282,8 +282,8 @@ export default function CheckoutPage() {
   }
 
   const savings = plan.compareAtPrice ? plan.compareAtPrice - plan.price : 0;
-  // Paise-precise totals, identical formula to the server-side order creation.
-  const totals = withGst(plan.price, gst);
+  // Paise-precise totals — price is GST-inclusive, extract base & tax for display.
+  const totals = fromGstInclusive(plan.price, gst);
   const fmt = (paise: number) =>
     (paise / 100).toLocaleString("en-IN", { maximumFractionDigits: 2 });
 
@@ -477,7 +477,7 @@ export default function CheckoutPage() {
                 <div className="rounded-lg bg-blue-50/60 border border-blue-100 p-3 text-[10px] text-blue-800 leading-relaxed">
                   <strong>TDS disclosure:</strong> if you later earn via work projects or affiliate commissions,
                   Tax Deducted at Source applies as per Income Tax rules. Course fees are one-time purchase
-                  prices; {gst?.enabled ? `${gst.rate}% ${gst.label} is added at checkout as shown in the order summary.` : "taxes are shown at checkout where applicable."}
+                  prices inclusive of all applicable taxes.
                 </div>
               </div>
             </div>
@@ -489,8 +489,8 @@ export default function CheckoutPage() {
 
                 <div className="space-y-2.5 text-xs">
                   <div className="flex items-center justify-between text-textMuted">
-                    <span>{plan.name} <span className="text-[10px]">(excl. {gst?.label || "GST"})</span></span>
-                    <span className="font-medium text-textMain">{fmt(totals.base)}</span>
+                    <span>{plan.name} <span className="text-[10px]">(incl. {gst?.label || "GST"})</span></span>
+                    <span className="font-medium text-textMain">₹{fmt(totals.total)}</span>
                   </div>
                   {savings > 0 && (
                     <>
@@ -506,7 +506,7 @@ export default function CheckoutPage() {
                   )}
                   {gst?.enabled ? (
                     <div className="flex items-center justify-between text-textMuted">
-                      <span>{gst.label} @ {gst.rate}% (CGST + SGST / IGST as applicable)</span>
+                      <span>of which {gst.label} @ {gst.rate}% (CGST + SGST / IGST as applicable)</span>
                       <span className="font-medium text-textMain">{fmt(totals.tax)}</span>
                     </div>
                   ) : (

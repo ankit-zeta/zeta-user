@@ -15,7 +15,7 @@ export const getRazorpayConfig = query({
 });
 
 // ── GST configuration (admin-controlled, key "gst" in adminSettings) ────────
-// Programs are sold GST-exclusive: listed price + GST% charged at checkout.
+// Programs are sold GST-INCLUSIVE: listed price includes GST.
 // Defaults apply until an admin saves the "gst" setting.
 export const GST_DEFAULTS = {
   enabled: true,
@@ -40,10 +40,24 @@ export async function getGstSettings(db: any): Promise<GstConfig> {
 
 // Single source of truth for the money math (rupees in, rupees out; paise-
 // precise rounding happens once here so UI preview == charged amount).
+// Used for GST-exclusive pricing (legacy / fallback).
 export function gstSplit(baseRupees: number, cfg: GstConfig) {
   const base = Math.round(baseRupees * 100);
   const tax = cfg.enabled ? Math.round((base * cfg.rate) / 100) : 0;
   return { base, tax, total: base + tax };
+}
+
+// Extract base price and tax from a GST-INCLUSIVE price.
+// plans.price now stores the GST-inclusive amount in rupees.
+// Returns paise-precise values for Razorpay and revenue tracking.
+export function gstSplitInclusive(inclusiveRupees: number, cfg: GstConfig) {
+  const total = Math.round(inclusiveRupees * 100);
+  if (!cfg.enabled || cfg.rate === 0) {
+    return { base: total, tax: 0, total };
+  }
+  const base = Math.round(total / (1 + cfg.rate / 100));
+  const tax = total - base;
+  return { base, tax, total };
 }
 
 // Public: checkout + program cards need the current rate without auth.
