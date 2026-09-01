@@ -418,47 +418,71 @@ export default function AdminOverviewPage() {
         </div>
       </div>
 
-      {/* ── Inline Platform Stats Band (matches homepage) ─────── */}
+      {/* ── Platform Stats Band (matches homepage hero style) ────── */}
       {data !== undefined && (
-        <div className="bg-white border-b border-neutral-200 py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
-              <div className="flex items-center gap-3 shrink-0">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
-                  <BookOpen className="w-5 h-5 text-emerald-700" aria-hidden="true" />
+        <section className="relative overflow-hidden border-b border-neutral-200 bg-white">
+          {/* Subtle gradient background like homepage */}
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 via-white to-emerald-50/30" aria-hidden="true" />
+          {/* Soft glowing blobs */}
+          <div
+            className="absolute -top-20 left-1/4 w-[400px] h-[400px] rounded-full opacity-30 blur-3xl pointer-events-none"
+            style={{ background: "radial-gradient(circle, rgba(23,107,77,0.15), transparent 65%)" }}
+            aria-hidden="true"
+          />
+          <div
+            className="absolute top-0 right-[5%] w-[300px] h-[300px] rounded-full opacity-25 blur-3xl pointer-events-none"
+            style={{ background: "radial-gradient(circle, rgba(16,185,129,0.12), transparent 65%)" }}
+            aria-hidden="true"
+          />
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-0">
+              {/* Courses */}
+              <div className="flex items-center gap-4 sm:px-8">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center shrink-0 border border-emerald-100">
+                  <BookOpen className="w-6 h-6 text-emerald-700" aria-hidden="true" />
                 </div>
                 <div className="text-left">
-                  <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
+                  <p className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight">
                     {p.courses}
                   </p>
-                  <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Courses Across Learning Plans</p>
+                  <p className="text-[11px] sm:text-xs font-semibold text-neutral-400 uppercase tracking-wider leading-tight">Courses Across Learning Plans</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 shrink-0">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
-                  <Briefcase className="w-5 h-5 text-emerald-700" aria-hidden="true" />
+
+              {/* Divider */}
+              <div className="hidden sm:block w-px h-16 bg-neutral-200" />
+
+              {/* Work */}
+              <div className="flex items-center gap-4 sm:px-8">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center shrink-0 border border-emerald-100">
+                  <Briefcase className="w-6 h-6 text-emerald-700" aria-hidden="true" />
                 </div>
                 <div className="text-left">
-                  <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight">
+                  <p className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight">
                     {p.activeJobs}
                   </p>
-                  <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Open Work Opportunities</p>
+                  <p className="text-[11px] sm:text-xs font-semibold text-neutral-400 uppercase tracking-wider leading-tight">Open Work Opportunities</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 shrink-0">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0">
-                  <BadgeCheck className="w-5 h-5 text-emerald-700" aria-hidden="true" />
+
+              {/* Divider */}
+              <div className="hidden sm:block w-px h-16 bg-neutral-200" />
+
+              {/* Certificates */}
+              <div className="flex items-center gap-4 sm:px-8">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center shrink-0 border border-emerald-100">
+                  <BadgeCheck className="w-6 h-6 text-emerald-700" aria-hidden="true" />
                 </div>
                 <div className="text-left">
-                  <p className="text-2xl sm:text-3xl font-extrabold text-neutral-900 tracking-tight text-emerald-700">
+                  <p className="text-3xl sm:text-4xl font-extrabold text-neutral-900 tracking-tight text-emerald-700">
                     Verified
                   </p>
-                  <p className="text-xs font-medium text-neutral-400 uppercase tracking-wider">Certificates with Public IDs</p>
+                  <p className="text-[11px] sm:text-xs font-semibold text-neutral-400 uppercase tracking-wider leading-tight">Certificates with Public IDs</p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
       )}
 
       {/* ── Alerts ─────────────────────────────────────────── */}

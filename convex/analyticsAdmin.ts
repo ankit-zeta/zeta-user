@@ -53,7 +53,7 @@ export const getDashboardAnalytics = query({
     const prevRangeStart = istRangeStart(now, days * 2);
 
     // ── Load data ─────────────────────────────────────────────────────────
-    const [users, orders, expenses, categories, withdrawals, jobs, gst, financeSetting] =
+    const [users, orders, expenses, categories, withdrawals, jobs, plans, gst, financeSetting] =
       await Promise.all([
         ctx.db.query("users").collect(),
         ctx.db.query("paymentOrders").collect(),
@@ -61,6 +61,10 @@ export const getDashboardAnalytics = query({
         ctx.db.query("expenseCategories").collect(),
         ctx.db.query("withdrawals").collect(),
         ctx.db.query("jobs").collect(),
+        ctx.db
+          .query("plans")
+          .withIndex("by_status", (q: any) => q.eq("status", "published"))
+          .collect(),
         getGstSettings(ctx.db),
         ctx.db
           .query("adminSettings")
@@ -74,6 +78,12 @@ export const getDashboardAnalytics = query({
         : 25; // estimated effective corporate rate — editable in Expenses page
 
     const catById = new Map(categories.map((c) => [c._id, c]));
+
+    // Total courses across published learning plans
+    const totalCourses = plans.reduce(
+      (sum: number, p: any) => sum + (p.courses?.length || 0),
+      0
+    );
 
     // ── Day buckets ───────────────────────────────────────────────────────
     const dayKeys: string[] = [];
@@ -277,6 +287,7 @@ export const getDashboardAnalytics = query({
         activeJobs: jobs.filter((j) => j.status === "published").length,
         totalUsers: users.length,
         activeUsers: users.filter((u) => u.status === "active").length,
+        courses: totalCourses,
       },
     };
   },
