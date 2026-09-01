@@ -63,71 +63,89 @@ export const getSettingAdmin = query({
 });
 
 // Only allow known setting shapes to prevent arbitrary data injection
-const SETTING_SCHEMS: Record<string, any> = {
-  withdrawals: v.object({
-    minimumWithdrawal: v.optional(v.number()),
-    maximumWithdrawal: v.optional(v.number()),
-    dailyLimit: v.optional(v.number()),
-    monthlyLimit: v.optional(v.number()),
-    feePercentage: v.optional(v.number()),
-    fixedFee: v.optional(v.number()),
-    maxFee: v.optional(v.number()),
-    allowedMethods: v.optional(v.array(v.string())),
-  }),
-  general: v.object({
-    brandName: v.optional(v.string()),
-    tagline: v.optional(v.string()),
-    supportEmail: v.optional(v.string()),
-    supportPhone: v.optional(v.string()),
-    primaryColor: v.optional(v.string()),
-  }),
-  gst: v.object({
-    enabled: v.optional(v.boolean()),
-    rate: v.optional(v.number()),
-    label: v.optional(v.string()),
-    updatedAt: v.optional(v.number()),
-  }),
-  workLimits: v.object({
-    dailyPayoutCap: v.optional(v.number()),
-    monthlyPayoutCap: v.optional(v.number()),
-    maxPayoutPerJob: v.optional(v.number()),
-    positionMultipliers: v.optional(v.any()),
-  }),
-  workPortal: v.object({
-    enabled: v.optional(v.boolean()),
-    requireKyc: v.optional(v.boolean()),
-    requireCv: v.optional(v.boolean()),
-    maxApplicationsPerJob: v.optional(v.number()),
-    allowFreeApply: v.optional(v.boolean()),
-  }),
-  affiliate: v.object({
-    enabled: v.optional(v.boolean()),
-    commissionMethod: v.optional(v.string()),
-    defaultPercentage: v.optional(v.number()),
-    holdingPeriodDays: v.optional(v.number()),
-    minimumPurchaseAmount: v.optional(v.number()),
-    perSaleCap: v.optional(v.number()),
-    dailyCommissionCap: v.optional(v.number()),
-    monthlyCommissionCap: v.optional(v.number()),
-    positionMultipliers: v.optional(v.any()),
-    chainEnabled: v.optional(v.boolean()),
-    chainLevels: v.optional(v.any()),
-  }),
-  dividends: v.object({
-    enabled: v.optional(v.boolean()),
-    rate: v.optional(v.number()),
-    period: v.optional(v.string()),
-    minBalance: v.optional(v.number()),
-    updatedAt: v.optional(v.number()),
-  }),
-  tds: v.object({
-    enabled: v.optional(v.boolean()),
-    affiliateThreshold: v.optional(v.number()),
-    affiliateRate: v.optional(v.number()),
-    workThreshold: v.optional(v.number()),
-    workRate: v.optional(v.number()),
-  }),
+const SETTING_SCHEMAS: Record<string, any> = {
+  withdrawals: {
+    minimumWithdrawal: "number",
+    maximumWithdrawal: "number",
+    dailyLimit: "number",
+    monthlyLimit: "number",
+    feePercentage: "number",
+    fixedFee: "number",
+    maxFee: "number",
+    allowedMethods: "array",
+  },
+  general: {
+    brandName: "string",
+    tagline: "string",
+    supportEmail: "string",
+    supportPhone: "string",
+    primaryColor: "string",
+  },
+  gst: {
+    enabled: "boolean",
+    rate: "number",
+    label: "string",
+    updatedAt: "number",
+  },
+  workLimits: {
+    dailyPayoutCap: "number",
+    monthlyPayoutCap: "number",
+    maxPayoutPerJob: "number",
+    positionMultipliers: "any",
+  },
+  workPortal: {
+    enabled: "boolean",
+    requireKyc: "boolean",
+    requireCv: "boolean",
+    maxApplicationsPerJob: "number",
+    allowFreeApply: "boolean",
+  },
+  affiliate: {
+    enabled: "boolean",
+    commissionMethod: "string",
+    defaultPercentage: "number",
+    holdingPeriodDays: "number",
+    minimumPurchaseAmount: "number",
+    perSaleCap: "number",
+    dailyCommissionCap: "number",
+    monthlyCommissionCap: "number",
+    positionMultipliers: "any",
+    chainEnabled: "boolean",
+    chainLevels: "any",
+  },
+  dividends: {
+    enabled: "boolean",
+    rate: "number",
+    period: "string",
+    minBalance: "number",
+    updatedAt: "number",
+  },
+  tds: {
+    enabled: "boolean",
+    affiliateThreshold: "number",
+    affiliateRate: "number",
+    workThreshold: "number",
+    workRate: "number",
+  },
 };
+
+function validateSetting(key: string, value: any): void {
+  const schema = SETTING_SCHEMAS[key];
+  if (!schema) {
+    throw new Error(`Unknown setting key "${key}". Only pre-configured settings can be updated.`);
+  }
+  if (typeof value !== "object" || value === null) {
+    throw new Error(`Setting "${key}" must be an object`);
+  }
+  for (const [field, expectedType] of Object.entries(schema)) {
+    if (value[field] !== undefined) {
+      const actualType = Array.isArray(value[field]) ? "array" : typeof value[field];
+      if (expectedType !== "any" && actualType !== expectedType) {
+        throw new Error(`Setting "${key}.${field}" must be ${expectedType}, got ${actualType}`);
+      }
+    }
+  }
+}
 
 export const updateSetting = mutation({
   args: {
@@ -140,18 +158,7 @@ export const updateSetting = mutation({
     const admin = await requireAdmin(ctx, args.token);
 
     // Validate against known schemas if one exists for this key
-    const schema = SETTING_SCHEMS[args.key];
-    if (schema) {
-      try {
-        // Convex validators expose .validate() on the validator instance
-        schema.validate(args.value);
-      } catch (e: any) {
-        throw new Error(`Invalid value for setting "${args.key}": ${e.message}`);
-      }
-    } else {
-      // Unknown keys — reject to prevent arbitrary data injection
-      throw new Error(`Unknown setting key "${args.key}". Only pre-configured settings can be updated.`);
-    }
+    validateSetting(args.key, args.value);
 
     const existing = await ctx.db
       .query("adminSettings")
