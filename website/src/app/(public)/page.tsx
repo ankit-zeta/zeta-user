@@ -174,8 +174,24 @@ const testimonials: Testimonial[] = [
   },
 ];
 
-function formatINR(value: number) {
-  return "₹" + value.toLocaleString("en-IN");
+// Helper to format INR currency
+function formatINR(value: number): string {
+  return `₹${value.toLocaleString("en-IN")}`;
+}
+
+// Helper to get new courses for a plan (not in previous plans)
+function getNewCoursesForPlan(plan: any, allPlans: any[]): any[] {
+  const planIndex = allPlans.findIndex(p => p._id === plan._id);
+  if (planIndex <= 0) return plan.courses || [];
+  
+  // Collect all course IDs from previous plans
+  const previousCourseIds = new Set<string>();
+  for (let i = 0; i < planIndex; i++) {
+    (allPlans[i].courses || []).forEach((c: any) => previousCourseIds.add(c._id));
+  }
+  
+  // Return only courses not in previous plans
+  return (plan.courses || []).filter((c: any) => !previousCourseIds.has(c._id));
 }
 
 export default function HomePage() {
@@ -224,19 +240,18 @@ export default function HomePage() {
         s + (p.courses || []).reduce((cs: number, c: any) => cs + (c.lessonCount || 0), 0),
       0
     ) ?? 0;
-  const resourceCount =
+const resourceCount =
     plans?.reduce((s: number, p: any) => s + (p.resourceList?.length || 0), 0) ?? 0;
 
   const featuredJob = jobs && jobs.length > 0 ? jobs[0] : null;
-  const outcomes =
-    plans && plans.length > 0
-      ? [
-          `${courseCount} complete courses across ${plans.length} learning plans`,
-          `${lessonCount} text-based lessons with practical exercises`,
-          `${resourceCount} resource kits: templates, playbooks & guides`,
-          "A verified, publicly-checkable certificate per course",
-        ]
-      : [];
+  const outcomes = (plans && plans.length > 0)
+    ? [
+        `${courseCount} complete courses across ${plans.length} learning plans`,
+        `${lessonCount} text-based lessons with practical exercises`,
+        `${resourceCount} resource kits: templates, playbooks & guides`,
+        "A verified, publicly-checkable certificate per course",
+      ]
+    : [];
 
   return (
     <div className="pb-20">
@@ -456,46 +471,51 @@ export default function HomePage() {
             </div>
           </nav>
 
-          {(plans as any[]).map((plan: any) => (
-            <div key={plan._id} id={`cat-${plan.slug}`} className="mb-14 scroll-mt-32">
-              <div className="flex items-center justify-between gap-3 mb-5">
-                <h3 className="text-lg font-bold text-textMain">{plan.name}</h3>
-                <Link href={`/plans/${plan.slug}`} className="text-xs font-semibold text-brand-700 hover:text-brand-800 shrink-0 flex items-center gap-0.5">
-                  View plan <ChevronRight className="w-3.5 h-3.5" aria-hidden="true" />
-                </Link>
-              </div>
+          {(plans as any[]).map((plan: any) => {
+            const newCourses = getNewCoursesForPlan(plan, plans as any[]).slice(0, 3);
+            if (newCourses.length === 0) return null;
+            return (
+              <div key={plan._id} id={`cat-${plan.slug}`} className="mb-14 scroll-mt-32">
+                <div className="flex items-center justify-between gap-3 mb-5">
+                  <h3 className="text-lg font-bold text-textMain">{plan.name}</h3>
+                  <Link href={`/plans/${plan.slug}`} className="text-xs font-semibold text-brand-700 hover:text-brand-800 shrink-0 flex items-center gap-0.5">
+                    View plan <ChevronRight className="w-3.5 h-3.5" aria-hidden="true" />
+                  </Link>
+                </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-                {(plan.courses || []).map((c: any) => (
-                  <article key={c._id} itemScope itemType="https://schema.org/Course" className="card-surface overflow-hidden flex flex-col hover:border-brand-200 hover:shadow-md transition-all duration-200 group">
-                    <Link href={`/programs/${c.slug}`} className="relative aspect-video overflow-hidden bg-brand-50 block">
-                      {c.thumbnail ? (
-                        <Image src={c.thumbnail} alt={`${c.name} — course thumbnail`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center"><BookOpen className="w-8 h-8 text-brand-300" aria-hidden="true" /></div>
-                      )}
-                    </Link>
-                    <div className="p-3.5 flex flex-col flex-1">
-                      <h4 itemProp="name" className="text-sm font-bold text-textMain leading-snug line-clamp-2 mb-1">{c.name}</h4>
-                      <p className="text-[11px] text-textMuted leading-relaxed line-clamp-2 mb-3">{c.shortDescription}</p>
-                      <div className="mt-auto flex items-center gap-2 text-[11px] text-textMuted">
-                        <span className="flex items-center gap-1"><BookOpen className="w-3 h-3" />{c.lessonCount}</span>
-                        <span aria-hidden="true">·</span>
-                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{c.totalMinutes >= 60 ? `${Math.floor(c.totalMinutes / 60)}h ${c.totalMinutes % 60}m` : `${c.totalMinutes}m`}</span>
-                        {(c.format ?? "text") !== "video" && <><span aria-hidden="true">·</span><span className="text-[10px] font-semibold text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded">Text</span></>}
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                  {newCourses.map((c: any) => (
+                    <article key={c._id} itemScope itemType="https://schema.org/Course" className="card-surface overflow-hidden flex flex-col hover:border-brand-200 hover:shadow-md transition-all duration-200 group">
+                      <Link href={`/programs/${c.slug}`} className="relative aspect-video overflow-hidden bg-brand-50 block">
+                        {c.thumbnail ? (
+                          <Image src={c.thumbnail} alt={`${c.name} — course thumbnail`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw" className="object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center"><BookOpen className="w-8 h-8 text-brand-300" aria-hidden="true" /></div>
+                        )}
+                      </Link>
+                      <div className="p-3.5 flex flex-col flex-1">
+                        <h4 itemProp="name" className="text-sm font-bold text-textMain leading-snug line-clamp-2 mb-1">{c.name}</h4>
+                        <p className="text-[11px] text-textMuted leading-relaxed line-clamp-2 mb-3">{c.shortDescription}</p>
+                        <div className="mt-auto flex items-center gap-2 text-[11px] text-textMuted">
+                          <span className="flex items-center gap-1"><BookOpen className="w-3 h-3" />{c.lessonCount}</span>
+                          <span aria-hidden="true">·</span>
+                          <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{c.totalMinutes >= 60 ? `${Math.floor(c.totalMinutes / 60)}h ${c.totalMinutes % 60}m` : `${c.totalMinutes}m`}</span>
+                          {(c.format ?? "text") !== "video" && <><span aria-hidden="true">·</span><span className="text-[10px] font-semibold text-brand-700 bg-brand-50 px-1.5 py-0.5 rounded">Text</span></>}
+                        </div>
                       </div>
-                    </div>
-                  </article>
-                ))}
-                {/* End-cap */}
-                <Link href={`/plans/${plan.slug}`} className="card-surface flex flex-col items-center justify-center text-center p-6 space-y-2 hover:border-brand-300 hover:shadow-lg transition-all group min-h-[180px]">
-                  <Layers className="w-7 h-7 text-brand-600" aria-hidden="true" />
-                  <p className="text-xs font-bold text-textMain">Unlock all {plan.courses?.length} courses</p>
-                  <span className="text-xs font-bold text-brand-700">₹{plan.price.toLocaleString("en-IN")}{gstSuffix(gst)} →</span>
-                </Link>
+                    </article>
+                  ))}
+                  {newCourses.length > 0 && (
+                    <Link href={`/plans/${plan.slug}`} className="card-surface flex flex-col items-center justify-center text-center p-6 space-y-2 hover:border-brand-300 hover:shadow-lg transition-all group min-h-[180px]">
+                      <Layers className="w-7 h-7 text-brand-600" aria-hidden="true" />
+                      <p className="text-xs font-bold text-textMain">Unlock all {plan.courses?.length} courses</p>
+                      <span className="text-xs font-bold text-brand-700">₹{plan.price.toLocaleString("en-IN")}{gstSuffix(gst)} →</span>
+                    </Link>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </section>
       )}
 
@@ -593,7 +613,7 @@ export default function HomePage() {
                         </div>
                         <span>{item.text}</span>
                       </li>
-                    ))}
+))}
                   </ul>
 
                   <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center gap-3 pt-4 border-t border-borderSubtle">

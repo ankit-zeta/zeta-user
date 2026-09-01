@@ -147,16 +147,18 @@ export default function AffiliateLinkPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {plans.map((plan: any) => (
-              <PlanCard
-                key={plan._id}
-                plan={plan}
-                gst={gst}
-                referralCode={user?.referralCode?.toUpperCase() || ""}
-                onCopy={copyLink}
-                copiedPlanId={copiedPlanId}
-              />
-            ))}
+            {plans
+              .filter((plan: any) => plan !== null)
+              .map((plan: any) => (
+                <PlanCard
+                  key={plan._id}
+                  plan={plan}
+                  gst={gst}
+                  referralCode={user?.referralCode?.toUpperCase() || ""}
+                  onCopy={copyLink}
+                  copiedPlanId={copiedPlanId}
+                />
+              ))}
           </div>
         )}
       </div>
