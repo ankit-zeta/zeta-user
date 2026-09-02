@@ -21,7 +21,9 @@ import {
   Trash2,
   Star,
   ExternalLink,
+  Loader2,
 } from "lucide-react";
+import { compressImage } from "@/lib/imageCompress";
 
 type SavedMethod = {
   _id: string;
@@ -111,6 +113,8 @@ export default function DashboardWalletPage() {
   const [qrUploading, setQrUploading] = useState(false);
   const [qrStorageId, setQrStorageId] = useState<string>("");
   const [qrPreview, setQrPreview] = useState<string>("");
+  const [setDefaultLoading, setSetDefaultLoading] = useState<string>("");
+  const [removeLoading, setRemoveLoading] = useState<string>("");
 
   if (walletData === undefined || withdrawals === undefined || methods === undefined) {
     return (
@@ -188,16 +192,17 @@ export default function DashboardWalletPage() {
     setQrUploading(true);
     setMethodMsg("");
     try {
+      const compressed = await compressImage(file);
       const url = await generateQrUploadUrl();
       const resp = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": file.type },
-        body: file,
+        headers: { "Content-Type": "image/jpeg" },
+        body: compressed,
       });
       if (!resp.ok) throw new Error("Upload failed");
       const { storageId } = JSON.parse(await resp.text());
       setQrStorageId(storageId);
-      setQrPreview(URL.createObjectURL(file));
+      setQrPreview(URL.createObjectURL(compressed));
     } catch (err: any) {
       setMethodMsg(err.message || "QR upload failed");
     } finally {
@@ -227,21 +232,27 @@ export default function DashboardWalletPage() {
 
   const handleDeleteMethod = async (methodId: string) => {
     if (!token) return;
+    setRemoveLoading(methodId);
     try {
       await deleteMethodMutation({ token, id: methodId as any });
       setMethodMsg("Payment method removed.");
     } catch (err: any) {
       setMethodMsg(err.message || "Failed to delete method.");
+    } finally {
+      setRemoveLoading("");
     }
   };
 
   const handleSetDefault = async (methodId: string) => {
     if (!token) return;
+    setSetDefaultLoading(methodId);
     try {
       await setDefaultMutation({ token, id: methodId as any });
       setMethodMsg("Default method updated.");
     } catch (err: any) {
       setMethodMsg(err.message || "Failed to update default.");
+    } finally {
+      setSetDefaultLoading("");
     }
   };
 
@@ -434,88 +445,96 @@ export default function DashboardWalletPage() {
         </div>
       )}
 
-      {/* Request withdrawal */}
-      <div className="card-surface p-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-textMain">Request Withdrawal</h3>
-          <span className="text-[10px] text-textMuted">
-            Minimum ₹{minWithdrawal.toLocaleString("en-IN")} · Paid manually by admin after verification
-          </span>
-        </div>
-
-        {!kycVerified ? (
-          <a
-            href="/dashboard/kyc"
-            className="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 hover:bg-amber-100 transition-colors"
-          >
-            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-bold text-amber-800">
-                {kycStatus === "pending"
-                  ? "KYC under review — withdrawals unlock once approved"
-                  : kycStatus === "rejected"
-                    ? "KYC rejected — resubmit your documents to unlock withdrawals"
-                    : "Complete KYC verification to unlock withdrawals"}
-              </p>
-              <p className="text-[11px] text-amber-700 mt-0.5">
-                PAN &amp; Aadhaar verification is required for TDS-compliant payouts. Takes ~2 minutes.
-              </p>
-            </div>
-            <span className="btn-primary text-[11px] py-2 px-3 shrink-0">
-              {kycStatus === "pending" ? "View Status" : "Verify Now"}
-            </span>
-          </a>
-        ) : !payoutReady ? (
-          <div className="space-y-4">
-            <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 p-4">
-              <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-              <p className="text-xs text-amber-800 leading-relaxed">
-                Add at least <strong>one</strong> payout method below to enable withdrawals. You can add UPI, bank account, or UPI QR code.
-                Payouts are sent manually by our team after admin confirmation.
-              </p>
-            </div>
-
-            {/* Saved methods */}
+      {/* ─── Payment Methods (always visible) ─── */}
+      <div id="payment-methods" className="card-surface p-6 space-y-4">
+        <h3 className="text-sm font-bold text-textMain">Payment Methods</h3>
+        {methods === undefined ? (
+          <div className="space-y-2 animate-pulse">
+            <div className="h-14 bg-neutral-100 rounded-xl" />
+            <div className="h-14 bg-neutral-100 rounded-xl" />
+          </div>
+        ) : (
+          <>
             {methods.length > 0 && (
               <div className="space-y-2">
-                <h4 className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Saved Methods</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {methods.map((m) => (
-                    <div key={m._id} className="flex items-center gap-3 p-3 rounded-lg border border-borderSubtle bg-white">
-                      {m.type === "upi_qr" && m.qrImageUrl && (
-                        <img src={m.qrImageUrl} alt="UPI QR" className="w-10 h-10 rounded object-cover border" />
+                {methods.map((m) => (
+                  <div
+                    key={m._id}
+                    className={`flex items-center justify-between rounded-xl border p-3.5 transition-colors ${
+                      m.isDefault
+                        ? "border-brand-200 bg-brand-50/40"
+                        : "border-borderSubtle hover:border-brand-100"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      {m.type === "upi_qr" && m.qrImageUrl ? (
+                        <img src={m.qrImageUrl} alt="QR" className="w-10 h-10 rounded object-cover border border-borderSubtle" />
+                      ) : (
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                          m.type === "bank_transfer" ? "bg-emerald-50" : m.type === "upi" ? "bg-blue-50" : "bg-purple-50"
+                        }`}>
+                          {m.type === "bank_transfer" ? (
+                            <Landmark className={`w-5 h-5 text-emerald-600`} />
+                          ) : m.type === "upi" ? (
+                            <Smartphone className={`w-5 h-5 text-blue-600`} />
+                          ) : (
+                            <QrCode className={`w-5 h-5 text-purple-600`} />
+                          )}
+                        </div>
                       )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-textMain truncate">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-bold text-textMain capitalize">
+                            {m.type === "bank_transfer" ? "Bank Account" : m.type === "upi" ? "UPI ID" : "UPI QR Code"}
+                          </span>
+                          {m.isDefault && (
+                            <span className="text-[9px] font-bold text-brand-700 bg-brand-100 px-1.5 py-0.5 rounded uppercase">
+                              Default
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[11px] text-textMuted mt-0.5 truncate">
                           {m.type === "bank_transfer"
-                            ? `${m.details.bankName || "Bank"} ••${(m.details.accountNumber || "").slice(-4)}`
-                            : m.type === "upi_qr"
-                            ? `UPI QR · ${m.details.accountHolderName || ""}`
-                            : `UPI · ${m.details.upiId || ""}`}
+                            ? `${m.details.bankName || "Bank"} · A/C ${m.details.accountNumber || ""} · IFSC ${m.details.ifscCode || ""}`
+                            : m.type === "upi"
+                              ? m.details.upiId
+                              : `QR · ${m.details.accountHolderName || ""}`}
                         </p>
-                        <p className="text-[10px] text-textMuted capitalize">{m.type.replace("_", " ")}</p>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        {!m.isDefault && (
-                          <button onClick={() => handleSetDefault(m._id)} className="p-1 rounded hover:bg-neutral-100" title="Set as default">
-                            <Star className="w-3.5 h-3.5 text-neutral-400" />
-                          </button>
-                        )}
-                        {m.isDefault && (
-                          <span className="text-[9px] font-bold text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded">DEFAULT</span>
-                        )}
-                        <button onClick={() => handleDeleteMethod(m._id)} className="p-1 rounded hover:bg-red-50" title="Remove">
-                          <Trash2 className="w-3.5 h-3.5 text-red-400" />
-                        </button>
                       </div>
                     </div>
-                  ))}
-                </div>
+                    <div className="flex items-center gap-2">
+                      {!m.isDefault && (
+                        <button
+                          onClick={() => handleSetDefault(m._id)}
+                          disabled={setDefaultLoading === m._id}
+                          className="px-2 py-1 text-[10px] font-semibold border border-neutral-200 rounded-lg hover:border-brand-200 hover:text-brand-700 transition-colors"
+                        >
+                          {setDefaultLoading === m._id ? "..." : "Set Default"}
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDeleteMethod(m._id)}
+                        disabled={removeLoading === m._id}
+                        className="p-1.5 rounded-lg text-neutral-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                        title="Remove payment method"
+                      >
+                        {removeLoading === m._id ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Trash2 className="w-3.5 h-3.5" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 
             {/* Add new method tabs */}
-            <div id="payment-methods" className="space-y-3">
+            <div className="space-y-3">
+              <h4 className="text-[10px] font-bold uppercase tracking-wider text-textMuted">
+                {methods.length > 0 ? "Add Another Method" : "Add Your First Method"}
+              </h4>
               <div className="flex gap-1 p-1 bg-neutral-100 rounded-lg">
                 {([
                   { key: "upi" as const, label: "UPI ID", icon: Smartphone },
@@ -537,14 +556,10 @@ export default function DashboardWalletPage() {
                 ))}
               </div>
 
-              {/* UPI form */}
               {activeMethodTab === "upi" && (
                 <form onSubmit={handleSaveUpi} className="space-y-3 rounded-xl border border-borderSubtle p-4">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
                     <Smartphone className="w-3.5 h-3.5" /> Add UPI Details
-                    {upiMethods.length > 0 && (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-green-500 ml-auto" />
-                    )}
                   </span>
                   <input
                     value={upiId}
@@ -559,14 +574,10 @@ export default function DashboardWalletPage() {
                 </form>
               )}
 
-              {/* Bank form */}
               {activeMethodTab === "bank" && (
                 <form onSubmit={handleSaveBank} className="space-y-3 rounded-xl border border-borderSubtle p-4">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
                     <Landmark className="w-3.5 h-3.5" /> Add Bank Details
-                    {bankMethods.length > 0 && (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-green-500 ml-auto" />
-                    )}
                   </span>
                   <div className="grid grid-cols-2 gap-2">
                     <input
@@ -604,14 +615,10 @@ export default function DashboardWalletPage() {
                 </form>
               )}
 
-              {/* QR code form */}
               {activeMethodTab === "qr" && (
                 <form onSubmit={handleSaveQr} className="space-y-3 rounded-xl border border-borderSubtle p-4">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
                     <QrCode className="w-3.5 h-3.5" /> Upload UPI QR Code
-                    {qrMethods.length > 0 && (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-green-500 ml-auto" />
-                    )}
                   </span>
                   <p className="text-[10px] text-textMuted">
                     Upload a screenshot of your UPI QR code. Admin will scan it to send your payout.
@@ -639,7 +646,7 @@ export default function DashboardWalletPage() {
                       <label className="flex flex-col items-center gap-2 p-6 border-2 border-dashed border-borderSubtle rounded-lg cursor-pointer hover:border-brand-400 transition-colors">
                         <Upload className="w-6 h-6 text-textMuted" />
                         <span className="text-[11px] text-textMuted font-medium">
-                          {qrUploading ? "Uploading..." : "Click to upload QR image"}
+                          {qrUploading ? "Compressing & uploading..." : "Click to upload QR image (auto-compressed)"}
                         </span>
                         <input
                           type="file"
@@ -663,6 +670,52 @@ export default function DashboardWalletPage() {
             {methodMsg && (
               <p className="text-[11px] text-brand-600">{methodMsg}</p>
             )}
+          </>
+        )}
+      </div>
+
+      {/* ─── Request Withdrawal ─── */}
+      <div className="card-surface p-6 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-textMain">Request Withdrawal</h3>
+          <span className="text-[10px] text-textMuted">
+            Minimum ₹{minWithdrawal.toLocaleString("en-IN")} · Paid manually by admin after verification
+          </span>
+        </div>
+
+        {!kycVerified ? (
+          <a
+            href="/dashboard/kyc"
+            className="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 hover:bg-amber-100 transition-colors"
+          >
+            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold text-amber-800">
+                {kycStatus === "pending"
+                  ? "KYC under review — withdrawals unlock once approved"
+                  : kycStatus === "rejected"
+                    ? "KYC rejected — resubmit your documents to unlock withdrawals"
+                    : "Complete KYC verification to unlock withdrawals"}
+              </p>
+              <p className="text-[11px] text-amber-700 mt-0.5">
+                PAN &amp; Aadhaar verification is required for TDS-compliant payouts. Takes ~2 minutes.
+              </p>
+            </div>
+            <span className="btn-primary text-[11px] py-2 px-3 shrink-0">
+              {kycStatus === "pending" ? "View Status" : "Verify Now"}
+            </span>
+          </a>
+        ) : !payoutReady ? (
+          <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 p-4">
+            <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <p className="text-xs text-amber-800 leading-relaxed">
+                Add at least <strong>one</strong> payment method above to enable withdrawals.
+              </p>
+              <a href="#payment-methods" className="text-[11px] font-semibold text-brand-600 hover:text-brand-700">
+                Add Payment Method →
+              </a>
+            </div>
           </div>
         ) : hasPending ? (
           <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 p-4">

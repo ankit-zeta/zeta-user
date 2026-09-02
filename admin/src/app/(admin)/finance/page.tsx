@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { Tooltip } from "@/components/Tooltip";
 
-type Tab = "withdrawals" | "wallets" | "tds" | "report";
+type Tab = "withdrawals" | "wallets" | "tds" | "report" | "paymentMethods";
 
 export default function AdminFinancePage() {
   const { token } = useAdminAuth();
@@ -45,6 +45,11 @@ export default function AdminFinancePage() {
 
   const payoutReport = useQuery(
     api.wallets.getPayoutReport,
+    token ? { token } : "skip"
+  );
+
+  const allPaymentMethods = useQuery(
+    api.payoutMethods.getAllPayoutMethodsAdmin,
     token ? { token } : "skip"
   );
 
@@ -198,6 +203,7 @@ export default function AdminFinancePage() {
           [
             ["withdrawals", "Withdrawals", Wallet],
             ["wallets", "Wallet Overview", Users],
+            ["paymentMethods", "Payment Methods", Building],
             ["tds", <Tooltip content="Tax Deducted at Source — Indian withholding tax on commissions (Section 194H) and professional fees (Section 194J)"><span>TDS</span></Tooltip>, IndianRupee],
             ["report", "Payout Report", FileBarChart],
           ] as [Tab, React.ReactNode, any][]
@@ -400,6 +406,96 @@ export default function AdminFinancePage() {
                         >
                           Adjust
                         </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ============ TAB: PAYMENT METHODS ============ */}
+      {tab === "paymentMethods" && (
+        <div className="card-surface p-6 space-y-4">
+          <h3 className="text-base font-bold text-textMain">All Saved Payment Methods</h3>
+          {allPaymentMethods === undefined ? (
+            <div className="p-8 text-center animate-pulse space-y-3">
+              <div className="h-6 bg-neutral-200 rounded w-1/3 mx-auto"></div>
+            </div>
+          ) : allPaymentMethods.length === 0 ? (
+            <div className="text-center py-10 text-xs text-textMuted">
+              No payment methods saved by any user yet.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-borderSubtle text-textMuted bg-neutral-50">
+                    <th className="py-3 px-3 font-semibold">User</th>
+                    <th className="py-3 px-3 font-semibold">Type</th>
+                    <th className="py-3 px-3 font-semibold">Payout Details</th>
+                    <th className="py-3 px-3 font-semibold">QR Image</th>
+                    <th className="py-3 px-3 font-semibold">Default</th>
+                    <th className="py-3 px-3 font-semibold">Added</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-borderSubtle">
+                  {allPaymentMethods.map((m) => (
+                    <tr key={m._id} className="hover:bg-neutral-50/60 transition-colors">
+                      <td className="py-3 px-3">
+                        <span className="font-bold text-textMain block">{m.user?.name || "Member"}</span>
+                        <span className="text-[11px] text-textMuted">{m.user?.email}</span>
+                      </td>
+                      <td className="py-3 px-3">
+                        <span className="font-semibold text-textMain uppercase text-[10px] bg-neutral-100 px-1.5 py-0.5 rounded">
+                          {m.type === "bank_transfer" ? "Bank" : m.type === "upi" ? "UPI" : "UPI QR"}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3">
+                        {m.type === "bank" ? (
+                          <div className="space-y-0.5">
+                            <span className="text-textMain block">{m.details.bankName}</span>
+                            <span className="text-textMuted block">A/C: {m.details.accountNumber}</span>
+                            <span className="text-textMuted block">IFSC: {m.details.ifscCode}</span>
+                            <span className="text-textMuted block">Holder: {m.details.accountHolderName}</span>
+                          </div>
+                        ) : m.type === "upi" ? (
+                          <span className="font-mono text-brand-800">{m.details.upiId}</span>
+                        ) : (
+                          <span className="text-textMuted">
+                            Holder: {m.details.accountHolderName || "—"}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3">
+                        {m.type === "upi_qr" && m.qrImageUrl ? (
+                          <button
+                            type="button"
+                            onClick={() => setQrView(m)}
+                            className="group"
+                            title="Click to view full QR"
+                          >
+                            <img
+                              src={m.qrImageUrl}
+                              alt="UPI QR"
+                              className="w-12 h-12 object-contain border border-borderSubtle rounded bg-white group-hover:ring-2 group-hover:ring-brand-300 transition-shadow cursor-pointer"
+                            />
+                          </button>
+                        ) : (
+                          <span className="text-[10px] text-neutral-400">—</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3">
+                        {m.isDefault ? (
+                          <span className="text-[9px] font-bold text-green-700 bg-green-100 px-1.5 py-0.5 rounded">DEFAULT</span>
+                        ) : (
+                          <span className="text-[10px] text-neutral-400">—</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3 text-textMuted">
+                        {new Date(m.createdAt).toLocaleDateString("en-IN")}
                       </td>
                     </tr>
                   ))}

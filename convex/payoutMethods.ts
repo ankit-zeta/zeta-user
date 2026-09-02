@@ -237,3 +237,30 @@ export const getPayoutMethodsAdmin = query({
     return detailed;
   },
 });
+
+export const getAllPayoutMethodsAdmin = query({
+  args: { token: v.string() },
+  handler: async (ctx, args) => {
+    const session = await requireAuth(ctx, args.token);
+    const admin = await ctx.db.get(session.userId);
+    if (!admin || !["super_admin", "admin", "finance_admin"].includes((admin as any).role)) {
+      throw new Error("Forbidden: Admin privileges required");
+    }
+    const methods = await ctx.db.query("payoutMethods").collect();
+    const detailed = await Promise.all(
+      methods.map(async (m: any) => {
+        const user = await ctx.db.get(m.userId);
+        let qrImageUrl: string | null = null;
+        if (m.type === "upi_qr" && m.details?.qrImageUrl && !m.details.qrImageUrl.startsWith("http")) {
+          qrImageUrl = await ctx.storage.getUrl(m.details.qrImageUrl);
+        }
+        return {
+          ...m,
+          qrImageUrl,
+          user: user ? { name: (user as any).name, email: (user as any).email } : null,
+        };
+      })
+    );
+    return detailed;
+  },
+});
