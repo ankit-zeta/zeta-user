@@ -15,7 +15,7 @@ export default function PartnerEarningsPage() {
       <div className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight">Earnings Ledger</h1>
         <p className="text-xs text-neutral-400">
-          Immutable record of every earning generated from your partner link.
+          Immutable record of every earning generated from your partner link. Each row shows the member who made the purchase.
         </p>
       </div>
 
@@ -38,7 +38,7 @@ export default function PartnerEarningsPage() {
             {(stats.sales?.length ?? 0) > 0 && (
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-brand-400 mb-3">
-                  Direct Partner Sales
+                  Direct Member Sales
                 </h3>
                 <LedgerTable rows={stats.sales} showBuyer />
               </div>

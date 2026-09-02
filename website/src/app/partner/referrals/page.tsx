@@ -13,7 +13,7 @@ export default function PartnerReferralsPage() {
   return (
     <div className="space-y-8 text-neutral-100">
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight">My Referrals</h1>
+        <h1 className="text-2xl font-bold tracking-tight">My Members</h1>
         <p className="text-xs text-neutral-400">
           Everyone who registered with your partner link and their qualification status.
         </p>
@@ -27,9 +27,9 @@ export default function PartnerReferralsPage() {
         ) : referrals.length === 0 ? (
           <div className="text-center py-12 space-y-3">
             <Users className="w-10 h-10 text-neutral-700 mx-auto" />
-            <h3 className="text-sm font-semibold">No Referrals Recorded</h3>
+            <h3 className="text-sm font-semibold">No Members Recorded</h3>
             <p className="text-xs text-neutral-500 max-w-sm mx-auto">
-              When peers sign up using your partner link they will appear in this directory.
+              When members sign up using your partner link they will appear in this directory.
             </p>
           </div>
         ) : (

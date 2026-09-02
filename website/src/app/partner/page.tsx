@@ -168,9 +168,9 @@ export default function PartnerOverviewPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           icon={<Users className="w-4 h-4" />}
-          label="Total Referrals"
+          label="Total Members"
           value={String(stats?.totalReferrals ?? 0)}
-          sub="People joined via your link"
+          sub="Members joined via your link"
         />
         <StatCard
           icon={<TrendingUp className="w-4 h-4" />}
@@ -258,7 +258,7 @@ export default function PartnerOverviewPage() {
               />
             </div>
             <p className="text-[11px] text-neutral-500 leading-relaxed pt-2 border-t border-neutral-800">
-              Earn extra % when your referred partners make their own sales — unlock higher team
+              Earn extra % when your members make their own sales — unlock higher team
               remuneration tiers through milestone achievements. Your team remuneration rate: {partnerProfile.chainPct}%.
             </p>
           </div>
