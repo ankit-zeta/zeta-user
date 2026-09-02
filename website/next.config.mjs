@@ -11,7 +11,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline' https://*.razorpay.com",
   "img-src 'self' data: blob: https: https://*.razorpay.com https://*.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com",
   "font-src 'self' data: https://*.razorpay.com",
-  "connect-src 'self' https://*.convex.cloud wss://*.convex.cloud https://api.razorpay.com https://*.razorpay.com https://lumberjack.razorpay.com https://lumberjack-cx.razorpay.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://api.ipify.org",
+  "connect-src 'self' https://*.convex.cloud wss://*.convex.cloud https://api.razorpay.com https://*.razorpay.com https://lumberjack.razorpay.com https://lumberjack-cx.razorpay.com https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://api.ipify.org https://ipapi.co",
   "frame-src 'self' https://api.razorpay.com https://checkout.razorpay.com https://*.razorpay.com https://www.googletagmanager.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
