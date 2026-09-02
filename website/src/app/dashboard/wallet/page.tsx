@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAuth } from "@/lib/convex";
+import { useAuth, useDemo } from "@/lib/demo";
 import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/lib/convex";
 import {
@@ -22,6 +22,7 @@ import {
   Star,
   ExternalLink,
   Loader2,
+  Zap,
 } from "lucide-react";
 import { compressImage } from "@/lib/imageCompress";
 
@@ -58,6 +59,7 @@ function txnSourceIcon(tx: { type: string }) {
 
 export default function DashboardWalletPage() {
   const { token, user } = useAuth();
+  const { isDemo, demoConfig } = useDemo();
   const walletData = useQuery(api.wallets.getUserWallet, token ? { token } : "skip");
   const withdrawals = useQuery(api.withdrawals.getUserWithdrawals, token ? { token } : "skip");
   const methods = useQuery(api.payoutMethods.getMyPayoutMethods, token ? { token } : "skip") as
@@ -129,14 +131,46 @@ export default function DashboardWalletPage() {
     );
   }
 
-  const wallet = walletData.wallet;
+  // Use demo data for demo accounts
+  const wallet = isDemo && demoConfig ? {
+    availableBalance: demoConfig.workBalance || 0,
+    workEarnings: demoConfig.workBalance || 0,
+    affiliateEarnings: demoConfig.partnerEarnings || 0,
+    totalWithdrawn: demoConfig.totalWithdrawn || 0,
+  } : walletData.wallet;
+
+  // Use demo withdrawals for demo accounts (needed before hasPending)
+  const demoWithdrawals = isDemo && demoConfig?.fakeWithdrawals
+    ? demoConfig.fakeWithdrawals.map((w, idx) => ({
+        _id: `demo-wd-${idx}`,
+        amount: w.amount,
+        payoutMethod: w.method.toLowerCase().replace(" ", "_"),
+        status: w.status,
+        requestedAt: w.createdAt,
+        processedAt: w.processedAt,
+        adminNote: "Demo withdrawal - no real money",
+      }))
+    : withdrawals;
+
   const available = wallet?.availableBalance || 0;
   const workEarnings = wallet?.workEarnings || 0;
   const affiliateEarnings = wallet?.affiliateEarnings || 0;
-  const hasPending = withdrawals.some((w) => w.status === "requested" || w.status === "processing");
+  const hasPending = demoWithdrawals.some((w) => w.status === "requested" || w.status === "processing" || w.status === "pending");
 
-  const kycStatus = (user as any)?.kycStatus || "not_submitted";
-  const kycVerified = kycStatus === "verified";
+  const kycStatus = isDemo ? (demoConfig?.kycStatus || "verified") : ((user as any)?.kycStatus || "not_submitted");
+  const kycVerified = isDemo ? true : kycStatus === "verified";
+
+  // Use demo transactions for demo accounts
+  const allTxns = isDemo && demoConfig?.fakeTransactions
+    ? demoConfig.fakeTransactions.map((tx, idx) => ({
+        _id: `demo-tx-${idx}`,
+        type: tx.type === "credit" ? "WORK_PAYOUT" : tx.type === "partner_earning" ? "AFFILIATE_COMMISSION" : "ADMIN_ADJUSTMENT",
+        amount: tx.amount * (tx.type === "debit" ? -1 : 1),
+        description: tx.description,
+        status: tx.status,
+        createdAt: tx.createdAt,
+      }))
+    : (walletData.transactions || []);
 
   const upiMethods = methods.filter((m) => m.type === "upi");
   const bankMethods = methods.filter((m) => m.type === "bank_transfer");
@@ -146,11 +180,13 @@ export default function DashboardWalletPage() {
     (m) => m.type === "upi" || m.type === "upi_qr" || m.type === "bank_transfer"
   );
 
-  const allTxns = walletData.transactions || [];
-
   const handleSaveUpi = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
+    if (isDemo) {
+      setMethodMsg("Demo mode: Payment methods cannot be saved. This is a demo account with fake data.");
+      return;
+    }
     setMethodMsg("");
     try {
       await upsertMethodMutation({
@@ -169,6 +205,10 @@ export default function DashboardWalletPage() {
   const handleSaveBank = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
+    if (isDemo) {
+      setMethodMsg("Demo mode: Payment methods cannot be saved. This is a demo account with fake data.");
+      return;
+    }
     setMethodMsg("");
     try {
       await upsertMethodMutation({
@@ -213,6 +253,10 @@ export default function DashboardWalletPage() {
   const handleSaveQr = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token || !qrStorageId) return;
+    if (isDemo) {
+      setMethodMsg("Demo mode: Payment methods cannot be saved. This is a demo account with fake data.");
+      return;
+    }
     setMethodMsg("");
     try {
       await upsertMethodMutation({
@@ -232,6 +276,10 @@ export default function DashboardWalletPage() {
 
   const handleDeleteMethod = async (methodId: string) => {
     if (!token) return;
+    if (isDemo) {
+      setMethodMsg("Demo mode: Payment methods cannot be deleted. This is a demo account with fake data.");
+      return;
+    }
     setRemoveLoading(methodId);
     try {
       await deleteMethodMutation({ token, id: methodId as any });
@@ -245,6 +293,10 @@ export default function DashboardWalletPage() {
 
   const handleSetDefault = async (methodId: string) => {
     if (!token) return;
+    if (isDemo) {
+      setMethodMsg("Demo mode: Payment methods cannot be modified. This is a demo account with fake data.");
+      return;
+    }
     setSetDefaultLoading(methodId);
     try {
       await setDefaultMutation({ token, id: methodId as any });
@@ -276,14 +328,25 @@ export default function DashboardWalletPage() {
     setReqMsg("");
     try {
       const method = withdrawableMethods.find((m) => m._id === selectedMethodId);
-      await requestMutation({
-        token,
-        amount: amt,
-        payoutMethod: method?.type || "upi",
-        payoutDetails: {},
-        payoutMethodId: selectedMethodId as any,
-      });
-      setReqMsg("Withdrawal request submitted! Admin will process your payout shortly.");
+      
+      if (isDemo) {
+        const demoReqMutation = useMutation(api.users.demoRequestWithdrawal);
+        const res = await demoReqMutation({
+          token,
+          amount: amt,
+          method: method?.type || "upi",
+        });
+        setReqMsg(res.message || "Demo withdrawal request submitted! It will show as pending in your history.");
+      } else {
+        await requestMutation({
+          token,
+          amount: amt,
+          payoutMethod: method?.type || "upi",
+          payoutDetails: {},
+          payoutMethodId: selectedMethodId as any,
+        });
+        setReqMsg("Withdrawal request submitted! Admin will process your payout shortly.");
+      }
       setAmount("");
     } catch (err: any) {
       setReqMsg(err.message || "Failed to submit withdrawal request.");
@@ -860,8 +923,15 @@ export default function DashboardWalletPage() {
 
       {/* Payout requests */}
       <div className="card-surface p-6 space-y-4">
-        <h3 className="text-sm font-bold text-textMain">Payout Requests</h3>
-        {withdrawals.length === 0 ? (
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-textMain">Payout Requests</h3>
+          {isDemo && (
+            <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 flex items-center gap-1">
+              <Zap className="w-2.5 h-2.5" /> Demo transactions
+            </span>
+          )}
+        </div>
+        {demoWithdrawals.length === 0 ? (
           <p className="text-xs text-textMuted py-6 text-center">
             No payout requests yet. Complete work or earn referral bonuses to build your balance.
           </p>
@@ -878,7 +948,7 @@ export default function DashboardWalletPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-borderSubtle">
-                {withdrawals.map((w) => (
+                {demoWithdrawals.map((w) => (
                   <tr key={w._id}>
                     <td className="py-3 px-3 font-bold text-textMain">₹{w.amount.toLocaleString("en-IN")}</td>
                     <td className="py-3 px-3 text-textMuted capitalize">
