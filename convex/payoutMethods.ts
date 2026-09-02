@@ -66,7 +66,6 @@ export const getMyPayoutMethods = query({
   args: { token: v.string() },
   handler: async (ctx, args) => {
     const session = await requireAuth(ctx, args.token);
-    await requirePurchasedUser(ctx, args.token);
     const methods = await ctx.db
       .query("payoutMethods")
       .withIndex("by_userId", (q: any) => q.eq("userId", session.userId))

@@ -290,6 +290,54 @@ export default function DashboardWalletPage() {
         </p>
       </div>
 
+      {/* Add bank details banner — shown when no payout methods are saved */}
+      {!payoutReady && (
+        <div className="relative overflow-hidden rounded-2xl border border-brand-200 bg-gradient-to-br from-brand-50 via-white to-emerald-50 p-6 sm:p-8">
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            {/* SVG illustration */}
+            <div className="shrink-0">
+              <svg width="120" height="100" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Bank building */}
+                <rect x="25" y="35" width="70" height="45" rx="4" fill="#D1FAE5" stroke="#10B981" strokeWidth="2"/>
+                <polygon points="60,15 95,35 25,35" fill="#10B981" opacity="0.2" stroke="#10B981" strokeWidth="2" strokeLinejoin="round"/>
+                <circle cx="60" cy="22" r="4" fill="#10B981"/>
+                {/* Pillars */}
+                <rect x="35" y="42" width="6" height="30" rx="2" fill="#10B981" opacity="0.3"/>
+                <rect x="50" y="42" width="6" height="30" rx="2" fill="#10B981" opacity="0.3"/>
+                <rect x="65" y="42" width="6" height="30" rx="2" fill="#10B981" opacity="0.3"/>
+                <rect x="80" y="42" width="6" height="30" rx="2" fill="#10B981" opacity="0.3"/>
+                {/* Base */}
+                <rect x="20" y="78" width="80" height="6" rx="2" fill="#10B981" opacity="0.15"/>
+                {/* UPI icon floating */}
+                <circle cx="100" cy="25" r="14" fill="#176B4D" opacity="0.15"/>
+                <text x="100" y="29" textAnchor="middle" fill="#176B4D" fontSize="10" fontWeight="bold">₹</text>
+                {/* Coins */}
+                <circle cx="15" cy="70" r="8" fill="#FBBF24" opacity="0.5"/>
+                <circle cx="10" cy="62" r="7" fill="#F59E0B" opacity="0.4"/>
+                <circle cx="18" cy="58" r="6" fill="#FCD34D" opacity="0.5"/>
+              </svg>
+            </div>
+            <div className="flex-1 text-center sm:text-left">
+              <h3 className="text-base font-bold text-textMain flex items-center gap-2 justify-center sm:justify-start">
+                <Landmark className="w-5 h-5 text-brand-600" />
+                Add your bank details to get started
+              </h3>
+              <p className="text-xs text-textMuted mt-1.5 leading-relaxed max-w-lg">
+                Set up your withdrawal method now so you're ready to receive payments the moment you earn.
+                Add your UPI ID, bank account, or upload a QR code — it takes less than a minute.
+              </p>
+              <a
+                href="#payment-methods"
+                className="inline-flex items-center gap-1.5 mt-3 text-[11px] font-semibold text-brand-600 hover:text-brand-700 transition-colors"
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                Add Payment Method
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Balance cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="card-surface p-5 space-y-2 border-brand-200">
@@ -467,7 +515,7 @@ export default function DashboardWalletPage() {
             )}
 
             {/* Add new method tabs */}
-            <div className="space-y-3">
+            <div id="payment-methods" className="space-y-3">
               <div className="flex gap-1 p-1 bg-neutral-100 rounded-lg">
                 {([
                   { key: "upi" as const, label: "UPI ID", icon: Smartphone },

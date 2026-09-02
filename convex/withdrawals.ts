@@ -325,7 +325,7 @@ export const getUserWithdrawals = query({
       throw new Error("Unauthorized");
     }
 
-    await requirePurchasedUser(ctx, args.token);
+    const userId = await requireUserId(ctx, args.token);
 
     const withdrawals = await ctx.db
       .query("withdrawals")
