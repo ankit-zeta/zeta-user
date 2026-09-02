@@ -87,6 +87,8 @@ export default function DashboardOverviewPage() {
   const totalWithdrawn = user?.wallet?.totalWithdrawn || 0;
 
   const eligibleJobs = jobsWithEligibility?.filter((j) => j.isEligible) || [];
+  const allJobs = jobsWithEligibility || [];
+  const displayJobs = eligibleJobs.length > 0 ? eligibleJobs : allJobs;
 
   return (
     <div className="space-y-8">
@@ -159,7 +161,7 @@ export default function DashboardOverviewPage() {
             <span className="text-xs font-semibold uppercase tracking-wider">Eligible Work</span>
             <Briefcase className="w-4 h-4 text-brand-600" />
           </div>
-          <p className="text-2xl font-extrabold text-textMain">{eligibleJobs.length}</p>
+          <p className="text-2xl font-extrabold text-textMain">{allJobs.length}</p>
           <span className="text-[11px] text-textMuted block">Open opportunities</span>
         </div>
       </div>
@@ -228,20 +230,27 @@ export default function DashboardOverviewPage() {
           </div>
 
           <div className="space-y-3">
-            {eligibleJobs.length === 0 ? (
+            {displayJobs.length === 0 ? (
               <div className="text-center py-8 bg-neutral-50 rounded-lg p-6 space-y-2">
-                <p className="text-xs text-textMuted">Complete your enrolled programs to unlock matching work opportunities.</p>
+                <p className="text-xs text-textMuted">No work opportunities available yet. Check back soon!</p>
               </div>
             ) : (
-              eligibleJobs.slice(0, 3).map((job) => (
+              displayJobs.slice(0, 3).map((job) => (
                 <div
                   key={job._id}
                   className="p-3.5 rounded-lg border border-borderSubtle hover:border-brand-300 transition-colors flex items-center justify-between gap-4"
                 >
                   <div className="space-y-0.5">
-                    <span className="text-[10px] font-semibold text-brand-700 bg-brand-50 px-2 py-0.5 rounded">
-                      {job.category}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-semibold text-brand-700 bg-brand-50 px-2 py-0.5 rounded">
+                        {job.category}
+                      </span>
+                      {!job.isEligible && (
+                        <span className="text-[10px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                          Requires Program
+                        </span>
+                      )}
+                    </div>
                     <h4 className="text-xs font-bold text-textMain mt-1">{job.title}</h4>
                     <span className="text-[11px] text-textMuted">
                       Payout: <strong>₹{job.payment.toLocaleString("en-IN")}</strong>
@@ -249,7 +258,7 @@ export default function DashboardOverviewPage() {
                   </div>
 
                   <Link
-                    href={`/dashboard/work/${job._id}`}
+                    href={`/dashboard/work/${job.slug || job._id}`}
                     className="btn-secondary text-xs py-1.5 px-3 shrink-0"
                   >
                     View &amp; Apply
