@@ -1,4 +1,5 @@
 import { query } from "./_generated/server";
+import { v } from "convex/values";
 
 // Public Razorpay info for the checkout page. Only the public key id is
 // exposed — the key secret never leaves the Convex environment. Lives in the
@@ -62,8 +63,8 @@ export function gstSplitInclusive(inclusiveRupees: number, cfg: GstConfig) {
 
 // Public: checkout + program cards need the current rate without auth.
 export const getGstConfig = query({
-  args: {},
-  handler: async (ctx) => {
+  args: { token: v.optional(v.string()) },
+  handler: async (ctx, args) => {
     const cfg = await getGstSettings(ctx.db);
     return { enabled: cfg.enabled, rate: cfg.rate, label: cfg.label };
   },

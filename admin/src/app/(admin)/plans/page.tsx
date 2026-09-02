@@ -80,7 +80,7 @@ export default function AdminPlansPage() {
   );
   const gst: any = useQuery(
     api.paymentsConfig.getGstConfig,
-    token ? { token } : "skip"
+    token ? {} : "skip"
   );
 
   const createPlan = useMutation(api.plans.createPlan);
