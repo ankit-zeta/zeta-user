@@ -14,6 +14,7 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Users,
   MapPin,
   Building2,
@@ -100,6 +101,26 @@ export default function PublicWorkPage() {
   const [difficultyFilter, setDifficultyFilter] = useState("all");
   const [paymentFilter, setPaymentFilter] = useState("all");
   const [certFilter, setCertFilter] = useState("all");
+  const [showFilters, setShowFilters] = useState(false);
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (selectedCategory !== "All") count++;
+    if (difficultyFilter !== "all") count++;
+    if (paymentFilter !== "all") count++;
+    if (certFilter !== "all") count++;
+    return count;
+  }, [selectedCategory, difficultyFilter, paymentFilter, certFilter]);
+
+  const resetFilters = () => {
+    setSelectedCategory("All");
+    setDifficultyFilter("all");
+    setPaymentFilter("all");
+    setCertFilter("all");
+    setSearchQuery("");
+    setSortBy("newest");
+    setCurrentPage(1);
+  };
 
   const filteredJobs = useMemo(() => {
     if (!jobsRaw) return [];
@@ -186,70 +207,107 @@ export default function PublicWorkPage() {
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Category Pills */}
-          <div className="flex flex-wrap gap-1.5 flex-1">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => { setSelectedCategory(cat); setCurrentPage(1); }}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
-                  selectedCategory === cat
-                    ? "bg-brand-600 text-white shadow-sm"
-                    : "bg-neutral-100 text-textMuted hover:bg-neutral-200"
-                }`}
+        {/* Mobile Filters Toggle */}
+        <div className="lg:hidden">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border border-borderSubtle bg-white text-sm font-medium text-textMain"
+          >
+            <span>Filters <span className="text-xs text-textMuted">({activeFilterCount})</span></span>
+            <ChevronDown className={`w-4 h-4 text-textMuted transition-transform ${showFilters ? "rotate-180" : ""}`} />
+          </button>
+        </div>
+
+        {/* Filters Grid - Hidden on mobile unless toggled */}
+        <div className={`${showFilters ? "" : "hidden"} lg:block space-y-3`}>
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+            {/* Category Pills */}
+            <div className="lg:col-span-2">
+              <label className="text-xs font-medium text-textMuted block mb-1.5">Category</label>
+              <div className="flex flex-wrap gap-1.5">
+                {CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => { setSelectedCategory(cat); setCurrentPage(1); }}
+                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${
+                      selectedCategory === cat
+                        ? "bg-brand-600 text-white shadow-sm"
+                        : "bg-neutral-100 text-textMuted hover:bg-neutral-200"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Payment Range */}
+            <div>
+              <label className="text-xs font-medium text-textMuted block mb-1.5">Payment</label>
+              <select
+                value={paymentFilter}
+                onChange={(e) => { setPaymentFilter(e.target.value); setCurrentPage(1); }}
+                className="w-full px-3 py-1.5 rounded-lg border border-borderSubtle text-xs font-medium bg-white"
               >
-                {cat}
-              </button>
-            ))}
+                <option value="all">Any Payment</option>
+                <option value="under1k">Under ₹1,000</option>
+                <option value="1k-5k">₹1,000 – ₹5,000</option>
+                <option value="5k-10k">₹5,000 – ₹10,000</option>
+                <option value="10k+">₹10,000+</option>
+              </select>
+            </div>
+
+            {/* Certificate */}
+            <div>
+              <label className="text-xs font-medium text-textMuted block mb-1.5">Certificate</label>
+              <select
+                value={certFilter}
+                onChange={(e) => { setCertFilter(e.target.value); setCurrentPage(1); }}
+                className="w-full px-3 py-1.5 rounded-lg border border-borderSubtle text-xs font-medium bg-white"
+              >
+                <option value="all">All Types</option>
+                <option value="free">Free (No Certificate)</option>
+                <option value="cert">Requires Certificate</option>
+              </select>
+            </div>
+
+            {/* Difficulty */}
+            <div>
+              <label className="text-xs font-medium text-textMuted block mb-1.5">Level</label>
+              <select
+                value={difficultyFilter}
+                onChange={(e) => { setDifficultyFilter(e.target.value); setCurrentPage(1); }}
+                className="w-full px-3 py-1.5 rounded-lg border border-borderSubtle text-xs font-medium bg-white"
+              >
+                <option value="all">All Levels</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
           </div>
 
-          {/* Payment Range */}
-          <select
-            value={paymentFilter}
-            onChange={(e) => { setPaymentFilter(e.target.value); setCurrentPage(1); }}
-            className="px-3 py-1.5 rounded-lg border border-borderSubtle text-xs font-medium bg-white"
-          >
-            <option value="all">Any Payment</option>
-            <option value="under1k">Under ₹1,000</option>
-            <option value="1k-5k">₹1,000 – ₹5,000</option>
-            <option value="5k-10k">₹5,000 – ₹10,000</option>
-            <option value="10k+">₹10,000+</option>
-          </select>
-
-          {/* Certificate */}
-          <select
-            value={certFilter}
-            onChange={(e) => { setCertFilter(e.target.value); setCurrentPage(1); }}
-            className="px-3 py-1.5 rounded-lg border border-borderSubtle text-xs font-medium bg-white"
-          >
-            <option value="all">All Types</option>
-            <option value="free">Free (No Certificate)</option>
-            <option value="cert">Requires Certificate</option>
-          </select>
-
-          {/* Difficulty */}
-          <select
-            value={difficultyFilter}
-            onChange={(e) => { setDifficultyFilter(e.target.value); setCurrentPage(1); }}
-            className="px-3 py-1.5 rounded-lg border border-borderSubtle text-xs font-medium bg-white"
-          >
-            <option value="all">All Levels</option>
-            <option value="beginner">Beginner</option>
-            <option value="intermediate">Intermediate</option>
-            <option value="advanced">Advanced</option>
-          </select>
-
-          {/* Sort */}
-          <select
-            value={sortBy}
-            onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
-            className="px-3 py-1.5 rounded-lg border border-borderSubtle text-xs font-medium bg-white"
-          >
-            {SORT_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
+          {/* Sort - separate row on larger screens */}
+          <div className="flex items-center gap-3 pt-2 border-t border-borderSubtle">
+            <label className="text-xs font-medium text-textMuted whitespace-nowrap">Sort by:</label>
+            <select
+              value={sortBy}
+              onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
+              className="px-3 py-1.5 rounded-lg border border-borderSubtle text-xs font-medium bg-white flex-1 max-w-xs"
+            >
+              {SORT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+            {activeFilterCount > 0 && (
+              <button
+                onClick={resetFilters}
+                className="text-xs font-medium text-brand-600 hover:underline whitespace-nowrap"
+              >
+                Clear all
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -288,23 +346,23 @@ export default function PublicWorkPage() {
             <Link
               key={job._id}
               href={user ? `/dashboard/work/${job.slug}` : `/login?redirect=/work`}
-              className="block bg-white border border-borderSubtle rounded-xl p-5 hover:border-brand-300 hover:shadow-md transition-all group"
+              className="block bg-white border border-borderSubtle rounded-xl p-4 sm:p-5 hover:border-brand-300 hover:shadow-md transition-all group"
             >
-              <div className="flex gap-4">
+              <div className="flex gap-3 sm:gap-4">
                 {/* ZetaGrow Logo */}
-                <div className="w-12 h-12 rounded-xl bg-brand-600 flex items-center justify-center shrink-0 shadow-sm">
-                  <span className="text-white font-extrabold text-sm">Z</span>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-brand-600 flex items-center justify-center shrink-0 shadow-sm">
+                  <span className="text-white font-extrabold text-xs sm:text-sm">Z</span>
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded border border-brand-200">
+                      <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                        <span className="text-[10px] font-bold text-brand-700 bg-brand-50 px-2 py-0.5 rounded border border-brand-200 whitespace-nowrap">
                           {job.category}
                         </span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border whitespace-nowrap ${
                           job.difficulty === "beginner" ? "bg-green-50 text-green-700 border-green-200" :
                           job.difficulty === "intermediate" ? "bg-amber-50 text-amber-700 border-amber-200" :
                           "bg-red-50 text-red-700 border-red-200"
@@ -312,7 +370,7 @@ export default function PublicWorkPage() {
                           {job.difficulty}
                         </span>
                         {job.requiredProgramName && (
-                          <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 flex items-center gap-0.5">
+                          <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 flex items-center gap-0.5 whitespace-nowrap">
                             <Flame className="w-2.5 h-2.5" /> {job.requiredProgramName}
                           </span>
                         )}
@@ -326,7 +384,7 @@ export default function PublicWorkPage() {
                     </div>
 
                     {/* Payout */}
-                    <div className="text-right shrink-0">
+                    <div className="text-right sm:shrink-0 w-full sm:w-auto">
                       <span className="text-lg font-extrabold text-brand-700">
                         ₹{job.payment.toLocaleString("en-IN")}
                       </span>
@@ -352,34 +410,34 @@ export default function PublicWorkPage() {
                   </div>
 
                   {/* Bottom Row */}
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-borderSubtle">
-                    <div className="flex items-center gap-4 text-[11px] text-textMuted">
-                      <span className="flex items-center gap-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-3 pt-3 border-t border-borderSubtle gap-3">
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[10px] sm:text-[11px] text-textMuted">
+                      <span className="flex items-center gap-1 whitespace-nowrap">
                         <Clock className="w-3 h-3" />
                         {job.estimatedDuration}
                       </span>
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-1 whitespace-nowrap">
                         <MapPin className="w-3 h-3" />
                         {job.workType === "remote" ? "Remote" : job.workType === "hybrid" ? "Hybrid" : "On-site"}
                       </span>
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-1 whitespace-nowrap">
                         <Users className="w-3 h-3" />
                         {formatApplicants(job.applicantCount)} applicants
                       </span>
-                      <span>{job.openings} openings</span>
+                      <span className="whitespace-nowrap">{job.openings} openings</span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
                       {job.applicationStatus ? (
-                        <span className="text-[11px] font-semibold text-brand-700 bg-brand-50 px-3 py-1 rounded-full border border-brand-200">
+                        <span className="text-[10px] sm:text-[11px] font-semibold text-brand-700 bg-brand-50 px-3 py-1.5 rounded-full border border-brand-200 flex items-center justify-center flex-1 sm:flex-none">
                           Applied
                         </span>
                       ) : !job.isEligible ? (
-                        <span className="text-[11px] font-medium text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 flex items-center gap-1">
+                        <span className="text-[10px] sm:text-[11px] font-medium text-amber-700 bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200 flex items-center gap-1 justify-center flex-1 sm:flex-none">
                           <Lock className="w-3 h-3" /> Requires Certificate
                         </span>
                       ) : (
-                        <span className="text-[11px] font-semibold text-brand-700 bg-brand-50 px-3 py-1 rounded-full border border-brand-200 group-hover:bg-brand-600 group-hover:text-white group-hover:border-brand-600 transition-colors flex items-center gap-1">
+                        <span className="text-[10px] sm:text-[11px] font-semibold text-brand-700 bg-brand-50 px-3 py-1.5 rounded-full border border-brand-200 group-hover:bg-brand-600 group-hover:text-white group-hover:border-brand-600 transition-colors flex items-center justify-center gap-1 flex-1 sm:flex-none">
                           Apply Now <ArrowRight className="w-3 h-3" />
                         </span>
                       )}
@@ -394,24 +452,24 @@ export default function PublicWorkPage() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-1.5 mt-8">
+        <div className="flex items-center justify-center gap-1.5 mt-8 flex-wrap">
           <button
             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="w-9 h-9 rounded-lg border border-borderSubtle flex items-center justify-center text-sm text-textMuted hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg border border-borderSubtle flex items-center justify-center text-sm text-textMuted hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors "
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           {pageNumbers.map((p, i) =>
             p === "..." ? (
-              <span key={`dots-${i}`} className="w-9 h-9 flex items-center justify-center text-xs text-textMuted">
+              <span key={`dots-${i}`} className="w-10 h-10 flex items-center justify-center text-xs text-textMuted">
                 ...
               </span>
             ) : (
               <button
                 key={p}
                 onClick={() => setCurrentPage(p as number)}
-                className={`w-9 h-9 rounded-lg text-xs font-semibold transition-all ${
+                className={`w-10 h-10 sm:w-11 sm:h-11 rounded-lg text-xs sm:text-sm font-semibold transition-all  ${
                   currentPage === p
                     ? "bg-brand-600 text-white shadow-sm"
                     : "border border-borderSubtle text-textMuted hover:bg-neutral-50"
@@ -424,7 +482,7 @@ export default function PublicWorkPage() {
           <button
             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="w-9 h-9 rounded-lg border border-borderSubtle flex items-center justify-center text-sm text-textMuted hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg border border-borderSubtle flex items-center justify-center text-sm text-textMuted hover:bg-neutral-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors "
           >
             <ChevronRight className="w-4 h-4" />
           </button>
