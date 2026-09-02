@@ -147,17 +147,7 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
         },
       ],
     },
-  ];
-      title: "Account",
-      items: [
-        {
-          name: "Notifications",
-          href: "/dashboard/notifications",
-          icon: Bell,
-        },
-      ],
-    },
-  ];
+];
 
   const isActive = (path: string) => {
     if (path === "/affiliate" && pathname === "/affiliate") return true;
