@@ -325,18 +325,40 @@ export const getUserWithdrawals = query({
       throw new Error("Unauthorized");
     }
 
-    const userId = await requireUserId(ctx, args.token);
+    const user = await ctx.db.get(session.userId);
+    const isDemo = user?.accountType === "demo";
+    const demoConfig = user?.demoConfig || {};
 
-    const withdrawals = await ctx.db
+    const realWithdrawals = await ctx.db
       .query("withdrawals")
       .withIndex("by_userId", (q) => q.eq("userId", session.userId))
       .collect();
+
+    // For demo accounts, include fake withdrawals
+    let withdrawals = realWithdrawals;
+    if (isDemo && demoConfig.fakeWithdrawals) {
+      const fakeWithdrawals = demoConfig.fakeWithdrawals.map((w, idx) => ({
+        _id: `demo-wd-${idx}` as any,
+        _creationTime: w.createdAt,
+        userId: session.userId,
+        amount: w.amount,
+        payoutMethod: w.method.toLowerCase().replace(" ", "_"),
+        status: w.status,
+        requestedAt: w.createdAt,
+        processedAt: w.processedAt,
+        payoutDetails: {},
+        adminNote: "Demo withdrawal - no real money",
+        fee: 0,
+        netAmount: w.amount,
+      }));
+      withdrawals = [...fakeWithdrawals, ...realWithdrawals];
+    }
 
     withdrawals.sort((a, b) => b.requestedAt - a.requestedAt);
 
     const detailed = await Promise.all(
       withdrawals.map(async (w) => {
-        let qrImageUrl: string | null = null;
+        let qrImageUrl = null;
         if (
           w.payoutMethod === "upi_qr" &&
           w.payoutDetails?.qrImageUrl &&

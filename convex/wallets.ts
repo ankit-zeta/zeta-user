@@ -27,20 +27,52 @@ export const getUserWallet = query({
       throw new Error("Unauthorized");
     }
 
+    const user = await ctx.db.get(session.userId);
+    const isDemo = user?.accountType === "demo";
+    const demoConfig = user?.demoConfig || {};
+
     const wallet = await ctx.db
       .query("wallets")
       .withIndex("by_userId", (q) => q.eq("userId", session.userId))
       .first();
 
-    const transactions = await ctx.db
+    // For demo accounts, use demo balances from demoConfig
+    const demoWallet = isDemo && demoConfig ? {
+      availableBalance: demoConfig.workBalance || 0,
+      pendingBalance: 0,
+      totalEarned: (demoConfig.workBalance || 0) + (demoConfig.partnerEarnings || 0),
+      totalWithdrawn: demoConfig.totalWithdrawn || 0,
+      workEarnings: demoConfig.workBalance || 0,
+      affiliateEarnings: demoConfig.partnerEarnings || 0,
+    } : null;
+
+    const realTransactions = await ctx.db
       .query("walletTransactions")
       .withIndex("by_userId", (q) => q.eq("userId", session.userId))
       .collect();
 
+    // For demo accounts, include fake transactions
+    let transactions = realTransactions;
+    if (isDemo && demoConfig.fakeTransactions) {
+      const fakeTransactions = demoConfig.fakeTransactions.map((tx, idx) => ({
+        _id: `demo-tx-${idx}` as any,
+        _creationTime: tx.createdAt,
+        userId: session.userId,
+        type: tx.type === "credit" ? "WORK_PAYOUT" : tx.type === "partner_earning" ? "AFFILIATE_COMMISSION" : "ADMIN_ADJUSTMENT",
+        amount: tx.amount * (tx.type === "debit" ? -1 : 1),
+        description: tx.description,
+        status: tx.status,
+        createdAt: tx.createdAt,
+        referenceId: `demo-ref-${idx}`,
+        balanceAfter: 0,
+      }));
+      transactions = [...fakeTransactions, ...realTransactions];
+    }
+
     transactions.sort((a, b) => b.createdAt - a.createdAt);
 
     return {
-      wallet: wallet || {
+      wallet: demoWallet || wallet || {
         availableBalance: 0,
         pendingBalance: 0,
         totalEarned: 0,

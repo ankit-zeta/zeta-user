@@ -342,16 +342,6 @@ export const demoRequestWithdrawal = mutation({
     const updatedFakeWithdrawals = [...(demoConfig.fakeWithdrawals || []), newFakeWithdrawal];
     const newWorkBalance = availableBalance - args.amount;
 
-    await ctx.db.patch(user._id, {
-      demoConfig: {
-        ...demoConfig,
-        workBalance: newWorkBalance,
-        totalWithdrawn: (demoConfig.totalWithdrawn || 0) + args.amount,
-        fakeWithdrawals: updatedFakeWithdrawals,
-      },
-      updatedAt: now,
-    });
-
     // Also update wallet for display purposes
     const wallet = await ctx.db
       .query("wallets")
@@ -376,10 +366,15 @@ export const demoRequestWithdrawal = mutation({
     };
 
     const updatedFakeTransactions = [newFakeTransaction, ...(demoConfig.fakeTransactions || [])];
+    
+    // Single patch with all demoConfig updates
     await ctx.db.patch(user._id, {
       demoConfig: {
         ...demoConfig,
+        workBalance: newWorkBalance,
+        totalWithdrawn: (demoConfig.totalWithdrawn || 0) + args.amount,
         fakeTransactions: updatedFakeTransactions,
+        fakeWithdrawals: updatedFakeWithdrawals,
       },
       updatedAt: now,
     });
@@ -489,6 +484,8 @@ export const getAllUsers = query({
           totalEarned: wallet?.totalEarned || 0,
           availableBalance: wallet?.availableBalance || 0,
           enrolledCount: purchases.filter((p) => p.status === "completed").length,
+          accountType: u.accountType || "real",
+          demoConfig: u.demoConfig || null,
         };
       })
     );
