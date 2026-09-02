@@ -83,18 +83,18 @@ export default function CheckoutPage() {
   const { user, token } = useAuth();
 
   const plan: any = useQuery(
-    (api as any).plans.getPlanBySlug,
+    api.plans.getPlanBySlug,
     slug ? { slug } : "skip"
   );
 
-  const rzpConfig: any = useQuery((api as any).paymentsConfig.getRazorpayConfig);
+  const rzpConfig: any = useQuery(api.paymentsConfig.getRazorpayConfig);
   const gst = useGst();
 
-  const createOrder = useAction((api as any).payments.createRazorpayOrder);
-  const verifyPayment = useAction((api as any).payments.verifyRazorpayPayment);
-  const cancelOrder = useAction((api as any).payments.cancelRazorpayOrder);
+  const createOrder = useAction(api.payments.createRazorpayOrder);
+  const verifyPayment = useAction(api.payments.verifyRazorpayPayment);
+  const cancelOrder = useAction(api.payments.cancelRazorpayOrder);
   const completePurchase = useMutation(
-    (api as any).affiliates.processPurchaseWithAffiliate
+    api.affiliates.processPurchaseWithAffiliate
   );
 
   const [agreeTerms, setAgreeTerms] = useState(false);
@@ -118,7 +118,7 @@ export default function CheckoutPage() {
   // Recovery: a previous attempt was paid (webhook confirmed) but the browser
   // closed before activation finished — offer one-click completion.
   const pendingPaidOrder: any = useQuery(
-    (api as any).paymentsData.getMyPendingPaidOrder,
+    api.paymentsData.getMyPendingPaidOrder,
     token && plan ? { token, planId: plan._id } : "skip"
   );
 

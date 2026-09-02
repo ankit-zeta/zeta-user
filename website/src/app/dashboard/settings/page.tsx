@@ -12,9 +12,9 @@ import { Shield, Lock, Mail, Bell, AlertTriangle, Eye, EyeOff, CheckCircle2 } fr
 export default function SettingsPage() {
   const { user, token, logout } = useAuth();
   const router = useRouter();
-  const changePasswordMutation = useMutation((api as any).auth.changePassword);
-  const changeEmailMutation = useMutation((api as any).auth.changeEmail);
-  const deleteAccountMutation = useMutation((api as any).auth.deleteAccount);
+  const changePasswordMutation = useMutation(api.auth.changePassword);
+  const changeEmailMutation = useMutation(api.auth.changeEmail);
+  const deleteAccountMutation = useMutation(api.auth.deleteAccount);
 
   const [pw, setPw] = useState({ current: "", next: "", confirm: "" });
   const [showPw, setShowPw] = useState(false);

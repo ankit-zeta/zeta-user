@@ -13,7 +13,7 @@ export default function CertificateVerificationPage() {
   const certificateId = (params?.id as string) || "";
 
   const verification = useQuery(
-    (api as any).certificates.verifyCertificate,
+    api.certificates.verifyCertificate,
     certificateId ? { certificateId } : "skip"
   );
 

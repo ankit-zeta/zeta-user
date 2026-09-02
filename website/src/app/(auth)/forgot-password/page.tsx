@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
 
 function ForgotPasswordForm() {
   const router = useRouter();
-  const requestResetMutation = useAction((api as any).auth.requestPasswordReset);
+  const requestResetMutation = useAction(api.auth.requestPasswordReset);
 
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
