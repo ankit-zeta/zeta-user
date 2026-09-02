@@ -294,7 +294,7 @@ export const processPurchaseWithAffiliate = mutation({
             }
             if (commissionAmount > 0) {
               const holdingPeriodEndsAt = now + (affiliateSettings.holdingPeriodDays || 7) * 24 * 60 * 60 * 1000;
-              await ctx.db.insert("affiliateSales", {
+              const planDirectSaleId = await ctx.db.insert("affiliateSales", {
                 purchaseId: firstPurchaseId,
                 referrerUserId: referrer._id,
                 buyerUserId: session.userId,
@@ -337,6 +337,108 @@ export const processPurchaseWithAffiliate = mutation({
                 console.error("Failed to schedule affiliate sale email:", e);
               }
               commissionPaid = commissionAmount;
+
+              // ── Chain / upline commissions for plan purchases ──
+              if (affiliateSettings.chainEnabled && referrer.referredBy) {
+                let currentReferrer = referrer;
+                let chainLevel = 1;
+                let parentSaleChainId: any = planDirectSaleId;
+
+                while (currentReferrer.referredBy) {
+                  const upline = await ctx.db.get(currentReferrer.referredBy);
+                  if (
+                    !upline ||
+                    upline._id.toString() === currentReferrer._id.toString() ||
+                    upline._id.toString() === buyer._id.toString() ||
+                    upline.status !== "active"
+                  ) {
+                    break;
+                  }
+
+                  const chainPct =
+                    upline.positionId && affiliateSettings.chainLevels
+                      ? affiliateSettings.chainLevels[String(upline.positionId)] || 0
+                      : 0;
+
+                  if (chainPct <= 0) break;
+
+                  let chainAmount = Math.round((plan.price * chainPct) / 100);
+
+                  if (affiliateSettings.perSaleCap && affiliateSettings.perSaleCap > 0) {
+                    const chainPosMultiplier = await getPositionMultiplier(
+                      ctx,
+                      upline._id,
+                      affiliateSettings.positionMultipliers
+                    );
+                    const chainCap = Math.round(affiliateSettings.perSaleCap * chainPosMultiplier);
+                    if (chainAmount > chainCap) chainAmount = chainCap;
+                  }
+
+                  if (chainAmount > 0) {
+                    const chainSaleId = await ctx.db.insert("affiliateSales", {
+                      purchaseId: firstPurchaseId,
+                      buyerUserId: session.userId,
+                      referrerUserId: upline._id,
+                      programId: plan.programIds[0],
+                      saleAmount: plan.price,
+                      commissionAmount: chainAmount,
+                      status: "pending",
+                      awaitingConsumption: true,
+                      ruleUsed: `${chainPct}% of ₹${plan.price} purchase (Chain level ${chainLevel})`,
+                      holdingPeriodEndsAt,
+                      createdAt: now,
+                      updatedAt: now,
+                      kind: "chain",
+                      parentSaleId: parentSaleChainId,
+                      chainLevel,
+                      baseCommissionAmount: plan.price,
+                    });
+
+                    let uplineWallet = await ctx.db
+                      .query("wallets")
+                      .withIndex("by_userId", (q) => q.eq("userId", upline._id))
+                      .first();
+
+                    if (!uplineWallet) {
+                      const walletId = await ctx.runMutation(internal.auth.createWallet, {
+                        userId: upline._id,
+                        availableBalance: 0,
+                        pendingBalance: 0,
+                        totalEarned: 0,
+                        totalWithdrawn: 0,
+                        workEarnings: 0,
+                        affiliateEarnings: 0,
+                        updatedAt: now,
+                      });
+                      uplineWallet = await ctx.db.get(walletId);
+                    }
+
+                    if (uplineWallet) {
+                      await ctx.db.patch(uplineWallet._id, {
+                        pendingBalance: uplineWallet.pendingBalance + chainAmount,
+                        updatedAt: now,
+                      });
+                    }
+
+                    await ctx.db.insert("notifications", {
+                      userId: upline._id,
+                      type: "affiliate",
+                      title: "Chain Commission Earned!",
+                      message: `You earned ₹${chainAmount} (level ${chainLevel}) from ${buyer.name}'s purchase of "${plan.name}". (Pending holding period).`,
+                      read: false,
+                      actionUrl: "/partner",
+                      createdAt: now,
+                    });
+
+                    parentSaleChainId = chainSaleId;
+                  } else {
+                    break;
+                  }
+
+                  currentReferrer = upline;
+                  chainLevel++;
+                }
+              }
             }
           }
         }
@@ -540,22 +642,35 @@ export const processPurchaseWithAffiliate = mutation({
               console.error("Failed to schedule affiliate sale email:", e);
             }
 
-            // Chain / upline commission: the referrer's own referrer earns X% of this commission
+            // ── Chain / upline commissions: walk the full referral chain ──
+            // Each ancestor earns chainPct% of the ORIGINAL purchase amount
+            // (plan.price), not a percentage of the direct commission.
             if (affiliateSettings.chainEnabled && referrer.referredBy) {
-              const upline = await ctx.db.get(referrer.referredBy);
-              const chainPct =
-                upline?.positionId && affiliateSettings.chainLevels
-                  ? affiliateSettings.chainLevels[String(upline.positionId)] || 0
-                  : 0;
+              let currentReferrer = referrer; // B (the direct referrer)
+              let chainLevel = 1;
+              let parentSaleId = directSaleId;
 
-              if (
-                upline &&
-                upline._id.toString() !== referrer._id.toString() &&
-                upline._id.toString() !== buyer._id.toString() &&
-                upline.status === "active" &&
-                chainPct > 0
-              ) {
-                let chainAmount = Math.round((commissionAmount * chainPct) / 100);
+              while (currentReferrer.referredBy) {
+                const upline = await ctx.db.get(currentReferrer.referredBy);
+                if (
+                  !upline ||
+                  upline._id.toString() === currentReferrer._id.toString() ||
+                  upline._id.toString() === buyer._id.toString() ||
+                  upline.status !== "active"
+                ) {
+                  break; // end of chain or invalid link
+                }
+
+                const chainPct =
+                  upline.positionId && affiliateSettings.chainLevels
+                    ? affiliateSettings.chainLevels[String(upline.positionId)] || 0
+                    : 0;
+
+                if (chainPct <= 0) break; // upline has no chain % — stop walking
+
+                // Chain commission = percentage of the ACTUAL purchase amount
+                const purchaseAmount = program.price;
+                let chainAmount = Math.round((purchaseAmount * chainPct) / 100);
 
                 // Per-sale cap for the upline, scaled by their position
                 if (affiliateSettings.perSaleCap && affiliateSettings.perSaleCap > 0) {
@@ -574,18 +689,18 @@ export const processPurchaseWithAffiliate = mutation({
                     buyerUserId: buyer._id,
                     referrerUserId: upline._id,
                     programId: args.programId,
-                    saleAmount: program.price,
+                    saleAmount: purchaseAmount,
                     commissionAmount: chainAmount,
                     status: "pending",
                     awaitingConsumption: true,
-                    ruleUsed: `${chainPct}% of downline's ${commissionAmount} commission (Chain level 1)`,
+                    ruleUsed: `${chainPct}% of ₹${purchaseAmount} purchase (Chain level ${chainLevel})`,
                     holdingPeriodEndsAt,
                     createdAt: now,
                     updatedAt: now,
                     kind: "chain",
-                    parentSaleId: directSaleId,
-                    chainLevel: 1,
-                    baseCommissionAmount: commissionAmount,
+                    parentSaleId,
+                    chainLevel,
+                    baseCommissionAmount: purchaseAmount,
                   });
 
                   let uplineWallet = await ctx.db
@@ -618,12 +733,20 @@ export const processPurchaseWithAffiliate = mutation({
                     userId: upline._id,
                     type: "affiliate",
                     title: "Chain Commission Earned!",
-                    message: `You earned â‚¹${chainAmount} from ${referrer.name}'s partner commission on ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
+                    message: `You earned ₹${chainAmount} (level ${chainLevel}) from ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
                     read: false,
-                    actionUrl: "/dashboard/wallet",
+                    actionUrl: "/partner",
                     createdAt: now,
                   });
+
+                  // Continue walking up: this upline's chain sale becomes the parent
+                  parentSaleId = chainSaleId;
+                } else {
+                  break; // no commission at this level — stop
                 }
+
+                currentReferrer = upline;
+                chainLevel++;
               }
             }
           }
@@ -788,48 +911,55 @@ export const updateCommissionStatus = mutation({
       }
     }
 
-    // Cascade to chain commissions derived from a direct sale
+    // Cascade to chain commissions derived from a direct sale (multi-level)
     if (sale.kind !== "chain" && (isCredit || isReject)) {
-      const children = await ctx.db
-        .query("affiliateSales")
-        .withIndex("by_parentSaleId", (q) => q.eq("parentSaleId", sale._id))
-        .filter((q) => q.eq(q.field("status"), "pending"))
-        .collect();
-      for (const child of children) {
-        await ctx.db.patch(child._id, {
-          status: args.status,
-          updatedAt: now,
-        });
-        const childWallet = await ctx.db
-          .query("wallets")
-          .withIndex("by_userId", (q) => q.eq("userId", child.referrerUserId))
-          .first();
-        if (!childWallet) continue;
-        if (isCredit) {
-          const newPending = Math.max(0, childWallet.pendingBalance - child.commissionAmount);
-          const newAvailable = childWallet.availableBalance + child.commissionAmount;
-          await ctx.db.patch(childWallet._id, {
-            pendingBalance: newPending,
-            availableBalance: newAvailable,
-            totalEarned: childWallet.totalEarned + child.commissionAmount,
-            affiliateEarnings: childWallet.affiliateEarnings + child.commissionAmount,
+      // Walk the chain tree: direct sale → level 1 → level 2 → ...
+      const queue = [sale._id];
+      while (queue.length > 0) {
+        const parentId = queue.shift()!;
+        const children = await ctx.db
+          .query("affiliateSales")
+          .withIndex("by_parentSaleId", (q) => q.eq("parentSaleId", parentId))
+          .filter((q) => q.eq(q.field("status"), "pending"))
+          .collect();
+        for (const child of children) {
+          await ctx.db.patch(child._id, {
+            status: args.status,
             updatedAt: now,
           });
-          await ctx.db.insert("walletTransactions", {
-            userId: child.referrerUserId,
-            type: "CHAIN_COMMISSION",
-            amount: child.commissionAmount,
-            balanceAfter: newAvailable,
-            referenceId: child._id,
-            description: `Chain commission approved (level ${child.chainLevel || 1}): â‚¹${child.commissionAmount}`,
-            status: "completed",
-            createdAt: now,
-          });
-        } else {
-          await ctx.db.patch(childWallet._id, {
-            pendingBalance: Math.max(0, childWallet.pendingBalance - child.commissionAmount),
-            updatedAt: now,
-          });
+          const childWallet = await ctx.db
+            .query("wallets")
+            .withIndex("by_userId", (q) => q.eq("userId", child.referrerUserId))
+            .first();
+          if (!childWallet) continue;
+          if (isCredit) {
+            const newPending = Math.max(0, childWallet.pendingBalance - child.commissionAmount);
+            const newAvailable = childWallet.availableBalance + child.commissionAmount;
+            await ctx.db.patch(childWallet._id, {
+              pendingBalance: newPending,
+              availableBalance: newAvailable,
+              totalEarned: childWallet.totalEarned + child.commissionAmount,
+              affiliateEarnings: childWallet.affiliateEarnings + child.commissionAmount,
+              updatedAt: now,
+            });
+            await ctx.db.insert("walletTransactions", {
+              userId: child.referrerUserId,
+              type: "CHAIN_COMMISSION",
+              amount: child.commissionAmount,
+              balanceAfter: newAvailable,
+              referenceId: child._id,
+              description: `Chain commission approved (level ${child.chainLevel || 1}): ₹${child.commissionAmount}`,
+              status: "completed",
+              createdAt: now,
+            });
+          } else {
+            await ctx.db.patch(childWallet._id, {
+              pendingBalance: Math.max(0, childWallet.pendingBalance - child.commissionAmount),
+              updatedAt: now,
+            });
+          }
+          // enqueue this child's own chain children (next level)
+          queue.push(child._id);
         }
       }
     }
