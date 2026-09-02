@@ -650,7 +650,7 @@ export default function DashboardWalletPage() {
               </a>
               <span className="text-neutral-300">·</span>
               <a
-                href="/affiliate"
+                href="/partner"
                 className="text-[11px] font-semibold text-brand-600 hover:text-brand-700 transition-colors"
               >
                 View partner stats →

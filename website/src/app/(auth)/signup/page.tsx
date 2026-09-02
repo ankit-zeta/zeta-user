@@ -8,7 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useAction } from "convex/react";
 import { api } from "@/lib/convex";
 import { useAuth } from "@/lib/convex";
-import { User, Mail, Lock, Phone, Gift, Eye, EyeOff, Check } from "lucide-react";
+import { User, Mail, Lock, Phone, Gift, Eye, EyeOff, Check, Info } from "lucide-react";
 
 export default function SignupPage() {
   return (
@@ -52,6 +52,8 @@ function SignupForm() {
     formStartedAt: Date.now(),
   });
 
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
   useEffect(() => {
     if (refCodeFromUrl) {
       setFormData((prev) => ({ ...prev, referralCode: refCodeFromUrl.toUpperCase() }));
@@ -67,20 +69,57 @@ function SignupForm() {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
+  const validateField = (name: string, value: string): string => {
+    switch (name) {
+      case "name":
+        if (!value.trim()) return "Full name is required";
+        if (value.trim().length < 2) return "Name must be at least 2 characters";
+        return "";
+      case "email":
+        if (!value.trim()) return "Email address is required";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) return "Please enter a valid email address";
+        return "";
+      case "password":
+        if (!value) return "Password is required";
+        if (value.length < 8) return "Password must be at least 8 characters";
+        if (!/[A-Z]/.test(value)) return "Password must include at least one uppercase letter";
+        if (!/[a-z]/.test(value)) return "Password must include at least one lowercase letter";
+        if (!/[0-9]/.test(value)) return "Password must include at least one number";
+        return "";
+      case "confirmPassword":
+        if (!value) return "Please confirm your password";
+        if (value !== formData.password) return "Passwords do not match";
+        return "";
+      case "phone":
+        if (!value.trim()) return "Phone number is required";
+        if (!/^\d{10}$/.test(value.replace(/\s/g, ""))) return "Please enter a valid 10-digit phone number";
+        return "";
+      default:
+        return "";
+    }
+  };
+
+  const handleBlur = (name: string) => {
+    const error = validateField(name, formData[name as keyof typeof formData] as string);
+    setFieldErrors((prev) => ({ ...prev, [name]: error }));
+  };
+
   const handleSubmit = async () => {
     if (!hydrated) return;
-    if (!formData.name || !formData.email || !formData.password) {
-      setError("Please fill out all required fields.");
-      return;
-    }
 
-    if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters long.");
-      return;
-    }
+    // Validate all fields
+    const errors: Record<string, string> = {};
+    errors.name = validateField("name", formData.name);
+    errors.email = validateField("email", formData.email);
+    errors.password = validateField("password", formData.password);
+    errors.confirmPassword = validateField("confirmPassword", formData.confirmPassword);
+    errors.phone = validateField("phone", formData.phone);
 
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
+    setFieldErrors(errors);
+
+    const hasErrors = Object.values(errors).some((e) => e);
+    if (hasErrors) {
+      setError("Please fix the errors below.");
       return;
     }
 
@@ -115,7 +154,7 @@ function SignupForm() {
         email: formData.email.trim().toLowerCase(),
         password: formData.password,
         referralCode: formData.referralCode.trim() ? formData.referralCode.trim().toUpperCase() : undefined,
-        phone: formData.phone.trim() || undefined,
+        phone: `+91${formData.phone.trim()}`,
         website: formData.website,
         formStartedAt: formData.formStartedAt,
       });
@@ -210,10 +249,19 @@ function SignupForm() {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onBlur={() => handleBlur("name")}
                   placeholder="e.g. Rahul Sharma"
-                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-borderSubtle text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white"
+                  className={`w-full pl-9 pr-3 py-2 rounded-lg border text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white ${
+                    fieldErrors.name ? "border-red-400 bg-red-50" : "border-borderSubtle"
+                  }`}
                 />
               </div>
+              {fieldErrors.name && (
+                <p className="text-[11px] text-red-600 flex items-center gap-1">
+                  <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
+                  {fieldErrors.name}
+                </p>
+              )}
             </div>
 
             <div className="space-y-1.5">
@@ -225,10 +273,19 @@ function SignupForm() {
                   required
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onBlur={() => handleBlur("email")}
                   placeholder="you@example.com"
-                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-borderSubtle text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white"
+                  className={`w-full pl-9 pr-3 py-2 rounded-lg border text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white ${
+                    fieldErrors.email ? "border-red-400 bg-red-50" : "border-borderSubtle"
+                  }`}
                 />
               </div>
+              {fieldErrors.email && (
+                <p className="text-[11px] text-red-600 flex items-center gap-1">
+                  <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
+                  {fieldErrors.email}
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -242,8 +299,11 @@ function SignupForm() {
                     minLength={8}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    onBlur={() => handleBlur("password")}
                     placeholder="Min 8 chars"
-                    className="w-full pl-9 pr-9 py-2 rounded-lg border border-borderSubtle text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white"
+                    className={`w-full pl-9 pr-9 py-2 rounded-lg border text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white ${
+                      fieldErrors.password ? "border-red-400 bg-red-50" : "border-borderSubtle"
+                    }`}
                   />
                   <button
                     type="button"
@@ -254,6 +314,12 @@ function SignupForm() {
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
+                {fieldErrors.password && (
+                  <p className="text-[11px] text-red-600 flex items-center gap-1">
+                    <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
+                    {fieldErrors.password}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-1.5">
@@ -266,25 +332,51 @@ function SignupForm() {
                     minLength={8}
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                    onBlur={() => handleBlur("confirmPassword")}
                     placeholder="Repeat password"
-                    className="w-full pl-9 pr-9 py-2 rounded-lg border border-borderSubtle text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white"
+                    className={`w-full pl-9 pr-9 py-2 rounded-lg border text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white ${
+                      fieldErrors.confirmPassword ? "border-red-400 bg-red-50" : "border-borderSubtle"
+                    }`}
                   />
                 </div>
+                {fieldErrors.confirmPassword && (
+                  <p className="text-[11px] text-red-600 flex items-center gap-1">
+                    <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
+                    {fieldErrors.confirmPassword}
+                  </p>
+                )}
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-textMain">Phone (Optional)</label>
-              <div className="relative">
-                <Phone className="w-4 h-4 text-textMuted absolute left-3 top-1/2 -translate-y-1/2" />
+              <label className="text-xs font-semibold text-textMain">Phone Number *</label>
+              <div className="relative flex">
+                <span className="flex items-center px-3 py-2 rounded-l-lg border border-r-0 border-borderSubtle bg-neutral-50 text-xs font-medium text-textMain">
+                  +91
+                </span>
+                <Phone className="w-4 h-4 text-textMuted absolute left-16 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="tel"
+                  required
                   value={formData.phone}
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  placeholder="+91 98765 43210"
-                  className="w-full pl-9 pr-3 py-2 rounded-lg border border-borderSubtle text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white"
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, "").slice(0, 10) })}
+                  onBlur={() => handleBlur("phone")}
+                  placeholder="98765 43210"
+                  className={`w-full pl-10 pr-3 py-2 rounded-r-lg border text-xs focus:ring-1 focus:ring-brand-600 focus:outline-none bg-white font-mono tracking-wider ${
+                    fieldErrors.phone ? "border-red-400 bg-red-50" : "border-borderSubtle"
+                  }`}
                 />
               </div>
+              {fieldErrors.phone && (
+                <p className="text-[11px] text-red-600 flex items-center gap-1">
+                  <span className="inline-block w-1 h-1 rounded-full bg-red-500" />
+                  {fieldErrors.phone}
+                </p>
+              )}
+              <p className="text-[10px] text-textMuted flex items-start gap-1.5 mt-1">
+                <Info className="w-3 h-3 shrink-0 mt-0.5 text-brand-600" />
+                Please provide your correct phone number. Our HR representative may contact you for career opportunities.
+              </p>
             </div>
 
             {refCodeLocked && (

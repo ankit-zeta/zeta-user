@@ -82,7 +82,7 @@ export default function DashboardOverviewPage() {
     updatedAt: number;
   }> | undefined;
 
-  // Work-only figures — affiliate money lives in the Affiliate Center
+  // Work-only figures — partner money lives in the Partner Center
   const workEarnings = user?.wallet?.workEarnings || 0;
   const totalWithdrawn = user?.wallet?.totalWithdrawn || 0;
 

@@ -57,11 +57,10 @@ export default function DashboardLayout({
     );
   }
 
-  // Work earnings only — affiliate money lives in the Affiliate Center
+  // Work earnings only — partner money lives in the Partner Center
   const workEarnings = user.wallet?.workEarnings || 0;
 
-  // Affiliate Center unlocks only after first purchase AND a 1-hour cooling
-  // period (server-computed flag `affiliateEligible` — spoof-proof).
+  // Partner Center unlocks after first purchase (server-computed flag — spoof-proof).
   const showAffiliate = !!user.affiliateEligible;
 
   // KYC status dot: amber (pending) / red (rejected or not submitted)
@@ -103,8 +102,8 @@ export default function DashboardLayout({
         ...(showAffiliate
           ? [
               {
-                name: "Affiliate Center",
-                href: "/affiliate",
+                name: "Partner Center",
+                href: "/partner",
                 icon: TrendingUp,
               },
             ]
@@ -224,7 +223,7 @@ export default function DashboardLayout({
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Work Earnings chip — affiliate money lives in Affiliate Center */}
+            {/* Work Earnings chip — partner money lives in Partner Center */}
             {(user.wallet?.workEarnings || 0) > 0 && (
               <span className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-borderSubtle bg-neutral-50 text-xs font-medium text-textMain">
                 <Wallet className="w-3.5 h-3.5 text-brand-600" />

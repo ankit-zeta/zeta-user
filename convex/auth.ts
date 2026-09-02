@@ -658,16 +658,13 @@ export const getSessionUser = query({
     // Affiliate Center unlocks 1 hour after the user's FIRST completed
     // programme purchase (any plan). Computed from purchase history so it is
     // server-authoritative, spoof-proof, and covers every grant path.
-    const AFFILIATE_UNLOCK_DELAY_MS = 60 * 60 * 1000; // 1 hour
     const completedPurchases = purchases.filter((p) => p.status === "completed");
     const firstPurchaseAt =
       completedPurchases.length > 0
         ? Math.min(...completedPurchases.map((p) => p.createdAt))
         : null;
-    const affiliateUnlocksAt =
-      firstPurchaseAt !== null ? firstPurchaseAt + AFFILIATE_UNLOCK_DELAY_MS : null;
-    const affiliateEligible =
-      affiliateUnlocksAt !== null && Date.now() >= affiliateUnlocksAt;
+    const affiliateUnlocksAt = firstPurchaseAt;
+    const affiliateEligible = completedPurchases.length > 0;
 
     return {
       _id: user._id,

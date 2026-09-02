@@ -60,8 +60,7 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
     }
   }, [isLoading, token, user, router, pathname]);
 
-// Purchase + cooling-period gate: Partner Center requires at least one
-  // completed programme AND one hour since that first purchase (server flag).
+// Purchase gate: Partner Center requires at least one completed programme.
   const partnerEligible = !!user?.affiliateEligible;
   useEffect(() => {
     if (!isLoading && user && !partnerEligible) {
@@ -70,7 +69,7 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
   }, [isLoading, user, partnerEligible, router]);
 
   // ── Partner ephemeral session ────────────────────────────────────────────
-  // Runs once per layout mount (mounts when entering /affiliate/* from outside).
+  // Runs once per layout mount (mounts when entering /partner/* from outside).
   useEffect(() => {
     if (isLoading || !token || !user || !partnerEligible) return;
 
@@ -93,7 +92,7 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
       }
     }, 1000);
 
-    // Cleanup on SPA navigation away from /affiliate — clears flag & timer so a
+    // Cleanup on SPA navigation away from /partner — clears flag & timer so a
     // later re-entry starts fresh. (On refresh this never runs, which is exactly
     // how we detect the refresh above.)
     return () => {
@@ -127,13 +126,13 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
     {
       title: "Partner",
       items: [
-        { name: "Overview", href: "/affiliate", icon: TrendingUp },
-        { name: "My Partner Links", href: "/affiliate/link", icon: Link2 },
-        { name: "My Referrals", href: "/affiliate/referrals", icon: Users },
-        { name: "Earnings Ledger", href: "/affiliate/earnings", icon: CreditCard },
-        { name: "Earnings Dashboard", href: "/affiliate/wallet", icon: Wallet },
+        { name: "Overview", href: "/partner", icon: TrendingUp },
+        { name: "My Partner Links", href: "/partner/link", icon: Link2 },
+        { name: "My Referrals", href: "/partner/referrals", icon: Users },
+        { name: "Earnings Ledger", href: "/partner/earnings", icon: CreditCard },
+        { name: "Earnings Dashboard", href: "/partner/wallet", icon: Wallet },
         ...(isGrowthPartner
-          ? [{ name: "Team Remuneration", href: "/affiliate/achievements", icon: Zap }]
+          ? [{ name: "Team Remuneration", href: "/partner/achievements", icon: Zap }]
           : []),
       ],
     },
@@ -150,8 +149,8 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
 ];
 
   const isActive = (path: string) => {
-    if (path === "/affiliate" && pathname === "/affiliate") return true;
-    if (path !== "/affiliate" && pathname.startsWith(path)) return true;
+    if (path === "/partner" && pathname === "/partner") return true;
+    if (path !== "/partner" && pathname.startsWith(path)) return true;
     return false;
   };
 
@@ -160,7 +159,7 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex flex-col w-64 bg-[#0F1412] shrink-0 fixed inset-y-0 z-30 border-r border-neutral-800">
         <div className="h-16 px-6 flex items-center justify-between border-b border-neutral-800">
-          <Link href="/affiliate" className="flex items-center gap-2.5">
+          <Link href="/partner" className="flex items-center gap-2.5">
             <Image
               src="/zetagrow logo no bg.png"
               alt="ZetaGrow"

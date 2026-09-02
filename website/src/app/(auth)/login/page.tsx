@@ -62,9 +62,9 @@ function LoginForm() {
     reason === "session_expired"
       ? "You were signed out because your account was used to log in on another device. Please sign in again."
       : reason === "affiliate_refresh"
-      ? "Your Affiliate Center session ended (page refresh). Sign in again to continue."
+      ? "Your Partner Center session ended (page refresh). Sign in again to continue."
       : reason === "affiliate_timeout"
-      ? "Your Affiliate Center session ended automatically after 10 minutes for security. Sign in again to continue."
+      ? "Your Partner Center session ended automatically after 10 minutes for security. Sign in again to continue."
       : null;
 
   const handleSubmit = async () => {

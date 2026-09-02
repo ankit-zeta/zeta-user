@@ -4,7 +4,7 @@ import { friendlyError } from "@/lib/errors";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useQuery } from "convex/react";
 import { useMutation, useAction } from "convex/react";
 import { api } from "@/lib/convex";
@@ -78,9 +78,10 @@ export default function CheckoutPage() {
   const params = useParams();
   const slug = params?.slug as string;
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const refCodeFromUrl = searchParams.get("ref") || "";
-  const { user, token } = useAuth();
+  const { user, token, isLoading: authLoading } = useAuth();
 
   const plan: any = useQuery(
     api.plans.getPlanBySlug,
@@ -100,6 +101,13 @@ export default function CheckoutPage() {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [stage, setStage] = useState<Stage>("review");
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Redirect unauthenticated users to login, preserving checkout URL
+  useEffect(() => {
+    if (!authLoading && !token) {
+      router.push("/login?redirect=" + encodeURIComponent(pathname + (searchParams.toString() ? `?${searchParams.toString()}` : "")));
+    }
+  }, [authLoading, token, router, pathname, searchParams]);
 
   // Preserve ref code in localStorage for guest checkout flow
   useEffect(() => {

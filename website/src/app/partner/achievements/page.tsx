@@ -65,7 +65,7 @@ export default function PartnerAchievementsPage() {
             Keep growing your referrals and work quality — our team is always watching for exceptional partners.
           </p>
         </div>
-        <Link href="/affiliate" className="btn-secondary text-xs py-2 px-4 inline-block">
+        <Link href="/partner" className="btn-secondary text-xs py-2 px-4 inline-block">
           Back to Partner Overview
         </Link>
       </div>

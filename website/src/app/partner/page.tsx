@@ -200,7 +200,7 @@ export default function PartnerOverviewPage() {
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold">Recent Sales</h3>
             <Link
-              href="/affiliate/earnings"
+              href="/partner/earnings"
               className="text-[11px] font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1"
             >
               Full ledger <ArrowRight className="w-3 h-3" />
@@ -241,7 +241,7 @@ export default function PartnerOverviewPage() {
                 <Crown className="w-4 h-4 text-amber-400" /> Team Remuneration
               </h3>
               <Link
-                href="/affiliate/achievements"
+                href="/partner/achievements"
                 className="text-[11px] font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1"
               >
                 Milestones <ArrowRight className="w-3 h-3" />

@@ -7,6 +7,16 @@ import type { NextRequest } from "next/server";
 // protections that the browser enforces before any JS runs.
 
 export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // ── 301 Redirects: /affiliate → /partner ─────────────────────────────────
+  if (pathname.startsWith("/affiliate")) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace("/affiliate", "/partner");
+    // Preserve query string (e.g. ?ref=XXXXX)
+    return NextResponse.redirect(url, 301);
+  }
+
   const response = NextResponse.next();
 
   // ── Security Headers ──────────────────────────────────────────────────
@@ -38,10 +48,9 @@ export function middleware(request: NextRequest) {
   // cannot verify auth. The client-side layout already handles redirect.
   // This middleware adds a no-cache header to protected pages so browsers
   // don't serve stale authenticated content.
-  const pathname = request.nextUrl.pathname;
   const isProtected =
     pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/affiliate") ||
+    pathname.startsWith("/partner") ||
     pathname.startsWith("/learning");
 
   if (isProtected) {

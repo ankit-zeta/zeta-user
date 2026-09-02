@@ -658,7 +658,7 @@ export default function KycPage() {
       {(kyc.status === "pending" || kyc.status === "not_submitted") &&
         user.affiliateEligible && (
           <Link
-            href="/affiliate"
+            href="/partner"
             className="block text-center text-[11px] text-brand-600 hover:text-brand-700 font-medium"
           >
             Affiliate commissions keep accruing during review → they release automatically once verified
