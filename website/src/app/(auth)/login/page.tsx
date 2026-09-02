@@ -35,7 +35,7 @@ function LoginForm() {
       : "/dashboard";
 
   const { login, token, user, isLoading: authLoading } = useAuth();
-  const loginAction = useAction(api.auth.login);
+  const loginAction = useAction((api as any).auth.login);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

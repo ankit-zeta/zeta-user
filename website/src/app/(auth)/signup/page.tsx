@@ -30,7 +30,7 @@ function SignupForm() {
   const refCodeFromUrl = searchParams.get("ref") || "";
 
   const { login, token, user, isLoading: authLoading } = useAuth();
-  const signupAction = useAction(api.auth.signup);
+  const signupAction = useAction((api as any).auth.signup);
 
   // Already signed in? No need for the signup form.
   useEffect(() => {

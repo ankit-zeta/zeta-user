@@ -29,7 +29,7 @@ function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const { login } = useAuth();
-  const resetMutation = useAction(api.auth.resetPassword);
+  const resetMutation = useAction((api as any).auth.resetPassword);
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

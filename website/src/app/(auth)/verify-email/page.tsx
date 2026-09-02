@@ -39,8 +39,8 @@ function VerifyEmailForm() {
   const token = searchParams.get("token");
   const emailFromUrl = searchParams.get("email") || "";
   const { login } = useAuth();
-  const verifyMutation = useAction(api.auth.verifyEmail);
-  const resendMutation = useAction(api.auth.resendVerificationEmail);
+  const verifyMutation = useAction((api as any).auth.verifyEmail);
+  const resendMutation = useAction((api as any).auth.resendVerificationEmail);
 
   const startedRef = useRef(false);
   // "pending" = post-signup check-your-inbox screen (email param, no token).
