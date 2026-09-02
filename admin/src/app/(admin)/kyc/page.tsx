@@ -36,6 +36,7 @@ type QueueItem = {
   cvStatus: string;
   fullNameAsPerPan: string;
   panMasked: string;
+  panFull: string;
   aadhaarLast4: string;
   city?: string;
   state?: string;
@@ -233,7 +234,7 @@ export default function AdminKycPage() {
                   <div className="flex flex-wrap gap-x-4 gap-y-0.5 mt-1.5 text-[11px]">
                     <span className="font-mono text-textMain">
                       <CreditCard className="w-3 h-3 inline mr-1 text-textMuted" />
-                      PAN {k.panMasked}
+                      PAN {k.panFull || k.panMasked}
                     </span>
                     <span className="font-mono text-textMain">
                       <IdCard className="w-3 h-3 inline mr-1 text-textMuted" />
@@ -290,7 +291,7 @@ export default function AdminKycPage() {
                     <>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
                         <DetailBlock label="Name as per PAN" value={detail.fullNameAsPerPan} />
-                        <DetailBlock label="PAN Number" value={detail.panMasked} mono />
+                        <DetailBlock label="PAN Number" value={detail.panFull || detail.panMasked} mono />
                         <DetailBlock label="Aadhaar (last 4)" value={`•••• ${detail.aadhaarLast4}`} mono />
                         <DetailBlock
                           label="CV Status"
