@@ -209,7 +209,7 @@ export default function SettingsPage() {
           </label>
           <label className="flex items-center gap-2 text-textMuted">
             <input type="checkbox" defaultChecked className="rounded border-borderSubtle text-brand-600 focus:ring-brand-600" />
-            <span>New affiliate commission credits</span>
+            <span>New partner commission credits</span>
           </label>
           <label className="flex items-center gap-2 text-textMuted">
             <input type="checkbox" defaultChecked className="rounded border-borderSubtle text-brand-600 focus:ring-brand-600" />

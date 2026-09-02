@@ -401,7 +401,7 @@ export const sendAffiliateSaleEmail = internalAction({
       content,
       cta: true,
       ctaText: "View My Earnings",
-      ctaUrl: `${SITE_URL}/dashboard/affiliate`,
+      ctaUrl: `${SITE_URL}/partner`,
       footerNote: "Commissions are held for the configured period before becoming withdrawable."
     });
 
@@ -719,7 +719,7 @@ export const sendOnboardingNudgeEmail = internalAction({
         <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: ${BRAND.textColor}; line-height: 2;">
           <li>🎓 A <strong>verified certificate</strong> employers can check online</li>
           <li>💼 Access to real <strong>freelancing work opportunities</strong></li>
-          <li>💰 The chance to earn through our <strong>affiliate program</strong></li>
+           <li>💰 The chance to earn through our <strong>partner program</strong></li>
         </ul>
       </div>
       <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
@@ -827,7 +827,7 @@ export const sendKycReceivedEmail = internalAction({
         </ul>
       </div>
       <p style="margin: 0 0 24px; font-size: 15px; color: ${BRAND.textColor}; line-height: 1.6;">
-        Until your KYC is verified, affiliate payouts and withdrawals stay on hold. Everything else on the platform remains fully available.
+        Until your KYC is verified, partner payouts and withdrawals stay on hold. Everything else on the platform remains fully available.
       </p>
       <p style="margin: 0 0 24px; font-size: 13px; color: ${BRAND.textMuted}; line-height: 1.6;">
         Your privacy matters to us: your document images are automatically and permanently deleted from our servers 90 days after approval.

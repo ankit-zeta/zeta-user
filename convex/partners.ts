@@ -134,9 +134,9 @@ export const setPartnerAccess = mutation({
         type: "achievement",
         title: "Welcome to the Growth Partner Program 🎉",
         message:
-          "You've been personally selected to join ZetaGrow's invite-only Growth Partner circle — unlocking exclusive partnership tiers, chain commissions and priority recognition inside your Affiliate Center.",
+          "You've been personally selected to join ZetaGrow's invite-only Growth Partner circle — unlocking exclusive partnership tiers, chain commissions and priority recognition inside your Partner Center.",
         read: false,
-        actionUrl: "/affiliate/achievements",
+        actionUrl: "/partner/achievements",
         createdAt: now,
       });
     } else {

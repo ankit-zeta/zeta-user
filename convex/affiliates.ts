@@ -518,10 +518,10 @@ export const processPurchaseWithAffiliate = mutation({
             await ctx.db.insert("notifications", {
               userId: referrer._id,
               type: "affiliate",
-              title: "New Affiliate Commission Earned!",
+              title: "New Partner Commission Earned!",
               message: `You earned â‚¹${commissionAmount} commission on ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
               read: false,
-              actionUrl: "/dashboard/affiliate",
+              actionUrl: "/partner",
               createdAt: now,
             });
 
@@ -618,7 +618,7 @@ export const processPurchaseWithAffiliate = mutation({
                     userId: upline._id,
                     type: "affiliate",
                     title: "Chain Commission Earned!",
-                    message: `You earned â‚¹${chainAmount} from ${referrer.name}'s affiliate commission on ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
+                    message: `You earned â‚¹${chainAmount} from ${referrer.name}'s partner commission on ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
                     read: false,
                     actionUrl: "/dashboard/wallet",
                     createdAt: now,

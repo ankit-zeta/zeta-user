@@ -152,7 +152,7 @@ export default function ProgramDetailPage() {
                 )}
                 {program.affiliateEnabled && (
                   <span className="text-xs text-green-700 flex items-center gap-1 font-medium bg-green-50 px-3 py-1 rounded-full">
-                    <Tag className="w-3.5 h-3.5" /> Affiliate
+                    <Tag className="w-3.5 h-3.5" /> Partner
                   </span>
                 )}
               </div>

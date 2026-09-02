@@ -63,7 +63,7 @@ const STATUS_META: Record<
     classes: "border-amber-200 bg-gradient-to-r from-amber-50 to-white",
     chip: "bg-amber-100 text-amber-700 border-amber-200",
     blurb:
-      "Complete your KYC to unlock work applications, affiliate payouts and withdrawals.",
+      "Complete your KYC to unlock work applications, partner payouts and withdrawals.",
   },
   pending: {
     label: "Under Review",
@@ -646,7 +646,7 @@ export default function KycPage() {
             <p className="text-[11px] text-textMuted leading-relaxed">
               <span className="font-semibold text-textMain">TDS disclosure:</span> payouts are subject to Tax
               Deducted at Source as per Income Tax rules — currently <span className="font-semibold">2%</span> on
-              affiliate commissions above ₹20,000/year and <span className="font-semibold">10%</span> on work
+              partner commissions above ₹20,000/year and <span className="font-semibold">10%</span> on work
               earnings above ₹50,000/year (Apr–Mar). Deducted TDS is reported against your PAN and is claimable
               when you file your income tax return.
             </p>
@@ -661,7 +661,7 @@ export default function KycPage() {
             href="/partner"
             className="block text-center text-[11px] text-brand-600 hover:text-brand-700 font-medium"
           >
-            Affiliate commissions keep accruing during review → they release automatically once verified
+            Partner commissions keep accruing during review → they release automatically once verified
           </Link>
         )}
 

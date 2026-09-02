@@ -9,7 +9,7 @@ import { Trophy, CheckCircle2, Lock, Zap, Crown, ShieldCheck } from "lucide-reac
 
 const METRIC_LABELS: Record<string, string> = {
   valid_referrals: "Direct referrals",
-  affiliate_sales: "Affiliate sales",
+  affiliate_sales: "Partner sales",
   total_sales_amount: "Referral volume (₹)",
   completed_jobs: "Completed jobs",
   approved_jobs: "Approved jobs",

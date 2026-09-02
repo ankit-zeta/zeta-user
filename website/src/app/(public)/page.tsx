@@ -717,7 +717,7 @@ const resourceCount =
             <FeatureCard feature={{ icon: MonitorSmartphone, title: "Learning Dashboard", desc: "Track your progress across programs and modules with live completion states." }} />
             <FeatureCard feature={{ icon: BadgeCheck, title: "Verified Credentials", desc: "Earn certificates with unique public IDs that anyone can verify online." }} />
             <FeatureCard feature={{ icon: Briefcase, title: "Curated Work Marketplace", desc: "Apply to contract opportunities matched to your completed programs." }} />
-            <FeatureCard feature={{ icon: Wallet, title: "Transparent Earnings", desc: "A wallet with clear transaction history — work payouts and affiliate earnings." }} />
+            <FeatureCard feature={{ icon: Wallet, title: "Transparent Earnings", desc: "A wallet with clear transaction history — work payouts and partner earnings." }} />
             <FeatureCard feature={{ icon: Trophy, title: "Achievements & Progress", desc: "Unlock badges and positions as you complete courses and deliver work." }} />
             <FeatureCard feature={{ icon: Headset, title: "Real Human Support", desc: "A support team behind the platform — questions get answered, not ignored." }} />
           </div>

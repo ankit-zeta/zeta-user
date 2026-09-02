@@ -11,7 +11,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   payments: "Payments & Refunds",
   withdrawals: "Withdrawal Request",
   jobs: "Jobs & Work Portal",
-  affiliate: "Affiliate & Referrals",
+  affiliate: "Partner & Referrals",
   account: "Account & Profile",
   other: "Other",
 };
