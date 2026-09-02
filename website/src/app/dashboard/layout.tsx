@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useAuth } from "@/lib/convex";
+import { useAuth, useDemo } from "@/lib/demo";
 import { NotificationBadge } from "@/components/NotificationBadge";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import {
@@ -24,6 +24,7 @@ import {
   LifeBuoy,
   ShieldCheck,
   Bookmark,
+  Zap,
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -34,6 +35,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const router = useRouter();
   const { user, token, isLoading, logout } = useAuth();
+  const { isDemo, demoConfig } = useDemo();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   useEffect(() => {
@@ -154,7 +156,14 @@ export default function DashboardLayout({
             {user.name.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-bold text-textMain truncate">{user.name}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-xs font-bold text-textMain truncate">{user.name}</p>
+              {isDemo && (
+                <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200 flex items-center gap-1 whitespace-nowrap">
+                  <Zap className="w-2.5 h-2.5" /> Demo
+                </span>
+              )}
+            </div>
             <p className="text-[11px] text-textMuted truncate">
               {user.position?.name || "Member"}
             </p>
@@ -231,6 +240,12 @@ export default function DashboardLayout({
               </span>
             )}
 
+            {/* Demo Badge in Header */}
+            {isDemo && (
+              <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-xs font-bold text-amber-700">
+                <Zap className="w-3 h-3" /> Demo Mode
+              </span>
+            )}
             {/* Notifications icon */}
             <NotificationBadge token={token} />
           </div>
@@ -253,6 +268,11 @@ export default function DashboardLayout({
           <div className="relative w-64 max-w-[80%] bg-white flex flex-col h-full shadow-2xl">
             <div className="h-16 px-6 flex items-center justify-between border-b border-borderSubtle">
               <span className="font-bold text-brand-900 text-lg">ZetaGrow</span>
+              {isDemo && (
+                <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 flex items-center gap-1">
+                  <Zap className="w-2.5 h-2.5" /> Demo
+                </span>
+              )}
               <button
                 onClick={() => setMobileNavOpen(false)}
                 className="p-1 rounded text-textMuted hover:bg-neutral-100"

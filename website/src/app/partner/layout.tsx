@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useAuth } from "@/lib/convex";
+import { useAuth, useDemo } from "@/lib/demo";
 import { useMutation } from "convex/react";
 import { api } from "@/lib/convex";
 import {
@@ -30,6 +30,7 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
   const pathname = usePathname();
   const router = useRouter();
   const { user, token, isLoading, logout } = useAuth();
+  const { isDemo } = useDemo();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
   const logoutMutation = useMutation(api.auth.logout);
@@ -183,7 +184,14 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
             {user.name.charAt(0).toUpperCase()}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-bold text-white truncate">{user.name}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-xs font-bold text-white truncate">{user.name}</p>
+              {isDemo && (
+                <span className="text-[9px] font-bold text-amber-300 bg-amber-950/60 border border-amber-800/70 px-1.5 py-0.5 rounded-full flex items-center gap-1">
+                  <Zap className="w-2.5 h-2.5" /> Demo
+                </span>
+              )}
+            </div>
             {isGrowthPartner ? (
               <span className="inline-flex items-center gap-1 mt-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-300 bg-amber-950/60 border border-amber-800/70 px-1.5 py-0.5 rounded-full">
                 <Crown className="w-2.5 h-2.5" /> Growth Partner
@@ -270,6 +278,11 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
               Session ends in {mm}:{ss}
             </span>
           )}
+          {isDemo && (
+            <span className="hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full bg-amber-950/60 border border-amber-800 text-amber-300">
+              <Zap className="w-3 h-3" /> Demo Mode
+            </span>
+          )}
           <span className="text-[10px] font-bold text-brand-400 bg-brand-950 border border-brand-800 px-2.5 py-1 rounded-full uppercase tracking-wider">
             Partner Program
           </span>
@@ -289,6 +302,11 @@ export default function PartnerLayout({ children }: { children: React.ReactNode 
           <div className="relative w-64 max-w-[80%] bg-[#0F1412] flex flex-col h-full shadow-2xl border-r border-neutral-800">
             <div className="h-16 px-6 flex items-center justify-between border-b border-neutral-800">
               <span className="font-bold text-white text-base">Partner Center</span>
+              {isDemo && (
+                <span className="text-[9px] font-bold text-amber-300 bg-amber-950/60 border border-amber-800/70 px-1.5 py-0.5 rounded-full flex items-center gap-1">
+                  <Zap className="w-2.5 h-2.5" /> Demo
+                </span>
+              )}
               <button onClick={() => setMobileNavOpen(false)} className="p-1 text-neutral-400">
                 <X className="w-5 h-5" />
               </button>

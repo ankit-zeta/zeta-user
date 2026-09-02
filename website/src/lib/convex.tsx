@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { ConvexProvider, ConvexReactClient, useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { DemoProvider } from "./demo";
 
 export { api };
 
@@ -91,7 +92,11 @@ export function useAuth() {
 export function ConvexClientProvider({ children }: { children: ReactNode }) {
   return (
     <ConvexProvider client={convex}>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <DemoProvider>
+          {children}
+        </DemoProvider>
+      </AuthProvider>
     </ConvexProvider>
   );
 }
