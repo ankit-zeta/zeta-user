@@ -140,6 +140,24 @@ export default function CertificatesPage() {
         </div>
       )}
 
+      {/* Hidden certificate cards for PNG/PDF export */}
+      {certificates && certificates.length > 0 && (
+        <div className="fixed -left-[9999px] -top-[9999px] pointer-events-none" aria-hidden>
+          {certificates.map((cert) => (
+            <CertificateCard
+              key={`export-${cert._id}`}
+              domId={`cert-display-${cert.certificateId}`}
+              innerDomId={`cert-display-${cert.certificateId}-inner`}
+              recipientName={cert.recipientName}
+              programName={cert.programName}
+              certificateId={cert.certificateId}
+              issueDate={cert.issueDate}
+              signatureUrl={cert.signatureUrl}
+            />
+          ))}
+        </div>
+      )}
+
       {/* Certificates Grid */}
       {certificates === undefined ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -204,22 +222,20 @@ export default function CertificatesPage() {
             </button>
 
             {/* Visible certificate preview */}
-            <div className="p-4 sm:p-6">
-              <div className="cert-landscape-wrap">
-                <CertificateCard
-                  domId={`cert-display-${previewCert.certificateId}`}
-                  innerDomId={`cert-display-${previewCert.certificateId}-inner`}
-                  recipientName={previewCert.recipientName}
-                  programName={previewCert.programName}
-                  certificateId={previewCert.certificateId}
-                  issueDate={previewCert.issueDate}
-                  signatureUrl={previewCert.signatureUrl}
-                />
-              </div>
+            <div className="p-4 sm:p-6 overflow-hidden cert-modal-preview">
+              <CertificateCard
+                domId={`cert-display-${previewCert.certificateId}`}
+                innerDomId={`cert-display-${previewCert.certificateId}-inner`}
+                recipientName={previewCert.recipientName}
+                programName={previewCert.programName}
+                certificateId={previewCert.certificateId}
+                issueDate={previewCert.issueDate}
+                signatureUrl={previewCert.signatureUrl}
+              />
             </div>
 
             {/* Actions bar */}
-            <div className="sticky bottom-0 bg-white border-t border-borderSubtle p-4 flex flex-wrap items-center justify-center gap-3">
+            <div className="sticky bottom-0 bg-white border-t border-borderSubtle p-4 flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 onClick={() => downloadPng(previewCert)}
                 disabled={exporting !== null}
@@ -305,11 +321,11 @@ function CertificateThumb({
 
   return (
     <div className="card-surface p-4 hover:border-brand-200 hover:shadow-sm transition-all group">
-      <div className="flex gap-4">
+      <div className="flex flex-col sm:flex-row gap-4">
         {/* Mini certificate preview */}
         <button
           onClick={onPreview}
-          className="w-28 h-20 rounded-lg overflow-hidden bg-gradient-to-br from-[#143D2D] to-[#0D2E22] shrink-0 flex items-center justify-center relative group/preview hover:ring-2 hover:ring-brand-400 transition-all"
+          className="w-full sm:w-28 h-32 sm:h-20 rounded-lg overflow-hidden bg-gradient-to-br from-[#143D2D] to-[#0D2E22] shrink-0 flex items-center justify-center relative group/preview hover:ring-2 hover:ring-brand-400 transition-all"
         >
           <span className="text-[#C9A227] text-[10px] font-bold tracking-wider">ZG</span>
           <span className="absolute inset-0 bg-black/0 group-hover/preview:bg-black/20 transition-colors flex items-center justify-center">
@@ -335,7 +351,7 @@ function CertificateThumb({
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-1.5 mt-auto pt-2">
+          <div className="flex items-center gap-1.5 mt-auto pt-2 flex-wrap">
             <button
               onClick={onPreview}
               className="text-[10px] font-semibold text-brand-700 hover:text-brand-800 px-2 py-1 rounded hover:bg-brand-50 transition-colors inline-flex items-center gap-1"
