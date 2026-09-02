@@ -24,7 +24,7 @@ function VerifyInner() {
   const [submitted, setSubmitted] = useState(initialCode);
 
   const verification = useQuery(
-    api.certificates.verifyCertificate,
+    (api as any).certificates.verifyCertificate,
     submitted ? { certificateId: submitted } : "skip"
   );
 
