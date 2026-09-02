@@ -118,7 +118,7 @@ export default function CheckoutPage() {
   // Recovery: a previous attempt was paid (webhook confirmed) but the browser
   // closed before activation finished — offer one-click completion.
   const pendingPaidOrder: any = useQuery(
-    api.paymentsData.getMyPendingPaidOrder,
+    (api as any).paymentsData.getMyPendingPaidOrder,
     token && plan ? { token, planId: plan._id } : "skip"
   );
 
