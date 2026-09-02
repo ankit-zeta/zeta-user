@@ -319,7 +319,14 @@ export default function AdminOverviewPage() {
   const k = data?.kpis;
   const s = data?.series;
   const f = data?.funnel;
-  const p = data?.platform;
+  const p = data?.platform ?? {
+    pendingWithdrawalsCount: 0,
+    pendingWithdrawalAmount: 0,
+    activeJobs: 0,
+    activeUsers: 0,
+    courses: 0,
+    totalUsers: 0,
+  };
 
   // Compute chart padding for y-axis domain
   const signupMax = useMemo(() => {
@@ -980,7 +987,7 @@ export default function AdminOverviewPage() {
                   p.pendingWithdrawalsCount > 0
                     ? "border-amber-200 ring-1 ring-amber-100"
                     : "border-neutral-100"
-                }`}
+                  }`}
               >
                 <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-400 to-amber-500" />
                 <div className="flex items-start justify-between">
