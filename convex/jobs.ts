@@ -265,11 +265,9 @@ export const getJobBySlug = query({
       }
     }
 
-    // Applicant count
-    const appCount = await ctx.db
-      .query("jobApplications")
-      .withIndex("by_jobId", (q) => q.eq("jobId", job._id))
-      .collect();
+    // Applicant count — use stored field for consistency with listing page
+    // This includes any seed/fake counts for new jobs without real applications
+    const applicantCount = (job as any).applicantCount || 0;
 
     return {
       ...job,
@@ -280,7 +278,7 @@ export const getJobBySlug = query({
       isEligible,
       missingRequirements,
       existingApplication,
-      applicantCount: appCount.length,
+      applicantCount,
     };
   },
 });
@@ -337,6 +335,7 @@ export const createJob = mutation({
     attachments: v.optional(v.array(v.string())),
     company: v.optional(v.string()),
     coverImageStorageId: v.optional(v.string()),
+    applicantCount: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const admin = await requireAdmin(ctx, args.token);
@@ -365,6 +364,7 @@ export const createJob = mutation({
       attachments: args.attachments,
       company: args.company,
       coverImageStorageId: args.coverImageStorageId,
+      applicantCount: args.applicantCount || 0,
       createdAt: now,
       updatedAt: now,
     });
@@ -409,6 +409,7 @@ export const updateJob = mutation({
     applicationQuestions: v.array(v.string()),
     company: v.optional(v.string()),
     coverImageStorageId: v.optional(v.string()),
+    applicantCount: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const admin = await requireAdmin(ctx, args.token);
@@ -416,7 +417,7 @@ export const updateJob = mutation({
     if (!prev) throw new Error("Job not found");
 
     const now = Date.now();
-    await ctx.db.patch(args.jobId, {
+    const patchData = {
       title: args.title.trim(),
       slug: args.slug.trim().toLowerCase(),
       shortDescription: args.shortDescription.trim(),
@@ -442,7 +443,13 @@ export const updateJob = mutation({
           ? args.coverImageStorageId
           : prev.coverImageStorageId,
       updatedAt: now,
-    });
+    } as any;
+
+    if (args.applicantCount !== undefined) {
+      patchData.applicantCount = args.applicantCount;
+    }
+
+    await ctx.db.patch(args.jobId, patchData);
 
     await ctx.db.insert("auditLogs", {
       adminUserId: admin._id,
@@ -519,6 +526,7 @@ export const autoCloseExpiredJobs = internalMutation({
 // Seed helper — updates a job with realistic data
 export const updateJobFromSeed = mutation({
   args: {
+    token: v.string(),
     jobId: v.id("jobs"),
     requiredProgramId: v.optional(v.id("programs")),
     payment: v.number(),
@@ -526,6 +534,7 @@ export const updateJobFromSeed = mutation({
     openings: v.number(),
   },
   handler: async (ctx, args) => {
+    await requireAdmin(ctx, args.token);
     await ctx.db.patch(args.jobId, {
       requiredProgramId: args.requiredProgramId,
       payment: args.payment,
