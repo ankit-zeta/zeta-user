@@ -339,7 +339,9 @@ export const processPurchaseWithAffiliate = mutation({
               commissionPaid = commissionAmount;
 
               // ── Chain / upline commissions for plan purchases ──
-              if (affiliateSettings.chainEnabled && referrer.referredBy) {
+              // Only Growth Partners earn chain commissions. Chain only
+              // activates if the direct referrer is also a Growth Partner.
+              if (affiliateSettings.chainEnabled && referrer.referredBy && referrer.partnerTier === "growth_partner") {
                 let currentReferrer = referrer;
                 let chainLevel = 1;
                 let parentSaleChainId: any = planDirectSaleId;
@@ -355,12 +357,22 @@ export const processPurchaseWithAffiliate = mutation({
                     break;
                   }
 
+                  // Only Growth Partners earn chain commissions
+                  if (upline.partnerTier !== "growth_partner") break;
+
                   const chainPct =
                     upline.positionId && affiliateSettings.chainLevels
                       ? affiliateSettings.chainLevels[String(upline.positionId)] || 0
                       : 0;
 
                   if (chainPct <= 0) break;
+
+                  // Depth limit
+                  const maxDepth =
+                    upline.positionId && affiliateSettings.maxChainDepth
+                      ? affiliateSettings.maxChainDepth[String(upline.positionId)] || 1
+                      : 1;
+                  if (chainLevel > maxDepth) break;
 
                   let chainAmount = Math.round((plan.price * chainPct) / 100);
 
@@ -384,7 +396,7 @@ export const processPurchaseWithAffiliate = mutation({
                       commissionAmount: chainAmount,
                       status: "pending",
                       awaitingConsumption: true,
-                      ruleUsed: `${chainPct}% of ₹${plan.price} purchase (Chain level ${chainLevel})`,
+                      ruleUsed: `${chainPct}% of ₹${plan.price} purchase (Chain level ${chainLevel}, max depth ${maxDepth})`,
                       holdingPeriodEndsAt,
                       createdAt: now,
                       updatedAt: now,
@@ -642,111 +654,126 @@ export const processPurchaseWithAffiliate = mutation({
               console.error("Failed to schedule affiliate sale email:", e);
             }
 
-            // ── Chain / upline commissions: walk the full referral chain ──
-            // Each ancestor earns chainPct% of the ORIGINAL purchase amount
-            // (plan.price), not a percentage of the direct commission.
+            // ── Chain / upline commissions: walk the referral chain ──
+            // Only Growth Partners earn chain commissions. The chain only
+            // activates if the DIRECT referrer is also a Growth Partner.
+            // Each upline's chain depth is limited by their own maxChainDepth.
+            // Chain commission = chainPct% of the actual purchase amount.
             if (affiliateSettings.chainEnabled && referrer.referredBy) {
-              let currentReferrer = referrer; // B (the direct referrer)
-              let chainLevel = 1;
-              let parentSaleId = directSaleId;
+              // Chain only activates if the direct referrer is a Growth Partner
+              if (referrer.partnerTier === "growth_partner") {
+                let currentReferrer = referrer; // B (the direct referrer)
+                let chainLevel = 1;
+                let parentSaleId = directSaleId;
 
-              while (currentReferrer.referredBy) {
-                const upline = await ctx.db.get(currentReferrer.referredBy);
-                if (
-                  !upline ||
-                  upline._id.toString() === currentReferrer._id.toString() ||
-                  upline._id.toString() === buyer._id.toString() ||
-                  upline.status !== "active"
-                ) {
-                  break; // end of chain or invalid link
-                }
+                while (currentReferrer.referredBy) {
+                  const upline = await ctx.db.get(currentReferrer.referredBy);
+                  if (
+                    !upline ||
+                    upline._id.toString() === currentReferrer._id.toString() ||
+                    upline._id.toString() === buyer._id.toString() ||
+                    upline.status !== "active"
+                  ) {
+                    break; // end of chain or invalid link
+                  }
 
-                const chainPct =
-                  upline.positionId && affiliateSettings.chainLevels
-                    ? affiliateSettings.chainLevels[String(upline.positionId)] || 0
-                    : 0;
+                  // Only Growth Partners earn chain commissions
+                  if (upline.partnerTier !== "growth_partner") break;
 
-                if (chainPct <= 0) break; // upline has no chain % — stop walking
+                  const chainPct =
+                    upline.positionId && affiliateSettings.chainLevels
+                      ? affiliateSettings.chainLevels[String(upline.positionId)] || 0
+                      : 0;
 
-                // Chain commission = percentage of the ACTUAL purchase amount
-                const purchaseAmount = program.price;
-                let chainAmount = Math.round((purchaseAmount * chainPct) / 100);
+                  if (chainPct <= 0) break; // upline has no chain % — stop
 
-                // Per-sale cap for the upline, scaled by their position
-                if (affiliateSettings.perSaleCap && affiliateSettings.perSaleCap > 0) {
-                  const chainPosMultiplier = await getPositionMultiplier(
-                    ctx,
-                    upline._id,
-                    affiliateSettings.positionMultipliers
-                  );
-                  const chainCap = Math.round(affiliateSettings.perSaleCap * chainPosMultiplier);
-                  if (chainAmount > chainCap) chainAmount = chainCap;
-                }
+                  // Depth limit: each upline's maxChainDepth (keyed by positionId)
+                  const maxDepth =
+                    upline.positionId && affiliateSettings.maxChainDepth
+                      ? affiliateSettings.maxChainDepth[String(upline.positionId)] || 1
+                      : 1;
+                  if (chainLevel > maxDepth) break; // exceeded this upline's depth
 
-                if (chainAmount > 0) {
-                  const chainSaleId = await ctx.db.insert("affiliateSales", {
-                    purchaseId,
-                    buyerUserId: buyer._id,
-                    referrerUserId: upline._id,
-                    programId: args.programId,
-                    saleAmount: purchaseAmount,
-                    commissionAmount: chainAmount,
-                    status: "pending",
-                    awaitingConsumption: true,
-                    ruleUsed: `${chainPct}% of ₹${purchaseAmount} purchase (Chain level ${chainLevel})`,
-                    holdingPeriodEndsAt,
-                    createdAt: now,
-                    updatedAt: now,
-                    kind: "chain",
-                    parentSaleId,
-                    chainLevel,
-                    baseCommissionAmount: purchaseAmount,
-                  });
+                  // Chain commission = percentage of the ACTUAL purchase amount
+                  const purchaseAmount = program.price;
+                  let chainAmount = Math.round((purchaseAmount * chainPct) / 100);
 
-                  let uplineWallet = await ctx.db
-                    .query("wallets")
-                    .withIndex("by_userId", (q) => q.eq("userId", upline._id))
-                    .first();
+                  // Per-sale cap for the upline, scaled by their position
+                  if (affiliateSettings.perSaleCap && affiliateSettings.perSaleCap > 0) {
+                    const chainPosMultiplier = await getPositionMultiplier(
+                      ctx,
+                      upline._id,
+                      affiliateSettings.positionMultipliers
+                    );
+                    const chainCap = Math.round(affiliateSettings.perSaleCap * chainPosMultiplier);
+                    if (chainAmount > chainCap) chainAmount = chainCap;
+                  }
 
-                  if (!uplineWallet) {
-                    const walletId = await ctx.runMutation(internal.auth.createWallet, {
+                  if (chainAmount > 0) {
+                    const chainSaleId = await ctx.db.insert("affiliateSales", {
+                      purchaseId,
+                      buyerUserId: buyer._id,
+                      referrerUserId: upline._id,
+                      programId: args.programId,
+                      saleAmount: purchaseAmount,
+                      commissionAmount: chainAmount,
+                      status: "pending",
+                      awaitingConsumption: true,
+                      ruleUsed: `${chainPct}% of ₹${purchaseAmount} purchase (Chain level ${chainLevel}, max depth ${maxDepth})`,
+                      holdingPeriodEndsAt,
+                      createdAt: now,
+                      updatedAt: now,
+                      kind: "chain",
+                      parentSaleId,
+                      chainLevel,
+                      baseCommissionAmount: purchaseAmount,
+                    });
+
+                    let uplineWallet = await ctx.db
+                      .query("wallets")
+                      .withIndex("by_userId", (q) => q.eq("userId", upline._id))
+                      .first();
+
+                    if (!uplineWallet) {
+                      const walletId = await ctx.runMutation(internal.auth.createWallet, {
+                        userId: upline._id,
+                        availableBalance: 0,
+                        pendingBalance: 0,
+                        totalEarned: 0,
+                        totalWithdrawn: 0,
+                        workEarnings: 0,
+                        affiliateEarnings: 0,
+                        updatedAt: now,
+                      });
+                      uplineWallet = await ctx.db.get(walletId);
+                    }
+
+                    if (uplineWallet) {
+                      await ctx.db.patch(uplineWallet._id, {
+                        pendingBalance: uplineWallet.pendingBalance + chainAmount,
+                        updatedAt: now,
+                      });
+                    }
+
+                    await ctx.db.insert("notifications", {
                       userId: upline._id,
-                      availableBalance: 0,
-                      pendingBalance: 0,
-                      totalEarned: 0,
-                      totalWithdrawn: 0,
-                      workEarnings: 0,
-                      affiliateEarnings: 0,
-                      updatedAt: now,
+                      type: "affiliate",
+                      title: "Chain Commission Earned!",
+                      message: `You earned ₹${chainAmount} (level ${chainLevel}) from ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
+                      read: false,
+                      actionUrl: "/partner",
+                      createdAt: now,
                     });
-                    uplineWallet = await ctx.db.get(walletId);
+
+                    // Continue walking up: this upline's chain sale becomes the parent
+                    parentSaleId = chainSaleId;
+                  } else {
+                    break; // no commission at this level — stop
                   }
 
-                  if (uplineWallet) {
-                    await ctx.db.patch(uplineWallet._id, {
-                      pendingBalance: uplineWallet.pendingBalance + chainAmount,
-                      updatedAt: now,
-                    });
-                  }
-
-                  await ctx.db.insert("notifications", {
-                    userId: upline._id,
-                    type: "affiliate",
-                    title: "Chain Commission Earned!",
-                    message: `You earned ₹${chainAmount} (level ${chainLevel}) from ${buyer.name}'s purchase of "${program.name}". (Pending holding period).`,
-                    read: false,
-                    actionUrl: "/partner",
-                    createdAt: now,
-                  });
-
-                  // Continue walking up: this upline's chain sale becomes the parent
-                  parentSaleId = chainSaleId;
-                } else {
-                  break; // no commission at this level — stop
+                  currentReferrer = upline;
+                  chainLevel++;
                 }
-
-                currentReferrer = upline;
-                chainLevel++;
               }
             }
           }

@@ -49,6 +49,7 @@ import type * as seedJobs from "../seedJobs.js";
 import type * as settings from "../settings.js";
 import type * as supportTickets from "../supportTickets.js";
 import type * as tds from "../tds.js";
+import type * as testing from "../testing.js";
 import type * as users from "../users.js";
 import type * as wallets from "../wallets.js";
 import type * as withdrawals from "../withdrawals.js";
@@ -102,6 +103,7 @@ declare const fullApi: ApiFromModules<{
   settings: typeof settings;
   supportTickets: typeof supportTickets;
   tds: typeof tds;
+  testing: typeof testing;
   users: typeof users;
   wallets: typeof wallets;
   withdrawals: typeof withdrawals;

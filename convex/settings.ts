@@ -112,6 +112,7 @@ const SETTING_SCHEMAS: Record<string, any> = {
     positionMultipliers: "any",
     chainEnabled: "boolean",
     chainLevels: "any",
+    maxChainDepth: "any",
   },
   dividends: {
     enabled: "boolean",
