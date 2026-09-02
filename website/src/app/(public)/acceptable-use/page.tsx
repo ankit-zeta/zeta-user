@@ -35,6 +35,9 @@ export default function AcceptableUsePage() {
             <li>Use the Platform for any illegal activity, including money laundering, fraud, or tax evasion.</li>
             <li>Attempt to manipulate Work Marketplace ratings, reviews, or selection processes.</li>
             <li>Create multiple accounts to circumvent restrictions or manipulate referral commissions.</li>
+            <li>Make false, misleading, or unauthorized claims about ZetaGrow's services, guarantees, employment prospects, income potential, salary, stipend, or internship offerings.</li>
+            <li>Impersonate ZetaGrow employees, representatives, or partners to induce purchases or payments.</li>
+            <li>File frivolous, malicious, or bad-faith complaints, lawsuits, or regulatory actions against ZetaGrow based on unauthorized promises or misrepresentations.</li>
           </ul>
         </section>
 

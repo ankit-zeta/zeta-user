@@ -14,7 +14,20 @@ export default function DisclaimerPage() {
       <div className="prose prose-sm max-w-none text-textMuted space-y-8 text-sm leading-relaxed">
         <div className="bg-red-50 border border-red-200 rounded-xl p-5 mb-8">
           <h2 className="font-bold text-red-800 mb-2">Important: No Income Guarantees</h2>
-          <p className="text-red-700">ZetaGrow is an <strong>education and skills development platform</strong>. We provide structured curricula, verifiable credentials, and access to a curated work marketplace. <strong>We do not guarantee, promise, or imply any specific income, earnings, financial returns, job placement, or career outcomes.</strong> Any results achieved by other Users are individual cases and do not guarantee, indicate, or imply similar results for you.</p>
+          <p className="text-red-700">ZetaGrow is an <strong>education and skills development platform</strong>. We provide structured curricula, verifiable credentials, and access to a curated work marketplace. <strong>We do not guarantee, promise, or imply any specific income, earnings, financial returns, job placement, internship, stipend, salary, or career outcomes.</strong> Any results achieved by other Users are individual cases and do not guarantee, indicate, or imply similar results for you.</p>
+        </div>
+
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+          <h2 className="font-bold text-amber-800 mb-2">No One From ZetaGrow Will Call You</h2>
+          <p className="text-amber-700 text-sm leading-relaxed">
+            <strong>ZetaGrow does not make unsolicited phone calls to sell programs, collect payments, or guarantee employment.</strong> Our marketing is conducted exclusively through digital channels (online ads, social media, email). If someone calls you claiming to represent ZetaGrow and guarantees a salary, stipend, internship, job, or specific income:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 text-amber-700 text-sm mt-3">
+            <li>That person is <strong>not authorized</strong> by ZetaGrow.</li>
+            <li>Any such guarantee is <strong>void and unenforceable</strong> against ZetaGrow.</li>
+            <li>ZetaGrow is <strong>not liable</strong> for any purchase or payment made based on such unauthorized promises.</li>
+            <li>You should report such calls to <a href="mailto:hey@zetagrow.in" className="underline font-medium">hey@zetagrow.in</a> immediately.</li>
+          </ul>
         </div>
 
         <section className="space-y-3">
@@ -28,12 +41,13 @@ export default function DisclaimerPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="font-bold text-textMain">2. No Job or Employment Guarantee</h2>
+          <h2 className="font-bold text-textMain">2. No Job, Employment, Internship, Stipend, or Salary Guarantee</h2>
           <ul className="list-disc pl-6 space-y-2 text-textMuted">
-            <li>Completing any Program, earning a Certificate, or creating a profile does <strong>not</strong> guarantee employment, project selection, or any form of paid engagement.</li>
+            <li>Completing any Program, earning a Certificate, or creating a profile does <strong>not</strong> guarantee employment, internship, project selection, stipend, salary, or any form of paid engagement.</li>
             <li>The Work Marketplace is a curated marketplace connecting qualified Users with Clients. Work selection is determined solely by Client requirements, competitive evaluation, and merit-based criteria.</li>
             <li>There is no guarantee of daily work, consistent project flow, minimum income, or any specific volume of work opportunities.</li>
             <li>Project availability fluctuates based on Client demand, market conditions, and seasonal factors outside ZetaGrow's control.</li>
+            <li><strong>No ZetaGrow employee, representative, or partner is authorized to guarantee you a fixed salary, stipend, internship, job placement, or any specific income.</strong> Any such promise is unauthorized, void, and does not bind ZetaGrow.</li>
           </ul>
         </section>
 
@@ -102,7 +116,19 @@ export default function DisclaimerPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="font-bold text-textMain">9. Contact</h2>
+          <h2 className="font-bold text-textMain">9. Reverse Action for False or Frivolous Claims</h2>
+          <p>Zetagrow Edutech and Solutions (ZetaGrow) reserves the right to initiate counter-legal proceedings against any individual or entity who files frivolous, malicious, or bad-faith complaints, lawsuits, or regulatory actions based on:</p>
+          <ul className="list-disc pl-6 space-y-2 text-textMuted">
+            <li>Unauthorized promises made by third parties not employed by or authorized by ZetaGrow.</li>
+            <li>Misrepresentation of ZetaGrow's services, guarantees, or policies.</li>
+            <li>Claims contradicted by the express terms of these policies which the user acknowledged and agreed to.</li>
+            <li>Attempts to coerce settlement through baseless litigation.</li>
+          </ul>
+          <p className="mt-2">In such cases, ZetaGrow will seek full recovery of all legal costs, damages, lost business, and reputational harm caused by such frivolous actions, to the maximum extent permitted by applicable law.</p>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="font-bold text-textMain">10. Contact</h2>
           <p>Questions about this Disclaimer? Contact <a href="mailto:legal@zetagrow.com" className="text-brand-700 underline">legal@zetagrow.com</a>.</p>
         </section>
 

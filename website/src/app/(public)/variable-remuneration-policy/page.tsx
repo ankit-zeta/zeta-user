@@ -16,9 +16,11 @@ const sections = [
     h: "2. Core Principles",
     list: [
       "Product-only basis — remuneration exists only after a completed, paid course purchase by another person. No payment is made for sign-ups, clicks, traffic or recruitment.",
-      "Single level — remuneration is paid only on purchases made by learners you personally referred. There are no team, group, or override structures of any kind.",
+      "Single level only — remuneration is paid only on purchases made by learners you personally referred. There are no tiers, teams, group structures, chain commissions, multi-level earnings, team overrides, or any form of override structure of any kind.",
+      "No chain or team earnings — ZetaGrow does not operate any chain commission, multi-level, or group earning structure. The Partner Program is a single-level referral reward for genuine course purchases — nothing more.",
       "Genuine consumption required — every sale must pass a consumption check before the associated remuneration becomes active (see Section 4).",
       "No guarantees — participation does not guarantee any referral activity, income or outcome. Remuneration is variable and depends entirely on third-party purchase decisions.",
+      "No salary, stipend, or internship — no ZetaGrow employee, representative, or partner is authorized to guarantee you a fixed salary, stipend, internship, job placement, or any specific income. Any such promise is unauthorized and does not bind ZetaGrow.",
     ],
   },
   {
@@ -60,6 +62,10 @@ const sections = [
   {
     h: "9. Relationship to ZetaGrow",
     p: "Participants in the partner program act as independent promoters of our courses. Nothing in this policy creates employment, agency, partnership or joint venture. Participation is optional and separate from learning; you may use all purchased courses fully without ever referring anyone.",
+  },
+  {
+    h: "10. Reverse Action for False or Frivolous Claims",
+    p: "ZetaGrow reserves the right to initiate counter-legal proceedings against any individual or entity who files frivolous, malicious, or bad-faith complaints, lawsuits, or regulatory actions against ZetaGrow based on: (i) unauthorized promises made by third parties not employed by ZetaGrow; (ii) misrepresentation of this policy or the Partner Program; (iii) claims contradicted by the express terms of this policy which the user acknowledged and agreed to. In such cases, ZetaGrow will seek full recovery of all legal costs, damages, lost business, and reputational harm.",
   },
 ];
 

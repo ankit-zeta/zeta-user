@@ -13,9 +13,9 @@ export default function RefundPolicyPage() {
 
       <div className="prose prose-sm max-w-none text-textMuted space-y-8 text-sm leading-relaxed">
         <div className="bg-green-50 border border-green-200 rounded-xl p-5 mb-8">
-          <h2 className="font-bold text-green-800 mb-2">No Pressure, No Force Selling</h2>
+          <h2 className="font-bold text-green-800 mb-2">No Pressure, No Force Selling, No Guarantees</h2>
           <p className="text-green-700">
-            <strong>ZetaGrow does not force, pressure, or coerce anyone into purchasing courses or any other service.</strong> Every purchase is entirely voluntary and made at your own discretion. We are an education platform — we sell courses, and that is all. You are never required to buy anything to use our platform, access free content, or apply to work opportunities. If you ever feel pressured into making a purchase, contact us immediately at <a href="mailto:hey@zetagrow.in" className="underline font-medium">hey@zetagrow.in</a>.
+            <strong>ZetaGrow does not force, pressure, or coerce anyone into purchasing courses or any other service.</strong> Every purchase is entirely voluntary and made at your own discretion. We are an education platform — we sell courses, and that is all. You are never required to buy anything to use our platform, access free content, or apply to work opportunities. <strong>ZetaGrow does not guarantee any salary, stipend, internship, job placement, or income.</strong> No ZetaGrow employee or representative will call you to sell programs. If you ever feel pressured into making a purchase, contact us immediately at <a href="mailto:hey@zetagrow.in" className="underline font-medium">hey@zetagrow.in</a>.
           </p>
         </div>
 

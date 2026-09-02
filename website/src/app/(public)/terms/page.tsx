@@ -47,16 +47,18 @@ export default function TermsPage() {
         </section>
 
         <div className="bg-green-50 border border-green-200 rounded-xl p-5 my-6">
-          <h2 className="font-bold text-green-800 mb-2">Our Commitment: No Pressure, No Force Selling</h2>
+          <h2 className="font-bold text-green-800 mb-2">Our Commitment: No Pressure, No Force Selling, No Misleading Guarantees</h2>
           <p className="text-green-700 text-sm leading-relaxed">
             <strong>ZetaGrow does not engage in force selling, high-pressure tactics, or aggressive sales practices.</strong> We are an education platform with a work portal — nothing more. Here is what this means for you:
           </p>
           <ul className="list-disc pl-6 space-y-2 text-green-700 text-sm mt-3">
             <li><strong>Complete freedom of choice:</strong> Every purchase decision is entirely yours. You are never required, obligated, or pressured to buy any course, plan, or service.</li>
             <li><strong>No mandatory purchases:</strong> You can create an account, access free content, apply to work opportunities, and use platform features without spending any money.</li>
-            <li><strong>No pressure to earn:</strong> The affiliate referral program is completely optional. You never have to recruit, sell, or promote anything to anyone.</li>
+            <li><strong>No pressure to earn:</strong> The Partner Program is completely optional. You never have to recruit, sell, or promote anything to anyone.</li>
             <li><strong>No hidden obligations:</strong> There are no hidden fees, mandatory upsells, or required purchases to maintain your account or access features.</li>
             <li><strong>Respectful communication:</strong> We will never use fear, urgency, guilt, or misleading claims to encourage purchases. Our marketing is informational, not coercive.</li>
+            <li><strong>No calls to sell:</strong> ZetaGrow does not make unsolicited phone calls to sell programs. Our marketing is through digital channels only.</li>
+            <li><strong>No income, salary, or internship guarantees:</strong> No ZetaGrow employee, representative, or partner is authorized to guarantee you a fixed salary, stipend, internship, job placement, or any specific income. Any such promise is unauthorized and does not bind ZetaGrow.</li>
             <li><strong>Right to walk away:</strong> You may stop using the Platform at any time. There are no cancellation fees, no lock-in periods, and no penalties for not purchasing.</li>
           </ul>
           <p className="text-green-700 text-sm mt-3">
@@ -69,7 +71,7 @@ export default function TermsPage() {
           <p>The Work Marketplace is a <strong>curated marketplace</strong> connecting qualified Users with Clients posting project opportunities. Participation is governed by the following principles:</p>
           <ul className="list-disc pl-6 space-y-2 text-textMuted">
             <li><strong>No Purchase Necessary:</strong> Many listings require no certificate whatsoever — selection for those is based purely on CV, portfolio, and relevant experience. Where a specific listing references a ZetaGrow certificate as a prerequisite, that reflects the end-client's demand for verified skills on their project (we deliver this client work ourselves and must uphold quality), never a tactic to drive course sales.</li>
-            <li><strong>No Employment Guarantee:</strong> Completing any Program, earning a Certificate, or applying to a project does <strong>not</strong> guarantee employment, project selection, or any form of income — before or after certification. The marketplace is competitive, and work is awarded to the candidate whose skills and experience best match each brief. Work selection is determined solely by Client requirements, deliverable quality standards, and competitive evaluation.</li>
+            <li><strong>No Employment Guarantee:</strong> Completing any Program, earning a Certificate, or applying to a project does <strong>not</strong> guarantee employment, project selection, internship, stipend, salary, or any form of income — before or after certification. The marketplace is competitive, and work is awarded to the candidate whose skills and experience best match each brief. Work selection is determined solely by Client requirements, deliverable quality standards, and competitive evaluation.</li>
             <li><strong>Merit-Based Selection:</strong> Clients evaluate applications based on demonstrated skills, Certificate verification where applicable, portfolio quality, proposed deliverables, and competitive pricing. Zetagrow Edutech and Solutions (ZetaGrow) does not influence or guarantee selection outcomes.</li>
             <li><strong>No Daily Work Guarantee:</strong> The Work Marketplace does not promise daily work, consistent project flow, or minimum income. Project availability fluctuates based on Client demand.</li>
             <li><strong>Independent Contractor Status:</strong> Any work performed through the Marketplace is as an independent contractor. You are responsible for your own taxes, benefits, and compliance with local laws.</li>
@@ -77,16 +79,30 @@ export default function TermsPage() {
           </ul>
         </section>
 
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 my-6">
+          <h2 className="font-bold text-amber-800 mb-2">Important: No One From ZetaGrow Will Call You to Sell</h2>
+          <p className="text-amber-700 text-sm leading-relaxed">
+            <strong>ZetaGrow does not make unsolicited phone calls to sell programs or collect payments.</strong> Our marketing is conducted exclusively through digital advertising (online ads, social media, email campaigns). Here is what this means:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 text-amber-700 text-sm mt-3">
+            <li><strong>No cold calls:</strong> ZetaGrow employees, representatives, or partners will never call you to pressure you into buying a program or making a payment.</li>
+            <li><strong>No salary, stipend, or internship guarantees:</strong> No ZetaGrow employee, representative, or partner is authorized to guarantee you a fixed salary, stipend, internship, job placement, or any specific income. Any such promise made by any person is unauthorized and does not bind ZetaGrow.</li>
+            <li><strong>No chain or team earnings:</strong> ZetaGrow does not operate any chain commission, team override, multi-level, or group earning structure. The Partner Program is a single-level referral reward for genuine course purchases — nothing more.</li>
+            <li><strong>Your decision, your responsibility:</strong> Any decision to purchase a program is entirely yours and yours alone. ZetaGrow is not responsible for any purchase made based on unauthorized promises by third parties.</li>
+          </ul>
+        </div>
+
         <section className="space-y-3">
-          <h2 className="font-bold text-textMain">5. Referral Program — Optional & Product-Centric</h2>
-          <p>Our optional Referral Program allows Users to earn referral commissions by referring new Customers who purchase Programs. The program operates under these strict principles:</p>
+          <h2 className="font-bold text-textMain">5. Partner Program — Optional & Product-Centric</h2>
+          <p>Our optional Partner Program allows Users to earn partner remuneration by referring new Customers who purchase Programs. The program operates under these strict principles:</p>
           <ul className="list-disc pl-6 space-y-2 text-textMuted">
-            <li><strong>ZetaGrow is not an MLM, pyramid, network-marketing, recruitment, or investment scheme.</strong> We sell one thing: education. There are no positions to buy, no teams to build, no earnings from sign-ups alone, and no returns promised on any payment. Any suggestion otherwise misrepresents the Platform.</li>
-            <li><strong>Nothing to Sell:</strong> You are never asked, incentivized beyond stated commissions, or required to sell, recruit, promote, or market anything to anyone. Treating referrals as anything other than a minor courtesy is against these Terms.</li>
-            <li><strong>Product-Centric:</strong> Commissions are generated <strong>only</strong> upon the genuine retail purchase of a legitimate Program by a new Customer who receives full access to the curriculum. No commission is paid for recruitment, enrollment, or sign-ups alone.</li>
+            <li><strong>ZetaGrow is not an MLM, pyramid, network-marketing, recruitment, or investment scheme.</strong> We sell one thing: education. There are no positions to buy, no teams to build, no chain commissions, no multi-level earnings, no team overrides, and no returns promised on any payment. Any suggestion otherwise misrepresents the Platform.</li>
+            <li><strong>Single-Level Only:</strong> Partner remuneration is paid <strong>only</strong> on purchases made by customers you personally referred. There are no tiers, teams, group structures, chain commissions, or override earnings of any kind.</li>
+            <li><strong>Nothing to Sell:</strong> You are never asked, incentivized beyond stated remuneration, or required to sell, recruit, promote, or market anything to anyone. Treating referrals as anything other than a minor courtesy is against these Terms.</li>
+            <li><strong>Product-Centric:</strong> Remuneration is generated <strong>only</strong> upon the genuine retail purchase of a legitimate Program by a new Customer who receives full access to the curriculum. No remuneration is paid for recruitment, enrollment, or sign-ups alone.</li>
             <li><strong>Voluntary Participation:</strong> Enrollment is optional and auxiliary to the genuine educational value of the Programs. You may use the Platform fully without participating.</li>
-            <li><strong>Prohibited Conduct:</strong> Self-referrals, circular referrals, fraudulent loops, misleading income representations, promising guaranteed earnings, presenting the Referral Program as an investment or passive income opportunity, and any form of spam or deceptive marketing are strictly prohibited and will result in immediate account termination and forfeiture of pending commissions.</li>
-            <li><strong>Commission Holding Period:</strong> Commissions are held for a standard period to account for refund windows and chargebacks before becoming available for withdrawal.</li>
+            <li><strong>Prohibited Conduct:</strong> Self-referrals, circular referrals, fraudulent loops, misleading income representations, promising guaranteed earnings, presenting the Partner Program as an investment or passive income opportunity, and any form of spam or deceptive marketing are strictly prohibited and will result in immediate account termination and forfeiture of pending remuneration.</li>
+            <li><strong>Remuneration Holding Period:</strong> Remuneration is held for a standard period to account for refund windows and chargebacks before becoming available for withdrawal.</li>
           </ul>
         </section>
 
@@ -129,8 +145,10 @@ export default function TermsPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="font-bold text-textMain">10. Indemnification</h2>
+          <h2 className="font-bold text-textMain">10. Indemnification & Reverse Action for Frivolous Claims</h2>
           <p className="text-textMuted">You agree to indemnify, defend, and hold harmless Zetagrow Edutech and Solutions (ZetaGrow) and its affiliates, officers, employees, and agents from and against any claims, damages, losses, liabilities, and expenses (including reasonable attorneys' fees) arising from or related to: (a) your use of the Platform in violation of these Terms; (b) your violation of any third-party rights; (c) your content, submissions, or deliverables; (d) your negligence or willful misconduct.</p>
+          <p className="text-textMuted mt-3"><strong>Reverse Action for False or Frivolous Complaints:</strong> Zetagrow reserves the right to initiate counter-legal proceedings against any individual or entity who files frivolous, malicious, or bad-faith complaints, lawsuits, or regulatory actions against ZetaGrow, its founders, directors, employees, or agents — particularly where such actions are based on: (i) unauthorized promises made by third parties not employed by or authorized by ZetaGrow; (ii) misrepresentation of the Platform's services, policies, or guarantees; (iii) claims contradicted by the express terms of these policies which the user acknowledged and agreed to; or (iv) attempts to coerce settlement through baseless litigation. In such cases, ZetaGrow will seek full recovery of all legal costs, damages, lost business, and reputational harm caused by such frivolous actions, to the maximum extent permitted by applicable law.</p>
+          <p className="text-textMuted mt-3"><strong>Acknowledgment:</strong> By creating an account or using the Platform, you acknowledge that you have read, understood, and agreed to all policies linked from the signup page and the Terms of Service. You further acknowledge that no ZetaGrow employee, representative, or partner has made any promise, guarantee, or representation contrary to the express terms of these policies. Any such unauthorized promise is void and does not create liability for ZetaGrow.</p>
         </section>
 
         <section className="space-y-3">

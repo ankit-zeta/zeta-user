@@ -23,7 +23,9 @@ return (
           <li>You never have to buy anything to join, learn freely where content is free, or apply for any opportunity.</li>
           <li>You never have to sell, recruit, or promote anything to anyone.</li>
           <li>ZetaGrow is <strong>not</strong> an MLM, pyramid, network-marketing, or investment scheme — we sell education, nothing else.</li>
+          <li>There are <strong>no chain commissions, team overrides, multi-level earnings, or group structures</strong> — remuneration is single-level only.</li>
           <li>No earnings are guaranteed from partner remuneration or from work. Both are competitive and merit-based.</li>
+          <li>No ZetaGrow employee or representative will call you to sell programs or guarantee salary, stipend, internship, or income.</li>
         </ul>
       </div>
 
@@ -38,8 +40,9 @@ return (
           <ul className="list-disc pl-6 space-y-2 text-textMuted">
             <li><strong>Purchase-based:</strong> A remuneration is credited when a new customer completes a genuine purchase of a program through your unique partner link and receives full curriculum access.</li>
             <li><strong>Optional:</strong> Participation is entirely voluntary. All learning and work features of the platform are fully available whether or not you take part.</li>
-            <li><strong>Direct and single-level:</strong> You earn on customers you personally refer. The program has no tiers, teams, group structures, or override remuneration.</li>
+            <li><strong>Direct and single-level:</strong> You earn on customers you personally refer. The program has no tiers, teams, group structures, chain commissions, multi-level earnings, or override remuneration.</li>
             <li><strong>No rewards for sign-ups alone:</strong> Only completed program purchases generate remuneration.</li>
+            <li><strong>No one will call you:</strong> ZetaGrow does not make unsolicited phone calls to sell programs. Our marketing is through digital channels only.</li>
           </ul>
         </section>
 
@@ -109,6 +112,11 @@ return (
         <section className="space-y-3">
           <h2 className="font-bold text-textMain">8. Contact</h2>
           <p>Questions about the Partner Program? Contact <a href="mailto:hey@zetagrow.in" className="text-brand-700 underline">hey@zetagrow.in</a>.</p>
+        </section>
+
+        <section className="bg-amber-50 border border-amber-200 rounded-xl p-5 space-y-3">
+          <h2 className="font-bold text-amber-800">Reverse Action for False or Frivolous Claims</h2>
+          <p className="text-amber-700 text-sm">ZetaGrow reserves the right to initiate counter-legal proceedings against any individual or entity who files frivolous, malicious, or bad-faith complaints, lawsuits, or regulatory actions based on: (i) unauthorized promises made by third parties not employed by ZetaGrow; (ii) misrepresentation of the Partner Program or these guidelines; (iii) claims contradicted by the express terms of these policies which the user acknowledged and agreed to.</p>
         </section>
 
         <div className="pt-8 border-t border-borderSubtle">
