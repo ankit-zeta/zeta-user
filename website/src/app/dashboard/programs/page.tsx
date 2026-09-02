@@ -106,7 +106,13 @@ export default function MyProgramsPage() {
       </div>
 
       {/* Enrolled Programs */}
-      {enrolledPrograms === undefined ? (
+      {enrolledIds.length === 0 ? (
+        <div className="space-y-4">
+          <p className="text-xs text-textMuted">
+            You haven't enrolled in any programs yet. Browse available programs below to get started.
+          </p>
+        </div>
+      ) : enrolledPrograms === undefined ? (
         <div className="space-y-4">
           <div className="h-6 bg-neutral-200 rounded w-48 animate-pulse" />
           <div className="flex gap-4 overflow-hidden">
