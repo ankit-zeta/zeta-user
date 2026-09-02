@@ -83,18 +83,18 @@ export default function CheckoutPage() {
   const { user, token } = useAuth();
 
   const plan: any = useQuery(
-    api.plans.getPlanBySlug,
+    (api as any).plans.getPlanBySlug,
     slug ? { slug } : "skip"
   );
 
-  const rzpConfig: any = useQuery(api.paymentsConfig.getRazorpayConfig);
+  const rzpConfig: any = useQuery((api as any).paymentsConfig.getRazorpayConfig);
   const gst = useGst();
 
-  const createOrder = useAction(api.payments.createRazorpayOrder);
-  const verifyPayment = useAction(api.payments.verifyRazorpayPayment);
-  const cancelOrder = useAction(api.payments.cancelRazorpayOrder);
+  const createOrder = useAction((api as any).payments.createRazorpayOrder);
+  const verifyPayment = useAction((api as any).payments.verifyRazorpayPayment);
+  const cancelOrder = useAction((api as any).payments.cancelRazorpayOrder);
   const completePurchase = useMutation(
-    api.affiliates.processPurchaseWithAffiliate
+    (api as any).affiliates.processPurchaseWithAffiliate
   );
 
   const [agreeTerms, setAgreeTerms] = useState(false);
