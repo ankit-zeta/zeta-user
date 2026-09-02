@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/convex";
 import { useQuery } from "convex/react";
@@ -259,15 +259,9 @@ export default function CertificatesPage() {
               <X className="w-4 h-4" />
             </button>
 
-            {/* Certificate preview — scales to fit while preserving landscape ratio */}
+            {/* Certificate preview — natural size, no forced aspect ratio */}
             <div className="flex-1 flex items-center justify-center p-3 sm:p-6 overflow-hidden bg-neutral-100">
-              <div
-                className="w-full"
-                style={{
-                  maxWidth: `${CERT_CANONICAL_WIDTH}px`,
-                  aspectRatio: `${CERT_ASPECT_RATIO}`,
-                }}
-              >
+              <div className="w-full" style={{ maxWidth: `${CERT_CANONICAL_WIDTH}px` }}>
                 <CertificateCard
                   previewMode
                   recipientName={previewCert.recipientName}

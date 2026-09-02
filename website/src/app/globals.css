@@ -520,12 +520,6 @@
 .cert-export-mode .sm\:w-\[104px\] { width: 104px; }
 .cert-export-mode .sm\:h-\[126px\] { height: 126px; }
 
-/* ── Certificate preview modal ──── */
-.cert-modal-preview {
-  position: relative;
-  width: 100%;
-}
-
 .cert-preview-card {
   animation: certFadeUp 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
