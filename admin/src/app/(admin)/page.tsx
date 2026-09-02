@@ -358,21 +358,21 @@ export default function AdminOverviewPage() {
                 },
               ]
             : []),
-          ...(f.cancelled + f.failed > 0
+          ...((f?.cancelled || 0) + (f?.failed || 0) > 0
             ? [
                 {
                   href: "/payments",
                   severity: "warning" as const,
                   text: (
                     <>
-                      <strong>{f.cancelled + f.failed}</strong> checkout
-                      {f.cancelled + f.failed === 1 ? "" : "s"} dropped
+                      <strong>{(f?.cancelled || 0) + (f?.failed || 0)}</strong> checkout
+                      {(f?.cancelled || 0) + (f?.failed || 0) === 1 ? "" : "s"} dropped
                     </>
                   ),
                 },
               ]
             : []),
-          ...(k.profitAfterTax < 0
+          ...((k?.profitAfterTax || 0) < 0
             ? [
                 {
                   href: "/expenses",
