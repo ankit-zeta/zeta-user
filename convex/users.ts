@@ -100,6 +100,7 @@ function isValidAvatarUrl(url: string): boolean {
 // ── Admin: create a user account directly ───────────────────────────────────
 // Account is created active + email-verified (admin vouches for the person),
 // with wallet + referral code initialized like normal signup. Audit-logged.
+// Supports "demo" accounts with fake balances/transactions for showcase.
 export const adminCreateUser = mutation({
   args: {
     token: v.string(),
@@ -108,6 +109,16 @@ export const adminCreateUser = mutation({
     password: v.string(),
     phone: v.optional(v.string()),
     sendWelcomeEmail: v.optional(v.boolean()),
+    // Demo account fields
+    accountType: v.optional(v.union(v.literal("real"), v.literal("demo"))),
+    demoConfig: v.optional(v.object({
+      workBalance: v.optional(v.number()),
+      partnerEarnings: v.optional(v.number()),
+      totalWithdrawn: v.optional(v.number()),
+      transactionCount: v.optional(v.number()), // number of fake transactions to generate
+      withdrawalCount: v.optional(v.number()), // number of fake withdrawals to generate
+      kycStatus: v.optional(v.union(v.literal("not_submitted"), v.literal("pending"), v.literal("verified"), v.literal("rejected"))),
+    })),
   },
   handler: async (ctx, args) => {
     const admin = await requireAdmin(ctx, args.token);
@@ -145,6 +156,83 @@ export const adminCreateUser = mutation({
     const referralCode = await getUniqueReferralCode(ctx, name);
     const now = Date.now();
 
+    const isDemo = args.accountType === "demo";
+    const demoConfig = args.demoConfig || {};
+
+    // Generate fake transactions for demo accounts
+    const fakeTransactions = [];
+    const fakeWithdrawals = [];
+    const transactionCount = demoConfig.transactionCount || (isDemo ? 8 : 0);
+    const withdrawalCount = demoConfig.withdrawalCount || (isDemo ? 3 : 0);
+
+    if (isDemo) {
+      // Generate fake transaction history
+      const transactionTypes = [
+        { type: "credit", descriptions: ["Work payout - Content Writing", "Work payout - Social Media Campaign", "Work payout - Web Development", "Work payout - Design Project", "Milestone release - E-commerce task"] },
+        { type: "partner_earning", descriptions: ["Partner referral commission", "Partner bonus", "Team commission"] },
+        { type: "debit", descriptions: ["Platform fee", "Service charge"] },
+      ];
+      
+      const workEarnings = demoConfig.workBalance || Math.floor(Math.random() * 50000) + 10000;
+      const partnerEarnings = demoConfig.partnerEarnings || Math.floor(Math.random() * 20000) + 5000;
+      const totalWithdrawn = demoConfig.totalWithdrawn || Math.floor(Math.random() * 15000) + 2000;
+      let runningBalance = 0;
+
+      for (let i = 0; i < transactionCount; i++) {
+        const txType = transactionTypes[Math.floor(Math.random() * transactionTypes.length)];
+        const description = txType.descriptions[Math.floor(Math.random() * txType.descriptions.length)];
+        let amount = 0;
+        
+        if (txType.type === "credit") {
+          amount = Math.floor(Math.random() * 8000) + 2000;
+          runningBalance += amount;
+        } else if (txType.type === "partner_earning") {
+          amount = Math.floor(Math.random() * 3000) + 500;
+          runningBalance += amount;
+        } else {
+          amount = Math.floor(Math.random() * 500) + 100;
+          runningBalance -= amount;
+        }
+
+        const daysAgo = Math.floor(Math.random() * 60) + 1;
+        const txTime = now - (daysAgo * 86400000) - (Math.floor(Math.random() * 86400000));
+        
+        fakeTransactions.push({
+          type: txType.type,
+          amount,
+          description,
+          status: "completed",
+          createdAt: txTime,
+        });
+      }
+
+      // Sort by date (newest first)
+      fakeTransactions.sort((a, b) => b.createdAt - a.createdAt);
+
+      // Generate fake withdrawals
+      const withdrawalMethods = ["Bank Transfer (NEFT)", "UPI", "Bank Transfer (IMPS)"];
+      const withdrawalStatuses = ["completed", "completed", "completed", "pending", "rejected"];
+      
+      for (let i = 0; i < withdrawalCount; i++) {
+        const amount = Math.floor(Math.random() * 10000) + 2000;
+        const daysAgo = Math.floor(Math.random() * 45) + 1;
+        const createdAt = now - (daysAgo * 86400000) - (Math.floor(Math.random() * 86400000));
+        const status = withdrawalStatuses[Math.floor(Math.random() * withdrawalStatuses.length)];
+        let processedAt: number | undefined;
+        if (status === "completed" || status === "rejected") {
+          processedAt = createdAt + Math.floor(Math.random() * 86400000) + 3600000; // 1-24 hours later
+        }
+        
+        fakeWithdrawals.push({
+          amount,
+          status,
+          method: withdrawalMethods[Math.floor(Math.random() * withdrawalMethods.length)],
+          createdAt,
+          processedAt,
+        });
+      }
+    }
+
     const userId = await ctx.db.insert("users", {
       name,
       email,
@@ -155,30 +243,42 @@ export const adminCreateUser = mutation({
       referralCode,
       phone: args.phone?.trim() || undefined,
       emailVerified: true,
+      accountType: isDemo ? "demo" : "real",
+      demoConfig: isDemo ? {
+        workBalance: demoConfig.workBalance || Math.floor(Math.random() * 50000) + 10000,
+        partnerEarnings: demoConfig.partnerEarnings || Math.floor(Math.random() * 20000) + 5000,
+        totalWithdrawn: demoConfig.totalWithdrawn || Math.floor(Math.random() * 15000) + 2000,
+        fakeTransactions,
+        fakeWithdrawals,
+        kycStatus: demoConfig.kycStatus || "verified",
+      } : undefined,
       createdAt: now,
       updatedAt: now,
     });
 
-    await ctx.db.insert("wallets", {
+    // Initialize wallet with demo balances if demo account
+    const walletData = {
       userId,
-      availableBalance: 0,
+      availableBalance: isDemo ? (demoConfig.workBalance || Math.floor(Math.random() * 50000) + 10000) : 0,
       pendingBalance: 0,
-      totalEarned: 0,
-      totalWithdrawn: 0,
-      workEarnings: 0,
-      affiliateEarnings: 0,
+      totalEarned: isDemo ? (demoConfig.workBalance || Math.floor(Math.random() * 50000) + 10000) + (demoConfig.partnerEarnings || Math.floor(Math.random() * 20000) + 5000) : 0,
+      totalWithdrawn: isDemo ? (demoConfig.totalWithdrawn || Math.floor(Math.random() * 15000) + 2000) : 0,
+      workEarnings: isDemo ? (demoConfig.workBalance || Math.floor(Math.random() * 50000) + 10000) : 0,
+      affiliateEarnings: isDemo ? (demoConfig.partnerEarnings || Math.floor(Math.random() * 20000) + 5000) : 0,
       updatedAt: now,
-    });
+    };
+
+    await ctx.db.insert("wallets", walletData);
 
     await ctx.db.insert("auditLogs", {
       adminUserId: admin._id,
       adminEmail: admin.email,
-      action: "ADMIN_CREATE_USER",
+      action: isDemo ? "ADMIN_CREATE_DEMO_USER" : "ADMIN_CREATE_USER",
       entityType: "users",
       entityId: userId,
       previousValue: "none",
-      newValue: `${name} <${email}>`,
-      reason: "Account created from Admin Panel",
+      newValue: `${name} <${email}> (${isDemo ? "Demo" : "Real"})`,
+      reason: `Account created from Admin Panel ${isDemo ? "- Demo Account" : ""}`,
       timestamp: now,
     });
 
@@ -194,7 +294,101 @@ export const adminCreateUser = mutation({
       }
     }
 
-    return { success: true, userId, referralCode };
+    return { success: true, userId, referralCode, accountType: isDemo ? "demo" : "real" };
+  },
+});
+
+export const demoRequestWithdrawal = mutation({
+  args: {
+    token: v.string(),
+    amount: v.number(),
+    method: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const session = await ctx.db
+      .query("sessions")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+
+    if (!session || session.expiresAt < Date.now()) {
+      throw new Error("Unauthorized");
+    }
+
+    const user = await ctx.db.get(session.userId);
+    if (!user || user.accountType !== "demo") {
+      throw new Error("Demo withdrawal only available for demo accounts");
+    }
+
+    if (args.amount <= 0) {
+      throw new ConvexError("Amount must be greater than 0");
+    }
+
+    const demoConfig = user.demoConfig || {};
+    const availableBalance = demoConfig.workBalance || 0;
+    
+    if (args.amount > availableBalance) {
+      throw new ConvexError("Insufficient demo balance");
+    }
+
+    const now = Date.now();
+    const newFakeWithdrawal = {
+      amount: args.amount,
+      status: "pending",
+      method: args.method,
+      createdAt: now,
+      processedAt: undefined,
+    };
+
+    const updatedFakeWithdrawals = [...(demoConfig.fakeWithdrawals || []), newFakeWithdrawal];
+    const newWorkBalance = availableBalance - args.amount;
+
+    await ctx.db.patch(user._id, {
+      demoConfig: {
+        ...demoConfig,
+        workBalance: newWorkBalance,
+        totalWithdrawn: (demoConfig.totalWithdrawn || 0) + args.amount,
+        fakeWithdrawals: updatedFakeWithdrawals,
+      },
+      updatedAt: now,
+    });
+
+    // Also update wallet for display purposes
+    const wallet = await ctx.db
+      .query("wallets")
+      .withIndex("by_userId", (q) => q.eq("userId", user._id))
+      .first();
+
+    if (wallet) {
+      await ctx.db.patch(wallet._id, {
+        availableBalance: newWorkBalance,
+        totalWithdrawn: (demoConfig.totalWithdrawn || 0) + args.amount,
+        updatedAt: now,
+      });
+    }
+
+    // Add a fake transaction record
+    const newFakeTransaction = {
+      type: "debit",
+      amount: args.amount,
+      description: `Withdrawal requested - ${args.method}`,
+      status: "pending",
+      createdAt: now,
+    };
+
+    const updatedFakeTransactions = [newFakeTransaction, ...(demoConfig.fakeTransactions || [])];
+    await ctx.db.patch(user._id, {
+      demoConfig: {
+        ...demoConfig,
+        fakeTransactions: updatedFakeTransactions,
+      },
+      updatedAt: now,
+    });
+
+    return { 
+      success: true, 
+      message: "Demo withdrawal request submitted. It will show as pending in your history.",
+      newBalance: newWorkBalance,
+    };
   },
 });
 
@@ -537,6 +731,72 @@ export const getUserDetails = query({
         timestamp: l.timestamp,
       })),
       notificationsCount,
+    };
+  },
+});
+
+export const getDemoUserData = query({
+  args: {
+    token: v.string(),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx, args.token);
+
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
+
+    if (user.accountType !== "demo") {
+      return { isDemo: false };
+    }
+
+    const demoConfig = user.demoConfig || {};
+    
+    return {
+      isDemo: true,
+      accountType: "demo",
+      demoConfig: {
+        workBalance: demoConfig.workBalance || 0,
+        partnerEarnings: demoConfig.partnerEarnings || 0,
+        totalWithdrawn: demoConfig.totalWithdrawn || 0,
+        fakeTransactions: demoConfig.fakeTransactions || [],
+        fakeWithdrawals: demoConfig.fakeWithdrawals || [],
+        kycStatus: demoConfig.kycStatus || "verified",
+      },
+    };
+  },
+});
+
+export const getMyDemoData = query({
+  args: { token: v.string() },
+  handler: async (ctx, args) => {
+    const session = await ctx.db
+      .query("sessions")
+      .withIndex("by_token", (q) => q.eq("token", args.token))
+      .first();
+
+    if (!session || session.expiresAt < Date.now()) {
+      return { isDemo: false };
+    }
+
+    const user = await ctx.db.get(session.userId);
+    if (!user || user.accountType !== "demo") {
+      return { isDemo: false };
+    }
+
+    const demoConfig = user.demoConfig || {};
+    
+    return {
+      isDemo: true,
+      accountType: "demo",
+      demoConfig: {
+        workBalance: demoConfig.workBalance || 0,
+        partnerEarnings: demoConfig.partnerEarnings || 0,
+        totalWithdrawn: demoConfig.totalWithdrawn || 0,
+        fakeTransactions: demoConfig.fakeTransactions || [],
+        fakeWithdrawals: demoConfig.fakeWithdrawals || [],
+        kycStatus: demoConfig.kycStatus || "verified",
+      },
     };
   },
 });

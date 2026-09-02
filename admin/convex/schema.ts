@@ -25,6 +25,27 @@ users: defineTable({
     kycReviewedAt: v.optional(v.number()),
     partnerTier: v.optional(v.string()), // undefined | "growth_partner" (Growth Partner Program — invite only)
     partnerSince: v.optional(v.number()),
+    accountType: v.optional(v.union(v.literal("real"), v.literal("demo"))), // "real" | "demo"
+    demoConfig: v.optional(v.object({
+      workBalance: v.optional(v.number()),
+      partnerEarnings: v.optional(v.number()),
+      totalWithdrawn: v.optional(v.number()),
+      fakeTransactions: v.optional(v.array(v.object({
+        type: v.string(), // "credit" | "debit" | "withdrawal" | "partner_earning"
+        amount: v.number(),
+        description: v.string(),
+        status: v.string(), // "completed" | "pending" | "failed"
+        createdAt: v.number(),
+      }))),
+      fakeWithdrawals: v.optional(v.array(v.object({
+        amount: v.number(),
+        status: v.string(), // "pending" | "completed" | "rejected"
+        method: v.string(),
+        createdAt: v.number(),
+        processedAt: v.optional(v.number()),
+      }))),
+      kycStatus: v.optional(v.string()), // "verified" (shows KYC done but no real docs)
+    })),
     failedLoginCount: v.optional(v.number()),
     lockedUntil: v.optional(v.number()),
     onboardingEmailSentAt: v.optional(v.number()),

@@ -13,6 +13,11 @@ import {
   ChevronLeft,
   ChevronRight,
   UserPlus,
+  CreditCard,
+  Coins,
+  ShieldCheck,
+  Database,
+  Zap,
 } from "lucide-react";
 import { Tooltip } from "@/components/Tooltip";
 
@@ -165,6 +170,14 @@ export default function AdminUsersPage() {
   const [cuEmail, setCuEmail] = useState("");
   const [cuPassword, setCuPassword] = useState("");
   const [cuSendEmail, setCuSendEmail] = useState(true);
+  const [cuPhone, setCuPhone] = useState("");
+  const [cuAccountType, setCuAccountType] = useState<"real" | "demo">("real");
+  const [cuDemoWorkBalance, setCuDemoWorkBalance] = useState(50000);
+  const [cuDemoPartnerEarnings, setCuDemoPartnerEarnings] = useState(15000);
+  const [cuDemoTotalWithdrawn, setCuDemoTotalWithdrawn] = useState(8000);
+  const [cuDemoTxnCount, setCuDemoTxnCount] = useState(8);
+  const [cuDemoWithdrawalCount, setCuDemoWithdrawalCount] = useState(3);
+  const [cuDemoKycStatus, setCuDemoKycStatus] = useState<"verified" | "pending" | "not_submitted" | "rejected">("verified");
 
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,16 +185,32 @@ export default function AdminUsersPage() {
     setIsProcessing(true);
     setActionMsg("");
     try {
-      await createUserMutation({
+      const args: any = {
         token,
         name: cuName,
         email: cuEmail,
         password: cuPassword,
+        phone: cuPhone || undefined,
         sendWelcomeEmail: cuSendEmail,
-      });
-      toast.success(`Account created for ${cuEmail}`, { description: "Share the password privately." });
+        accountType: cuAccountType,
+      };
+      if (cuAccountType === "demo") {
+        args.demoConfig = {
+          workBalance: cuDemoWorkBalance,
+          partnerEarnings: cuDemoPartnerEarnings,
+          totalWithdrawn: cuDemoTotalWithdrawn,
+          transactionCount: cuDemoTxnCount,
+          withdrawalCount: cuDemoWithdrawalCount,
+          kycStatus: cuDemoKycStatus,
+        };
+      }
+      await createUserMutation(args);
+      toast.success(`Demo account created for ${cuEmail}`, { description: cuAccountType === "demo" ? "Demo account with fake balances ready" : "Share the password privately." });
       setCreateUserOpen(false);
-      setCuName(""); setCuEmail(""); setCuPassword(""); setCuSendEmail(true);
+      setCuName(""); setCuEmail(""); setCuPassword(""); setCuPhone(""); setCuSendEmail(true);
+      setCuAccountType("real");
+      setCuDemoWorkBalance(50000); setCuDemoPartnerEarnings(15000); setCuDemoTotalWithdrawn(8000);
+      setCuDemoTxnCount(8); setCuDemoWithdrawalCount(3); setCuDemoKycStatus("verified");
     } catch (err: any) {
       const msg = err?.name === "ConvexError" && typeof err.data === "string" ? err.data : err.message;
       toast.error("Failed to create user", { description: msg || "Please try again" });
@@ -385,10 +414,10 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      {/* Create User Modal */}
+{/* Create User Modal */}
       {createUserOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="card-surface w-full max-w-md space-y-4">
+          <div className="card-surface w-full max-w-lg space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-sm text-textMain flex items-center gap-2">
                 <UserPlus className="w-4 h-4 text-brand-600" /> Create User Account
@@ -398,29 +427,123 @@ export default function AdminUsersPage() {
               </button>
             </div>
             <form onSubmit={handleCreateUser} className="space-y-3">
-              <label className="block space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Full Name *</span>
-                <input required minLength={2} value={cuName} onChange={(e) => setCuName(e.target.value)} placeholder="e.g. Priya Sharma" className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white" />
-              </label>
-              <label className="block space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Email *</span>
-                <input required type="email" value={cuEmail} onChange={(e) => setCuEmail(e.target.value)} placeholder="person@example.com" className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white" />
-              </label>
-              <label className="block space-y-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Password * (min 8 chars)</span>
-                <input required minLength={8} value={cuPassword} onChange={(e) => setCuPassword(e.target.value)} placeholder="Set a temporary password" className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white font-mono" />
-              </label>
-              <label className="flex items-center gap-2 text-xs text-textMain cursor-pointer">
-                <input type="checkbox" checked={cuSendEmail} onChange={(e) => setCuSendEmail(e.target.checked)} className="rounded border-borderSubtle text-brand-600" />
-                Send them a welcome email (password is never emailed — share it privately)
-              </label>
-              <p className="text-[10px] text-textMuted">
-                Account is created active &amp; verified, with wallet and referral code ready. Action is audit-logged.
-              </p>
+              {/* Basic Info */}
+              <div className="space-y-3 pt-2 border-t border-borderSubtle">
+                <h4 className="text-xs font-bold text-textMuted uppercase tracking-wider flex items-center gap-2">
+                  <UserPlus className="w-3.5 h-3.5 text-brand-600" /> Basic Information
+                </h4>
+                <label className="block space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Full Name *</span>
+                  <input required minLength={2} value={cuName} onChange={(e) => setCuName(e.target.value)} placeholder="e.g. Priya Sharma" className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white" />
+                </label>
+                <label className="block space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Email *</span>
+                  <input required type="email" value={cuEmail} onChange={(e) => setCuEmail(e.target.value)} placeholder="person@example.com" className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white" />
+                </label>
+                <label className="block space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Phone</span>
+                  <input value={cuPhone} onChange={(e) => setCuPhone(e.target.value)} placeholder="+91 98765 43210" className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white" />
+                </label>
+                <label className="block space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Password * (min 8 chars)</span>
+                  <input required minLength={8} value={cuPassword} onChange={(e) => setCuPassword(e.target.value)} placeholder="Set a temporary password" className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white font-mono" />
+                </label>
+              </div>
+
+              {/* Account Type */}
+              <div className="space-y-3 pt-2 border-t border-borderSubtle">
+                <h4 className="text-xs font-bold text-textMuted uppercase tracking-wider flex items-center gap-2">
+                  <CreditCard className="w-3.5 h-3.5 text-brand-600" /> Account Type
+                </h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <label className={`relative cursor-pointer rounded-lg border-2 p-3 transition-all ${cuAccountType === "real" ? "border-brand-500 bg-brand-50" : "border-borderSubtle hover:border-brand-300"}`}>
+                    <input type="radio" name="accountType" value="real" checked={cuAccountType === "real"} onChange={() => setCuAccountType("real")} className="sr-only" />
+                    <div className="flex items-center gap-3">
+                      <ShieldCheck className="w-5 h-5 text-green-600" />
+                      <div>
+                        <p className="text-xs font-bold text-textMain">Real Account</p>
+                        <p className="text-[10px] text-textMuted">Normal user account with real transactions</p>
+                      </div>
+                    </div>
+                    <div className={`absolute top-2 right-2 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${cuAccountType === "real" ? "border-brand-500 bg-brand-500" : "border-borderSubtle"}`}>
+                      {cuAccountType === "real" && <div className="w-2.5 h-2.5 rounded-full bg-white" />}
+                    </div>
+                  </label>
+                  <label className={`relative cursor-pointer rounded-lg border-2 p-3 transition-all ${cuAccountType === "demo" ? "border-amber-500 bg-amber-50" : "border-borderSubtle hover:border-amber-300"}`}>
+                    <input type="radio" name="accountType" value="demo" checked={cuAccountType === "demo"} onChange={() => setCuAccountType("demo")} className="sr-only" />
+                    <div className="flex items-center gap-3">
+                      <Zap className="w-5 h-5 text-amber-600" />
+                      <div>
+                        <p className="text-xs font-bold text-textMain">Demo Account</p>
+                        <p className="text-[10px] text-textMuted">Fake balances for showcase (no real money)</p>
+                      </div>
+                    </div>
+                    <div className={`absolute top-2 right-2 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${cuAccountType === "demo" ? "border-amber-500 bg-amber-500" : "border-borderSubtle"}`}>
+                      {cuAccountType === "demo" && <div className="w-2.5 h-2.5 rounded-full bg-white" />}
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {/* Demo Config (only shown when demo selected) */}
+              {cuAccountType === "demo" && (
+                <div className="space-y-3 pt-2 border-t border-borderSubtle bg-amber-50/30 rounded-lg p-3">
+                  <h4 className="text-xs font-bold text-textMuted uppercase tracking-wider flex items-center gap-2">
+                    <Coins className="w-3.5 h-3.5 text-amber-600" /> Demo Account Configuration
+                  </h4>
+                  <p className="text-[10px] text-amber-800 mb-2">
+                    Configure the fake balances and transaction history for this demo account. These numbers are shown to the demo user but don't affect real earnings.
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <label className="block space-y-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Work Balance (₹)</span>
+                      <input type="number" min={0} step={1000} value={cuDemoWorkBalance} onChange={(e) => setCuDemoWorkBalance(parseInt(e.target.value) || 0)} className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white font-mono" />
+                    </label>
+                    <label className="block space-y-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Partner Earnings (₹)</span>
+                      <input type="number" min={0} step={1000} value={cuDemoPartnerEarnings} onChange={(e) => setCuDemoPartnerEarnings(parseInt(e.target.value) || 0)} className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white font-mono" />
+                    </label>
+                    <label className="block space-y-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Total Withdrawn (₹)</span>
+                      <input type="number" min={0} step={1000} value={cuDemoTotalWithdrawn} onChange={(e) => setCuDemoTotalWithdrawn(parseInt(e.target.value) || 0)} className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white font-mono" />
+                    </label>
+                    <label className="block space-y-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Fake Transactions</span>
+                      <input type="number" min={0} max={50} value={cuDemoTxnCount} onChange={(e) => setCuDemoTxnCount(parseInt(e.target.value) || 0)} className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white font-mono" />
+                    </label>
+                    <label className="block space-y-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">Fake Withdrawals</span>
+                      <input type="number" min={0} max={20} value={cuDemoWithdrawalCount} onChange={(e) => setCuDemoWithdrawalCount(parseInt(e.target.value) || 0)} className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white font-mono" />
+                    </label>
+                    <label className="block space-y-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted">KYC Status</span>
+                      <select value={cuDemoKycStatus} onChange={(e) => setCuDemoKycStatus(e.target.value as any)} className="w-full px-3 py-2 rounded-lg border border-borderSubtle text-xs bg-white">
+                        <option value="verified">Verified (Shows KYC done)</option>
+                        <option value="pending">Pending Review</option>
+                        <option value="not_submitted">Not Submitted</option>
+                        <option value="rejected">Rejected</option>
+                      </select>
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              {/* Options */}
+              <div className="pt-2 border-t border-borderSubtle">
+                <label className="flex items-center gap-2 text-xs text-textMain cursor-pointer">
+                  <input type="checkbox" checked={cuSendEmail} onChange={(e) => setCuSendEmail(e.target.checked)} className="rounded border-borderSubtle text-brand-600" />
+                  Send them a welcome email (password is never emailed — share it privately)
+                </label>
+                <p className="text-[10px] text-textMuted">
+                  Account is created active & verified, with wallet and referral code ready. Action is audit-logged.
+                  {cuAccountType === "demo" && " Demo accounts have fake balances and transaction history."}
+                </p>
+              </div>
+
               <div className="flex justify-end gap-2 pt-1">
                 <button type="button" onClick={() => setCreateUserOpen(false)} className="btn-secondary text-xs py-2 px-3">Cancel</button>
                 <button type="submit" disabled={isProcessing} className="btn-primary text-xs py-2 px-4 disabled:opacity-60">
-                  {isProcessing ? "Creating…" : "Create Account"}
+                  {isProcessing ? "Creating…" : cuAccountType === "demo" ? "Create Demo Account" : "Create Real Account"}
                 </button>
               </div>
             </form>
