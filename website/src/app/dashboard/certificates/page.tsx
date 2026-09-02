@@ -210,7 +210,7 @@ export default function CertificatesPage() {
           onClick={() => setPreviewCert(null)}
         >
           <div
-            className="relative bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto"
+            className="relative bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}

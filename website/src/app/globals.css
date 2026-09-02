@@ -495,15 +495,19 @@
   border-radius: 0.75rem;
 }
 
-/* ── Certificate modal preview (no aspect-ratio constraint) ──── */
+/* ── Certificate modal preview ──── */
 .cert-modal-preview {
   position: relative;
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cert-modal-preview [id^="cert-display-"] {
   width: 896px;
   max-width: none !important;
+  flex-shrink: 0;
 }
 
 @media (min-width: 640px) {
@@ -515,12 +519,20 @@
 
 @media (max-width: 639px) {
   .cert-modal-preview {
-    height: 260px;
+    height: auto;
+    aspect-ratio: 13 / 10;
     overflow: hidden;
   }
   .cert-modal-preview [id^="cert-display-"] {
-    transform-origin: top left;
-    transform: scale(0.42);
+    width: 896px;
+    max-width: none !important;
+    transform-origin: center center;
+    transform: scale(0.34);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -448px;
+    margin-top: -345px;
   }
 }
 
@@ -529,8 +541,13 @@
   .cert-landscape-wrap [id^="cert-display-"] {
     width: 896px;
     max-width: none !important;
-    transform-origin: top left;
-    transform: scale(0.385);
+    transform-origin: center center;
+    transform: scale(0.34);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -448px;
+    margin-top: -345px;
   }
 }
 
