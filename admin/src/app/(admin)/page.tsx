@@ -24,6 +24,7 @@ import {
   Zap,
   BarChart3,
   CreditCard,
+  Briefcase,
 } from "lucide-react";
 import {
   ResponsiveContainer,
