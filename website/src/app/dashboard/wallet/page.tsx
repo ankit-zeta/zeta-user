@@ -41,7 +41,7 @@ type SavedMethod = {
 
 function txnSourceLabel(tx: { type: string; description: string }) {
   if (tx.type === "WORK_PAYOUT") return "Work";
-  if (tx.type === "AFFILIATE_COMMISSION" || tx.type === "CHAIN_COMMISSION") return "Referral";
+  if (tx.type === "AFFILIATE_COMMISSION" || tx.type === "CHAIN_COMMISSION") return "Partner";
   if (tx.type === "WITHDRAWAL") return "Withdrawal";
   if (tx.type === "ADMIN_ADJUSTMENT") return "Admin";
   if (tx.type === "REFUND") return "Refund";
@@ -312,12 +312,12 @@ export default function DashboardWalletPage() {
         </div>
         <div className="card-surface p-5 space-y-2">
           <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
-            <Users className="w-3.5 h-3.5" /> Referral Earnings
+            <Users className="w-3.5 h-3.5" /> Partner Earnings
           </span>
           <p className="text-2xl font-extrabold text-textMain">
             ₹{affiliateEarnings.toLocaleString("en-IN")}
           </p>
-          <span className="text-[11px] text-textMuted block">From referrals</span>
+          <span className="text-[11px] text-textMuted block">From partner remuneration</span>
         </div>
         <div className="card-surface p-5 space-y-2">
           <span className="text-[10px] font-bold uppercase tracking-wider text-textMuted flex items-center gap-1.5">
@@ -344,14 +344,14 @@ export default function DashboardWalletPage() {
           {taxSummary.totalTds === 0 ? (
             <p className="text-[11px] text-textMuted">
               No TDS deducted yet this financial year. TDS applies only on payouts above your yearly
-              threshold — 2% on referral earnings above ₹20,000, 10% on work earnings above ₹50,000.
+              threshold — 2% on partner remuneration above ₹20,000, 10% on work earnings above ₹50,000.
             </p>
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="rounded-xl border border-borderSubtle bg-white p-3">
                   <p className="text-[10px] font-bold uppercase tracking-wider text-textMuted">
-                    Referral ({taxSummary.affiliate.label} · {taxSummary.affiliate.rate}%)
+                    Partner ({taxSummary.affiliate.label} · {taxSummary.affiliate.rate}%)
                   </p>
                   <div className="flex items-baseline justify-between mt-1">
                     <span className="text-sm font-bold text-textMain">₹{taxSummary.affiliate.gross.toLocaleString("en-IN")}</span>
@@ -653,7 +653,7 @@ export default function DashboardWalletPage() {
                 href="/affiliate"
                 className="text-[11px] font-semibold text-brand-600 hover:text-brand-700 transition-colors"
               >
-                View referral stats →
+                View partner stats →
               </a>
             </div>
           </div>

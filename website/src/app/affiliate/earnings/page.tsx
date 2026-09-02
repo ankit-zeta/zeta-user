@@ -6,16 +6,16 @@ import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
 import { CreditCard } from "lucide-react";
 
-export default function AffiliateEarningsPage() {
+export default function PartnerEarningsPage() {
   const { token } = useAuth();
   const stats = useQuery(api.affiliates.getUserAffiliateStats, token ? { token } : "skip");
 
   return (
     <div className="space-y-8 text-neutral-100">
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight">Commission Ledger</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Earnings Ledger</h1>
         <p className="text-xs text-neutral-400">
-          Immutable record of every commission generated from your referral link.
+          Immutable record of every earning generated from your partner link.
         </p>
       </div>
 
@@ -27,9 +27,9 @@ export default function AffiliateEarningsPage() {
         ) : (stats.sales?.length ?? 0) === 0 && (stats.chainSales?.length ?? 0) === 0 ? (
           <div className="text-center py-12 space-y-3">
             <CreditCard className="w-10 h-10 text-neutral-700 mx-auto" />
-            <h3 className="text-sm font-semibold">No Commission Records Yet</h3>
+            <h3 className="text-sm font-semibold">No Earnings Records Yet</h3>
             <p className="text-xs text-neutral-500 max-w-sm mx-auto">
-              Commissions from qualifying purchases via your referral link will appear here.
+              Earnings from qualifying purchases via your partner link will appear here.
             </p>
           </div>
         ) : (
@@ -38,17 +38,17 @@ export default function AffiliateEarningsPage() {
             {(stats.sales?.length ?? 0) > 0 && (
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-wider text-brand-400 mb-3">
-                  Direct Referral Sales
+                  Direct Partner Sales
                 </h3>
                 <LedgerTable rows={stats.sales} showBuyer />
               </div>
             )}
 
-            {/* Chain sales */}
+            {/* Team remuneration */}
             {(stats.chainSales?.length ?? 0) > 0 && (
               <div className="pt-4 border-t border-neutral-800">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-brand-400 mb-3 mt-4">
-                  Chain Commission Sales
+                  Team Remuneration
                 </h3>
                 <LedgerTable rows={stats.chainSales} />
               </div>

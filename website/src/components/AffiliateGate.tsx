@@ -9,7 +9,7 @@ export function useHasPurchasedProgram(): boolean {
   return !!user && (user.enrolledProgramIds?.length || 0) > 0;
 }
 
-export default function AffiliateGate({
+export default function PartnerGate({
   children,
 }: {
   children: React.ReactNode;

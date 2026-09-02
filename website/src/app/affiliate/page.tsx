@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import BannerCarousel from "@/components/BannerCarousel";
 
-export default function AffiliateOverviewPage() {
+export default function PartnerOverviewPage() {
   const { user, token } = useAuth();
   const [copied, setCopied] = useState(false);
 
@@ -78,9 +78,9 @@ export default function AffiliateOverviewPage() {
     <div className="space-y-8 text-neutral-100">
       {/* Header */}
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight">Affiliate Overview</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Partner Overview</h1>
         <p className="text-xs text-neutral-400">
-          Track your referral performance, commissions and payout status in one place.
+          Track your partner performance, earnings and payout status in one place.
         </p>
       </div>
 
@@ -112,8 +112,8 @@ export default function AffiliateOverviewPage() {
             </p>
             <p className="text-[11px] text-neutral-400 mt-0.5">
               {kycUnderReview
-                ? "Your commissions keep accruing and release automatically once verification is approved (24-48 hrs)."
-                : "Your referral link keeps working, but commissions stay on hold until your PAN & Aadhaar are verified."}
+                ? "Your earnings keep accruing and release automatically once verification is approved (24-48 hrs)."
+                : "Your partner link keeps working, but earnings stay on hold until your PAN & Aadhaar are verified."}
             </p>
           </div>
           {!kycUnderReview && (
@@ -124,16 +124,16 @@ export default function AffiliateOverviewPage() {
         </Link>
       )}
 
-      {/* Referral link card */}
+      {/* Partner link card */}
       <div className="rounded-2xl border border-brand-800 bg-gradient-to-br from-brand-900/40 to-[#0F1412] p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <span className="text-[10px] font-bold text-brand-400 uppercase tracking-wider flex items-center gap-1.5">
               <Link2 className="w-3.5 h-3.5" />
-              Your Unique Referral Link
+              Your Unique Partner Link
             </span>
             <p className="text-xs text-neutral-400">
-              Share this link — earn up to 50% commission on qualifying program sales.
+              Share this link — earn up to 50% remuneration on qualifying program sales.
             </p>
           </div>
           <span className="text-xs font-mono font-bold text-brand-300 bg-brand-950 border border-brand-800 px-3 py-1 rounded-lg">
@@ -180,14 +180,14 @@ export default function AffiliateOverviewPage() {
         />
         <StatCard
           icon={<Wallet className="w-4 h-4" />}
-          label="Available Commission"
+          label="Available Earnings"
           value={`₹${(wallet?.affiliateEarnings || 0).toLocaleString("en-IN")}`}
           sub={`${stats?.pendingCommissions ? `₹${stats.pendingCommissions.toLocaleString("en-IN")} pending` : "Nothing pending"}`}
           highlight
         />
         <StatCard
           icon={<Clock className="w-4 h-4" />}
-          label="Pending Commissions"
+          label="Pending Earnings"
           value={`₹${(stats?.pendingCommissions ?? 0).toLocaleString("en-IN")}`}
           sub="In holding period"
         />
@@ -208,7 +208,7 @@ export default function AffiliateOverviewPage() {
           </div>
           {(stats?.sales?.length ?? 0) === 0 ? (
             <p className="text-xs text-neutral-500 py-8 text-center">
-              No commission records yet. Share your link to start earning.
+              No earnings records yet. Share your partner link to start earning.
             </p>
           ) : (
             <div className="space-y-2.5">
@@ -233,12 +233,12 @@ export default function AffiliateOverviewPage() {
           )}
         </div>
 
-        {/* Chain earnings + milestones teaser — Growth Partners only */}
+        {/* Team remuneration + milestones teaser — Growth Partners only */}
         {isGrowthPartner && partnerProfile?.isPartner && (
           <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold flex items-center gap-2">
-                <Crown className="w-4 h-4 text-amber-400" /> Chain Earnings
+                <Crown className="w-4 h-4 text-amber-400" /> Team Remuneration
               </h3>
               <Link
                 href="/affiliate/achievements"
@@ -249,17 +249,17 @@ export default function AffiliateOverviewPage() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <MiniStat
-                label="Chain earnings"
+                label="Team remuneration"
                 value={`₹${(stats?.chainEarnings ?? 0).toLocaleString("en-IN")}`}
               />
               <MiniStat
-                label="Pending chain"
+                label="Pending team"
                 value={`₹${(stats?.pendingChainCommissions ?? 0).toLocaleString("en-IN")}`}
               />
             </div>
             <p className="text-[11px] text-neutral-500 leading-relaxed pt-2 border-t border-neutral-800">
-              Earn extra % when your referred partners make their own sales — unlock higher chain
-              levels through milestone achievements. Your chain commission rate: {partnerProfile.chainPct}%.
+              Earn extra % when your referred partners make their own sales — unlock higher team
+              remuneration tiers through milestone achievements. Your team remuneration rate: {partnerProfile.chainPct}%.
             </p>
           </div>
         )}

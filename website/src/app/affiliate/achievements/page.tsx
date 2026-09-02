@@ -17,7 +17,7 @@ const METRIC_LABELS: Record<string, string> = {
   total_earnings: "Total earned (₹)",
 };
 
-export default function AffiliateAchievementsPage() {
+export default function PartnerAchievementsPage() {
   const { user, token } = useAuth();
 
   // ── Growth Partner gate: invite-only section ──
@@ -55,7 +55,7 @@ export default function AffiliateAchievementsPage() {
           <h1 className="text-xl font-bold">Growth Partner Program</h1>
           <p className="text-xs text-neutral-400 leading-relaxed">
             This is an invite-only circle of ZetaGrow's most trusted partners — unlocking exclusive
-            partnership tiers and chain commission levels.
+            partnership tiers and team remuneration levels.
           </p>
         </div>
         <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-6 space-y-3">
@@ -66,7 +66,7 @@ export default function AffiliateAchievementsPage() {
           </p>
         </div>
         <Link href="/affiliate" className="btn-secondary text-xs py-2 px-4 inline-block">
-          Back to Affiliate Overview
+          Back to Partner Overview
         </Link>
       </div>
     );
@@ -90,8 +90,8 @@ export default function AffiliateAchievementsPage() {
           </span>
         </div>
         <p className="text-xs text-neutral-400">
-          Welcome to the circle, {user?.name?.split(" ")[0]}. Your milestones here upgrade your chain
-          commission level — an earning privilege reserved for partners only.
+          Welcome to the circle, {user?.name?.split(" ")[0]}. Your milestones here upgrade your team
+          remuneration level — an earning privilege reserved for partners only.
         </p>
       </div>
 
@@ -113,7 +113,7 @@ export default function AffiliateAchievementsPage() {
             </div>
           </div>
           <span className="text-[10px] font-bold text-amber-300 bg-amber-950/50 border border-amber-900 px-3 py-1.5 rounded-full">
-            Chain commission level: {partnerProfile.chainPct}%
+            Team remuneration level: {partnerProfile.chainPct}%
           </span>
         </div>
       )}

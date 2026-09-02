@@ -12,10 +12,10 @@ export default function DirectSellingPolicyPage() {
       </div>
       <h1 className="text-2xl font-bold text-textMain">Direct Selling Policy</h1>
       <p className="text-textMuted leading-relaxed">
-        Our direct selling and affiliate guidelines have been moved to a dedicated page.
+        Our direct selling and partner guidelines have been moved to a dedicated page.
       </p>
       <Link href="/affiliate-guidelines" className="btn-primary inline-flex items-center gap-2">
-        View Affiliate Guidelines <ArrowRight className="w-4 h-4" />
+        View Partner Program Guidelines <ArrowRight className="w-4 h-4" />
       </Link>
     </div>
   );

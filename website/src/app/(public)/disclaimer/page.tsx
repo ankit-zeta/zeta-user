@@ -81,13 +81,13 @@ export default function DisclaimerPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="font-bold text-textMain">6. Referral Program — No Income Guarantee</h2>
-          <p>The optional Referral Program allows Users to earn referral commissions by referring new Customers who purchase Programs. However:</p>
+          <h2 className="font-bold text-textMain">6. Partner Program — No Income Guarantee</h2>
+          <p>The optional Partner Program allows Users to earn partner remuneration by referring new Customers who purchase Programs. However:</p>
           <ul className="list-disc pl-6 space-y-1 text-textMuted">
-            <li>Commission earnings vary significantly and are not guaranteed.</li>
+            <li>Remuneration earnings vary significantly and are not guaranteed.</li>
             <li>No minimum or maximum earnings are promised or implied.</li>
-            <li>Commission earnings depend entirely on genuine retail purchases by referred Customers.</li>
-            <li>The Referral Program is not an investment, passive income stream, or business opportunity with guaranteed returns.</li>
+            <li>Remuneration earnings depend entirely on genuine retail purchases by referred Customers.</li>
+            <li>The Partner Program is not an investment, passive income stream, or business opportunity with guaranteed returns.</li>
           </ul>
         </section>
 
@@ -110,7 +110,7 @@ export default function DisclaimerPage() {
           <p className="text-xs text-textMuted">
             <Link href="/terms" className="text-brand-700 underline hover:text-brand-800">Terms of Service</Link> ·{" "}
             <Link href="/refund-policy" className="text-brand-700 underline hover:text-brand-800">Refund Policy</Link> ·{" "}
-            <Link href="/affiliate-guidelines" className="text-brand-700 underline hover:text-brand-800">Affiliate Guidelines</Link>
+            <Link href="/affiliate-guidelines" className="text-brand-700 underline hover:text-brand-800">Partner Program Guidelines</Link>
           </p>
         </div>
       </div>

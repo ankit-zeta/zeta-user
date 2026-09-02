@@ -23,10 +23,10 @@ import {
   Link2,
 } from "lucide-react";
 
-const AFFILIATE_SESSION_MS = 10 * 60 * 1000; // 10 minutes
-const AFFILIATE_FLAG = "zg_affiliate_session_active";
+const PARTNER_SESSION_MS = 10 * 60 * 1000; // 10 minutes
+const PARTNER_FLAG = "zg_partner_session_active";
 
-export default function AffiliateLayout({ children }: { children: React.ReactNode }) {
+export default function PartnerLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, token, isLoading, logout } = useAuth();
@@ -35,13 +35,13 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
   const logoutMutation = useMutation(api.auth.logout);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Force-logout helper for affiliate ephemerality (custom redirect reason)
-  const affiliateLogout = async (reason: "affiliate_refresh" | "affiliate_timeout") => {
+  // Force-logout helper for partner ephemerality (custom redirect reason)
+  const partnerLogout = async (reason: "partner_refresh" | "partner_timeout") => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
-    sessionStorage.removeItem(AFFILIATE_FLAG);
+    sessionStorage.removeItem(PARTNER_FLAG);
     try {
       if (token) await logoutMutation({ token });
     } catch {
@@ -60,36 +60,36 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
     }
   }, [isLoading, token, user, router, pathname]);
 
-  // Purchase + cooling-period gate: Affiliate Center requires at least one
+// Purchase + cooling-period gate: Partner Center requires at least one
   // completed programme AND one hour since that first purchase (server flag).
-  const affiliateEligible = !!user?.affiliateEligible;
+  const partnerEligible = !!user?.affiliateEligible;
   useEffect(() => {
-    if (!isLoading && user && !affiliateEligible) {
+    if (!isLoading && user && !partnerEligible) {
       router.replace("/dashboard");
     }
-  }, [isLoading, user, affiliateEligible, router]);
+  }, [isLoading, user, partnerEligible, router]);
 
-  // ── Affiliate ephemeral session ────────────────────────────────────────────
+  // ── Partner ephemeral session ────────────────────────────────────────────
   // Runs once per layout mount (mounts when entering /affiliate/* from outside).
   useEffect(() => {
-    if (isLoading || !token || !user || !affiliateEligible) return;
+    if (isLoading || !token || !user || !partnerEligible) return;
 
-    // Flag already present => this mount is a PAGE REFRESH inside affiliate → logout
-    if (sessionStorage.getItem(AFFILIATE_FLAG) === "1") {
-      affiliateLogout("affiliate_refresh");
+    // Flag already present => this mount is a PAGE REFRESH inside partner → logout
+    if (sessionStorage.getItem(PARTNER_FLAG) === "1") {
+      partnerLogout("partner_refresh");
       return;
     }
 
     // Fresh entry: mark + start the 10-minute countdown
-    sessionStorage.setItem(AFFILIATE_FLAG, "1");
-    const expiry = Date.now() + AFFILIATE_SESSION_MS;
-    setSecondsLeft(AFFILIATE_SESSION_MS / 1000);
+    sessionStorage.setItem(PARTNER_FLAG, "1");
+    const expiry = Date.now() + PARTNER_SESSION_MS;
+    setSecondsLeft(PARTNER_SESSION_MS / 1000);
 
     timerRef.current = setInterval(() => {
       const remaining = Math.max(0, Math.round((expiry - Date.now()) / 1000));
       setSecondsLeft(remaining);
       if (remaining <= 0) {
-        affiliateLogout("affiliate_timeout");
+        partnerLogout("partner_timeout");
       }
     }, 1000);
 
@@ -101,7 +101,7 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
-      sessionStorage.removeItem(AFFILIATE_FLAG);
+      sessionStorage.removeItem(PARTNER_FLAG);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, token, user]);
@@ -111,7 +111,7 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
       <div className="min-h-screen flex items-center justify-center bg-bgWarm">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-full border-2 border-brand-600 border-t-transparent animate-spin"></div>
-          <p className="text-xs text-textMuted font-medium">Loading Affiliate Center...</p>
+          <p className="text-xs text-textMuted font-medium">Loading Partner Center...</p>
         </div>
       </div>
     );
@@ -124,20 +124,30 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
   const isGrowthPartner = !!(user as any)?.partnerTier;
 
   const navSections = [
-{
-        title: "Affiliate",
-        items: [
-          { name: "Overview", href: "/affiliate", icon: TrendingUp },
-          { name: "My Links", href: "/affiliate/link", icon: Link2 },
-          { name: "My Referrals", href: "/affiliate/referrals", icon: Users },
-          { name: "Commission Ledger", href: "/affiliate/earnings", icon: CreditCard },
-          { name: "Earnings Dashboard", href: "/affiliate/wallet", icon: Wallet },
-          ...(isGrowthPartner
-            ? [{ name: "Partnership", href: "/affiliate/achievements", icon: Zap }]
-            : []),
-        ],
-      },
     {
+      title: "Partner",
+      items: [
+        { name: "Overview", href: "/affiliate", icon: TrendingUp },
+        { name: "My Partner Links", href: "/affiliate/link", icon: Link2 },
+        { name: "My Referrals", href: "/affiliate/referrals", icon: Users },
+        { name: "Earnings Ledger", href: "/affiliate/earnings", icon: CreditCard },
+        { name: "Earnings Dashboard", href: "/affiliate/wallet", icon: Wallet },
+        ...(isGrowthPartner
+          ? [{ name: "Team Remuneration", href: "/affiliate/achievements", icon: Zap }]
+          : []),
+      ],
+    },
+    {
+      title: "Account",
+      items: [
+        {
+          name: "Notifications",
+          href: "/dashboard/notifications",
+          icon: Bell,
+        },
+      ],
+    },
+  ];
       title: "Account",
       items: [
         {
@@ -190,7 +200,7 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
                 <Crown className="w-2.5 h-2.5" /> Growth Partner
               </span>
             ) : (
-              <p className="text-[11px] text-neutral-400 truncate">Affiliate Member</p>
+              <p className="text-[11px] text-neutral-400 truncate">Partner Member</p>
             )}
           </div>
         </div>
@@ -244,38 +254,38 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
 
       {/* Main */}
       <div className="flex-1 lg:pl-64 flex flex-col min-w-0">
-        <header className="h-16 bg-[#0F1412] border-b border-neutral-800 sticky top-0 z-20 px-4 sm:px-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setMobileNavOpen(true)}
-              className="lg:hidden p-2 rounded-lg text-neutral-400 hover:bg-neutral-800"
+<header className="h-16 bg-[#0F1412] border-b border-neutral-800 sticky top-0 z-20 px-4 sm:px-6 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setMobileNavOpen(true)}
+            className="lg:hidden p-2 rounded-lg text-neutral-400 hover:bg-neutral-800"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <span className="text-xs font-semibold text-neutral-400 hidden sm:inline">
+            Partner Center / <span className="text-white">{user.name}</span>
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          {/* Ephemeral session countdown */}
+          {secondsLeft !== null && secondsLeft > 0 && (
+            <span
+              className={`hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full border ${
+                secondsLeft <= 60
+                  ? "text-red-400 bg-red-950/60 border-red-900 animate-pulse"
+                  : "text-amber-400 bg-amber-950/40 border-amber-900"
+              }`}
+              title="Partner session ends automatically"
             >
-              <Menu className="w-5 h-5" />
-            </button>
-            <span className="text-xs font-semibold text-neutral-400 hidden sm:inline">
-              Affiliate Center / <span className="text-white">{user.name}</span>
+              <Timer className="w-3 h-3" />
+              Session ends in {mm}:{ss}
             </span>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* Ephemeral session countdown */}
-            {secondsLeft !== null && secondsLeft > 0 && (
-              <span
-                className={`hidden sm:inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full border ${
-                  secondsLeft <= 60
-                    ? "text-red-400 bg-red-950/60 border-red-900 animate-pulse"
-                    : "text-amber-400 bg-amber-950/40 border-amber-900"
-                }`}
-                title="Affiliate session ends automatically"
-              >
-                <Timer className="w-3 h-3" />
-                Session ends in {mm}:{ss}
-              </span>
-            )}
-            <span className="text-[10px] font-bold text-brand-400 bg-brand-950 border border-brand-800 px-2.5 py-1 rounded-full uppercase tracking-wider">
-              Partner Program
-            </span>
-          </div>
-        </header>
+          )}
+          <span className="text-[10px] font-bold text-brand-400 bg-brand-950 border border-brand-800 px-2.5 py-1 rounded-full uppercase tracking-wider">
+            Partner Program
+          </span>
+        </div>
+      </header>
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">{children}</main>
       </div>
@@ -289,7 +299,7 @@ export default function AffiliateLayout({ children }: { children: React.ReactNod
           ></div>
           <div className="relative w-64 max-w-[80%] bg-[#0F1412] flex flex-col h-full shadow-2xl border-r border-neutral-800">
             <div className="h-16 px-6 flex items-center justify-between border-b border-neutral-800">
-              <span className="font-bold text-white text-base">Affiliate Center</span>
+              <span className="font-bold text-white text-base">Partner Center</span>
               <button onClick={() => setMobileNavOpen(false)} className="p-1 text-neutral-400">
                 <X className="w-5 h-5" />
               </button>

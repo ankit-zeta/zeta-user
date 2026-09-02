@@ -6,7 +6,7 @@ import { useQuery } from "convex/react";
 import { api } from "@/lib/convex";
 import { Users, CheckCircle2, CircleDashed } from "lucide-react";
 
-export default function AffiliateReferralsPage() {
+export default function PartnerReferralsPage() {
   const { token } = useAuth();
   const referrals = useQuery(api.referrals.getUserReferrals, token ? { token } : "skip");
 
@@ -15,7 +15,7 @@ export default function AffiliateReferralsPage() {
       <div className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight">My Referrals</h1>
         <p className="text-xs text-neutral-400">
-          Everyone who registered with your referral link and their qualification status.
+          Everyone who registered with your partner link and their qualification status.
         </p>
       </div>
 
@@ -29,7 +29,7 @@ export default function AffiliateReferralsPage() {
             <Users className="w-10 h-10 text-neutral-700 mx-auto" />
             <h3 className="text-sm font-semibold">No Referrals Recorded</h3>
             <p className="text-xs text-neutral-500 max-w-sm mx-auto">
-              When peers sign up using your referral link they will appear in this directory.
+              When peers sign up using your partner link they will appear in this directory.
             </p>
           </div>
         ) : (
@@ -58,7 +58,7 @@ export default function AffiliateReferralsPage() {
                     <td className="py-3 px-3">
                       {r.hasPurchased ? (
                         <span className="text-[10px] font-bold bg-green-950 text-green-400 border border-green-900 px-2 py-0.5 rounded flex items-center gap-1 w-fit">
-                          <CheckCircle2 className="w-3 h-3" /> Purchased · Commission Pending
+                          <CheckCircle2 className="w-3 h-3" /> Purchased · Earnings Pending
                         </span>
                       ) : (
                         <span className="text-[10px] font-bold bg-blue-950 text-blue-300 border border-blue-900 px-2 py-0.5 rounded flex items-center gap-1 w-fit">

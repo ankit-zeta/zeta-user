@@ -15,7 +15,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-export default function AffiliateWalletPage() {
+export default function PartnerWalletPage() {
   const { token, user } = useAuth();
   const walletData = useQuery(api.wallets.getUserWallet, token ? { token } : "skip");
   const stats = useQuery(api.affiliates.getUserAffiliateStats, token ? { token } : "skip");
@@ -45,9 +45,9 @@ export default function AffiliateWalletPage() {
   return (
     <div className="space-y-8 text-neutral-100">
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight">Referral Earnings</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Partner Earnings</h1>
         <p className="text-xs text-neutral-400">
-          Your referral performance and earnings history. Withdrawals are managed from your Wallet.
+          Your partner performance and earnings history. Withdrawals are managed from your Wallet.
         </p>
       </div>
 
@@ -64,7 +64,7 @@ export default function AffiliateWalletPage() {
             Withdraw Your Earnings
           </p>
           <p className="text-[11px] text-brand-300/70 mt-0.5">
-            Combined balance (work + referrals) is available for withdrawal. Add UPI, bank, or QR code to get started.
+            Combined balance (work + partner) is available for withdrawal. Add UPI, bank, or QR code to get started.
           </p>
         </div>
         <span className="text-[11px] font-bold text-brand-300 bg-brand-900 px-3 py-1.5 rounded-lg group-hover:bg-brand-800 transition-colors">
@@ -81,7 +81,7 @@ export default function AffiliateWalletPage() {
           <p className="text-2xl font-extrabold">
             ₹{affiliateEarnings.toLocaleString("en-IN")}
           </p>
-          <span className="text-[11px] text-neutral-500 block">Lifetime referral earnings</span>
+          <span className="text-[11px] text-neutral-500 block">Lifetime partner earnings</span>
         </div>
         <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-5 space-y-2">
           <span className="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 text-neutral-400">
@@ -103,7 +103,7 @@ export default function AffiliateWalletPage() {
         </div>
         <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-5 space-y-2">
           <span className="text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 text-neutral-400">
-            <TrendingUp className="w-3.5 h-3.5" /> Chain Earnings
+            <TrendingUp className="w-3.5 h-3.5" /> Team Remuneration
           </span>
           <p className="text-2xl font-extrabold">
             ₹{chainEarnings.toLocaleString("en-IN")}
@@ -120,9 +120,9 @@ export default function AffiliateWalletPage() {
             <div className="w-12 h-12 rounded-full bg-neutral-800 flex items-center justify-center mx-auto mb-3">
               <Users className="w-6 h-6 text-neutral-600" />
             </div>
-            <p className="text-xs text-neutral-500 mb-1">No referral earnings yet</p>
+            <p className="text-xs text-neutral-500 mb-1">No partner earnings yet</p>
             <p className="text-[10px] text-neutral-600">
-              Share your referral link to start earning.
+              Share your partner link to start earning.
             </p>
           </div>
         ) : (
@@ -139,7 +139,7 @@ export default function AffiliateWalletPage() {
                   <div className="min-w-0">
                     <p className="text-xs font-semibold truncate">{tx.description}</p>
                     <p className="text-[10px] text-neutral-500">
-                      {tx.type === "CHAIN_COMMISSION" ? "Chain" : "Direct"} ·{" "}
+                      {tx.type === "CHAIN_COMMISSION" ? "Team" : "Direct"} ·{" "}
                       {new Date(tx.createdAt).toLocaleDateString("en-IN")}
                     </p>
                   </div>
@@ -165,16 +165,16 @@ export default function AffiliateWalletPage() {
 
       {/* How it works */}
       <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-6 space-y-3">
-        <h3 className="text-sm font-bold">How Referral Earnings Work</h3>
+        <h3 className="text-sm font-bold">How Partner Earnings Work</h3>
         <div className="space-y-2 text-[11px] text-neutral-400 leading-relaxed">
           <p>
-            <strong className="text-neutral-200">1. Share your referral link</strong> — friends sign up using your unique link.
+            <strong className="text-neutral-200">1. Share your partner link</strong> — friends sign up using your unique link.
           </p>
           <p>
-            <strong className="text-neutral-200">2. They purchase a program</strong> — you earn a commission on the sale.
+            <strong className="text-neutral-200">2. They purchase a program</strong> — you earn remuneration on the sale.
           </p>
           <p>
-            <strong className="text-neutral-200">3. Holding period</strong> — commissions are held for 7–30 days for verification.
+            <strong className="text-neutral-200">3. Holding period</strong> — earnings are held for 7–30 days for verification.
           </p>
           <p>
             <strong className="text-neutral-200">4. Auto-release</strong> — once cleared, funds move to your available balance automatically.

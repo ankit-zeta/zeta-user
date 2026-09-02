@@ -64,8 +64,8 @@ export default function AcceptableUsePage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="font-bold text-textMain">5. Referral Program Conduct</h2>
-          <p>Referral Program participants must comply with the <a href="/affiliate-guidelines" className="text-brand-700 underline">Affiliate Guidelines</a>. Prohibited conduct includes self-referrals, misleading income claims, spam, and deceptive marketing.</p>
+          <h2 className="font-bold text-textMain">5. Partner Program Conduct</h2>
+          <p>Partner Program participants must comply with the <a href="/affiliate-guidelines" className="text-brand-700 underline">Partner Program Guidelines</a>. Prohibited conduct includes self-referrals, misleading income claims, spam, and deceptive marketing.</p>
         </section>
 
         <section className="space-y-3">
@@ -112,7 +112,7 @@ export default function AcceptableUsePage() {
           <p className="text-xs text-textMuted">
             <Link href="/terms" className="text-brand-700 underline hover:text-brand-800">Terms of Service</Link> ·{" "}
             <Link href="/privacy" className="text-brand-700 underline hover:text-brand-800">Privacy Policy</Link> ·{" "}
-            <Link href="/affiliate-guidelines" className="text-brand-700 underline hover:text-brand-800">Affiliate Guidelines</Link>
+            <Link href="/affiliate-guidelines" className="text-brand-700 underline hover:text-brand-800">Partner Program Guidelines</Link>
           </p>
         </div>
       </div>

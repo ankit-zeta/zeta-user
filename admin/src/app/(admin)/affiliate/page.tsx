@@ -19,12 +19,12 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-export default function AdminAffiliatePage() {
+export default function AdminPartnerPage() {
   const { token } = useAdminAuth();
 
-  const affiliateSettings = useQuery(
+  const partnerSettings = useQuery(
     api.settings.getSettingAdmin,
-    token ? { token, key: "affiliate" } : "skip"
+    token ? { token, key: "partner" } : "skip"
   );
 
   const sales = useQuery(
@@ -117,25 +117,25 @@ export default function AdminAffiliatePage() {
   const [defaultPercentage, setDefaultPercentage] = useState<number>(50);
   const [holdingPeriodDays, setHoldingPeriodDays] = useState<number>(7);
   const [minimumPurchaseAmount, setMinimumPurchaseAmount] = useState<number>(2000);
-  const [chainEnabled, setChainEnabled] = useState(false);
-  const [chainLevels, setChainLevels] = useState<Record<string, number>>({});
+  const [teamEnabled, setTeamEnabled] = useState(false);
+  const [teamLevels, setTeamLevels] = useState<Record<string, number>>({});
   const [settingsMsg, setSettingsMsg] = useState("");
   const [isSavingSettings, setIsSavingSettings] = useState(false);
 
   // Sync settings when loaded
   React.useEffect(() => {
-    if (affiliateSettings) {
-      setEnabled(affiliateSettings.enabled ?? true);
-      setCommissionMethod(affiliateSettings.commissionMethod || "lower_program_rule");
-      setDefaultPercentage(affiliateSettings.defaultPercentage ?? 50);
-      setHoldingPeriodDays(affiliateSettings.holdingPeriodDays ?? 7);
-      setMinimumPurchaseAmount(affiliateSettings.minimumPurchaseAmount ?? 2000);
-      setChainEnabled(!!affiliateSettings.chainEnabled);
-      setChainLevels(affiliateSettings.chainLevels || {});
+    if (partnerSettings) {
+      setEnabled(partnerSettings.enabled ?? true);
+      setCommissionMethod(partnerSettings.commissionMethod || "lower_program_rule");
+      setDefaultPercentage(partnerSettings.defaultPercentage ?? 50);
+      setHoldingPeriodDays(partnerSettings.holdingPeriodDays ?? 7);
+      setMinimumPurchaseAmount(partnerSettings.minimumPurchaseAmount ?? 2000);
+      setTeamEnabled(!!partnerSettings.chainEnabled);
+      setTeamLevels(partnerSettings.chainLevels || {});
     }
-  }, [affiliateSettings]);
+  }, [partnerSettings]);
 
-  const handleSaveSettings = async (e: React.FormEvent) => {
+const handleSaveSettings = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!token) return;
 
@@ -145,24 +145,24 @@ export default function AdminAffiliatePage() {
     try {
       await updateSettingMutation({
         token,
-        key: "affiliate",
+        key: "partner",
         value: {
           enabled,
           commissionMethod,
           defaultPercentage: Number(defaultPercentage),
           holdingPeriodDays: Number(holdingPeriodDays),
           minimumPurchaseAmount: Number(minimumPurchaseAmount),
-          chainEnabled,
-          chainLevels,
+          chainEnabled: teamEnabled,
+          chainLevels: teamLevels,
         },
-        reason: "Admin affiliate settings modification",
+        reason: "Admin partner settings modification",
       });
-      setSettingsMsg("Affiliate engine settings saved successfully!");
+      setSettingsMsg("Partner engine settings saved successfully!");
     } catch (err: any) {
       setSettingsMsg(err.message || "Failed to update settings.");
-} finally {
-        setIsSavingSettings(false);
-      }
+    } finally {
+      setIsSavingSettings(false);
+    }
   };
 
   const handleAddPartner = async (e: React.FormEvent, userId: string) => {
@@ -208,10 +208,10 @@ export default function AdminAffiliatePage() {
       {/* Header */}
       <div className="space-y-1">
         <h1 className="text-2xl font-bold tracking-tight text-textMain">
-          Affiliate & Commission Engine
+          Partner & Remuneration Engine
         </h1>
         <p className="text-xs text-textMuted">
-          Configure dynamic commission calculation rules, monitor direct downline attribution, and approve commissions.
+          Configure dynamic remuneration calculation rules, monitor direct downline attribution, and approve earnings.
         </p>
       </div>
 
@@ -225,7 +225,7 @@ export default function AdminAffiliatePage() {
               : "text-textMuted hover:bg-neutral-100 hover:text-textMain"
           }`}
         >
-          Commission Sales Log ({sales?.length || 0})
+          Earnings Log ({sales?.length || 0})
         </button>
 
         <button
@@ -236,7 +236,7 @@ export default function AdminAffiliatePage() {
               : "text-textMuted hover:bg-neutral-100 hover:text-textMain"
           }`}
         >
-          Referral Network ({referrals?.length || 0})
+          Partner Network ({referrals?.length || 0})
         </button>
 
         <button
@@ -258,14 +258,14 @@ export default function AdminAffiliatePage() {
               : "text-textMuted hover:bg-neutral-100 hover:text-textMain"
           }`}
         >
-          Configurable Engine Rules
+          Configurable Remuneration Rules
         </button>
       </div>
 
       {/* TAB 1: Sales */}
       {activeTab === "sales" && (
         <div className="card-surface p-6 space-y-4">
-          <h3 className="text-base font-bold text-textMain">Affiliate Commission Log</h3>
+          <h3 className="text-base font-bold text-textMain">Earnings Log</h3>
 
           {sales === undefined ? (
             <div className="p-8 text-center animate-pulse space-y-3">
@@ -273,7 +273,7 @@ export default function AdminAffiliatePage() {
             </div>
           ) : sales.length === 0 ? (
             <div className="text-center py-10 text-xs text-textMuted">
-              No affiliate sales recorded yet.
+              No partner earnings recorded yet.
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -284,7 +284,7 @@ export default function AdminAffiliatePage() {
                     <th className="py-3 px-3 font-semibold">Buyer</th>
                     <th className="py-3 px-3 font-semibold">Program</th>
                     <th className="py-3 px-3 font-semibold">Sale</th>
-                    <th className="py-3 px-3 font-semibold">Commission</th>
+                    <th className="py-3 px-3 font-semibold">Earnings</th>
                     <th className="py-3 px-3 font-semibold">Applied Rule</th>
                     <th className="py-3 px-3 font-semibold">Status</th>
                     <th className="py-3 px-3 font-semibold text-right">Actions</th>
@@ -367,13 +367,13 @@ export default function AdminAffiliatePage() {
       {/* TAB 2: Referrals */}
       {activeTab === "referrals" && (
         <div className="card-surface p-6 space-y-4">
-          <h3 className="text-base font-bold text-textMain">Referral Downline Relationships</h3>
+          <h3 className="text-base font-bold text-textMain">Partner Downline Relationships</h3>
           {referrals && referrals.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
                   <tr className="border-b border-borderSubtle text-textMuted bg-neutral-50">
-                    <th className="py-3 px-3 font-semibold">Referrer (Sponsor)</th>
+                    <th className="py-3 px-3 font-semibold">Partner (Sponsor)</th>
                     <th className="py-3 px-3 font-semibold">Referred User (Customer)</th>
                     <th className="py-3 px-3 font-semibold">Code Used</th>
                     <th className="py-3 px-3 font-semibold">Status</th>
@@ -404,7 +404,7 @@ export default function AdminAffiliatePage() {
               </table>
             </div>
           ) : (
-            <div className="text-center py-8 text-xs text-textMuted">No referral links registered yet.</div>
+            <div className="text-center py-8 text-xs text-textMuted">No partner links registered yet.</div>
           )}
         </div>
       )}
@@ -413,9 +413,9 @@ export default function AdminAffiliatePage() {
       {activeTab === "settings" && (
         <div className="card-surface p-6 sm:p-8 space-y-6 max-w-3xl">
           <div className="space-y-1">
-            <h3 className="text-base font-bold text-textMain">Configurable Commission Calculation Rules</h3>
+            <h3 className="text-base font-bold text-textMain">Configurable Remuneration Calculation Rules</h3>
             <p className="text-xs text-textMuted">
-              Adjust commission formula and holding period without editing application source code.
+              Adjust remuneration formula and holding period without editing application source code.
             </p>
           </div>
 
@@ -434,12 +434,12 @@ export default function AdminAffiliatePage() {
                   onChange={(e) => setEnabled(e.target.checked)}
                   className="rounded border-borderSubtle text-brand-600"
                 />
-                <span>Enable Affiliate Referral Engine</span>
+                <span>Enable Partner Referral Engine</span>
               </label>
             </div>
 
             <div className="space-y-1">
-              <label className="font-semibold text-textMain">Commission Calculation Method *</label>
+              <label className="font-semibold text-textMain">Remuneration Calculation Method *</label>
               <select
                 value={commissionMethod}
                 onChange={(e) => setCommissionMethod(e.target.value)}
@@ -456,7 +456,7 @@ export default function AdminAffiliatePage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="font-semibold text-textMain">Commission Percentage (%) *</label>
+                <label className="font-semibold text-textMain">Remuneration Percentage (%) *</label>
                 <input
                   type="number"
                   required
@@ -483,7 +483,7 @@ export default function AdminAffiliatePage() {
             </div>
 
             <div className="space-y-1">
-              <label className="font-semibold text-textMain">Minimum Purchase Amount for Commission (₹)</label>
+              <label className="font-semibold text-textMain">Minimum Purchase Amount for Remuneration (₹)</label>
               <input
                 type="number"
                 value={minimumPurchaseAmount}
@@ -496,22 +496,22 @@ export default function AdminAffiliatePage() {
               <label className="flex items-center gap-2 font-semibold text-textMain">
                 <input
                   type="checkbox"
-                  checked={chainEnabled}
-                  onChange={(e) => setChainEnabled(e.target.checked)}
+                  checked={teamEnabled}
+                  onChange={(e) => setTeamEnabled(e.target.checked)}
                   className="rounded border-borderSubtle text-brand-600"
                 />
-                <span>Enable Chain Commissions (Upline Earnings)</span>
+                <span>Enable Team Remuneration (Upline Earnings)</span>
               </label>
               <p className="text-[10px] text-textMuted">
-                Allow Growth Partners to earn a percentage of their downline's affiliate commissions.
+                Allow Growth Partners to earn a percentage of their downline's partner remuneration.
               </p>
             </div>
 
-            {chainEnabled && (
+            {teamEnabled && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <label className="font-semibold text-textMain">Chain Levels (% per Position)</label>
-                  <p className="text-[10px] text-textMuted">Set the chain commission % for each position. Only Growth Partners with these positions earn chain commissions.</p>
+                  <label className="font-semibold text-textMain">Team Levels (% per Position)</label>
+                  <p className="text-[10px] text-textMuted">Set the team remuneration % for each position. Only Growth Partners with these positions earn team remuneration.</p>
                 </div>
                 {positions && positions.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -526,9 +526,9 @@ export default function AdminAffiliatePage() {
                             step="1"
                             min={0}
                             max={100}
-                            value={chainLevels[p._id] ?? 0}
+                            value={teamLevels[p._id] ?? 0}
                             onChange={(e) =>
-                              setChainLevels((prev) => ({ ...prev, [p._id]: Number(e.target.value) }))
+                              setTeamLevels((prev) => ({ ...prev, [p._id]: Number(e.target.value) }))
                             }
                             className="w-full px-2 py-1.5 rounded-lg border border-neutral-200 bg-white text-sm font-bold text-center"
                           />
@@ -567,7 +567,7 @@ export default function AdminAffiliatePage() {
               </h3>
             </div>
             <p className="text-xs text-textMuted">
-              Growth Partners unlock exclusive chain commission levels and the Partnership section in the Affiliate Center.
+              Growth Partners unlock exclusive team remuneration levels and the Partnership section in the Partner Center.
               Invite users who have demonstrated consistent impact and trustworthiness.
             </p>
           </div>
@@ -590,7 +590,7 @@ export default function AdminAffiliatePage() {
                       <th className="py-2.5 px-3 font-semibold">Email</th>
                       <th className="py-2.5 px-3 font-semibold">Referral Code</th>
                       <th className="py-2.5 px-3 font-semibold">Position</th>
-                      <th className="py-2.5 px-3 font-semibold">Chain %</th>
+                      <th className="py-2.5 px-3 font-semibold">Team %</th>
                       <th className="py-2.5 px-3 font-semibold">Partner Since</th>
                       <th className="py-2.5 px-3 font-semibold">Actions</th>
                     </tr>

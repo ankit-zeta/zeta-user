@@ -67,8 +67,8 @@ export default function RefundPolicyPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="font-bold text-textMain">4. Commission Reversal on Approved Corrections</h2>
-          <p>In the event of an approved erroneous-payment correction, any affiliate referral commissions associated with the affected purchase will be reversed in accordance with our platform commission holding period policy. The referring affiliate will be notified of the reversal.</p>
+          <h2 className="font-bold text-textMain">4. Remuneration Reversal on Approved Corrections</h2>
+          <p>In the event of an approved erroneous-payment correction, any partner referral remuneration associated with the affected purchase will be reversed in accordance with our platform remuneration holding period policy. The referring partner will be notified of the reversal.</p>
         </section>
 
         <section className="space-y-3">
@@ -92,7 +92,7 @@ export default function RefundPolicyPage() {
             <Link href="/terms" className="text-brand-700 underline hover:text-brand-800">Terms of Service</Link> ·{" "}
             <Link href="/privacy" className="text-brand-700 underline hover:text-brand-800">Privacy Policy</Link> ·{" "}
             <Link href="/payment-terms" className="text-brand-700 underline hover:text-brand-800">Payment Terms</Link> ·{" "}
-            <Link href="/affiliate-guidelines" className="text-brand-700 underline hover:text-brand-800">Affiliate Guidelines</Link>
+            <Link href="/affiliate-guidelines" className="text-brand-700 underline hover:text-brand-800">Partner Program Guidelines</Link>
           </p>
         </div>
       </div>

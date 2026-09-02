@@ -25,7 +25,7 @@ import {
   Link2,
 } from "lucide-react";
 
-export default function AffiliateLinkPage() {
+export default function PartnerLinkPage() {
   const { user, token } = useAuth();
   const plans = useQuery(api.plans.getPublicPlans);
   const gst = useGst();
@@ -71,9 +71,9 @@ export default function AffiliateLinkPage() {
     <div className="space-y-8 text-neutral-100">
       {/* Header */}
       <div className="space-y-1">
-        <h1 className="text-2xl font-bold tracking-tight">Affiliate Links</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Partner Links</h1>
         <p className="text-xs text-neutral-400">
-          Generate unique affiliate links for each plan. Share these links — when someone purchases through your link, you earn commission.
+          Generate unique partner links for each plan. Share these links — when someone purchases through your link, you earn remuneration.
         </p>
       </div>
 
@@ -83,10 +83,10 @@ export default function AffiliateLinkPage() {
           <div className="space-y-1">
             <span className="text-[10px] font-bold text-brand-400 uppercase tracking-wider flex items-center gap-1.5">
               <Link2 className="w-3.5 h-3.5" />
-              Your Referral Code
+              Your Partner Code
             </span>
             <p className="text-xs text-neutral-400">
-              All your affiliate links use this code. It's automatically appended to checkout links.
+              All your partner links use this code. It's automatically appended to checkout links.
             </p>
           </div>
           <span className="text-xs font-mono font-bold text-brand-300 bg-brand-950 border border-brand-800 px-3 py-1 rounded-lg">
@@ -104,7 +104,7 @@ export default function AffiliateLinkPage() {
           icon={<DollarSign className="w-4 h-4" />}
           label="Total Earnings"
           value={stats?.totalCommissions ? `₹${stats.totalCommissions.toLocaleString("en-IN")}` : "₹0"}
-          sub="Lifetime affiliate commissions"
+          sub="Lifetime partner earnings"
         />
         <StatCard
           icon={<Users className="w-4 h-4" />}
@@ -167,17 +167,17 @@ export default function AffiliateLinkPage() {
       <div className="rounded-2xl border border-neutral-800 bg-[#0F1412] p-6 space-y-4">
         <h3 className="text-sm font-bold flex items-center gap-2">
           <ExternalLinkIcon className="w-4 h-4 text-brand-400" />
-          How Affiliate Links Work
+          How Partner Links Work
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs text-neutral-400">
-          <StepCard number={1} title="Copy Link" description="Click 'Copy Link' on any plan card to copy your unique affiliate link." />
+          <StepCard number={1} title="Copy Link" description="Click 'Copy Link' on any plan card to copy your unique partner link." />
           <StepCard number={2} title="Share" description="Share the link on social media, email, WhatsApp, or your website." />
-          <StepCard number={3} title="Visitor Clicks" description="When someone clicks, they land on the checkout page with your referral code." />
-          <StepCard number={4} title="Earn Commission" description="When they purchase, you earn commission automatically tracked." />
+          <StepCard number={3} title="Visitor Clicks" description="When someone clicks, they land on the checkout page with your partner code." />
+          <StepCard number={4} title="Earn Remuneration" description="When they purchase, you earn remuneration automatically tracked." />
         </div>
         <div className="pt-4 border-t border-neutral-800">
           <p className="text-xs text-neutral-500 leading-relaxed">
-            <strong className="text-neutral-300">Commission:</strong> You earn 50% of the plan price (excl. GST) on each sale, subject to a 7-day holding period. Commissions appear in your wallet after the holding period.
+            <strong className="text-neutral-300">Remuneration:</strong> You earn 50% of the plan price (incl. GST) on each sale, subject to a 7-day holding period. Earnings appear in your wallet after the holding period.
           </p>
         </div>
       </div>
@@ -302,7 +302,7 @@ function PlanCard({
               </>
             ) : (
               <>
-                <Copy className="w-3.5 h-3.5" /> Copy Affiliate Link
+                <Copy className="w-3.5 h-3.5" /> Copy Partner Link
               </>
             )}
           </button>
@@ -315,9 +315,9 @@ function PlanCard({
           </Link>
         </div>
 
-        {/* Affiliate Link Preview */}
+        {/* Partner Link Preview */}
         <div className="bg-black/30 rounded-lg border border-neutral-800 p-3 space-y-2">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Your Affiliate Link</p>
+          <p className="text-[10px] font-bold uppercase tracking-wider text-neutral-500">Your Partner Link</p>
           <div className="flex items-center gap-2 bg-black/30 p-2 rounded-lg border border-neutral-800">
             <input
               type="text"
@@ -327,7 +327,7 @@ function PlanCard({
             />
           </div>
           <p className="text-[10px] text-neutral-500">
-            When someone purchases via this link, you earn <strong className="text-brand-400">50% commission</strong> (excl. GST), after 7-day holding period.
+            When someone purchases via this link, you earn <strong className="text-brand-400">50% remuneration</strong> (incl. GST), after 7-day holding period.
           </p>
         </div>
       </div>
