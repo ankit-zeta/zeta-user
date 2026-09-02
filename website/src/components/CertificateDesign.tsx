@@ -11,19 +11,23 @@ const serifFont = Cormorant_Garamond({
   display: "swap",
 });
 
-// ─── Decorative SVG pieces (no image assets needed) ─────────────────────────
-
 const GOLD = "#C9A227";
 const GOLD_LIGHT = "#E9CE7A";
 const GREEN = "#10382A";
 
-// Laurel wreath (two mirrored branches) used in the ribbon badge and seal.
+// ─── Canonical certificate dimensions ────────────────────────────────────────
+// These MUST match the actual rendered size of the certificate card.
+// The outer wrapper uses max-w-4xl (896px) and the inner content with
+// padding/margins produces ~640px height at full size.
+const CERT_W = 896;
+const CERT_H = 640;
+
 function LaurelWreath({ size = 64, color = GOLD }: { size?: number; color?: string }) {
   const r2 = (v: number) => Math.round(v * 100) / 100;
   const leaves = [];
   for (let side = 0; side < 2; side++) {
     for (let i = 0; i < 6; i++) {
-      const t = 0.28 + i * 0.115; // position along the arc
+      const t = 0.28 + i * 0.115;
       const angle = side === 0 ? 200 - t * 160 : -20 + t * 160;
       const rad = (angle * Math.PI) / 180;
       const cx = r2(50 + 34 * Math.cos(rad));
@@ -49,16 +53,11 @@ function LaurelWreath({ size = 64, color = GOLD }: { size?: number; color?: stri
   );
 }
 
-// Scalloped gold seal with green core, embossed Z and inner laurel.
 function GoldSeal({ size = 150 }: { size?: number }) {
-  // useId() guarantees unique gradient IDs across the entire document,
-  // even when multiple GoldSeal instances exist (e.g. hidden export + visible preview).
   const reactId = useId();
   const uid = `seal${reactId}`;
-  // Smooth scalloped edge: outward arcs between valley points (bottle-cap style).
   const n = 24;
   const cx = 75, cy = 75, rValley = 58;
-  // Round to 2 decimal places to prevent SSR/client floating-point hydration mismatch
   const r2 = (v: number) => Math.round(v * 100) / 100;
   const pt = (i: number, r: number) => {
     const a = (i / n) * Math.PI * 2 - Math.PI / 2;
@@ -74,7 +73,6 @@ function GoldSeal({ size = 150 }: { size?: number }) {
   }
   d += "Z";
 
-  // Inner laurel sprigs flanking the Z.
   const sprigLeaves = [];
   for (let side = 0; side < 2; side++) {
     for (let i = 0; i < 4; i++) {
@@ -131,16 +129,11 @@ function GoldSeal({ size = 150 }: { size?: number }) {
           <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#3a2c05" floodOpacity="0.35" />
         </filter>
       </defs>
-
-      {/* Scalloped rim */}
       <path d={d} fill={`url(#${uid}-edge)`} stroke="#6e520b" strokeWidth={0.8} filter={`url(#${uid}-shadow)`} suppressHydrationWarning />
-      {/* Gold face */}
       <circle cx="75" cy="75" r="56" fill={`url(#${uid}-face)`} stroke="#8a680f" strokeWidth={0.8} />
       <circle cx="75" cy="75" r="50.5" fill="none" stroke="#FBF3D0" strokeWidth={1.3} strokeDasharray="2.6 2.2" opacity={0.95} />
-      {/* Green core */}
       <circle cx="75" cy="75" r="45" fill={`url(#${uid}-green)`} stroke="#E3C25C" strokeWidth={1.6} />
       <circle cx="75" cy="75" r="41.5" fill="none" stroke="#C9A227" strokeWidth={0.7} opacity={0.65} />
-      {/* Inner laurel + stars + embossed Z */}
       {sprigLeaves}
       {star(56, 82, 0.85)}
       {star(94, 82, 0.85)}
@@ -154,7 +147,14 @@ function GoldSeal({ size = 150 }: { size?: number }) {
   );
 }
 
-// ─── The full premium certificate card ──────────────────────────────────────
+// ─── Certificate Card ──────────────────────────────────────────────────────
+// Modes:
+//   - default (no prop): normal rendering with responsive CSS
+//   - previewMode: constrained by parent's aspect-ratio container
+//   - exportMode: fixed canonical dimensions (896×640), no responsive overrides
+//
+// The SAME DOM structure is used for preview, export, and share/verification.
+// Only the outer sizing behavior changes.
 
 export function CertificateCard({
   domId,
@@ -164,14 +164,18 @@ export function CertificateCard({
   certificateId,
   issueDate,
   signatureUrl,
+  previewMode,
+  exportMode,
 }: {
-  domId: string;
+  domId?: string;
   innerDomId?: string;
   recipientName: string;
   programName: string;
   certificateId: string;
   issueDate: number;
   signatureUrl?: string | null;
+  previewMode?: boolean;
+  exportMode?: boolean;
 }) {
   const issued = new Date(issueDate).toLocaleDateString("en-IN", {
     day: "numeric",
@@ -179,11 +183,31 @@ export function CertificateCard({
     year: "numeric",
   });
 
+  // In export mode, force fixed dimensions and disable responsive overrides
+  const wrapperStyle: React.CSSProperties = exportMode
+    ? {
+        width: `${CERT_W}px`,
+        height: `${CERT_H}px`,
+        maxWidth: "none",
+        overflow: "hidden",
+      }
+    : previewMode
+    ? { width: "100%", height: "100%" }
+    : {};
+
+  const wrapperClass = exportMode
+    ? "relative mx-auto overflow-hidden rounded-xl shadow-2xl select-none cert-export-mode"
+    : "relative mx-auto w-full max-w-4xl overflow-hidden rounded-xl shadow-2xl select-none";
+
   return (
     <div
       id={domId}
-      className="relative mx-auto w-full max-w-4xl overflow-hidden rounded-xl shadow-2xl select-none"
-      style={{ background: `linear-gradient(150deg, #143D2D 0%, #0D2E22 55%, #123527 100%)` }}
+      className={wrapperClass}
+      style={{
+        background: `linear-gradient(150deg, #143D2D 0%, #0D2E22 55%, #123527 100%)`,
+        aspectRatio: exportMode ? `${CERT_W} / ${CERT_H}` : undefined,
+        ...wrapperStyle,
+      }}
     >
       {/* Gold corner ribbons (bottom) */}
       <div
@@ -204,13 +228,22 @@ export function CertificateCard({
       />
 
       {/* Inner white card with gold double border */}
-      <div className="relative m-3 sm:m-4 rounded-lg bg-[#FDFDFB] p-[6px]"
-        style={{ boxShadow: "inset 0 0 0 1.5px #D4AF37, 0 0 0 1px rgba(212,175,55,0.4)" }}
+      <div
+        className="relative rounded-lg bg-[#FDFDFB]"
+        style={{
+          boxShadow: "inset 0 0 0 1.5px #D4AF37, 0 0 0 1px rgba(212,175,55,0.4)",
+          margin: exportMode ? "12px" : undefined,
+        }}
       >
         <div
           id={innerDomId}
-          className="relative rounded-md bg-white px-6 sm:px-12 pt-10 sm:pt-12 pb-24 sm:pb-20"
-          style={{ boxShadow: "inset 0 0 0 1px rgba(201,162,39,0.55)" }}
+          className="relative rounded-md bg-white"
+          style={{
+            boxShadow: "inset 0 0 0 1px rgba(201,162,39,0.55)",
+            padding: exportMode
+              ? "40px 48px 80px 48px"
+              : undefined,
+          }}
         >
           {/* Corner accents */}
           {["top-2 left-2", "top-2 right-2 rotate-90", "bottom-2 right-2 rotate-180", "bottom-2 left-2 -rotate-90"].map((pos) => (
@@ -220,7 +253,7 @@ export function CertificateCard({
             </svg>
           ))}
 
-          {/* Ribbon badge (top-left) — trophy/shield shape */}
+          {/* Ribbon badge (top-left) */}
           <div className="absolute -top-0 left-8 sm:left-12 -translate-y-2">
             <svg
               width="92"
@@ -242,14 +275,12 @@ export function CertificateCard({
                   <stop offset="100%" stopColor="#8f6b12" />
                 </linearGradient>
               </defs>
-              {/* Shield body with curved sides and pointed bottom */}
               <path
                 d="M4 0 L88 0 Q92 0 92 4 L92 72 Q92 85 78 95 L50 110 Q46 112 42 110 L14 95 Q0 85 0 72 L0 4 Q0 0 4 0 Z"
                 fill="url(#ribbon-bg)"
                 stroke="url(#ribbon-gold)"
                 strokeWidth="2"
               />
-              {/* Inner gold border */}
               <path
                 d="M8 4 L84 4 Q87 4 87 7 L87 70 Q87 81 75 90 L50 104 Q46 106 42 104 L17 90 Q5 81 5 70 L5 7 Q5 4 8 4 Z"
                 fill="none"
@@ -257,11 +288,9 @@ export function CertificateCard({
                 strokeWidth="0.8"
                 opacity="0.5"
               />
-              {/* Laurel wreath at top */}
               <g transform="translate(46, 28) scale(0.55)">
                 <LaurelWreath size={48} />
               </g>
-              {/* Text */}
               <text x="46" y="56" textAnchor="middle" fill={GOLD_LIGHT} fontSize="6" fontWeight="700" letterSpacing="0.18em" fontFamily="system-ui, sans-serif">
                 COMMITMENT
               </text>

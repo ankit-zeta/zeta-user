@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/lib/convex";
 import { useQuery } from "convex/react";
@@ -15,8 +15,6 @@ import {
   Check,
   Eye,
   X,
-  Download,
-  Share2,
   Calendar,
   Hash,
   Loader2,
@@ -24,6 +22,14 @@ import {
 import { toPng } from "html-to-image";
 import { jsPDF } from "jspdf";
 import { CertificateCard } from "@/components/CertificateDesign";
+
+// Canonical certificate dimensions — must match the DOM element's intrinsic size.
+// The CertificateCard outer wrapper is max-w-4xl (896px) and uses padding/margins
+// that result in these approximate render dimensions. We capture the OUTER element
+// (domId) not the inner white area, so the green frame + gold border are included.
+const CERT_CANONICAL_WIDTH = 896;
+const CERT_CANONICAL_HEIGHT = 640;
+const CERT_ASPECT_RATIO = CERT_CANONICAL_WIDTH / CERT_CANONICAL_HEIGHT;
 
 type Cert = {
   _id: string;
@@ -49,21 +55,31 @@ export default function CertificatesPage() {
   const [exporting, setExporting] = useState<string | null>(null);
   const [exportError, setExportError] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const previewRef = useRef<HTMLDivElement>(null);
 
-  const renderCardToPng = async (domId: string, innerDomId?: string): Promise<string> => {
-    const el = document.getElementById(innerDomId || domId);
-    if (!el) throw new Error("not-ready");
-    return toPng(el, { pixelRatio: 2, backgroundColor: "#FDFDFB", cacheBust: true });
+  // Capture the OUTER certificate element (domId) including green frame + gold border
+  const renderCardToPng = async (certId: string): Promise<string> => {
+    const el = document.getElementById(`cert-export-${certId}`);
+    if (!el) throw new Error("Certificate element not ready");
+    return toPng(el, {
+      pixelRatio: 2,
+      backgroundColor: "#0D2E22",
+      cacheBust: true,
+      width: CERT_CANONICAL_WIDTH,
+      height: CERT_CANONICAL_HEIGHT,
+      style: {
+        transform: "none",
+        position: "static",
+        left: "auto",
+        top: "auto",
+      },
+    });
   };
 
   const downloadPng = async (cert: Cert) => {
-    const domId = `cert-display-${cert.certificateId}`;
-    const innerDomId = `cert-display-${cert.certificateId}-inner`;
     setExporting(`${cert.certificateId}:png`);
     setExportError("");
     try {
-      const dataUrl = await renderCardToPng(domId, innerDomId);
+      const dataUrl = await renderCardToPng(cert.certificateId);
       const a = document.createElement("a");
       a.href = dataUrl;
       a.download = `ZetaGrow-Certificate-${cert.certificateId}.png`;
@@ -78,25 +94,26 @@ export default function CertificatesPage() {
   };
 
   const downloadPdf = async (cert: Cert) => {
-    const domId = `cert-display-${cert.certificateId}`;
-    const innerDomId = `cert-display-${cert.certificateId}-inner`;
     setExporting(`${cert.certificateId}:pdf`);
     setExportError("");
     try {
-      const dataUrl = await renderCardToPng(domId, innerDomId);
+      const dataUrl = await renderCardToPng(cert.certificateId);
       const img = new Image();
       img.src = dataUrl;
       await new Promise((resolve, reject) => {
         img.onload = () => resolve(null);
         img.onerror = reject;
       });
-      // Use image dimensions for PDF page size to avoid white space
+      // PDF page sized to match certificate aspect ratio
+      const pdfWidth = 1280;
+      const pdfHeight = pdfWidth / CERT_ASPECT_RATIO;
       const pdf = new jsPDF({
-        orientation: img.width > img.height ? "landscape" : "portrait",
+        orientation: "landscape",
         unit: "px",
-        format: [img.width, img.height],
+        format: [pdfWidth, pdfHeight],
+        compress: true,
       });
-      pdf.addImage(dataUrl, "PNG", 0, 0, img.width, img.height);
+      pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save(`ZetaGrow-Certificate-${cert.certificateId}.pdf`);
     } catch {
       setExportError("Could not generate the PDF. Please try again.");
@@ -140,20 +157,40 @@ export default function CertificatesPage() {
         </div>
       )}
 
-      {/* Hidden certificate cards for PNG/PDF export */}
+      {/* Hidden export certificates — rendered at canonical size for clean capture */}
       {certificates && certificates.length > 0 && (
-        <div className="fixed -left-[9999px] -top-[9999px] pointer-events-none" aria-hidden>
+        <div
+          aria-hidden
+          style={{
+            position: "fixed",
+            left: "-9999px",
+            top: 0,
+            width: `${CERT_CANONICAL_WIDTH}px`,
+            height: `${CERT_CANONICAL_HEIGHT}px`,
+            overflow: "hidden",
+            pointerEvents: "none",
+            zIndex: -1,
+          }}
+        >
           {certificates.map((cert) => (
-            <CertificateCard
+            <div
               key={`export-${cert._id}`}
-              domId={`cert-display-${cert.certificateId}`}
-              innerDomId={`cert-display-${cert.certificateId}-inner`}
-              recipientName={cert.recipientName}
-              programName={cert.programName}
-              certificateId={cert.certificateId}
-              issueDate={cert.issueDate}
-              signatureUrl={cert.signatureUrl}
-            />
+              id={`cert-export-${cert.certificateId}`}
+              style={{
+                width: `${CERT_CANONICAL_WIDTH}px`,
+                height: `${CERT_CANONICAL_HEIGHT}px`,
+                overflow: "hidden",
+              }}
+            >
+              <CertificateCard
+                exportMode
+                recipientName={cert.recipientName}
+                programName={cert.programName}
+                certificateId={cert.certificateId}
+                issueDate={cert.issueDate}
+                signatureUrl={cert.signatureUrl}
+              />
+            </div>
           ))}
         </div>
       )}
@@ -206,11 +243,12 @@ export default function CertificatesPage() {
       {/* Preview Modal */}
       {previewCert && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-2 sm:p-4"
           onClick={() => setPreviewCert(null)}
         >
           <div
-            className="relative bg-white rounded-2xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden"
+            className="relative bg-white rounded-2xl shadow-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
+            style={{ maxWidth: "1000px" }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}
@@ -221,25 +259,32 @@ export default function CertificatesPage() {
               <X className="w-4 h-4" />
             </button>
 
-            {/* Visible certificate preview */}
-            <div className="p-4 sm:p-6 overflow-hidden cert-modal-preview">
-              <CertificateCard
-                domId={`cert-display-${previewCert.certificateId}`}
-                innerDomId={`cert-display-${previewCert.certificateId}-inner`}
-                recipientName={previewCert.recipientName}
-                programName={previewCert.programName}
-                certificateId={previewCert.certificateId}
-                issueDate={previewCert.issueDate}
-                signatureUrl={previewCert.signatureUrl}
-              />
+            {/* Certificate preview — scales to fit while preserving landscape ratio */}
+            <div className="flex-1 flex items-center justify-center p-3 sm:p-6 overflow-hidden bg-neutral-100">
+              <div
+                className="w-full"
+                style={{
+                  maxWidth: `${CERT_CANONICAL_WIDTH}px`,
+                  aspectRatio: `${CERT_ASPECT_RATIO}`,
+                }}
+              >
+                <CertificateCard
+                  previewMode
+                  recipientName={previewCert.recipientName}
+                  programName={previewCert.programName}
+                  certificateId={previewCert.certificateId}
+                  issueDate={previewCert.issueDate}
+                  signatureUrl={previewCert.signatureUrl}
+                />
+              </div>
             </div>
 
             {/* Actions bar */}
-            <div className="sticky bottom-0 bg-white border-t border-borderSubtle p-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="border-t border-borderSubtle p-3 sm:p-4 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 bg-white shrink-0">
               <button
                 onClick={() => downloadPng(previewCert)}
                 disabled={exporting !== null}
-                className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5 disabled:opacity-50"
+                className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5 disabled:opacity-50 w-full sm:w-auto justify-center"
               >
                 {exporting === `${previewCert.certificateId}:png` ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -251,7 +296,7 @@ export default function CertificatesPage() {
               <button
                 onClick={() => downloadPdf(previewCert)}
                 disabled={exporting !== null}
-                className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5 disabled:opacity-50"
+                className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5 disabled:opacity-50 w-full sm:w-auto justify-center"
               >
                 {exporting === `${previewCert.certificateId}:pdf` ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -262,7 +307,7 @@ export default function CertificatesPage() {
               </button>
               <button
                 onClick={() => copyShareLink(previewCert)}
-                className="btn-secondary text-xs py-2 px-4 inline-flex items-center gap-1.5"
+                className="btn-secondary text-xs py-2 px-4 inline-flex items-center gap-1.5 w-full sm:w-auto justify-center"
               >
                 {copiedId === previewCert.certificateId ? (
                   <>
